@@ -8,8 +8,8 @@
     "start": "next start",
     "lint": "next lint",
     "lint:fix": "next lint --fix",
-    "format": "prettier --check --loglevel=warn 'pages/**/*.{js,jsx,ts,tsx,html,json}'",
-    "format:fix": "prettier --write --loglevel=warn 'pages/**/*.{js,jsx,ts,tsx,html,json}'",
+    "format": "prettier --check --loglevel=warn 'src/**/*.{js,jsx,ts,tsx,html,json}'",
+    "format:fix": "prettier --write --loglevel=warn 'src/**/*.{js,jsx,ts,tsx,html,json}'",
     "postinstall": "typesync || :"
   },
   "dependencies": {
