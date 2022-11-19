@@ -107,6 +107,9 @@ module.exports = {
         explicitSpread: 'ignore',
       },
     ],
+    'react/require-default-props': 'off',
+    'import/prefer-default-export': 'off',
+    'import/no-default-export': 'error',
   },
   settings: {
     'import/resolver': {
@@ -116,4 +119,13 @@ module.exports = {
       },
     },
   },
+  overrides: [
+    {
+      files: ['src/pages/**/*.ts', 'src/pages/**/*.tsx'],
+      rules: {
+        'import/prefer-default-export': 'error',
+        'import/no-default-export': 'off',
+      },
+    },
+  ],
 };
