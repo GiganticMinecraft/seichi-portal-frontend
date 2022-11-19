@@ -1,1 +1,1 @@
-# seichi-form-frontend
+# seichi-portal-frontend

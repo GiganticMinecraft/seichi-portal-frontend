@@ -9,7 +9,7 @@ type Props = {
 export const Helmet = ({
   title,
   description = '',
-  siteName = 'SeichiForm',
+  siteName = 'SeichiPortal',
 }: Props) => (
   <Presenter
     title={title ? `${title} | ${siteName}` : siteName}
