@@ -1,8 +1,12 @@
+/* eslint-disable react/jsx-props-no-spreading */
+import { ChakraProvider } from '@chakra-ui/react';
+
 import type { AppProps } from 'next/app';
 
 const App = ({ Component, pageProps }: AppProps) => (
-  // eslint-disable-next-line react/jsx-props-no-spreading
-  <Component {...pageProps} />
+  <ChakraProvider>
+    <Component {...pageProps} />
+  </ChakraProvider>
 );
 
 export default App;
