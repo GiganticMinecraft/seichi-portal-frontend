@@ -9,6 +9,15 @@ const nextConfig = {
 
     return config;
   },
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'github.com',
+        pathname: '/GiganticMinecraft/**',
+      },
+    ],
+  },
 };
 
 module.exports = nextConfig;
