@@ -5,12 +5,13 @@ import { Helmet } from '../Helmet';
 
 type Props = {
   title: string;
+  description?: string;
   children: React.ReactNode;
 };
 
-export const ContentLayout = ({ title, children }: Props) => (
+export const ContentLayout = ({ title, description, children }: Props) => (
   <>
-    <Helmet title={title} />
+    <Helmet title={title} description={description} />
     <Container maxW="90ch">
       <Heading as="h1" size="2xl" my="2">
         {title}
