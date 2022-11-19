@@ -5,7 +5,7 @@ const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
   webpack(config) {
-    config.resolve.alias['@'] = path.join(__dirname, 'pages');
+    config.resolve.alias['@'] = path.join(__dirname, 'src');
 
     return config;
   },
