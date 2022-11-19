@@ -6,6 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
+    "hook": "yarn lint && yarn format",
     "lint": "next lint",
     "lint:fix": "next lint --fix",
     "format": "prettier --check --loglevel=warn 'src/**/*.{js,jsx,ts,tsx,html,json}'",
