@@ -64,6 +64,21 @@ module.exports = {
       },
     ],
     '@typescript-eslint/no-non-null-assertion': ['error'],
+    'react/jsx-filename-extension': [
+      'error',
+      {
+        extensions: ['.jsx', '.tsx'],
+      },
+    ],
+    'react/jsx-props-no-spreading': [
+      'error',
+      {
+        html: 'enforce',
+        custom: 'enforce',
+        explicitSpread: 'ignore',
+      },
+    ],
+    'react/require-default-props': 'off',
     'import/extensions': [
       'error',
       'ignorePackages',
@@ -97,23 +112,15 @@ module.exports = {
         },
       },
     ],
-    'react/jsx-filename-extension': [
-      'error',
-      {
-        extensions: ['.jsx', '.tsx'],
-      },
-    ],
-    'react/jsx-props-no-spreading': [
-      'error',
-      {
-        html: 'enforce',
-        custom: 'enforce',
-        explicitSpread: 'ignore',
-      },
-    ],
-    'react/require-default-props': 'off',
     'import/prefer-default-export': 'off',
     'import/no-default-export': 'error',
+    'import/no-extraneous-dependencies': [
+      'error',
+      {
+        devDependencies: ['**/*.stories.*', '**/.storybook/**/*.*'],
+        peerDependencies: true,
+      },
+    ],
   },
   settings: {
     'import/resolver': {
@@ -125,7 +132,7 @@ module.exports = {
   },
   overrides: [
     {
-      files: ['src/pages/**/*.ts', 'src/pages/**/*.tsx'],
+      files: ['src/pages/**/*.ts', 'src/pages/**/*.tsx', 'src/**/*.stories.*'],
       rules: {
         'import/prefer-default-export': 'error',
         'import/no-default-export': 'off',
