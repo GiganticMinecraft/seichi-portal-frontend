@@ -10,6 +10,6 @@ const siteName = 'SeichiPortal';
 export const Helmet = ({ title, description = '' }: Props) => (
   <Head>
     <title>{title ? `${title} | ${siteName}` : siteName}</title>
-    <meta name="description" content={description} />
+    <meta data-testid="meta-desc" name="description" content={description} />
   </Head>
 );

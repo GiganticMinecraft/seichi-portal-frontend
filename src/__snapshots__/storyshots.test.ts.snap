@@ -1,0 +1,41 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Storyshots components/Header/presenter Index 1`] = `
+<div
+  class="css-d2rqlb"
+>
+  <button
+    class="chakra-button css-4xx2wk"
+    type="button"
+  >
+    <a
+      href="/"
+    >
+      <img
+        alt="ギガンティック☆整地鯖のロゴ"
+        height="100"
+        src="https://github.com/GiganticMinecraft/branding/blob/master/server-logo-dark.png?raw=true"
+        width="110"
+      />
+    </a>
+  </button>
+</div>
+`;
+
+exports[`Storyshots components/ServerLogo/presenter Dark 1`] = `
+<img
+  alt="ギガンティック☆整地鯖のロゴ"
+  height="200"
+  src="https://github.com/GiganticMinecraft/branding/blob/master/server-logo-dark.png?raw=true"
+  width="300"
+/>
+`;
+
+exports[`Storyshots components/ServerLogo/presenter Light 1`] = `
+<img
+  alt="ギガンティック☆整地鯖のロゴ"
+  height="200"
+  src="https://github.com/GiganticMinecraft/branding/blob/master/server-logo-light.png?raw=true"
+  width="300"
+/>
+`;

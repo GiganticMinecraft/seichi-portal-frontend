@@ -23,7 +23,7 @@ module.exports = {
     'airbnb-typescript',
     'prettier',
   ],
-  plugins: ['@typescript-eslint', 'react'],
+  plugins: ['@typescript-eslint', 'react', 'testing-library'],
   rules: {
     'react/react-in-jsx-scope': 'off',
     'react/function-component-definition': [
@@ -117,7 +117,11 @@ module.exports = {
     'import/no-extraneous-dependencies': [
       'error',
       {
-        devDependencies: ['**/*.stories.*', '**/.storybook/**/*.*'],
+        devDependencies: [
+          '**/*.stories.*',
+          '**/.storybook/**/*.*',
+          '**/*.test.*',
+        ],
         peerDependencies: true,
       },
     ],
@@ -137,6 +141,10 @@ module.exports = {
         'import/prefer-default-export': 'error',
         'import/no-default-export': 'off',
       },
+    },
+    {
+      files: ['**/*.test.*'],
+      extends: ['plugin:testing-library/react'],
     },
   ],
 };
