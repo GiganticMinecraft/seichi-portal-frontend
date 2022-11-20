@@ -1,0 +1,34 @@
+name: CI
+on:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - README.md
+      - LICENSE
+      - CODEOWNERS
+  pull_request:
+    paths-ignore:
+      - README.md
+      - LICENSE
+      - CODEOWNERS
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Get node version from Volta
+        id: get-node-version
+        uses: keita-hino/get-node-version-from-volta@main
+      - uses: actions/setup-node@v3
+        with:
+          node-version: ${{ steps.get-node-version.outputs.nodeVersion }}
+          cache: yarn
+      - name: Install deps
+        run: yarn
+      - name: Run lint and format
+        run: yarn lint && yarn format
+      # - name: Run test
+      #   run: yarn test
+      - name: Run build
+        run: yarn build
