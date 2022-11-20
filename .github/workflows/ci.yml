@@ -29,7 +29,7 @@ jobs:
         run: yarn
       - name: Run lint and format
         run: yarn lint && yarn format
-      # - name: Run test
-      #   run: yarn test
+      - name: Run test
+        run: yarn test
       - name: Run build
         run: yarn build
