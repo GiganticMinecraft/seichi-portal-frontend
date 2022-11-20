@@ -28,7 +28,9 @@ module.exports = {
     'react/react-in-jsx-scope': 'off',
     'react/function-component-definition': [
       'error',
-      { namedComponents: 'arrow-function' },
+      {
+        namedComponents: 'arrow-function',
+      },
     ],
     'lines-between-class-members': [
       'error',
@@ -90,7 +92,9 @@ module.exports = {
             position: 'before',
           },
         ],
-        alphabetize: { order: 'asc' },
+        alphabetize: {
+          order: 'asc',
+        },
       },
     ],
     'react/jsx-filename-extension': [
