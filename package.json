@@ -28,6 +28,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.20.2",
+    "@chakra-ui/storybook-addon": "^4.0.13",
     "@storybook/addon-actions": "^6.5.13",
     "@storybook/addon-essentials": "^6.5.13",
     "@storybook/addon-interactions": "^6.5.13",
