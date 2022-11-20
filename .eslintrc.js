@@ -18,6 +18,7 @@ module.exports = {
     'next/core-web-vitals',
     'plugin:@typescript-eslint/recommended',
     'plugin:react/recommended',
+    'plugin:storybook/recommended',
     'airbnb',
     'airbnb-typescript',
     'prettier',
