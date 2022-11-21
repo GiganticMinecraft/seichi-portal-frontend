@@ -1,6 +1,6 @@
 import { render } from '@testing-library/react';
 
-import { Helmet } from './presenter';
+import { Helmet } from '../presenter';
 
 jest.mock('next/head', () => ({
   __esModule: true,
