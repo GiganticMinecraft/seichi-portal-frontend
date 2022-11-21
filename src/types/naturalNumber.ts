@@ -8,11 +8,5 @@ const isNaturalNumber = (v: unknown): v is number => isNumber(v) && v > 0;
 export function assertNaturalNumber(v: unknown): asserts v is NaturalNumber {
   assertNumber(v);
 
-  if (!isNaturalNumber(v)) throw new Error('The value must be natural number');
+  if (!isNaturalNumber(v)) throw new Error('The value must be greater than 0');
 }
-
-export const asNaturalNumber = (v: unknown): NaturalNumber => {
-  assertNaturalNumber(v);
-
-  return v;
-};
