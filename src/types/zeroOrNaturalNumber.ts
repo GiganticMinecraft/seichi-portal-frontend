@@ -3,8 +3,8 @@ import { Nominal } from './nominal';
 
 export type ZeroOrNaturalNumber = Nominal<number, 'ZeroOrNaturalNumber'>;
 
-const isZeroOrNaturalNumber = (v: unknown): v is number =>
-  isNumber(v) && v >= 0;
+export const isZeroOrNaturalNumber = (v: unknown): v is number =>
+  isNumber(v) && v >= 0 && Number.isInteger(v);
 
 export function assertZeroOrNaturalNumber(
   v: unknown,
