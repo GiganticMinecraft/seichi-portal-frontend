@@ -2,7 +2,7 @@ import { assertZeroOrNaturalNumber } from '../zeroOrNaturalNumber';
 
 describe('assertNumber', () => {
   it.each([1, 100, 10000])(
-    'should success to assert positive numbers',
+    'should success to assert positive integers',
     (value) => {
       expect(() => assertZeroOrNaturalNumber(value)).not.toThrowError();
     },
