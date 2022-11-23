@@ -1,10 +1,10 @@
-import { Nominal } from './nominal';
+import { MultiBrand } from './multiBrand';
 import {
   assertZeroOrNaturalNumber,
   isZeroOrNaturalNumber,
 } from './zeroOrNaturalNumber';
 
-export type NaturalNumber = Nominal<number, 'NaturalNumber'>;
+export type NaturalNumber = MultiBrand<number, { number: 'NaturalNumber' }>;
 
 const isNaturalNumber = (v: unknown): v is number =>
   isZeroOrNaturalNumber(v) && v !== 0;

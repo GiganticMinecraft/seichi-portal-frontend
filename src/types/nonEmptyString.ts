@@ -1,7 +1,7 @@
 import { assertString, isString } from './assertString';
-import { Nominal } from './nominal';
+import { MultiBrand } from './multiBrand';
 
-export type NonEmptyString = Nominal<string, 'NonEmptyString'>;
+export type NonEmptyString = MultiBrand<string, { string: 'NonEmptyString' }>;
 
 const isNonEmptyString = (v: unknown): v is string => isString(v) && v !== '';
 

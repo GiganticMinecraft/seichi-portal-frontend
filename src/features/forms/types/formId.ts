@@ -1,6 +1,6 @@
-import { assertNaturalNumber, Nominal, ZeroOrNaturalNumber } from '@/types';
+import { assertNaturalNumber, MultiBrand, ZeroOrNaturalNumber } from '@/types';
 
-export type FormId = Nominal<ZeroOrNaturalNumber, 'FormId'>;
+export type FormId = MultiBrand<ZeroOrNaturalNumber, { id: 'FormId' }>;
 
 function assertFormId(v: unknown): asserts v is FormId {
   assertNaturalNumber(v);
