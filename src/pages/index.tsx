@@ -1,12 +1,10 @@
-import { ChakraLink } from '@/components/ChakraLink';
+import Link from 'next/link';
+
 import { ContentLayout } from '@/components/Layout';
-import { NextLink } from '@/components/NextLink';
 
 const Index = () => (
   <ContentLayout title="Home" description="Seichi Server Portal Site">
-    <NextLink href="/forms">
-      <ChakraLink>フォーム一覧</ChakraLink>
-    </NextLink>
+    <Link href="/forms">フォーム一覧</Link>
   </ContentLayout>
 );
 
