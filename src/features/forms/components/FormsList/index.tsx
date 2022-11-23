@@ -23,6 +23,11 @@ export const FormsList = () => {
   const router = useRouter();
 
   return (
-    <Presenter forms={dummy} onClick={(id) => router.push(`/forms/${id}`)} />
+    <Presenter
+      forms={dummy}
+      onClick={(id) =>
+        router.push({ pathname: '/forms/[id]', query: { id: id.toString() } })
+      }
+    />
   );
 };

@@ -5637,7 +5637,7 @@ chokidar@^2.1.8:
   optionalDependencies:
     fsevents "^1.2.7"
 
-chokidar@^3.4.1, chokidar@^3.4.2:
+chokidar@^3.4.1, chokidar@^3.4.2, chokidar@^3.5.3:
   version "3.5.3"
   resolved "https://registry.yarnpkg.com/chokidar/-/chokidar-3.5.3.tgz#1cf37c8707b932bd1af1ae22c0432e2acd1903bd"
   integrity sha512-Dr3sfKRP6oTcjf2JmUmFJfeVMvXBdegxB0iVQ5eb2V10uFJUCAS8OByZdVAyVb8xXNz3GjjTgj9kLWsZTqE6kw==
@@ -10374,6 +10374,13 @@ next@13.0.4:
     "@next/swc-win32-arm64-msvc" "13.0.4"
     "@next/swc-win32-ia32-msvc" "13.0.4"
     "@next/swc-win32-x64-msvc" "13.0.4"
+
+nextjs-routes@^1.0.4:
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/nextjs-routes/-/nextjs-routes-1.0.4.tgz#b424890e976f8beba67789ea47ceb72f2b2e31c4"
+  integrity sha512-BdlLv1sdiH2+qXWsWrrVfW8N1dR3iV0pjUvpO4JcQyt51fLUwVPX+G5uABA/tLzkWhK3MPUcXUoc3fILfi2cmg==
+  dependencies:
+    chokidar "^3.5.3"
 
 nice-try@^1.0.4:
   version "1.0.5"
