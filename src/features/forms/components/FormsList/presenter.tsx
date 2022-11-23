@@ -21,7 +21,7 @@ export const Presenter = ({ forms, onClick = () => undefined }: Props) => (
     {forms.length === 0 ? (
       <Alert status="error">
         <AlertIcon />
-        <AlertTitle>現在回答可能なフォームはありません</AlertTitle>
+        <AlertTitle>現在回答可能なフォームはありません。</AlertTitle>
       </Alert>
     ) : (
       forms.map((form) => (
