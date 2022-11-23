@@ -9,7 +9,7 @@ type Props = {
 export const Presenter = ({ forms }: Props) => (
   <Stack spacing={4} divider={<StackDivider />}>
     {forms.map((form) => (
-      <Box>
+      <Box key={form.id}>
         <Heading fontSize="lg" mb={2}>
           {form.title}
         </Heading>
