@@ -1,5 +1,7 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import { ChakraProvider } from '@chakra-ui/react';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
 import { MainLayout } from '@/components/Layout';
 
@@ -10,12 +12,17 @@ if (process.env.NODE_ENV === 'development') {
   MockServer();
 }
 
+const queryClient = new QueryClient();
+
 const App = ({ Component, pageProps }: AppProps) => (
-  <ChakraProvider>
-    <MainLayout>
-      <Component {...pageProps} />
-    </MainLayout>
-  </ChakraProvider>
+  <QueryClientProvider client={queryClient}>
+    <ChakraProvider>
+      <MainLayout>
+        <Component {...pageProps} />
+      </MainLayout>
+      <ReactQueryDevtools initialIsOpen={false} />
+    </ChakraProvider>
+  </QueryClientProvider>
 );
 
 export default App;
