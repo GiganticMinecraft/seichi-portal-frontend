@@ -9,5 +9,5 @@ export type Question = {
   title: NonEmptyString;
   description: string;
   type: QuestionType;
-  choices: NonEmptyString[];
+  choices?: NonEmptyString[];
 };
