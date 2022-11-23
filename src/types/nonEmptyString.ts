@@ -14,3 +14,9 @@ export function assertNonEmptyString(
   if (!isNonEmptyString(v))
     throw new Error(`${target} must be not empty string`.trim());
 }
+
+export const asNonEmptyString = (v: unknown): NonEmptyString => {
+  assertNonEmptyString(v);
+
+  return v;
+};

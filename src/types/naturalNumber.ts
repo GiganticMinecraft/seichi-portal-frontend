@@ -14,3 +14,9 @@ export function assertNaturalNumber(v: unknown): asserts v is NaturalNumber {
 
   if (!isNaturalNumber(v)) throw new Error('The value must be greater than 0');
 }
+
+export const asNaturalNumber = (v: unknown): NaturalNumber => {
+  assertNaturalNumber(v);
+
+  return v;
+};
