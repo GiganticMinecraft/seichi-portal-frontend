@@ -13,7 +13,7 @@ export const ContentLayout = ({ title, description, children }: Props) => (
   <>
     <Helmet title={title} description={description} />
     <Container maxW="90ch">
-      <Heading as="h1" size="xl" my="2">
+      <Heading as="h1" size="xl" my="3">
         {title}
       </Heading>
       {children}
