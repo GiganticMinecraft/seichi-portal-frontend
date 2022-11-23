@@ -121,6 +121,7 @@ module.exports = {
           '**/*.stories.*',
           '**/.storybook/**/*.*',
           '**/*.test.*',
+          'src/__mocks__/**/*.ts',
         ],
         peerDependencies: true,
       },
