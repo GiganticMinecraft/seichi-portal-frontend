@@ -3,8 +3,8 @@ import Image from 'next/image';
 import type { ImageProps } from 'next/image';
 
 type Props = {
-  width: ImageProps['width'];
-  height: ImageProps['height'];
+  width: NonNullable<ImageProps['width']>;
+  height: NonNullable<ImageProps['height']>;
   color: 'dark' | 'light';
 };
 
