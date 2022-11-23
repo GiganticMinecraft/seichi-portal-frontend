@@ -1,15 +1,16 @@
 import { Box, Heading, Stack, StackDivider, Text } from '@chakra-ui/react';
 
-import type { FormInfo } from '../../types';
+import type { FormId, FormInfo } from '../../types';
 
 type Props = {
   forms: FormInfo[];
+  onClick: (id: FormId) => void;
 };
 
-export const Presenter = ({ forms }: Props) => (
+export const Presenter = ({ forms, onClick }: Props) => (
   <Stack spacing={4} divider={<StackDivider />}>
     {forms.map((form) => (
-      <Box key={form.id}>
+      <Box key={form.id} onClick={() => onClick(form.id)}>
         <Heading fontSize="lg" mb={2}>
           {form.title}
         </Heading>

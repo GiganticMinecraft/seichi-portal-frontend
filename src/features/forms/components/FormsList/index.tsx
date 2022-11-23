@@ -1,3 +1,5 @@
+import { useRouter } from 'next/router';
+
 import { asNonEmptyString } from '@/types';
 
 import { Presenter } from './presenter';
@@ -17,4 +19,10 @@ const dummy: FormInfo[] = [
   },
 ];
 
-export const FormsList = () => <Presenter forms={dummy} />;
+export const FormsList = () => {
+  const router = useRouter();
+
+  return (
+    <Presenter forms={dummy} onClick={(id) => router.push(`/forms/${id}`)} />
+  );
+};
