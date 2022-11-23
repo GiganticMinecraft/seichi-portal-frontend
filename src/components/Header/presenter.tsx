@@ -1,14 +1,14 @@
 import { Box, Button } from '@chakra-ui/react';
-import Link from 'next/link';
 
+import { NextLink } from '../NextLink';
 import { ServerLogo } from '../ServerLogo';
 
 export const Header = () => (
   <Box bg="cyan.300" py="3" textAlign="center">
     <Button variant="link">
-      <Link href="/">
+      <NextLink href="/">
         <ServerLogo width={110} height={100} color="dark" />
-      </Link>
+      </NextLink>
     </Button>
   </Box>
 );
