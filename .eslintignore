@@ -1,3 +1,5 @@
+public/
+
 next.config.js
 .eslintrc.js
 jest.config.js
