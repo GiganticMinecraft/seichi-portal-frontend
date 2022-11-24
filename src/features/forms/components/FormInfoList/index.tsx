@@ -1,15 +1,11 @@
-import { useQuery } from '@tanstack/react-query';
 import { useRouter } from 'next/router';
 
+import { useFormInfoList } from './hooks';
 import { Presenter } from './presenter';
 
-import { getFormInfoList } from '../../services/getFormInfoList';
-
-export const FormsList = () => {
+export const FormInfoList = () => {
   const router = useRouter();
-  const { data: forms = [] } = useQuery(['formInfoList'], () =>
-    getFormInfoList(),
-  );
+  const forms = useFormInfoList();
 
   return (
     <Presenter

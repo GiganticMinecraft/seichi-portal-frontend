@@ -3,19 +3,19 @@ import { Suspense } from 'react';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { Fallback } from '@/components/Fallback';
 import { ContentLayout } from '@/components/Layout';
-import { FormsList } from '@/features/forms/components/FormsList';
+import { FormInfoList } from '@/features/forms/components/FormInfoList';
 
-const ShowFormsList = () => (
+const ShowFormInfoList = () => (
   <ContentLayout
     title="フォーム一覧"
     description="回答できるフォームの一覧を表示します。"
   >
     <ErrorBoundary>
       <Suspense fallback={<Fallback />}>
-        <FormsList />
+        <FormInfoList />
       </Suspense>
     </ErrorBoundary>
   </ContentLayout>
 );
 
-export default ShowFormsList;
+export default ShowFormInfoList;
