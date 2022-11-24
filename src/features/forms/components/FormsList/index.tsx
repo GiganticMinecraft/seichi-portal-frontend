@@ -1,30 +1,19 @@
+import { useQuery } from '@tanstack/react-query';
 import { useRouter } from 'next/router';
-
-import { asNonEmptyString } from '@/types';
 
 import { Presenter } from './presenter';
 
-import { asFormId, FormInfo } from '../../types';
-
-const dummy: FormInfo[] = [
-  {
-    id: asFormId(1),
-    title: asNonEmptyString('通報'),
-    description: '通報フォームです。',
-  },
-  {
-    id: asFormId(2),
-    title: asNonEmptyString('不具合報告'),
-    description: '不具合報告フォームです。',
-  },
-];
+import { getFormInfoList } from '../../services/getFormInfoList';
 
 export const FormsList = () => {
   const router = useRouter();
+  const { data: forms = [] } = useQuery(['formInfoList'], () =>
+    getFormInfoList(),
+  );
 
   return (
     <Presenter
-      forms={dummy}
+      {...{ forms }}
       onClick={(id) =>
         router.push({ pathname: '/forms/[id]', query: { id: id.toString() } })
       }
