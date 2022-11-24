@@ -6,8 +6,5 @@ const buildEslintCommand = (filenames) =>
     .join(' --file ')}`;
 
 module.exports = {
-  '**/*.{ts,tsx}': [
-    buildEslintCommand,
-    'yarn prettier --check --loglevel=warn',
-  ],
+  '**/*.{ts,tsx}': [buildEslintCommand, 'prettier --write --loglevel=warn'],
 };
