@@ -1,6 +1,93 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Storyshots components/Header/presenter Index 1`] = `
+exports[`Storyshots components/Alert Index 1`] = `
+<div
+  class="chakra-alert css-1hwd9xd"
+  role="alert"
+>
+  <span
+    class="chakra-alert__icon css-1c6vscd"
+  >
+    <svg
+      class="chakra-icon css-fi0ww0"
+      focusable="false"
+      viewBox="0 0 24 24"
+    >
+      <path
+        d="M12,0A12,12,0,1,0,24,12,12.013,12.013,0,0,0,12,0Zm.25,5a1.5,1.5,0,1,1-1.5,1.5A1.5,1.5,0,0,1,12.25,5ZM14.5,18.5h-4a1,1,0,0,1,0-2h.75a.25.25,0,0,0,.25-.25v-4.5a.25.25,0,0,0-.25-.25H10.5a1,1,0,0,1,0-2h1a2,2,0,0,1,2,2v4.75a.25.25,0,0,0,.25.25h.75a1,1,0,1,1,0,2Z"
+        fill="currentColor"
+      />
+    </svg>
+  </span>
+  <div
+    class="chakra-alert__title css-0"
+  >
+    Title!
+  </div>
+  <div
+    class="chakra-alert__desc css-6n7j50"
+  >
+    This is description.
+  </div>
+</div>
+`;
+
+exports[`Storyshots components/Alert No Description 1`] = `
+<div
+  class="chakra-alert css-1hwd9xd"
+  role="alert"
+>
+  <span
+    class="chakra-alert__icon css-1c6vscd"
+  >
+    <svg
+      class="chakra-icon css-fi0ww0"
+      focusable="false"
+      viewBox="0 0 24 24"
+    >
+      <path
+        d="M12,0A12,12,0,1,0,24,12,12.013,12.013,0,0,0,12,0Zm.25,5a1.5,1.5,0,1,1-1.5,1.5A1.5,1.5,0,0,1,12.25,5ZM14.5,18.5h-4a1,1,0,0,1,0-2h.75a.25.25,0,0,0,.25-.25v-4.5a.25.25,0,0,0-.25-.25H10.5a1,1,0,0,1,0-2h1a2,2,0,0,1,2,2v4.75a.25.25,0,0,0,.25.25h.75a1,1,0,1,1,0,2Z"
+        fill="currentColor"
+      />
+    </svg>
+  </span>
+  <div
+    class="chakra-alert__title css-0"
+  >
+    Title!
+  </div>
+  <div />
+</div>
+`;
+
+exports[`Storyshots components/Fallback Index 1`] = `
+<div
+  class="chakra-alert css-1hwd9xd"
+  role="alert"
+>
+  <span
+    class="chakra-alert__icon css-1c6vscd"
+  >
+    <div
+      class="chakra-spinner css-1e4oo9u"
+    >
+      <span
+        class="css-8b45rq"
+      >
+        Loading...
+      </span>
+    </div>
+  </span>
+  <div
+    class="chakra-alert__title css-0"
+  >
+    Loading...
+  </div>
+  <div />
+</div>
+`;
+
+exports[`Storyshots components/Header Index 1`] = `
 <div
   class="css-d2rqlb"
 >
@@ -22,7 +109,7 @@ exports[`Storyshots components/Header/presenter Index 1`] = `
 </div>
 `;
 
-exports[`Storyshots components/ServerLogo/presenter Dark 1`] = `
+exports[`Storyshots components/ServerLogo Dark 1`] = `
 <img
   alt="ギガンティック☆整地鯖のロゴ"
   height="200"
@@ -31,11 +118,81 @@ exports[`Storyshots components/ServerLogo/presenter Dark 1`] = `
 />
 `;
 
-exports[`Storyshots components/ServerLogo/presenter Light 1`] = `
+exports[`Storyshots components/ServerLogo Light 1`] = `
 <img
   alt="ギガンティック☆整地鯖のロゴ"
   height="200"
   src="https://github.com/GiganticMinecraft/branding/blob/master/server-logo-light.png?raw=true"
   width="300"
 />
+`;
+
+exports[`Storyshots features/forms/components/FormsList Index 1`] = `
+<div
+  class="chakra-stack css-j7qwjs"
+>
+  <div
+    class="css-0"
+  >
+    <h2
+      class="chakra-heading css-ckvlyw"
+    >
+      通報
+    </h2>
+    <p
+      class="chakra-text css-504jus"
+    >
+      通報フォームです。
+    </p>
+  </div>
+  <div
+    class="chakra-stack__divider css-1jj487w"
+  />
+  <div
+    class="css-0"
+  >
+    <h2
+      class="chakra-heading css-ckvlyw"
+    >
+      不具合報告
+    </h2>
+    <p
+      class="chakra-text css-504jus"
+    >
+      不具合報告フォームです。
+    </p>
+  </div>
+</div>
+`;
+
+exports[`Storyshots features/forms/components/FormsList No Forms 1`] = `
+<div
+  class="chakra-stack css-j7qwjs"
+>
+  <div
+    class="chakra-alert css-1hwd9xd"
+    role="alert"
+  >
+    <span
+      class="chakra-alert__icon css-1c6vscd"
+    >
+      <svg
+        class="chakra-icon css-fi0ww0"
+        focusable="false"
+        viewBox="0 0 24 24"
+      >
+        <path
+          d="M11.983,0a12.206,12.206,0,0,0-8.51,3.653A11.8,11.8,0,0,0,0,12.207,11.779,11.779,0,0,0,11.8,24h.214A12.111,12.111,0,0,0,24,11.791h0A11.766,11.766,0,0,0,11.983,0ZM10.5,16.542a1.476,1.476,0,0,1,1.449-1.53h.027a1.527,1.527,0,0,1,1.523,1.47,1.475,1.475,0,0,1-1.449,1.53h-.027A1.529,1.529,0,0,1,10.5,16.542ZM11,12.5v-6a1,1,0,0,1,2,0v6a1,1,0,1,1-2,0Z"
+          fill="currentColor"
+        />
+      </svg>
+    </span>
+    <div
+      class="chakra-alert__title css-0"
+    >
+      現在回答可能なフォームはありません。
+    </div>
+    <div />
+  </div>
+</div>
 `;
