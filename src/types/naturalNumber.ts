@@ -6,17 +6,20 @@ import {
 
 export type NaturalNumber = MultiBrand<number, { number: 'NaturalNumber' }>;
 
-const isNaturalNumber = (v: unknown): v is number =>
+export const isNaturalNumber = (v: unknown): v is number =>
   isZeroOrNaturalNumber(v) && v !== 0;
 
-export function assertNaturalNumber(v: unknown): asserts v is NaturalNumber {
-  assertZeroOrNaturalNumber(v);
+export function assertNaturalNumber(
+  v: unknown,
+  target = 'The value',
+): asserts v is NaturalNumber {
+  assertZeroOrNaturalNumber(v, target);
 
-  if (!isNaturalNumber(v)) throw new Error('The value must be greater than 0');
+  if (!isNaturalNumber(v)) throw new Error(`${target} must be greater than 0`);
 }
 
-export const asNaturalNumber = (v: unknown): NaturalNumber => {
-  assertNaturalNumber(v);
+export const asNaturalNumber = (v: unknown, target?: string): NaturalNumber => {
+  assertNaturalNumber(v, target);
 
   return v;
 };

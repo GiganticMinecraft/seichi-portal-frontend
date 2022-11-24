@@ -11,15 +11,19 @@ export const isZeroOrNaturalNumber = (v: unknown): v is number =>
 
 export function assertZeroOrNaturalNumber(
   v: unknown,
+  target = 'The value',
 ): asserts v is ZeroOrNaturalNumber {
-  assertNumber(v);
+  assertNumber(v, target);
 
   if (!isZeroOrNaturalNumber(v))
-    throw new Error('The value must be greater than or equal to 0');
+    throw new Error(`${target} must be greater than or equal to 0`.trim());
 }
 
-export const asZeroOrNaturalNumber = (v: unknown): ZeroOrNaturalNumber => {
-  assertZeroOrNaturalNumber(v);
+export const asZeroOrNaturalNumber = (
+  v: unknown,
+  target?: string,
+): ZeroOrNaturalNumber => {
+  assertZeroOrNaturalNumber(v, target);
 
   return v;
 };
