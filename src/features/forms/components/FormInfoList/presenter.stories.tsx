@@ -6,7 +6,7 @@ import { Presenter } from './presenter';
 
 export default {
   component: Presenter,
-  title: 'features/forms/components/FormsList',
+  title: 'features/forms/components/FormInfoList',
 } as ComponentMeta<typeof Presenter>;
 
 export const Index: ComponentStoryObj<typeof Presenter> = {
@@ -15,7 +15,7 @@ export const Index: ComponentStoryObj<typeof Presenter> = {
   },
 };
 
-export const NoForms: ComponentStoryObj<typeof Presenter> = {
+export const NoFormInfo: ComponentStoryObj<typeof Presenter> = {
   args: {
     forms: [],
   },
