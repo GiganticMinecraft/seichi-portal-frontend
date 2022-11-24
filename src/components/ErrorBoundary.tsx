@@ -1,7 +1,7 @@
 import { HTTPError } from 'ky';
 import { ErrorInfo, PureComponent, ReactNode } from 'react';
 
-import { ErrorAlert } from './Alert';
+import { Alert } from './Alert';
 
 type StatusMessages = { [status: number]: string };
 type Props = {
@@ -39,10 +39,10 @@ export class ErrorBoundary extends PureComponent<Props, State> {
       const statusCode = (error as HTTPError)?.response?.status;
 
       if (statusCode && Object.keys(messages).includes(String(statusCode))) {
-        return <ErrorAlert title={messages[statusCode]} />;
+        return <Alert status="error" title={messages[statusCode]} />;
       }
 
-      return <ErrorAlert title={messages[0]} />;
+      return <Alert status="error" title={messages[0]} />;
     }
 
     return children;

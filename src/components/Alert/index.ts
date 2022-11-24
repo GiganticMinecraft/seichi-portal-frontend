@@ -1,2 +1,1 @@
-export * from './WarnAlert';
-export * from './ErrorAlert';
+export * from './Alert';
