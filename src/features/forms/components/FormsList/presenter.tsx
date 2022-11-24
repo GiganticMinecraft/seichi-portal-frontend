@@ -12,11 +12,11 @@ import {
 import type { FormId, FormInfo } from '../../types';
 
 type Props = {
-  forms: FormInfo[];
+  forms?: FormInfo[];
   onClick?: (id: FormId) => void;
 };
 
-export const Presenter = ({ forms, onClick = () => undefined }: Props) => (
+export const Presenter = ({ forms = [], onClick = () => undefined }: Props) => (
   <Stack spacing={4} divider={<StackDivider />}>
     {forms.length === 0 ? (
       <Alert status="error">
