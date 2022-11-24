@@ -12,7 +12,18 @@ if (process.env.NODE_ENV === 'development') {
   MockServer();
 }
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: 0,
+      // fetchして1分間はcacheを読み込む
+      staleTime: 60 * 1000,
+    },
+    mutations: {
+      retry: 0,
+    },
+  },
+});
 
 const App = ({ Component, pageProps }: AppProps) => (
   <QueryClientProvider client={queryClient}>
