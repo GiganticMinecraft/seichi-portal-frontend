@@ -127,7 +127,7 @@ exports[`Storyshots components/ServerLogo Light 1`] = `
 />
 `;
 
-exports[`Storyshots features/forms/components/FormsList Index 1`] = `
+exports[`Storyshots features/forms/components/FormInfoList Index 1`] = `
 <div
   class="chakra-stack css-j7qwjs"
 >
@@ -165,7 +165,7 @@ exports[`Storyshots features/forms/components/FormsList Index 1`] = `
 </div>
 `;
 
-exports[`Storyshots features/forms/components/FormsList No Forms 1`] = `
+exports[`Storyshots features/forms/components/FormInfoList No Form Info 1`] = `
 <div
   class="chakra-stack css-j7qwjs"
 >
