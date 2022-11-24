@@ -16,6 +16,7 @@ const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       retry: 0,
+      suspense: true,
       // fetchして1分間はcacheを読み込む
       staleTime: 60 * 1000,
     },
