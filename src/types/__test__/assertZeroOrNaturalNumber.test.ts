@@ -26,5 +26,3 @@ describe('isZeroOrNaturalNumber', () => {
     },
   );
 });
-
-export {};

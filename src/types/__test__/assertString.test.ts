@@ -15,5 +15,3 @@ describe('isString', () => {
     },
   );
 });
-
-export {};

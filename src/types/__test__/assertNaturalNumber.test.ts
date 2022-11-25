@@ -5,5 +5,3 @@ describe('isNaturalNumber', () => {
     expect(isNaturalNumber(0)).toBeFalsy();
   });
 });
-
-export {};

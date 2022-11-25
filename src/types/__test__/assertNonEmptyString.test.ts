@@ -28,5 +28,3 @@ describe('isNonEmptyStringList', () => {
     expect(isNonEmptyStringList(['', '', ''])).toBeFalsy();
   });
 });
-
-export {};
