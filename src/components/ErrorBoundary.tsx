@@ -36,13 +36,20 @@ export class ErrorBoundary extends PureComponent<Props, State> {
     const messages = { ...DEFAULT_MESSAGES, ...statusMessages };
 
     if (hasError) {
+      // TODO: HTTPError以外に対応する
       const statusCode = (error as HTTPError)?.response?.status;
 
       if (statusCode && Object.keys(messages).includes(String(statusCode))) {
         return <Alert status="error" title={messages[statusCode]} />;
       }
 
-      return <Alert status="error" title={messages[0]} />;
+      return (
+        <Alert
+          status="error"
+          title={messages[0]}
+          description="URL・直前に行った動作など、提供できるすべての情報を管理者に連絡・提供してください。"
+        />
+      );
     }
 
     return children;
