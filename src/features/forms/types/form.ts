@@ -11,7 +11,6 @@ export type Form = {
   questions: Question[];
 };
 
-// TODO: 散らばったtype guardsのテスト
 export const isForm = (arg: unknown): arg is Form => {
   const f = arg as Form;
 
