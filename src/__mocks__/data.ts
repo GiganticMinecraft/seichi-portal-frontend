@@ -1,4 +1,11 @@
-import { FormInfo, asFormId } from '@/features/forms/types';
+import {
+  FormInfo,
+  asFormId,
+  Form,
+  asQuestionId,
+  Question,
+} from '@/features/forms/types';
+import { rangeIter } from '@/libs';
 import { asNonEmptyString } from '@/types';
 
 export const formInfoList: FormInfo[] = [
@@ -13,3 +20,21 @@ export const formInfoList: FormInfo[] = [
     description: '不具合報告フォームです。',
   },
 ];
+
+export const formList: Form[] = formInfoList.map((info) => {
+  const questions: Question[] = [...rangeIter(0, 5)].map((index) => {
+    const title = `質問${index}`;
+
+    return {
+      id: asQuestionId(index),
+      title: asNonEmptyString(title),
+      description: `${title}です。`,
+      type: 'text',
+    };
+  });
+
+  return {
+    ...info,
+    questions,
+  };
+});
