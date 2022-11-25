@@ -109,6 +109,71 @@ exports[`Storyshots components/Header Index 1`] = `
 </div>
 `;
 
+exports[`Storyshots components/LikeLink Index 1`] = `
+<div
+  class="css-mz4fmy"
+>
+  <a
+    href="/"
+  >
+    <div
+      class="css-1jc6prv"
+    >
+      <b
+        class="chakra-text css-8o327i"
+      >
+        タイトル
+      </b>
+      <p
+        class="chakra-text css-0"
+      >
+        ここには説明が入ります。
+      </p>
+    </div>
+  </a>
+</div>
+`;
+
+exports[`Storyshots components/LikeLink With Icon 1`] = `
+<div
+  class="css-mz4fmy"
+>
+  <a
+    href="/"
+  >
+    <div
+      class="css-1jc6prv"
+    >
+      <svg
+        class="chakra-icon css-1yslrxi"
+        fill="currentColor"
+        focusable="false"
+        height="1em"
+        stroke="currentColor"
+        stroke-width="0"
+        viewBox="0 0 512 512"
+        width="1em"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="M464 480H48c-26.51 0-48-21.49-48-48V80c0-26.51 21.49-48 48-48h416c26.51 0 48 21.49 48 48v352c0 26.51-21.49 48-48 48zM128 120c-22.091 0-40 17.909-40 40s17.909 40 40 40 40-17.909 40-40-17.909-40-40-40zm0 96c-22.091 0-40 17.909-40 40s17.909 40 40 40 40-17.909 40-40-17.909-40-40-40zm0 96c-22.091 0-40 17.909-40 40s17.909 40 40 40 40-17.909 40-40-17.909-40-40-40zm288-136v-32c0-6.627-5.373-12-12-12H204c-6.627 0-12 5.373-12 12v32c0 6.627 5.373 12 12 12h200c6.627 0 12-5.373 12-12zm0 96v-32c0-6.627-5.373-12-12-12H204c-6.627 0-12 5.373-12 12v32c0 6.627 5.373 12 12 12h200c6.627 0 12-5.373 12-12zm0 96v-32c0-6.627-5.373-12-12-12H204c-6.627 0-12 5.373-12 12v32c0 6.627 5.373 12 12 12h200c6.627 0 12-5.373 12-12z"
+        />
+      </svg>
+      <b
+        class="chakra-text css-8o327i"
+      >
+        タイトル
+      </b>
+      <p
+        class="chakra-text css-0"
+      >
+        ここには説明が入ります。
+      </p>
+    </div>
+  </a>
+</div>
+`;
+
 exports[`Storyshots components/ServerLogo Dark 1`] = `
 <img
   alt="ギガンティック☆整地鯖のロゴ"
@@ -129,70 +194,133 @@ exports[`Storyshots components/ServerLogo Light 1`] = `
 
 exports[`Storyshots features/forms/components/FormInfoList Index 1`] = `
 <div
-  class="chakra-stack css-j7qwjs"
+  class="css-19pl0pn"
 >
   <div
-    class="css-0"
+    class="css-mz4fmy"
   >
-    <h2
-      class="chakra-heading css-ckvlyw"
+    <a
+      href="/forms/[id]?id=0"
     >
-      通報
-    </h2>
-    <p
-      class="chakra-text css-504jus"
-    >
-      通報フォームです。
-    </p>
+      <div
+        class="css-1jc6prv"
+      >
+        <b
+          class="chakra-text css-8o327i"
+        >
+          通報
+        </b>
+        <p
+          class="chakra-text css-504jus"
+        >
+          通報フォームです。
+        </p>
+      </div>
+    </a>
   </div>
   <div
-    class="chakra-stack__divider css-1jj487w"
-  />
-  <div
-    class="css-0"
+    class="css-mz4fmy"
   >
-    <h2
-      class="chakra-heading css-ckvlyw"
+    <a
+      href="/forms/[id]?id=1"
     >
-      不具合報告
-    </h2>
-    <p
-      class="chakra-text css-504jus"
-    >
-      不具合報告フォームです。
-    </p>
+      <div
+        class="css-1jc6prv"
+      >
+        <b
+          class="chakra-text css-8o327i"
+        >
+          不具合報告
+        </b>
+        <p
+          class="chakra-text css-504jus"
+        >
+          不具合報告フォームです。
+        </p>
+      </div>
+    </a>
   </div>
 </div>
 `;
 
 exports[`Storyshots features/forms/components/FormInfoList No Form Info 1`] = `
 <div
-  class="chakra-stack css-j7qwjs"
+  class="chakra-alert css-1hwd9xd"
+  role="alert"
+>
+  <span
+    class="chakra-alert__icon css-1c6vscd"
+  >
+    <svg
+      class="chakra-icon css-fi0ww0"
+      focusable="false"
+      viewBox="0 0 24 24"
+    >
+      <path
+        d="M11.983,0a12.206,12.206,0,0,0-8.51,3.653A11.8,11.8,0,0,0,0,12.207,11.779,11.779,0,0,0,11.8,24h.214A12.111,12.111,0,0,0,24,11.791h0A11.766,11.766,0,0,0,11.983,0ZM10.5,16.542a1.476,1.476,0,0,1,1.449-1.53h.027a1.527,1.527,0,0,1,1.523,1.47,1.475,1.475,0,0,1-1.449,1.53h-.027A1.529,1.529,0,0,1,10.5,16.542ZM11,12.5v-6a1,1,0,0,1,2,0v6a1,1,0,1,1-2,0Z"
+        fill="currentColor"
+      />
+    </svg>
+  </span>
+  <div
+    class="chakra-alert__title css-0"
+  >
+    現在回答可能なフォームはありません。
+  </div>
+  <div />
+</div>
+`;
+
+exports[`Storyshots features/home/components/index/HomeIndex Index 1`] = `
+<div
+  class="css-19pl0pn"
 >
   <div
-    class="chakra-alert css-1hwd9xd"
-    role="alert"
+    class="css-mz4fmy"
   >
-    <span
-      class="chakra-alert__icon css-1c6vscd"
+    <a
+      href="/forms"
     >
-      <svg
-        class="chakra-icon css-fi0ww0"
-        focusable="false"
-        viewBox="0 0 24 24"
+      <div
+        class="css-1jc6prv"
       >
-        <path
-          d="M11.983,0a12.206,12.206,0,0,0-8.51,3.653A11.8,11.8,0,0,0,0,12.207,11.779,11.779,0,0,0,11.8,24h.214A12.111,12.111,0,0,0,24,11.791h0A11.766,11.766,0,0,0,11.983,0ZM10.5,16.542a1.476,1.476,0,0,1,1.449-1.53h.027a1.527,1.527,0,0,1,1.523,1.47,1.475,1.475,0,0,1-1.449,1.53h-.027A1.529,1.529,0,0,1,10.5,16.542ZM11,12.5v-6a1,1,0,0,1,2,0v6a1,1,0,1,1-2,0Z"
+        <svg
+          class="chakra-icon css-1yslrxi"
           fill="currentColor"
-        />
-      </svg>
-    </span>
-    <div
-      class="chakra-alert__title css-0"
-    >
-      現在回答可能なフォームはありません。
-    </div>
-    <div />
+          focusable="false"
+          height="1em"
+          stroke="currentColor"
+          stroke-width="0"
+          viewBox="0 0 512 512"
+          width="1em"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M464 480H48c-26.51 0-48-21.49-48-48V80c0-26.51 21.49-48 48-48h416c26.51 0 48 21.49 48 48v352c0 26.51-21.49 48-48 48zM128 120c-22.091 0-40 17.909-40 40s17.909 40 40 40 40-17.909 40-40-17.909-40-40-40zm0 96c-22.091 0-40 17.909-40 40s17.909 40 40 40 40-17.909 40-40-17.909-40-40-40zm0 96c-22.091 0-40 17.909-40 40s17.909 40 40 40 40-17.909 40-40-17.909-40-40-40zm288-136v-32c0-6.627-5.373-12-12-12H204c-6.627 0-12 5.373-12 12v32c0 6.627 5.373 12 12 12h200c6.627 0 12-5.373 12-12zm0 96v-32c0-6.627-5.373-12-12-12H204c-6.627 0-12 5.373-12 12v32c0 6.627 5.373 12 12 12h200c6.627 0 12-5.373 12-12zm0 96v-32c0-6.627-5.373-12-12-12H204c-6.627 0-12 5.373-12 12v32c0 6.627 5.373 12 12 12h200c6.627 0 12-5.373 12-12z"
+          />
+        </svg>
+        <b
+          class="chakra-text css-8o327i"
+        >
+          フォームに回答する
+        </b>
+        <ul
+          class="css-tu0njr"
+          role="list"
+        >
+          <li
+            class="css-0"
+          >
+            回答可能なフォームに回答する
+          </li>
+          <li
+            class="css-0"
+          >
+            回答した内容を確認する
+          </li>
+        </ul>
+      </div>
+    </a>
   </div>
 </div>
 `;
