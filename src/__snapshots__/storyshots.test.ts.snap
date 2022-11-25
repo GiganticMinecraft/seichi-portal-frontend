@@ -100,8 +100,9 @@ exports[`Storyshots components/Header Index 1`] = `
     >
       <img
         alt="ギガンティック☆整地鯖のロゴ"
-        class="chakra-image css-zp0um7"
+        height="100"
         src="https://github.com/GiganticMinecraft/branding/blob/master/server-logo-dark.png?raw=true"
+        width="110"
       />
     </a>
   </button>
@@ -111,16 +112,18 @@ exports[`Storyshots components/Header Index 1`] = `
 exports[`Storyshots components/ServerLogo Dark 1`] = `
 <img
   alt="ギガンティック☆整地鯖のロゴ"
-  class="chakra-image css-zp0um7"
+  height="200"
   src="https://github.com/GiganticMinecraft/branding/blob/master/server-logo-dark.png?raw=true"
+  width="300"
 />
 `;
 
 exports[`Storyshots components/ServerLogo Light 1`] = `
 <img
   alt="ギガンティック☆整地鯖のロゴ"
-  class="chakra-image css-zp0um7"
+  height="200"
   src="https://github.com/GiganticMinecraft/branding/blob/master/server-logo-light.png?raw=true"
+  width="300"
 />
 `;
 
