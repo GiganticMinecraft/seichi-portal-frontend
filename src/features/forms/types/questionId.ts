@@ -15,7 +15,8 @@ function assertQuestionId(v: unknown): asserts v is QuestionId {
 }
 
 export const asQuestionId = (v: unknown): QuestionId => {
-  assertQuestionId(v);
+  const num = Number(v);
+  assertQuestionId(num);
 
-  return v;
+  return num;
 };

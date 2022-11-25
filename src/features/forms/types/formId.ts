@@ -14,7 +14,8 @@ export function assertFormId(v: unknown): asserts v is FormId {
 }
 
 export const asFormId = (v: unknown): FormId => {
-  assertFormId(v);
+  const num = Number(v);
+  assertFormId(num);
 
-  return v;
+  return num;
 };
