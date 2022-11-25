@@ -1,6 +1,6 @@
 import { isNaturalNumber } from '../naturalNumber';
 
-describe('assertNumber', () => {
+describe('isNaturalNumber', () => {
   it('should return false when given zero', () => {
     expect(isNaturalNumber(0)).toBeFalsy();
   });

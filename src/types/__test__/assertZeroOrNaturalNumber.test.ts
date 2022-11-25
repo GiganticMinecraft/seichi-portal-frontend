@@ -1,6 +1,6 @@
 import { isZeroOrNaturalNumber } from '../zeroOrNaturalNumber';
 
-describe('assertNumber', () => {
+describe('isZeroOrNaturalNumber', () => {
   it.each([1, 100, 10000])(
     'should return true when given positive integers',
     (value) => {

@@ -1,6 +1,6 @@
 import { isNonEmptyString } from '../nonEmptyString';
 
-describe('assertNonEmptyString', () => {
+describe('isNonEmptyString', () => {
   it.each(['How about dancing with me?', 'Good night, Sir'])(
     'should return true when given non empty string values',
     (value) => {
