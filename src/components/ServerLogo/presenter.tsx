@@ -1,17 +1,14 @@
-import Image from 'next/image';
-
-import type { ImageProps } from 'next/image';
+import { BoxProps, Image } from '@chakra-ui/react';
 
 type Props = {
-  width: NonNullable<ImageProps['width']>;
-  height: NonNullable<ImageProps['height']>;
+  boxSize: NonNullable<BoxProps['boxSize']>;
   color: 'dark' | 'light';
 };
 
-export const ServerLogo = ({ color, width, height }: Props) => (
+export const ServerLogo = ({ color, boxSize }: Props) => (
   <Image
     src={`https://github.com/GiganticMinecraft/branding/blob/master/server-logo-${color}.png?raw=true`}
     alt="ギガンティック☆整地鯖のロゴ"
-    {...{ width, height }}
+    {...{ boxSize }}
   />
 );
