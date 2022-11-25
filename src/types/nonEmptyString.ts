@@ -6,6 +6,10 @@ export type NonEmptyString = MultiBrand<string, { string: 'NonEmptyString' }>;
 export const isNonEmptyString = (v: unknown): v is string =>
   isString(v) && v !== '';
 
+export const isNonEmptyStringList = (
+  args: unknown[],
+): args is NonEmptyString[] => args.every((arg) => isNonEmptyString(arg));
+
 export function assertNonEmptyString(
   v: unknown,
   target = 'The value',
