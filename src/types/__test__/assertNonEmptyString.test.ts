@@ -1,15 +1,15 @@
-import { assertNonEmptyString } from '../nonEmptyString';
+import { isNonEmptyString } from '../nonEmptyString';
 
 describe('assertNonEmptyString', () => {
   it.each(['How about dancing with me?', 'Good night, Sir'])(
-    'should success to assert non empty string values',
+    'should return true when given non empty string values',
     (value) => {
-      expect(() => assertNonEmptyString(value)).not.toThrowError();
+      expect(isNonEmptyString(value)).toBeTruthy();
     },
   );
 
-  it('should fail to assert empty string values', () => {
-    expect(() => assertNonEmptyString('')).toThrowError();
+  it('should return false when given empty string values', () => {
+    expect(isNonEmptyString('')).toBeFalsy();
   });
 });
 

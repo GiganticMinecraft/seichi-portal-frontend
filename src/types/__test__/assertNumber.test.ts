@@ -1,17 +1,17 @@
-import { assertNumber } from '../assertNumber';
+import { isNumber } from '../assertNumber';
 
-describe('assertNumber', () => {
+describe('isNumber', () => {
   it.each([1, 100, 10000, -1, -100, -10000, 1.5, -2.3])(
-    'should success to assert number values',
+    'should return true when given number values',
     (value) => {
-      expect(() => assertNumber(value)).not.toThrowError();
+      expect(isNumber(value)).toBeTruthy();
     },
   );
 
   it.each(["It's me", 'Hello!', true, false, []])(
-    'should fail to assert not number values',
+    'should return false when given not number values',
     (value) => {
-      expect(() => assertNumber(value)).toThrowError();
+      expect(isNumber(value)).toBeFalsy();
     },
   );
 });

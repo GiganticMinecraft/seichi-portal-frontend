@@ -1,8 +1,8 @@
-import { assertNaturalNumber } from '../naturalNumber';
+import { isNaturalNumber } from '../naturalNumber';
 
 describe('assertNumber', () => {
-  it('should fail to assert zero', () => {
-    expect(() => assertNaturalNumber(0)).toThrowError();
+  it('should return false when given zero', () => {
+    expect(isNaturalNumber(0)).toBeFalsy();
   });
 });
 

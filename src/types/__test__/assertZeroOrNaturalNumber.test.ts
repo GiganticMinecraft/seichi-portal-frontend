@@ -1,28 +1,28 @@
-import { assertZeroOrNaturalNumber } from '../zeroOrNaturalNumber';
+import { isZeroOrNaturalNumber } from '../zeroOrNaturalNumber';
 
 describe('assertNumber', () => {
   it.each([1, 100, 10000])(
-    'should success to assert positive integers',
+    'should return true when given positive integers',
     (value) => {
-      expect(() => assertZeroOrNaturalNumber(value)).not.toThrowError();
+      expect(isZeroOrNaturalNumber(value)).toBeTruthy();
     },
   );
 
-  it('should success to assert zero', () => {
-    expect(() => assertZeroOrNaturalNumber(0)).not.toThrowError();
+  it('should return true when given zero', () => {
+    expect(isZeroOrNaturalNumber(0)).toBeTruthy();
   });
 
   it.each([-1, -100, -10000])(
-    'should fail to assert negative integers',
+    'should return false when given negative integers',
     (value) => {
-      expect(() => assertZeroOrNaturalNumber(value)).toThrowError();
+      expect(isZeroOrNaturalNumber(value)).toBeFalsy();
     },
   );
 
   it.each([1.5, 9.7, -2.3, -8.7])(
-    'should fail to assert decimal numbers',
+    'should return false when given decimal numbers',
     (value) => {
-      expect(() => assertZeroOrNaturalNumber(value)).toThrowError();
+      expect(isZeroOrNaturalNumber(value)).toBeFalsy();
     },
   );
 });

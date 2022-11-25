@@ -1,17 +1,17 @@
-import { assertString } from '../assertString';
+import { isString } from '../assertString';
 
-describe('assertString', () => {
+describe('isString', () => {
   it.each(["It's me", 'Hello!', 'Did you see me?', "I'm behind you"])(
-    'should success to assert string values',
+    'should return true when given string values',
     (value) => {
-      expect(() => assertString(value)).not.toThrowError();
+      expect(isString(value)).toBeTruthy();
     },
   );
 
   it.each([1, 100, -10, 0.1, true, false, []])(
-    'should fail to assert not string values',
+    'should return false when given not string values',
     (value) => {
-      expect(() => assertString(value)).toThrowError();
+      expect(isString(value)).toBeFalsy();
     },
   );
 });
