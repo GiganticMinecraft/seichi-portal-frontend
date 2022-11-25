@@ -19,6 +19,6 @@ export const isForm = (arg: unknown): arg is Form => {
     isFormId(f?.id) &&
     isNonEmptyString(f?.title) &&
     isString(f?.description) &&
-    isQuestionList(f?.questions)
+    isQuestionList(f?.questions ?? [])
   );
 };
