@@ -9,14 +9,16 @@ export default {
 
 export const Dark: ComponentStoryObj<typeof ServerLogo> = {
   args: {
-    boxSize: 'md',
+    width: 300,
+    height: 200,
     color: 'dark',
   },
 };
 
 export const Light: ComponentStoryObj<typeof ServerLogo> = {
   args: {
-    boxSize: 'md',
+    width: 300,
+    height: 200,
     color: 'light',
   },
 };

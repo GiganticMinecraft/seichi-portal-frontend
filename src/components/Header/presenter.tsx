@@ -7,7 +7,7 @@ export const Header = () => (
   <Box bg="cyan.300" py="3" textAlign="center">
     <Button variant="link">
       <Link href="/">
-        <ServerLogo boxSize="md" color="dark" />
+        <ServerLogo width={110} height={100} color="dark" />
       </Link>
     </Button>
   </Box>
