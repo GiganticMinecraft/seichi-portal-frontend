@@ -20,7 +20,7 @@ export const LikeLink = ({ icon, title, children, path }: Props) => (
     <Link href={path}>
       <Flex
         px={2}
-        py={50}
+        py={30}
         alignItems="center"
         justifyContent="center"
         flexDirection="column"
