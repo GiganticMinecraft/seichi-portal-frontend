@@ -10,7 +10,7 @@ const ShowEachForm = () => {
   const { id } = useRouter<'/forms/[id]'>().query;
 
   return (
-    <ContentLayout title="フォームへ回答">
+    <ContentLayout title="フォームに回答">
       <ErrorBoundary>
         <Suspense fallback={<Fallback />}>
           <EachForm formId={id} />
