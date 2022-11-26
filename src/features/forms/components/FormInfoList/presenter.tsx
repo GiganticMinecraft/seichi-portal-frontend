@@ -20,7 +20,9 @@ export const Presenter = ({ forms = [] }: Props) =>
           title={form.title}
           path={{ pathname: '/forms/[id]', query: { id: form.id.toString() } }}
         >
-          <Text fontSize="md">{form.description}</Text>
+          <Text fontSize="md" noOfLines={3}>
+            {form.description}
+          </Text>
         </LikeLink>
       ))}
     </SimpleGrid>
