@@ -13,7 +13,7 @@ export const Presenter = ({ forms = [] }: Props) =>
   forms.length === 0 ? (
     <Alert status="warning" title="現在回答可能なフォームはありません。" />
   ) : (
-    <SimpleGrid columns={{ base: 1, sm: 3 }} spacing={5}>
+    <SimpleGrid columns={{ base: 1, sm: 4 }} spacing={5}>
       {forms.map((form) => (
         <LikeLink
           key={form.id}
