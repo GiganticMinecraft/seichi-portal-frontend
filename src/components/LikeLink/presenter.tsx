@@ -25,7 +25,7 @@ export const LikeLink = ({ icon, title, children, path }: Props) => (
         justifyContent="center"
         flexDirection="column"
       >
-        {icon ? <Icon as={icon} boxSize="3rem" mb={3} /> : undefined}
+        {icon ? <Icon as={icon} boxSize="3rem" mb={3} /> : null}
         <Text as="b" fontSize="lg" mb={3}>
           {title}
         </Text>
