@@ -6,9 +6,9 @@ import { Presenter } from './presenter';
 import { asFormId } from '../../types';
 
 export const EachForm = () => {
-  const router = useRouter<'/forms/[id]'>();
-  if (!router.isReady) return null;
-  const form = fetchForm(asFormId(router.query.id));
+  const { query, isReady } = useRouter<'/forms/[id]'>();
+  if (!isReady) return null;
+  const form = fetchForm(asFormId(query.id));
 
   return form ? <Presenter {...{ form }} /> : null;
 };
