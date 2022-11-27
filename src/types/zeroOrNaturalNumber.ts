@@ -16,7 +16,9 @@ export function assertZeroOrNaturalNumber(
   assertNumber(v, target);
 
   if (!isZeroOrNaturalNumber(v))
-    throw new Error(`${target} must be greater than or equal to 0`.trim());
+    throw new Error(
+      `${target} must be greater than or equal to 0, but got ${v}`.trim(),
+    );
 }
 
 export const asZeroOrNaturalNumber = (

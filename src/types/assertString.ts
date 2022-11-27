@@ -4,5 +4,6 @@ export function assertString(
   v: unknown,
   target = 'The value',
 ): asserts v is string {
-  if (!isString(v)) throw new Error(`${target} must be string`.trim());
+  if (!isString(v))
+    throw new Error(`${target} must be string, but got ${v}`.trim());
 }
