@@ -1,14 +1,14 @@
-import { useForm } from './hooks';
+import { useRouter } from 'next/router';
+
+import { useForm as fetchForm } from './hooks';
 import { Presenter } from './presenter';
 
 import { asFormId } from '../../types';
 
-type Props = {
-  formId: string;
-};
+export const EachForm = () => {
+  const router = useRouter<'/forms/[id]'>();
+  if (!router.isReady) return null;
+  const form = fetchForm(asFormId(router.query.id));
 
-export const EachForm = ({ formId }: Props) => {
-  const form = useForm(asFormId(formId));
-
-  return <Presenter {...{ form }} />;
+  return form ? <Presenter {...{ form }} /> : null;
 };
