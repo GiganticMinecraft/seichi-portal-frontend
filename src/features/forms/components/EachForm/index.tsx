@@ -12,7 +12,7 @@ export const EachForm = () => {
     handleSubmit,
     formState: { isSubmitting },
   } = useForm();
-  const { query } = useRouter<'/forms/[id]'>();
+  const { query } = useRouter();
   const form = fetchForm(asFormId(query.id));
   if (!form) return null;
   const onSubmit = handleSubmit(

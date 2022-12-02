@@ -2,13 +2,11 @@ import { Flex, Icon, Box, Text } from '@chakra-ui/react';
 import Link from 'next/link';
 import { IconType } from 'react-icons';
 
-import { Route } from 'nextjs-routes';
-
 type Props = {
   icon?: IconType;
   title: string;
   children: React.ReactNode;
-  path: Route;
+  path: string;
 };
 
 export const LikeLink = ({ icon, title, children, path }: Props) => (
