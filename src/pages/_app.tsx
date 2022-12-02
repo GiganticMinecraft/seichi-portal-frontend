@@ -37,4 +37,7 @@ const App = ({ Component, pageProps }: AppProps) => (
   </QueryClientProvider>
 );
 
+// https://zenn.dev/sora_kumo/articles/e86bbf0291d4a7
+App.getInitialProps = async () => ({ pageProps: {} });
+
 export default App;
