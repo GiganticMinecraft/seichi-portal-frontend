@@ -1,6 +1,8 @@
-/** @type {import('next').NextConfig} */
 const path = require('path');
+const withRoutes = require('nextjs-routes/config')();
+const withExportImages = require('next-export-optimize-images');
 
+/** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
@@ -20,4 +22,4 @@ const nextConfig = {
   },
 };
 
-module.exports = nextConfig;
+module.exports = withExportImages(withRoutes(nextConfig));
