@@ -200,7 +200,7 @@ exports[`Storyshots features/forms/components/FormInfoList Index 1`] = `
     class="css-mz4fmy"
   >
     <a
-      href="/forms/[id]?id=0"
+      href="/forms/0"
     >
       <div
         class="css-ef5wlf"
@@ -222,7 +222,7 @@ exports[`Storyshots features/forms/components/FormInfoList Index 1`] = `
     class="css-mz4fmy"
   >
     <a
-      href="/forms/[id]?id=1"
+      href="/forms/1"
     >
       <div
         class="css-ef5wlf"
