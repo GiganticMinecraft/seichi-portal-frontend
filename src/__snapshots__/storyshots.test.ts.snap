@@ -117,7 +117,7 @@ exports[`Storyshots components/LikeLink Index 1`] = `
     href="/"
   >
     <div
-      class="css-1jc6prv"
+      class="css-ef5wlf"
     >
       <b
         class="chakra-text css-8o327i"
@@ -142,7 +142,7 @@ exports[`Storyshots components/LikeLink With Icon 1`] = `
     href="/"
   >
     <div
-      class="css-1jc6prv"
+      class="css-ef5wlf"
     >
       <svg
         class="chakra-icon css-1yslrxi"
@@ -194,7 +194,7 @@ exports[`Storyshots components/ServerLogo Light 1`] = `
 
 exports[`Storyshots features/forms/components/FormInfoList Index 1`] = `
 <div
-  class="css-19pl0pn"
+  class="css-16q1pmd"
 >
   <div
     class="css-mz4fmy"
@@ -203,7 +203,7 @@ exports[`Storyshots features/forms/components/FormInfoList Index 1`] = `
       href="/forms/[id]?id=0"
     >
       <div
-        class="css-1jc6prv"
+        class="css-ef5wlf"
       >
         <b
           class="chakra-text css-8o327i"
@@ -211,7 +211,7 @@ exports[`Storyshots features/forms/components/FormInfoList Index 1`] = `
           通報
         </b>
         <p
-          class="chakra-text css-504jus"
+          class="chakra-text css-1x8dgvm"
         >
           通報フォームです。
         </p>
@@ -225,7 +225,7 @@ exports[`Storyshots features/forms/components/FormInfoList Index 1`] = `
       href="/forms/[id]?id=1"
     >
       <div
-        class="css-1jc6prv"
+        class="css-ef5wlf"
       >
         <b
           class="chakra-text css-8o327i"
@@ -233,7 +233,7 @@ exports[`Storyshots features/forms/components/FormInfoList Index 1`] = `
           不具合報告
         </b>
         <p
-          class="chakra-text css-504jus"
+          class="chakra-text css-1x8dgvm"
         >
           不具合報告フォームです。
         </p>
@@ -282,7 +282,7 @@ exports[`Storyshots features/home/components/index/HomeIndex Index 1`] = `
       href="/forms"
     >
       <div
-        class="css-1jc6prv"
+        class="css-ef5wlf"
       >
         <svg
           class="chakra-icon css-1yslrxi"
