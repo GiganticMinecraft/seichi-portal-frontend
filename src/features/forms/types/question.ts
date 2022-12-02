@@ -7,7 +7,7 @@ import { isString } from '@/types/assertString';
 
 import { isQuestionId, QuestionId } from './questionId';
 
-const questionTypes = ['text', 'pulldown', 'checkbox'] as const;
+const questionTypes = ['TEXT', 'PULLDOWN', 'CHECKBOX'] as const;
 export type QuestionType = typeof questionTypes[number];
 
 const isQuestionType = (v: unknown): v is QuestionType =>
