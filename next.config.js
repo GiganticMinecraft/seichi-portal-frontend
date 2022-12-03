@@ -3,6 +3,7 @@ const withExportImages = require('next-export-optimize-images');
 
 const urlPrefix = process.env.GITHUB_ACTIONS ? '/seichi-portal-frontend' : '';
 /** @type {import('next').NextConfig} */
+/** @type {import('next-export-optimize-images').Config} */
 const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
@@ -23,6 +24,7 @@ const nextConfig = {
         pathname: '/GiganticMinecraft/**',
       },
     ],
+    basePath: urlPrefix,
   },
 };
 
