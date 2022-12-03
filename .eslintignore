@@ -5,3 +5,4 @@ next.config.js
 .eslintrc.js
 jest.config.js
 aspida.config.js
+export-images.config.js

@@ -11,7 +11,6 @@ const nextConfig = {
   trailingSlash: true,
   assetPrefix: urlPrefix,
   basePath: urlPrefix,
-  imageDir: `${urlPrefix}/_next/static/chunks/images`,
   webpack(config) {
     config.resolve.alias['@'] = path.join(__dirname, 'src');
 
