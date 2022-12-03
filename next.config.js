@@ -25,6 +25,7 @@ const nextConfig = {
       },
     ],
     basePath: urlPrefix,
+    imageDir: `${urlPrefix}/_next/static/chunks/images`,
   },
 };
 
