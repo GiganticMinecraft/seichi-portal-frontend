@@ -8,6 +8,7 @@ import { asFormId } from '../../types';
 
 export const EachForm = () => {
   const {
+    reset,
     register,
     handleSubmit,
     formState: { isSubmitting },
@@ -15,14 +16,11 @@ export const EachForm = () => {
   const { query } = useRouter();
   const form = fetchForm(asFormId(query.id));
   if (!form) return null;
-  const onSubmit = handleSubmit(
-    (data) =>
-      new Promise((resolve) => {
-        // TODO: impl
-        alert(JSON.stringify(data, null, 2));
-        resolve(data);
-      }),
-  );
+  const onSubmit = handleSubmit(async (data) => {
+    // TODO: impl
+    alert(JSON.stringify(data, null, 2));
+    reset();
+  });
 
   return <Presenter {...{ form, register, onSubmit, isSubmitting }} />;
 };
