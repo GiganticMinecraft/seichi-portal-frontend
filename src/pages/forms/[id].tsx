@@ -6,7 +6,10 @@ import { ContentLayout } from '@/components/Layout';
 import { EachForm } from '@/features/forms/components/EachForm';
 
 const ShowEachForm = () => (
-  <ContentLayout title="フォームに回答">
+  <ContentLayout
+    title="フォームに回答"
+    description="各フォームにご回答いただけます。"
+  >
     <ErrorBoundary
       statusMessages={{
         404: '指定されたIDのフォームは存在しないか、回答可能期間ではありません。',
