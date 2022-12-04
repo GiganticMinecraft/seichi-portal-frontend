@@ -1,3 +1,4 @@
+import { useDisclosure } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 import { useForm } from 'react-hook-form';
 
@@ -7,6 +8,11 @@ import { Presenter } from './presenter';
 import { asFormId } from '../../types';
 
 export const EachForm = () => {
+  const {
+    isOpen: isModalOpen,
+    onOpen: onModalOpen,
+    onClose: onModalClose,
+  } = useDisclosure();
   const {
     reset,
     register,
@@ -24,7 +30,17 @@ export const EachForm = () => {
 
   return (
     <Presenter
-      {...{ form, register, onSubmit, isSubmitting, isSubmitSuccessful }}
+      {...{
+        form,
+        register,
+        reset,
+        onSubmit,
+        isSubmitting,
+        isSubmitSuccessful,
+        isModalOpen,
+        onModalOpen,
+        onModalClose,
+      }}
     />
   );
 };
