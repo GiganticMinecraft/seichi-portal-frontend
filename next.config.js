@@ -1,7 +1,9 @@
 const path = require('path');
 const withExportImages = require('next-export-optimize-images');
 
-const urlPrefix = process.env.GITHUB_ACTIONS ? '/seichi-portal-frontend' : '';
+const urlPrefix = process.env.GITHUB_ACTIONS
+  ? '/seichi-portal-frontend'
+  : undefined;
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
