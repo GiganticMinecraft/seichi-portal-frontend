@@ -11,7 +11,7 @@ export const EachForm = () => {
     reset,
     register,
     handleSubmit,
-    formState: { isSubmitting },
+    formState: { isSubmitting, isSubmitSuccessful },
   } = useForm();
   const { query } = useRouter();
   const form = fetchForm(asFormId(query.id));
@@ -22,5 +22,9 @@ export const EachForm = () => {
     reset();
   });
 
-  return <Presenter {...{ form, register, onSubmit, isSubmitting }} />;
+  return (
+    <Presenter
+      {...{ form, register, onSubmit, isSubmitting, isSubmitSuccessful }}
+    />
+  );
 };
