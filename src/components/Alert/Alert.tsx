@@ -4,6 +4,7 @@ import {
   AlertTitle,
   AlertDescription,
   AlertProps,
+  Stack,
 } from '@chakra-ui/react';
 
 type Props = {
@@ -13,9 +14,11 @@ type Props = {
 };
 
 export const Alert = ({ title, description, status }: Props) => (
-  <ChakraAlert {...{ status }}>
-    <AlertIcon />
-    <AlertTitle>{title}</AlertTitle>
-    {description ? <AlertDescription>{description}</AlertDescription> : null}
+  <ChakraAlert justifyContent={['center', 'start']} {...{ status }}>
+    <Stack direction={['column', 'row']} align={['center', 'start']}>
+      <AlertIcon />
+      <AlertTitle>{title}</AlertTitle>
+      {description ? <AlertDescription>{description}</AlertDescription> : null}
+    </Stack>
   </ChakraAlert>
 );
