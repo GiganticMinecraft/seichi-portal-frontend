@@ -12,11 +12,13 @@ type Props = {
 export const ContentLayout = ({ title, description, children }: Props) => (
   <>
     <Helmet title={title} description={description} />
-    <Container maxW="120ch" my={3}>
-      <Heading as="h1" size="xl" mb="3">
-        {title}
-      </Heading>
-      {children}
-    </Container>
+    <main>
+      <Container maxW="120ch" my={3}>
+        <Heading as="h1" size="xl" mb="3">
+          {title}
+        </Heading>
+        {children}
+      </Container>
+    </main>
   </>
 );
