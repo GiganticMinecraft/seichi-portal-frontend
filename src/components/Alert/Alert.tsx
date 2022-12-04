@@ -16,6 +16,6 @@ export const Alert = ({ title, description, status }: Props) => (
   <ChakraAlert {...{ status }}>
     <AlertIcon />
     <AlertTitle>{title}</AlertTitle>
-    {description ? <AlertDescription>{description}</AlertDescription> : <div />}
+    {description ? <AlertDescription>{description}</AlertDescription> : null}
   </ChakraAlert>
 );
