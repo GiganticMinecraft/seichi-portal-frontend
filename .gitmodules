@@ -1,3 +1,0 @@
-[submodule "src/openapi"]
-	path = src/openapi
-	url = https://github.com/GiganticMinecraft/seichi-api-schema
