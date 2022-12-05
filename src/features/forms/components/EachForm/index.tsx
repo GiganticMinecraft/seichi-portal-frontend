@@ -14,7 +14,7 @@ export const EachForm = () => {
     onClose: onModalClose,
   } = useDisclosure();
   const {
-    reset,
+    reset: resetForm,
     register,
     handleSubmit,
     formState: { isSubmitting, isSubmitSuccessful },
@@ -25,7 +25,7 @@ export const EachForm = () => {
   const onSubmit = handleSubmit(async (data) => {
     // TODO: impl
     alert(JSON.stringify(data, null, 2));
-    reset();
+    resetForm();
   });
 
   return (
@@ -33,13 +33,13 @@ export const EachForm = () => {
       {...{
         form,
         register,
-        reset,
         onSubmit,
         isSubmitting,
         isSubmitSuccessful,
         isModalOpen,
         onModalOpen,
         onModalClose,
+        resetForm,
       }}
     />
   );

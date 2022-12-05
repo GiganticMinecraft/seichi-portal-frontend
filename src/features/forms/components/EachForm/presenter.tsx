@@ -8,53 +8,37 @@ import {
   FormControl,
   FormLabel,
   Heading,
-  Modal,
-  ModalBody,
-  ModalCloseButton,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  ModalOverlay,
   Select,
   Spacer,
   Stack,
   Text,
   Textarea,
 } from '@chakra-ui/react';
-import {
-  FieldValues,
-  SubmitHandler,
-  UseFormRegister,
-  UseFormReset,
-} from 'react-hook-form';
+import { FieldValues, SubmitHandler, UseFormRegister } from 'react-hook-form';
 
 import { Alert } from '@/components/Alert';
 
 import { Form, Question } from '../../types';
+import { ClearForm, ClearFormProps } from '../ClearForm';
 
 type Props<T extends FieldValues> = {
   register: UseFormRegister<{ [key: string]: string | string[] }>;
-  reset: UseFormReset<T>;
   form: Form;
   onSubmit: ReturnType<SubmitHandler<T>>;
   isSubmitting: boolean;
   isSubmitSuccessful: boolean;
-  isModalOpen: boolean;
   onModalOpen: () => void;
-  onModalClose: () => void;
 };
 
 export const Presenter = <T extends FieldValues>({
   form,
   register,
-  reset,
   onSubmit,
   isSubmitting,
   isSubmitSuccessful,
-  isModalOpen,
   onModalOpen,
-  onModalClose,
-}: Props<T>) => (
+  ...clearFormProps
+}: Props<T> & ClearFormProps) => (
   <>
     <Heading as="h2" size="lg" mb={2}>
       {form.title}
@@ -124,39 +108,7 @@ export const Presenter = <T extends FieldValues>({
           <Button colorScheme="blue" variant="ghost" onClick={onModalOpen}>
             フォームをクリアする
           </Button>
-          <Modal isCentered isOpen={isModalOpen} onClose={onModalClose}>
-            <ModalOverlay />
-            <ModalContent mx="auto">
-              <ModalHeader>フォームをクリアしますか？</ModalHeader>
-              <ModalCloseButton />
-              <ModalBody>
-                <Text>
-                  すべての質問から回答が削除されます。元に戻すことはできません。
-                </Text>
-              </ModalBody>
-              <ModalFooter
-                display="grid"
-                w="fit-content"
-                mx="auto"
-                gridAutoFlow="column"
-                gridAutoColumns="1fr"
-              >
-                <Button colorScheme="blue" mr={3} onClick={onModalClose}>
-                  キャンセル
-                </Button>
-                <Button
-                  colorScheme="red"
-                  variant="outline"
-                  onClick={() => {
-                    reset();
-                    onModalClose();
-                  }}
-                >
-                  フォームをクリアする
-                </Button>
-              </ModalFooter>
-            </ModalContent>
-          </Modal>
+          <ClearForm {...clearFormProps} />
         </Flex>
       </form>
     )}
