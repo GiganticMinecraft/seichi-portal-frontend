@@ -1,5 +1,5 @@
 {
   "yaml.schemas": {
-    "https://json.schemastore.org/github-workflow.json": "file:///home/lucky/VSCodeProjects/seichi-form-frontend/.github/workflows/deploy.yml"
+    "https://json.schemastore.org/github-workflow.json": "file:///home/lucky/VSCodeProjects/seichi-form-frontend/.github/workflows/ci-and-cd.yml"
   }
 }

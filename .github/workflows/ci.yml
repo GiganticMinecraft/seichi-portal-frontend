@@ -1,13 +1,6 @@
 name: CI
 on:
-  push:
-    branches:
-      - main
-    paths-ignore:
-      - README.md
-      - LICENSE
-      - CODEOWNERS
-      - renovate.json
+  workflow_call:
   pull_request:
     paths-ignore:
       - README.md
