@@ -19,14 +19,20 @@ export const EachForm = () => {
     handleSubmit,
     formState: { isSubmitting, isSubmitSuccessful },
   } = useForm();
-  const { query } = useRouter();
-  const form = fetchForm(asFormId(query.id));
+  const router = useRouter();
+  const form = fetchForm(asFormId(router.query.id));
   if (!form) return null;
   const onSubmit = handleSubmit(async (data) => {
     // TODO: impl
     alert(JSON.stringify(data, null, 2));
     resetForm();
   });
+  const onBackToFormsList = () => {
+    router.push('/forms');
+  };
+  const onSendAgein = () => {
+    router.reload();
+  };
 
   return (
     <Presenter
@@ -40,6 +46,8 @@ export const EachForm = () => {
         onModalOpen,
         onModalClose,
         resetForm,
+        onBackToFormsList,
+        onSendAgein,
       }}
     />
   );

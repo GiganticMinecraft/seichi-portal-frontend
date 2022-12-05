@@ -4,6 +4,7 @@ import {
   Card,
   CardBody,
   Checkbox,
+  Divider,
   Flex,
   FormControl,
   FormLabel,
@@ -15,6 +16,7 @@ import {
   Textarea,
 } from '@chakra-ui/react';
 import { FieldValues, SubmitHandler, UseFormRegister } from 'react-hook-form';
+import { FaRedo, FaArrowLeft } from 'react-icons/fa';
 
 import { Alert } from '@/components/Alert';
 
@@ -28,6 +30,8 @@ type Props<T extends FieldValues> = {
   isSubmitting: boolean;
   isSubmitSuccessful: boolean;
   onModalOpen: () => void;
+  onBackToFormsList: () => void;
+  onSendAgein: () => void;
 };
 
 export const Presenter = <T extends FieldValues>({
@@ -37,6 +41,8 @@ export const Presenter = <T extends FieldValues>({
   isSubmitting,
   isSubmitSuccessful,
   onModalOpen,
+  onBackToFormsList,
+  onSendAgein,
   ...clearFormProps
 }: Props<T> & ClearFormProps) => (
   <>
@@ -45,11 +51,35 @@ export const Presenter = <T extends FieldValues>({
     </Heading>
     <Text mb={2}>{form.description}</Text>
     {isSubmitSuccessful ? (
-      <Alert
-        status="success"
-        title="回答を送信しました"
-        description="ご回答いただきありがとうございます。"
-      />
+      <>
+        <Alert
+          status="success"
+          title="回答を送信しました"
+          description="ご回答いただきありがとうございます。"
+        />
+        <Divider my={3} />
+        <Stack
+          spacing={4}
+          justifyContent="center"
+          direction={['column', 'row']}
+        >
+          <Button
+            colorScheme="blue"
+            leftIcon={<FaArrowLeft />}
+            onClick={onBackToFormsList}
+          >
+            フォーム一覧に戻る
+          </Button>
+          <Button
+            colorScheme="blue"
+            leftIcon={<FaRedo />}
+            variant="outline"
+            onClick={onSendAgein}
+          >
+            別の回答を送信する
+          </Button>
+        </Stack>
+      </>
     ) : (
       <form onSubmit={onSubmit}>
         {form.questions.map((question) => {
