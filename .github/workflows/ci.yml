@@ -13,13 +13,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Get node version from Volta
-        id: get-node-version
-        uses: keita-hino/get-node-version-from-volta@main
-      - uses: actions/setup-node@v3
-        with:
-          node-version: ${{ steps.get-node-version.outputs.nodeVersion }}
-          cache: yarn
+      - name: Setup Node.js with Volta
+        uses: ./.github/actions/setup-node
       - name: Install deps
         run: yarn
       - name: Run lint and format
