@@ -14,10 +14,14 @@ type Props = {
 };
 
 export const Alert = ({ title, description, status }: Props) => (
-  <ChakraAlert justifyContent="center" {...{ status }}>
-    <AlertIcon />
+  <ChakraAlert
+    justifyContent="center"
+    flexDirection={['column', 'row']}
+    {...{ status }}
+  >
+    <AlertIcon mb={2} />
     <Stack direction="column" align="center">
-      <AlertTitle>{title}</AlertTitle>
+      <AlertTitle mr={0}>{title}</AlertTitle>
       {description ? <AlertDescription>{description}</AlertDescription> : null}
     </Stack>
   </ChakraAlert>
