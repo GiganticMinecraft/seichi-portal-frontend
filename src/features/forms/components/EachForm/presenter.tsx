@@ -60,11 +60,15 @@ export const Presenter = <T extends FieldValues>({
               case 'CHECKBOX':
                 return (
                   <Stack spacing={5} direction="row">
-                    {q.choices?.map((choice, idx) => (
-                      <Checkbox {...register(`${q.id}.choice-${idx}`)}>
-                        {choice}
-                      </Checkbox>
-                    ))}
+                    {q.choices?.map((choice, idx) => {
+                      const name = `${q.id}.choice-${idx}`;
+
+                      return (
+                        <Checkbox key={name} {...register(name)}>
+                          {choice}
+                        </Checkbox>
+                      );
+                    })}
                   </Stack>
                 );
               case 'PULLDOWN':
@@ -73,9 +77,11 @@ export const Presenter = <T extends FieldValues>({
                     placeholder="選択してください"
                     {...register(q.id.toString())}
                   >
-                    {q.choices?.map((choice) => (
-                      <option>{choice}</option>
-                    ))}
+                    {q.choices?.map((choice, idx) => {
+                      const key = `${q.id}.option-${idx}`;
+
+                      return <option key={key}>{choice}</option>;
+                    })}
                   </Select>
                 );
               default:
