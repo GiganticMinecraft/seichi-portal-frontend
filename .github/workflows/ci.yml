@@ -7,11 +7,13 @@ on:
       - README.md
       - LICENSE
       - CODEOWNERS
+      - renovate.json
   pull_request:
     paths-ignore:
       - README.md
       - LICENSE
       - CODEOWNERS
+      - renovate.json
 jobs:
   ci:
     name: Lint, Test and Build
