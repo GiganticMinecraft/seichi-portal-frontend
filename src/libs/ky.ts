@@ -25,4 +25,5 @@ const DEFAULT_API_OPTIONS: Options = {
   },
 };
 
+// TODO: replae ky with axios
 export const ky = Ky.create(DEFAULT_API_OPTIONS);
