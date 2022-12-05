@@ -10,7 +10,7 @@ type Props = {
   onError?: () => void;
 };
 type State = { hasError: boolean; error: Error | null };
-const DEFAULT_MESSAGES: StatusMessages = { 0: 'サーバエラーです' };
+const DEFAULT_MESSAGES: StatusMessages = { 0: 'サーバエラー' };
 
 export class ErrorBoundary extends PureComponent<Props, State> {
   constructor(props: Props) {
