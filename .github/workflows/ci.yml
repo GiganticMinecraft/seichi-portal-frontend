@@ -1,17 +1,12 @@
 name: CI
 on:
-  push:
-    branches:
-      - main
-    paths-ignore:
-      - README.md
-      - LICENSE
-      - CODEOWNERS
+  workflow_call:
   pull_request:
     paths-ignore:
       - README.md
       - LICENSE
       - CODEOWNERS
+      - renovate.json
 jobs:
   ci:
     name: Lint, Test and Build
