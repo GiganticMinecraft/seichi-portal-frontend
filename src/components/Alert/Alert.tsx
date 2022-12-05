@@ -14,9 +14,9 @@ type Props = {
 };
 
 export const Alert = ({ title, description, status }: Props) => (
-  <ChakraAlert justifyContent={['center', 'start']} {...{ status }}>
-    <Stack direction={['column', 'row']} align={['center', 'start']}>
-      <AlertIcon />
+  <ChakraAlert justifyContent="center" {...{ status }}>
+    <AlertIcon />
+    <Stack direction="column" align="center">
       <AlertTitle>{title}</AlertTitle>
       {description ? <AlertDescription>{description}</AlertDescription> : null}
     </Stack>
