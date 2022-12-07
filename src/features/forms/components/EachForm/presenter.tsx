@@ -34,6 +34,10 @@ type Props<T extends FieldValues> = {
   onSendAgein: () => void;
 };
 
+// TODO: 3つにわける
+// * 回答画面
+// * 確認画面
+// * 完了画面
 export const Presenter = <T extends FieldValues>({
   form,
   register,
