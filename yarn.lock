@@ -4138,14 +4138,14 @@
     form-data "^3.0.0"
 
 "@types/node@*", "@types/node@^18.11.9":
-  version "18.11.12"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-18.11.12.tgz#89e7f8aa8c88abf432f9bd594888144d7dba10aa"
-  integrity sha512-FgD3NtTAKvyMmD44T07zz2fEf+OKwutgBCEVM8GcvMGVGaDktiLNTDvPwC/LUe3PinMW+X6CuLOF2Ui1mAlSXg==
+  version "18.11.13"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-18.11.13.tgz#dff34f226ec1ac0432ae3b136ec5552bd3b9c0fe"
+  integrity sha512-IASpMGVcWpUsx5xBOrxMj7Bl8lqfuTY7FKAnPmu5cHkfQVWF8GulWS1jbRqA934qZL35xh5xN/+Xe/i26Bod4w==
 
 "@types/node@^14.0.10 || ^16.0.0", "@types/node@^14.14.20 || ^16.0.0":
-  version "16.18.7"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-16.18.7.tgz#9e34404dba546a6f0851439ebba142680ae56fe0"
-  integrity sha512-SghuoXv8ghvkrKjTyvhRTeNzivPzGQ8pe09PPGdyqsExiKvBYV/6E3imvjsaJuW8ca61qQN2+SoSzyEHS9r2LA==
+  version "16.18.8"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-16.18.8.tgz#ffb2a4efa4eb4384811081776c52b054481cca54"
+  integrity sha512-TrpoNiaPvBH5h8rQQenMtVsJXtGsVBRJrcp2Ik6oEt99jHfGvDLh20VTTq3ixTbjYujukYz1IlY4N8a8yfY0jA==
 
 "@types/normalize-package-data@^2.4.0":
   version "2.4.1"
@@ -8504,10 +8504,10 @@ gopd@^1.0.1:
   dependencies:
     get-intrinsic "^1.1.3"
 
-got@^11.8.5:
-  version "11.8.5"
-  resolved "https://registry.yarnpkg.com/got/-/got-11.8.5.tgz#ce77d045136de56e8f024bebb82ea349bc730046"
-  integrity sha512-o0Je4NvQObAuZPHLFoRSkdG2lTgtcynqymzg2Vupdx6PorhaT5MCbIyXG6d4D94kk8ZG57QeosgdiqfJWhEhlQ==
+got@^11.8.6:
+  version "11.8.6"
+  resolved "https://registry.yarnpkg.com/got/-/got-11.8.6.tgz#276e827ead8772eddbcfc97170590b841823233a"
+  integrity sha512-6tfZ91bOr7bOXnK7PRDCGBLa1H4U080YHNaAQ2KsMGlLEzRbk44nsZF2E1IeRc3vtJHPVbKCYgdFbaGO2ljd8g==
   dependencies:
     "@sindresorhus/is" "^4.0.0"
     "@szmarczak/http-timer" "^4.0.5"
@@ -11087,15 +11087,15 @@ nested-error-stacks@^2.0.0, nested-error-stacks@^2.1.0:
   integrity sha512-9iN1ka/9zmX1ZvLV9ewJYEk9h7RyRRtqdK0woXcqohu8EWIerfPUjYJPg0ULy0UqP7cslmdGc8xKDJcojlKiaw==
 
 next-export-optimize-images@^1.9.0:
-  version "1.9.1"
-  resolved "https://registry.yarnpkg.com/next-export-optimize-images/-/next-export-optimize-images-1.9.1.tgz#51870b00d901edd64fd2a12bc1633d4fc4b72d7f"
-  integrity sha512-BeYxD3OAzo86QksOYi6mqigA3kQvHmrbF6ygw1K1mbMcYIQx4Ak/7GRIkn0rd6sB+8wr2sI81+/35fnqFsLVZA==
+  version "1.9.2"
+  resolved "https://registry.yarnpkg.com/next-export-optimize-images/-/next-export-optimize-images-1.9.2.tgz#597e284b8c0eb6f77ed0094fa9e7261c40eb2be0"
+  integrity sha512-zK0WL7Ft1IbQ8t68/zv8DQxcPZTdFhezi/0ljz2Mm8T/0GCdzJ6cf/AUibrz54bG971hUlpzXYGuXfTATuSVYA==
   dependencies:
     ansi-colors "^4.1.3"
     app-root-path "^3.1.0"
     cli-progress "^3.11.2"
     fs-extra "^10.1.0"
-    got "^11.8.5"
+    got "^11.8.6"
     lodash.uniqwith "^4.5.0"
     sharp "^0.31.2"
 
