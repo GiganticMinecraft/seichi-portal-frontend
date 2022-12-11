@@ -5,10 +5,13 @@ import { Alert } from '@/components/Alert';
 
 type Props = {
   onBackToFormsList: () => void;
-  onSendAgein: () => void;
+  onSendAgain: () => void;
 };
 
-export const AnswerCompleted = ({ onBackToFormsList, onSendAgein }: Props) => (
+export const AnswerCompleted = ({
+  onBackToFormsList,
+  onSendAgain: onSendAgein,
+}: Props) => (
   <>
     <Alert
       status="success"
