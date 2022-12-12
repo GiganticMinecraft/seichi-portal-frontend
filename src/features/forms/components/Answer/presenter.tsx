@@ -20,47 +20,44 @@ type Props = {
   register: UseFormRegister<{ [key: string]: string | string[] }>;
 };
 
-export const Answer = ({ questions, register }: Props) => (
-  <>
-    {questions.map((question) => {
-      const defineAnswerComponent = (q: Question) => {
-        switch (q.type) {
-          case 'TEXT':
-            return <Textarea {...register(q.id.toString())} />;
-          case 'CHECKBOX':
-            return (
-              <Stack spacing={5} direction="row">
-                {q.choices?.map((choice, idx) => {
-                  const name = `${q.id}.choice-${idx}`;
+export const Answer = ({ questions, register }: Props) => {
+  const defineAnswerComponent = (q: Question) => {
+    switch (q.type) {
+      case 'TEXT':
+        return <Textarea {...register(q.id.toString())} />;
+      case 'CHECKBOX':
+        return (
+          <Stack spacing={5} direction="row">
+            {q.choices?.map((choice, idx) => {
+              const name = `${q.id}.choice-${idx}`;
 
-                  return (
-                    <Checkbox key={name} {...register(name)}>
-                      {choice}
-                    </Checkbox>
-                  );
-                })}
-              </Stack>
-            );
-          case 'PULLDOWN':
-            return (
-              <Select
-                placeholder="選択してください"
-                {...register(q.id.toString())}
-              >
-                {q.choices?.map((choice, idx) => {
-                  const key = `${q.id}.option-${idx}`;
+              return (
+                <Checkbox key={name} {...register(name)}>
+                  {choice}
+                </Checkbox>
+              );
+            })}
+          </Stack>
+        );
+      case 'PULLDOWN':
+        return (
+          <Select placeholder="選択してください" {...register(q.id.toString())}>
+            {q.choices?.map((choice, idx) => {
+              const key = `${q.id}.option-${idx}`;
 
-                  return <option key={key}>{choice}</option>;
-                })}
-              </Select>
-            );
-          default:
-            // TODO: throw error
-            return <p>Unexpected Question Type.</p>;
-        }
-      };
+              return <option key={key}>{choice}</option>;
+            })}
+          </Select>
+        );
+      default:
+        // TODO: throw error
+        return <p>Unexpected Question Type.</p>;
+    }
+  };
 
-      return (
+  return (
+    <>
+      {questions.map((question) => (
         <FormControl key={question.id} my={4}>
           <Card>
             <CardBody>
@@ -74,7 +71,7 @@ export const Answer = ({ questions, register }: Props) => (
             </CardBody>
           </Card>
         </FormControl>
-      );
-    })}
-  </>
-);
+      ))}
+    </>
+  );
+};
