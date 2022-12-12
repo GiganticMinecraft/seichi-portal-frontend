@@ -8,10 +8,7 @@ type Props = {
   onSendAgain: () => void;
 };
 
-export const AnswerCompleted = ({
-  onBackToFormsList,
-  onSendAgain: onSendAgein,
-}: Props) => (
+export const AnswerCompleted = ({ onBackToFormsList, onSendAgain }: Props) => (
   <>
     <Alert
       status="success"
@@ -31,7 +28,7 @@ export const AnswerCompleted = ({
         colorScheme="blue"
         leftIcon={<FaRedo />}
         variant="outline"
-        onClick={onSendAgein}
+        onClick={onSendAgain}
       >
         別の回答を送信する
       </Button>
