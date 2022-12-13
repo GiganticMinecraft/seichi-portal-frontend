@@ -37,6 +37,8 @@ jobs:
             ${{ runner.os }}-nextjs-${{ hashFiles('**/yarn.lock') }}-
       - name: Install dependencies
         run: yarn
+      - name: Build api files from OpenAPI
+        run: yarn api
       - name: Build and export as static HTML with Next.js
         run: yarn build
       - name: Upload artifact

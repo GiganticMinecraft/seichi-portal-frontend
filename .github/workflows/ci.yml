@@ -17,6 +17,8 @@ jobs:
         uses: ./.github/actions/setup-node
       - name: Install deps
         run: yarn
+      - name: Build api files from OpenAPI
+        run: yarn api
       - name: Run lint and format
         run: yarn lint && yarn format
       - name: Run test
