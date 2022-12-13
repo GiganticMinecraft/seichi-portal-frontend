@@ -8,7 +8,7 @@ type Props = {
   onSendAgain: () => void;
 };
 
-export const AnswerCompleted = ({ onBackToFormsList, onSendAgain }: Props) => (
+export const Presenter = ({ onBackToFormsList, onSendAgain }: Props) => (
   <>
     <Alert
       status="success"
