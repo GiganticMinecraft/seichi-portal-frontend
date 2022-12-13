@@ -21,6 +21,8 @@ jobs:
       - ci
     steps:
       - uses: actions/checkout@v3
+        with:
+          submodule: 'true'
       - name: Setup Node.js with Volta
         uses: ./.github/actions/setup-node
       - name: Setup Pages
