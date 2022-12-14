@@ -27,7 +27,7 @@
     "@tanstack/react-query-devtools": "4.19.1",
     "axios": "1.2.1",
     "camelcase-keys": "8.0.2",
-    "framer-motion": "7.7.3",
+    "framer-motion": "7.8.0",
     "ky": "0.33.0",
     "next": "13.0.6",
     "react": "18.2.0",
