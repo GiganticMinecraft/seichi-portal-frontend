@@ -41,6 +41,8 @@ jobs:
         run: yarn
       - name: Build api files from OpenAPI
         run: yarn api
+      - name: Remove MSW
+        run: rm -rf public/mockServiceWorker.js
       - name: Build and export as static HTML with Next.js
         run: yarn build
       - name: Upload artifact
