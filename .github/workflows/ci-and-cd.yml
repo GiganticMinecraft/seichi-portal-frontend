@@ -30,7 +30,7 @@ jobs:
         uses: actions/configure-pages@v2
         with:
           static_site_generator: next
-      - name: Restore cache
+      - name: Restore Next.js build cache
         uses: actions/cache@v3
         with:
           path: .next/cache
