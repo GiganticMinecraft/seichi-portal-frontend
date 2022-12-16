@@ -8,8 +8,8 @@ on:
       - CODEOWNERS
       - renovate.json
 jobs:
-  ci:
-    name: Lint and Test
+  lint:
+    name: Run ESLint
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -17,7 +17,27 @@ jobs:
           submodules: 'true'
       - name: Setup Node.js with Volta
         uses: ./.github/actions/setup-node
-      - name: Run lint and format
-        run: yarn lint && yarn format
+      - name: Run ESLint
+        run: yarn lint
+  format:
+    name: Run Prettier
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: 'true'
+      - name: Setup Node.js with Volta
+        uses: ./.github/actions/setup-node
+      - name: Run Prettier
+        run: yarn format
+  test:
+    name: Run Test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: 'true'
+      - name: Setup Node.js with Volta
+        uses: ./.github/actions/setup-node
       - name: Run test
         run: yarn test
