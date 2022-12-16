@@ -36,10 +36,6 @@ jobs:
           path: .next/cache
           key: ${{ runner.os }}-nextjs-${{ hashFiles('**/yarn.lock') }}-${{ hashFiles('**.[jt]s', '**.[jt]sx') }}
           restore-keys: ${{ runner.os }}-nextjs-${{ hashFiles('**/yarn.lock') }}-
-      - name: Install dependencies
-        run: yarn
-      - name: Build api files from OpenAPI
-        run: yarn api
       - name: Remove MSW
         run: rm -rf public/mockServiceWorker.js
       - name: Build and export as static HTML with Next.js
