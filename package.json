@@ -76,7 +76,7 @@
     "jest-environment-jsdom": "^29.3.1",
     "lint-staged": "^13.0.4",
     "msw": "^0.49.0",
-    "next-export-optimize-images": "^1.9.0",
+    "next-export-optimize-images": "^2.0.0",
     "npm-run-all": "^4.1.5",
     "openapi2aspida": "^0.21.0",
     "prettier": "^2.8.0",
