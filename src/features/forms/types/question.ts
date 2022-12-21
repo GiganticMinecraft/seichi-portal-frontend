@@ -7,7 +7,11 @@ import { isString } from '@/types/assertString';
 
 import { isQuestionId, QuestionId } from './questionId';
 
-const questionTypes = ['TEXT', 'PULLDOWN', 'CHECKBOX'] as const;
+const questionTypes = [
+  'TEXT',
+  'PULLDOWN',
+  'CHECKBOX',
+] as const satisfies readonly string[];
 export type QuestionType = typeof questionTypes[number];
 
 const isQuestionType = (v: unknown): v is QuestionType =>
