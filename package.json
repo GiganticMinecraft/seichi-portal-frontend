@@ -15,7 +15,9 @@
     "prepare": "husky install",
     "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook",
-    "api": "redocly bundle openapi/schema/openapi.yml -o src/libs/openapi.yml && rm -rf src/api && openapi2aspida"
+    "api": "npm-run-all -s api:*",
+    "api:yml": "redocly bundle openapi/schema/openapi.yml -o src/libs/openapi.yml && rm -rf src/api && openapi2aspida",
+    "api:json": "redocly bundle openapi/schema/openapi.yml -o src/libs/openapi.json"
   },
   "dependencies": {
     "@aspida/axios": "1.11.0",

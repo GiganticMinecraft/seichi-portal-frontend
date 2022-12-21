@@ -39,3 +39,4 @@ next-env.d.ts
 # OpenAPI
 src/api/
 src/libs/openapi.yml
+src/libs/openapi.json
