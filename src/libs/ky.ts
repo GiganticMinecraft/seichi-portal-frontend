@@ -13,7 +13,13 @@ const DEFAULT_API_OPTIONS: Options = {
         response: Response,
       ): Promise<Response> => {
         const body = new Blob(
-          [JSON.stringify(camelcaseKeys(await response.json()), null, 2)],
+          [
+            JSON.stringify(
+              camelcaseKeys(await response.json(), { deep: true }),
+              null,
+              2,
+            ),
+          ],
           { type: 'application/json' },
         );
         const { headers, status, statusText } = response;
