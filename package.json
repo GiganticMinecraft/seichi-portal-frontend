@@ -3,7 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "npm-run-all -p dev:*",
+    "dev:mock": "prism mock openapi/schema/openapi.yml -p 3001",
+    "dev:next": "next dev",
     "build": "next build && next export && next-export-optimize-images",
     "lint": "next lint",
     "lint:fix": "next lint --fix",
@@ -13,11 +15,10 @@
     "test:watch": "jest --watch",
     "postinstall": "typesync || :",
     "prepare": "husky install",
-    "storybook": "start-storybook -p 6006",
-    "build-storybook": "build-storybook",
-    "api": "npm-run-all -s api:*",
-    "api:yml": "redocly bundle openapi/schema/openapi.yml -o src/libs/openapi.yml && rm -rf src/api && openapi2aspida",
-    "api:json": "redocly bundle openapi/schema/openapi.yml -o src/libs/openapi.json"
+    "sb": "npm-run-all -s sb:*",
+    "sb:start": "start-storybook -p 6006",
+    "sb:build": "build-storybook",
+    "api": "redocly bundle openapi/schema/openapi.yml -o src/libs/openapi.yml && rm -rf src/api && openapi2aspida"
   },
   "dependencies": {
     "@aspida/axios": "1.11.0",
