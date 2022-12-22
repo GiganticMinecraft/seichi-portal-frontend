@@ -7,11 +7,6 @@ import { MainLayout } from '@/components/Layout';
 
 import type { AppProps } from 'next/app';
 
-if (process.env.NODE_ENV === 'development') {
-  const MockServer = () => import('@/__mocks__/worker');
-  MockServer();
-}
-
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
