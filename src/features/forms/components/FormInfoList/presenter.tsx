@@ -15,7 +15,11 @@ export const Presenter = ({ forms = [] }: Props) =>
   ) : (
     <SimpleGrid columns={{ base: 1, sm: 4 }} spacing={5}>
       {forms.map((form) => (
-        <LikeLink key={form.id} title={form.title} path={`/forms/${form.id}`}>
+        <LikeLink
+          key={form.id}
+          title={form.formName}
+          path={`/forms/${form.id}`}
+        >
           <Text fontSize="md" noOfLines={3}>
             {form.description}
           </Text>

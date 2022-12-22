@@ -26,7 +26,7 @@ type AnswerFieldProps = {
 };
 
 const AnswerField = ({ question: q, register }: AnswerFieldProps) => {
-  switch (q.type) {
+  switch (q.questionType) {
     case 'TEXT':
       return <Textarea {...register(q.id.toString())} />;
     case 'CHECKBOX':

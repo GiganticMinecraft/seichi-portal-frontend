@@ -6,8 +6,8 @@ import { isQuestionList, Question } from './question';
 
 export type Form = {
   id: FormId;
-  title: NonEmptyString;
-  description: string;
+  formName: NonEmptyString;
+  description?: string;
   questions: Question[];
 };
 
@@ -16,7 +16,7 @@ export const isForm = (arg: unknown): arg is Form => {
 
   return (
     isFormId(f?.id) &&
-    isNonEmptyString(f?.title) &&
+    isNonEmptyString(f?.formName) &&
     isString(f?.description) &&
     isQuestionList(f?.questions ?? [])
   );

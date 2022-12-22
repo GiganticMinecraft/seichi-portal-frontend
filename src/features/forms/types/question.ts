@@ -20,8 +20,8 @@ const isQuestionType = (v: unknown): v is QuestionType =>
 export type Question = {
   id: QuestionId;
   title: NonEmptyString;
-  description: string;
-  type: QuestionType;
+  description?: string;
+  questionType: QuestionType;
   choices?: NonEmptyString[];
 };
 
@@ -32,7 +32,7 @@ export const isQuestion = (arg: unknown): arg is Question => {
     isQuestionId(q?.id) &&
     isNonEmptyString(q?.title) &&
     isString(q?.description) &&
-    isQuestionType(q?.type) &&
+    isQuestionType(q?.questionType) &&
     isNonEmptyStringList(q?.choices ?? [])
   );
 };

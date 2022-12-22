@@ -5,13 +5,13 @@ import { isFormId } from './formId';
 
 import type { Form } from './form';
 
-export type FormInfo = Pick<Form, 'id' | 'title' | 'description'>;
+export type FormInfo = Pick<Form, 'id' | 'formName' | 'description'>;
 
 export const isFormInfo = (arg: unknown): arg is FormInfo => {
   const i = arg as FormInfo;
 
   return (
-    isFormId(i?.id) && isNonEmptyString(i?.title) && isString(i?.description)
+    isFormId(i?.id) && isNonEmptyString(i?.formName) && isString(i?.description)
   );
 };
 
