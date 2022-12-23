@@ -1,7 +1,5 @@
 import { ComponentMeta, ComponentStoryObj } from '@storybook/react';
 
-import { formInfoList } from '@/__mocks__/data';
-
 import { Presenter } from './presenter';
 
 export default {
@@ -11,7 +9,13 @@ export default {
 
 export const Index: ComponentStoryObj<typeof Presenter> = {
   args: {
-    forms: formInfoList,
+    forms: [
+      {
+        id: 0,
+        form_name: '通報',
+        description: '通報フォームです。',
+      },
+    ],
   },
 };
 
