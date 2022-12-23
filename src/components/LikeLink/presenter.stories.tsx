@@ -13,7 +13,7 @@ export const Index: ComponentStoryObj<typeof LikeLink> = {
   args: {
     title: 'タイトル',
     children: <Text>ここには説明が入ります。</Text>,
-    path: '/',
+    path: { pathname: '/' },
   },
 };
 
@@ -22,6 +22,6 @@ export const WithIcon: ComponentStoryObj<typeof LikeLink> = {
     title: 'タイトル',
     icon: FaListAlt,
     children: <Text>ここには説明が入ります。</Text>,
-    path: '/',
+    path: { pathname: '/' },
   },
 };
