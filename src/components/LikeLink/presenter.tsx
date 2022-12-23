@@ -1,8 +1,8 @@
 import { Flex, Icon, Box, Text } from '@chakra-ui/react';
 import Link from 'next/link';
-import { IconType } from 'react-icons';
 
-import { Route } from 'nextjs-routes';
+import type { Route } from 'nextjs-routes';
+import type { IconType } from 'react-icons';
 
 type Props = {
   icon?: IconType;
