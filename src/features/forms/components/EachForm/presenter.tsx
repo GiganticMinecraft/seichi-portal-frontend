@@ -60,7 +60,7 @@ export const Presenter = <T extends FieldValues>({
   return (
     <>
       <Heading as="h2" size="lg" mb={2}>
-        {form.formName}
+        {form.form_name}
       </Heading>
       <Text mb={2}>{form.description}</Text>
       <FormProvider {...methods}>
