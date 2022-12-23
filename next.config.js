@@ -1,5 +1,6 @@
 const path = require('path');
 const withExportImages = require('next-export-optimize-images');
+const withRoutes = require('nextjs-routes/config')();
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -21,4 +22,4 @@ const nextConfig = {
   },
 };
 
-module.exports = withExportImages(nextConfig);
+module.exports = withRoutes(withExportImages(nextConfig));

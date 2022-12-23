@@ -11618,6 +11618,13 @@ next@13.1.1:
     "@next/swc-win32-ia32-msvc" "13.1.1"
     "@next/swc-win32-x64-msvc" "13.1.1"
 
+nextjs-routes@^1.0.4:
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/nextjs-routes/-/nextjs-routes-1.0.4.tgz#b424890e976f8beba67789ea47ceb72f2b2e31c4"
+  integrity sha512-BdlLv1sdiH2+qXWsWrrVfW8N1dR3iV0pjUvpO4JcQyt51fLUwVPX+G5uABA/tLzkWhK3MPUcXUoc3fILfi2cmg==
+  dependencies:
+    chokidar "^3.5.3"
+
 nice-try@^1.0.4:
   version "1.0.5"
   resolved "https://registry.yarnpkg.com/nice-try/-/nice-try-1.0.5.tgz#a3378a7696ce7d223e88fc9b764bd7ef1089e366"
