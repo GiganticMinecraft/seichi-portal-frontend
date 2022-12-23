@@ -17,7 +17,8 @@ import {
 import { UseFormRegister } from 'react-hook-form';
 import { FaArrowRight } from 'react-icons/fa';
 
-import { Question } from '../../types';
+import { Question } from '@/api/@types';
+
 import { ClearForm, ClearFormProps } from '../ClearForm';
 
 type AnswerFieldProps = {
@@ -26,7 +27,7 @@ type AnswerFieldProps = {
 };
 
 const AnswerField = ({ question: q, register }: AnswerFieldProps) => {
-  switch (q.questionType) {
+  switch (q.question_type) {
     case 'TEXT':
       return <Textarea {...register(q.id.toString())} />;
     case 'CHECKBOX':
