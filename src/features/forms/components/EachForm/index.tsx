@@ -5,8 +5,6 @@ import { useForm } from 'react-hook-form';
 import { useForm as fetchForm } from './hooks';
 import { Presenter } from './presenter';
 
-import { asFormId } from '../../types';
-
 export const EachForm = () => {
   const methods = useForm();
   const onSubmit = methods.handleSubmit(async (data) => {
@@ -16,7 +14,7 @@ export const EachForm = () => {
   });
   const [isConfirming, setIsConfirming] = useState(false);
   const router = useRouter();
-  const form = fetchForm(asFormId(router.query.id));
+  const form = fetchForm(Number(router.query.id));
   if (!form) return null;
 
   return (

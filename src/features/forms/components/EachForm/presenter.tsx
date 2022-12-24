@@ -7,7 +7,8 @@ import {
   UseFormReturn,
 } from 'react-hook-form';
 
-import { Form, Question } from '../../types';
+import { Form, Question } from '@/api/@types';
+
 import { Answer } from '../Answer';
 import { AnswerCompleted } from '../AnswerCompleted';
 import { ConfirmAnswers } from '../ConfirmAnswers';
@@ -59,7 +60,7 @@ export const Presenter = <T extends FieldValues>({
   return (
     <>
       <Heading as="h2" size="lg" mb={2}>
-        {form.title}
+        {form.form_name}
       </Heading>
       <Text mb={2}>{form.description}</Text>
       <FormProvider {...methods}>

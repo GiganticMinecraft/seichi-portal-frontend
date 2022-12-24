@@ -1,22 +1,5 @@
-import { Options } from 'ky';
+import { apiClient } from './config';
 
-import { ky } from '@/libs/ky';
-
-import { BACKEND_API_OPTIONS } from './config';
-
-import { FormId, isForm } from '../types';
-
-export const getForm = async (formId: FormId, options?: Options) => {
-  const mergedOptions = {
-    ...BACKEND_API_OPTIONS,
-    ...options,
-  };
-  const resp = await ky.get(`forms/${formId.toString()}`, mergedOptions);
-  const form = await resp.json();
-
-  if (!isForm(form)) {
-    throw new Error('API type error');
-  }
-
-  return form;
-};
+export const getForm = async (formId: number) =>
+  // eslint-disable-next-line no-underscore-dangle
+  apiClient.forms._formId(formId).$get();

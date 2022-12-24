@@ -3,7 +3,7 @@ import { SimpleGrid, Text } from '@chakra-ui/react';
 import { Alert } from '@/components/Alert';
 import { LikeLink } from '@/components/LikeLink';
 
-import type { FormInfo } from '../../types';
+import type { FormInfo } from '../../types/formInfo';
 
 type Props = {
   forms?: FormInfo[];
@@ -15,7 +15,11 @@ export const Presenter = ({ forms = [] }: Props) =>
   ) : (
     <SimpleGrid columns={{ base: 1, sm: 4 }} spacing={5}>
       {forms.map((form) => (
-        <LikeLink key={form.id} title={form.title} path={`/forms/${form.id}`}>
+        <LikeLink
+          key={form.id}
+          title={form.form_name}
+          path={`/forms/${form.id}`}
+        >
           <Text fontSize="md" noOfLines={3}>
             {form.description}
           </Text>

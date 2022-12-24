@@ -230,28 +230,6 @@ exports[`Storyshots features/forms/components/FormInfoList Index 1`] = `
       </div>
     </a>
   </div>
-  <div
-    class="css-mz4fmy"
-  >
-    <a
-      href="/forms/1"
-    >
-      <div
-        class="css-ef5wlf"
-      >
-        <b
-          class="chakra-text css-8o327i"
-        >
-          不具合報告
-        </b>
-        <p
-          class="chakra-text css-1x8dgvm"
-        >
-          不具合報告フォームです。
-        </p>
-      </div>
-    </a>
-  </div>
 </div>
 `;
 

@@ -1,7 +1,7 @@
-import { Options } from 'ky';
+import aspida from '@aspida/axios';
+import axios from 'axios';
 
+import api from '@/api/$api';
 import { API_URL } from '@/config';
 
-export const BACKEND_API_OPTIONS: Options = {
-  prefixUrl: API_URL,
-};
+export const apiClient = api(aspida(axios.create({ baseURL: API_URL })));
