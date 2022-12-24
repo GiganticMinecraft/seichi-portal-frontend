@@ -18,7 +18,7 @@ export const Presenter = ({ forms = [] }: Props) =>
         <LikeLink
           key={form.id}
           title={form.form_name}
-          path={{ pathname: '/forms/[id]', query: { id: form.id.toString() } }}
+          path={`/forms/${form.id}`}
         >
           <Text fontSize="md" noOfLines={3}>
             {form.description}

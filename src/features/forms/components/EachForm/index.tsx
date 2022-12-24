@@ -13,7 +13,7 @@ export const EachForm = () => {
     methods.reset();
   });
   const [isConfirming, setIsConfirming] = useState(false);
-  const router = useRouter<'/forms/[id]'>();
+  const router = useRouter();
   const form = fetchForm(Number(router.query.id));
   if (!form) return null;
 
