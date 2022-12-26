@@ -4,10 +4,6 @@ on:
     branches:
       - main
   workflow_dispatch:
-permissions:
-  contents: read
-  pages: write
-  id-token: write
 concurrency:
   group: pages
   cancel-in-progress: true
@@ -15,40 +11,32 @@ jobs:
   ci:
     name: CI
     uses: ./.github/workflows/ci.yml
-  build:
-    name: Build artifacts
+  upload:
+    name: Upload artifacts
     runs-on: ubuntu-latest
     needs:
       - ci
     steps:
-      - uses: actions/checkout@v3
+      - name: Download artifacts
+        uses: actions/download-artifact@v3
         with:
-          submodules: 'true'
-      - name: Setup Node.js with Volta
-        uses: ./.github/actions/setup-node
-      - name: Setup Pages
-        uses: actions/configure-pages@v2
-        with:
-          static_site_generator: next
-      - name: Restore Next.js build cache
-        uses: actions/cache@v3
-        with:
-          path: .next/cache
-          key: ${{ runner.os }}-nextjs-${{ hashFiles('**/yarn.lock') }}-${{ hashFiles('**.[jt]s', '**.[jt]sx') }}
-          restore-keys: ${{ runner.os }}-nextjs-${{ hashFiles('**/yarn.lock') }}-
-      - name: Build and export as static HTML with Next.js
-        run: yarn build
-      - name: Upload artifact
+          name: nextjs-out
+      - name: Upload artifacts for GitHub Pages
         uses: actions/upload-pages-artifact@v1
         with:
           path: ./out
   deploy:
     name: Deploy artifacts to GitHub Pages
+    runs-on: ubuntu-latest
+    needs:
+      - upload
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-latest
-    needs: build
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
