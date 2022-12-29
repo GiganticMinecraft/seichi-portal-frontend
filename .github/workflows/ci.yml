@@ -54,19 +54,12 @@ jobs:
         uses: actions/cache@v3
         with:
           path: |
-            ~/.yarn
             .next/cache
           key: ${{ runner.os }}-nextjs-${{ hashFiles('**/yarn.lock') }}-${{ hashFiles('**.[jt]s', '**.[jt]sx') }}
           restore-keys: ${{ runner.os }}-nextjs-${{ hashFiles('**/yarn.lock') }}-
-      - name: Setup Pages
-        uses: actions/configure-pages@v2
-        if: github.ref == 'refs/heads/main'
-        with:
-          static_site_generator: next
       - name: Run build
         run: yarn build
-      - name: Upload artifacts
-        uses: actions/upload-artifact@v3
+      - name: Upload artifacts for GitHub Pages
+        uses: actions/upload-pages-artifact@v1
         with:
-          name: nextjs-out
           path: ./out

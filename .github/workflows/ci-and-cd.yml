@@ -11,25 +11,11 @@ jobs:
   ci:
     name: CI
     uses: ./.github/workflows/ci.yml
-  upload:
-    name: Upload artifacts
-    runs-on: ubuntu-latest
-    needs:
-      - ci
-    steps:
-      - name: Download artifacts
-        uses: actions/download-artifact@v3
-        with:
-          name: nextjs-out
-      - name: Upload artifacts for GitHub Pages
-        uses: actions/upload-pages-artifact@v1
-        with:
-          path: ./out
   deploy:
     name: Deploy artifacts to GitHub Pages
     runs-on: ubuntu-latest
     needs:
-      - upload
+      - ci
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
