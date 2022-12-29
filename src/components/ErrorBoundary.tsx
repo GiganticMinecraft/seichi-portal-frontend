@@ -1,4 +1,3 @@
-import { HTTPError } from 'ky';
 import { ErrorInfo, PureComponent, ReactNode } from 'react';
 
 import { Alert } from './Alert';
@@ -27,22 +26,18 @@ export class ErrorBoundary extends PureComponent<Props, State> {
     const { onError } = this.props;
     if (onError) onError();
 
-    console.error(error, info); // eslint-disable-line no-console
+    // eslint-disable-next-line no-console
+    console.error(error, info);
   }
 
   render(): ReactNode {
     const { children, statusMessages = {} } = this.props;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { hasError, error } = this.state;
     const messages = { ...DEFAULT_MESSAGES, ...statusMessages };
 
     if (hasError) {
-      // TODO: HTTPError以外に対応する
-      const statusCode = (error as HTTPError)?.response?.status;
-
-      if (statusCode && Object.keys(messages).includes(String(statusCode))) {
-        return <Alert status="error" title={messages[statusCode]} />;
-      }
-
+      // TODO: HTTPErrorやほかのErrorに対応する
       return (
         <Alert
           status="error"
