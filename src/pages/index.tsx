@@ -1,5 +1,5 @@
-import { ContentLayout } from '@/components/Layout';
 import { HomeIndex } from '@/features/home/components/Index';
+import { ContentLayout } from '@/shared/Layout';
 
 const Index = () => (
   <ContentLayout

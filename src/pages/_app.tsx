@@ -3,7 +3,7 @@ import { ChakraProvider } from '@chakra-ui/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
-import { MainLayout } from '@/components/Layout';
+import { MainLayout } from '@/shared/Layout';
 
 import type { AppProps } from 'next/app';
 

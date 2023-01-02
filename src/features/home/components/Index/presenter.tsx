@@ -1,7 +1,7 @@
 import { SimpleGrid, UnorderedList, ListItem } from '@chakra-ui/react';
 import { FaListAlt } from 'react-icons/fa';
 
-import { LikeLink } from '@/components/LikeLink';
+import { LikeLink } from '@/shared/LikeLink';
 
 export const HomeIndex = () => (
   <SimpleGrid columns={{ base: 1, sm: 3 }} spacing={5}>

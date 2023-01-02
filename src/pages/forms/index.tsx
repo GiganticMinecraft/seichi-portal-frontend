@@ -1,9 +1,9 @@
 import { Suspense } from 'react';
 
-import { ErrorBoundary } from '@/components/ErrorBoundary';
-import { Fallback } from '@/components/Fallback';
-import { ContentLayout } from '@/components/Layout';
 import { FormInfoList } from '@/features/forms/components/FormInfoList';
+import { ErrorBoundary } from '@/shared/ErrorBoundary';
+import { Fallback } from '@/shared/Fallback';
+import { ContentLayout } from '@/shared/Layout';
 
 const ShowFormInfoList = () => (
   <ContentLayout
