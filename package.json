@@ -22,7 +22,6 @@
   },
   "dependencies": {
     "@aspida/axios": "1.11.0",
-    "@aspida/react-query": "1.11.0",
     "@chakra-ui/react": "2.4.6",
     "@emotion/react": "11.10.5",
     "@emotion/styled": "11.10.5",
