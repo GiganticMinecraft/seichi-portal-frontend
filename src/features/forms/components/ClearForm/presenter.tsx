@@ -29,9 +29,7 @@ export const Presenter = ({
       <ModalHeader>フォームをクリアしますか？</ModalHeader>
       <ModalCloseButton />
       <ModalBody>
-        <Text>
-          すべての質問から回答が削除されます。元に戻すことはできません。
-        </Text>
+        <Text>すべての回答がクリアされます。元に戻すことはできません。</Text>
       </ModalBody>
       <ModalFooter
         display="grid"
