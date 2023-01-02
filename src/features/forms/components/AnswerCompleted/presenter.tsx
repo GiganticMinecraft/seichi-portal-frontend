@@ -1,7 +1,7 @@
 import { Button, Divider, Stack } from '@chakra-ui/react';
 import { FaArrowLeft, FaRedo } from 'react-icons/fa';
 
-import { Alert } from '@/components/Alert';
+import { Alert } from '@/shared/Alert';
 
 type Props = {
   onBackToFormsList: () => void;

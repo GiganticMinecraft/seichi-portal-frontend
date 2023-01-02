@@ -1,7 +1,7 @@
 import { SimpleGrid, Text } from '@chakra-ui/react';
 
-import { Alert } from '@/components/Alert';
-import { LikeLink } from '@/components/LikeLink';
+import { Alert } from '@/shared/Alert';
+import { LikeLink } from '@/shared/LikeLink';
 
 import type { FormInfo } from '../../types/formInfo';
 
