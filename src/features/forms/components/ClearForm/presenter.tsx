@@ -10,17 +10,19 @@ import {
   Button,
 } from '@chakra-ui/react';
 
-export type ClearFormProps = {
+export type PresenterProps = {
   isModalOpen: boolean;
   onModalClose: () => void;
   resetForm: () => void;
+  showToast: () => void;
 };
 
-export const ClearForm = ({
+export const Presenter = ({
   isModalOpen,
   onModalClose,
   resetForm,
-}: ClearFormProps) => (
+  showToast,
+}: PresenterProps) => (
   <Modal isCentered isOpen={isModalOpen} onClose={onModalClose}>
     <ModalOverlay />
     <ModalContent mx="auto">
@@ -47,6 +49,7 @@ export const ClearForm = ({
           onClick={() => {
             resetForm();
             onModalClose();
+            showToast();
           }}
         >
           フォームをクリアする
