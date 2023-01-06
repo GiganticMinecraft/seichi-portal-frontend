@@ -17,7 +17,8 @@ export const Presenter = ({ forms = [] }: Props) =>
       {forms.map((form) => (
         <LikeLink
           key={form.id}
-          title={form.form_name}
+          // TODO: undefinedにはならない
+          title={form.form_name ?? '（名称設定なし）'}
           path={`/forms/${form.id}`}
         >
           <Text fontSize="md" noOfLines={3}>

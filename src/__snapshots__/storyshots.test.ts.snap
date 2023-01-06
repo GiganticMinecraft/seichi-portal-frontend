@@ -129,7 +129,7 @@ exports[`Storyshots components/LikeLink Index 1`] = `
     href="/"
   >
     <div
-      class="css-ef5wlf"
+      class="css-1lh24ac"
     >
       <b
         class="chakra-text css-8o327i"
@@ -154,7 +154,7 @@ exports[`Storyshots components/LikeLink With Icon 1`] = `
     href="/"
   >
     <div
-      class="css-ef5wlf"
+      class="css-1lh24ac"
     >
       <svg
         class="chakra-icon css-1yslrxi"
@@ -215,7 +215,7 @@ exports[`Storyshots features/forms/components/FormInfoList Index 1`] = `
       href="/forms/0"
     >
       <div
-        class="css-ef5wlf"
+        class="css-1lh24ac"
       >
         <b
           class="chakra-text css-8o327i"
@@ -275,43 +275,40 @@ exports[`Storyshots features/home/components/index/HomeIndex Index 1`] = `
       href="/forms"
     >
       <div
-        class="css-ef5wlf"
+        class="css-1lh24ac"
       >
-        <svg
-          class="chakra-icon css-1yslrxi"
-          fill="currentColor"
-          focusable="false"
-          height="1em"
-          stroke="currentColor"
-          stroke-width="0"
-          viewBox="0 0 512 512"
-          width="1em"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="M464 480H48c-26.51 0-48-21.49-48-48V80c0-26.51 21.49-48 48-48h416c26.51 0 48 21.49 48 48v352c0 26.51-21.49 48-48 48zM128 120c-22.091 0-40 17.909-40 40s17.909 40 40 40 40-17.909 40-40-17.909-40-40-40zm0 96c-22.091 0-40 17.909-40 40s17.909 40 40 40 40-17.909 40-40-17.909-40-40-40zm0 96c-22.091 0-40 17.909-40 40s17.909 40 40 40 40-17.909 40-40-17.909-40-40-40zm288-136v-32c0-6.627-5.373-12-12-12H204c-6.627 0-12 5.373-12 12v32c0 6.627 5.373 12 12 12h200c6.627 0 12-5.373 12-12zm0 96v-32c0-6.627-5.373-12-12-12H204c-6.627 0-12 5.373-12 12v32c0 6.627 5.373 12 12 12h200c6.627 0 12-5.373 12-12zm0 96v-32c0-6.627-5.373-12-12-12H204c-6.627 0-12 5.373-12 12v32c0 6.627 5.373 12 12 12h200c6.627 0 12-5.373 12-12z"
-          />
-        </svg>
         <b
           class="chakra-text css-8o327i"
         >
-          フォームに回答する
+          新規に回答をする
         </b>
-        <ul
-          class="css-tu0njr"
-          role="list"
+        <p
+          class="chakra-text css-0"
         >
-          <li
-            class="css-0"
-          >
-            回答可能なフォームに回答する
-          </li>
-          <li
-            class="css-0"
-          >
-            回答した内容を確認する
-          </li>
-        </ul>
+          回答可能なフォームに回答することができます。
+        </p>
+      </div>
+    </a>
+  </div>
+  <div
+    class="css-mz4fmy"
+  >
+    <a
+      href="/forms"
+    >
+      <div
+        class="css-1lh24ac"
+      >
+        <b
+          class="chakra-text css-8o327i"
+        >
+          過去の回答内容を確認する
+        </b>
+        <p
+          class="chakra-text css-0"
+        >
+          過去にフォームに回答した内容を確認することができます。
+        </p>
       </div>
     </a>
   </div>
