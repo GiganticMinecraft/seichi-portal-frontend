@@ -9,7 +9,7 @@ exports[`Storyshots components/Alert Index 1`] = `
     class="chakra-alert__icon css-b0ulm5"
   >
     <svg
-      class="chakra-icon css-fi0ww0"
+      class="chakra-icon css-qk6lof"
       focusable="false"
       viewBox="0 0 24 24"
     >
@@ -45,7 +45,7 @@ exports[`Storyshots components/Alert No Description 1`] = `
     class="chakra-alert__icon css-b0ulm5"
   >
     <svg
-      class="chakra-icon css-fi0ww0"
+      class="chakra-icon css-qk6lof"
       focusable="false"
       viewBox="0 0 24 24"
     >
@@ -129,7 +129,7 @@ exports[`Storyshots components/LikeLink Index 1`] = `
     href="/"
   >
     <div
-      class="css-1lh24ac"
+      class="css-5uzzfp"
     >
       <b
         class="chakra-text css-8o327i"
@@ -154,7 +154,7 @@ exports[`Storyshots components/LikeLink With Icon 1`] = `
     href="/"
   >
     <div
-      class="css-1lh24ac"
+      class="css-5uzzfp"
     >
       <svg
         class="chakra-icon css-1yslrxi"
@@ -215,7 +215,7 @@ exports[`Storyshots features/forms/components/FormInfoList Index 1`] = `
       href="/forms/0"
     >
       <div
-        class="css-1lh24ac"
+        class="css-5uzzfp"
       >
         <b
           class="chakra-text css-8o327i"
@@ -242,7 +242,7 @@ exports[`Storyshots features/forms/components/FormInfoList No Form Info 1`] = `
     class="chakra-alert__icon css-b0ulm5"
   >
     <svg
-      class="chakra-icon css-fi0ww0"
+      class="chakra-icon css-qk6lof"
       focusable="false"
       viewBox="0 0 24 24"
     >
@@ -275,7 +275,7 @@ exports[`Storyshots features/home/components/index/HomeIndex Index 1`] = `
       href="/forms"
     >
       <div
-        class="css-1lh24ac"
+        class="css-5uzzfp"
       >
         <b
           class="chakra-text css-8o327i"
@@ -297,7 +297,7 @@ exports[`Storyshots features/home/components/index/HomeIndex Index 1`] = `
       href="/forms"
     >
       <div
-        class="css-1lh24ac"
+        class="css-5uzzfp"
       >
         <b
           class="chakra-text css-8o327i"
