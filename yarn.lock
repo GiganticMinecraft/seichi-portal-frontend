@@ -350,10 +350,15 @@
     chalk "^2.0.0"
     js-tokens "^4.0.0"
 
-"@babel/parser@^7.1.0", "@babel/parser@^7.12.11", "@babel/parser@^7.12.7", "@babel/parser@^7.14.7", "@babel/parser@^7.20.13", "@babel/parser@^7.20.7":
+"@babel/parser@^7.1.0", "@babel/parser@^7.12.11", "@babel/parser@^7.12.7", "@babel/parser@^7.14.7":
   version "7.20.13"
   resolved "https://registry.yarnpkg.com/@babel/parser/-/parser-7.20.13.tgz#ddf1eb5a813588d2fb1692b70c6fce75b945c088"
   integrity sha512-gFDLKMfpiXCsjt4za2JA9oTMn70CeseCehb11kRZgvd7+F67Hih3OHOK24cRrWECJ/ljfPGac6ygXAs/C8kIvw==
+
+"@babel/parser@^7.20.13", "@babel/parser@^7.20.7":
+  version "7.20.15"
+  resolved "https://registry.yarnpkg.com/@babel/parser/-/parser-7.20.15.tgz#eec9f36d8eaf0948bb88c87a46784b5ee9fd0c89"
+  integrity sha512-DI4a1oZuf8wC+oAJA9RW6ga3Zbe8RZFt7kD9i4qAspz3I/yHet1VvC3DiSy/fsUvv5pvJuNPh0LPOdCcqinDPg==
 
 "@babel/plugin-bugfix-safari-id-destructuring-collision-in-function-expression@^7.18.6":
   version "7.18.6"
@@ -2798,11 +2803,11 @@
     uri-js "^4.2.2"
 
 "@redocly/cli@^1.0.0-beta.117":
-  version "1.0.0-beta.122"
-  resolved "https://registry.yarnpkg.com/@redocly/cli/-/cli-1.0.0-beta.122.tgz#72dbb24e43332301fe10fed28c4a81093f9569fb"
-  integrity sha512-wf6y9Xz+RARv3aDtCO6+Qhc4ToLwhHoE070IvOkjFeK0wNFBGYj8Rv3gMLBzimePjclSlpcs+AHiYHTvSDfbQg==
+  version "1.0.0-beta.123"
+  resolved "https://registry.yarnpkg.com/@redocly/cli/-/cli-1.0.0-beta.123.tgz#b69f221c6bf73f38b09e96f8df27d0fbdfc47e6d"
+  integrity sha512-aTlqewdXj0LXjh38xJ5lfa380Nyu/cq9+CmfUKXk95/5BDkbJvOjTInxndsjB/KgKbOJlx0vnEoktms0aDhtNw==
   dependencies:
-    "@redocly/openapi-core" "1.0.0-beta.122"
+    "@redocly/openapi-core" "1.0.0-beta.123"
     assert-node-version "^1.0.3"
     chokidar "^3.5.1"
     colorette "^1.2.0"
@@ -2818,10 +2823,10 @@
     styled-components "5.3.3"
     yargs "17.0.1"
 
-"@redocly/openapi-core@1.0.0-beta.122", "@redocly/openapi-core@^1.0.0-beta.104":
-  version "1.0.0-beta.122"
-  resolved "https://registry.yarnpkg.com/@redocly/openapi-core/-/openapi-core-1.0.0-beta.122.tgz#b6eb61b281f1bfc4b40a14c88a58dfd9369c75a5"
-  integrity sha512-oky8yeq0Bodw+lj+jxPP4PZPdsN+Fx71N0X5PPEGzMe8zBhFnOAXMR7auA02gHz7DhOnCZ7kTNV1KcftRtSRNg==
+"@redocly/openapi-core@1.0.0-beta.123", "@redocly/openapi-core@^1.0.0-beta.104":
+  version "1.0.0-beta.123"
+  resolved "https://registry.yarnpkg.com/@redocly/openapi-core/-/openapi-core-1.0.0-beta.123.tgz#0c29ae9fabe5f143f571caf608a7d025f41125db"
+  integrity sha512-W6MbUWpb/VaV+Kf0c3jmMIJw3WwwF7iK5nAfcOS+ZwrlbxtIl37+1hEydFlJ209vCR9HL12PaMwdh2Vpihj6Jw==
   dependencies:
     "@redocly/ajv" "^8.11.0"
     "@types/node" "^14.11.8"
@@ -11872,10 +11877,10 @@ node-fetch-h2@^2.3.0:
   dependencies:
     http2-client "^1.2.5"
 
-node-fetch@^2.6.1, node-fetch@^2.6.7:
-  version "2.6.8"
-  resolved "https://registry.yarnpkg.com/node-fetch/-/node-fetch-2.6.8.tgz#a68d30b162bc1d8fd71a367e81b997e1f4d4937e"
-  integrity sha512-RZ6dBYuj8dRSfxpUSu+NsdF1dpPpluJxwOp+6IoDp/sH2QNDSvurYsAa+F1WxY2RjA1iP93xhcsUoYbF2XBqVg==
+node-fetch@^2.6.1:
+  version "2.6.9"
+  resolved "https://registry.yarnpkg.com/node-fetch/-/node-fetch-2.6.9.tgz#7c7f744b5cc6eb5fd404e0c7a9fec630a55657e6"
+  integrity sha512-DJm/CJkZkRjKKj4Zi4BsKVZh3ValV5IR5s7LVZnW+6YMh0W1BfNA8XSs6DLMGYlId5F3KnA70uu2qepcR08Qqg==
   dependencies:
     whatwg-url "^5.0.0"
 
@@ -11883,6 +11888,13 @@ node-fetch@^2.6.5:
   version "2.6.7"
   resolved "https://registry.yarnpkg.com/node-fetch/-/node-fetch-2.6.7.tgz#24de9fba827e3b4ae44dc8b20256a379160052ad"
   integrity sha512-ZjMPFEfVx5j+y2yF35Kzx5sF7kDzxuDj6ziH4FFbOp87zKDZNx8yExJIb05OGF4Nlt9IHFIMBkRl41VdvcNdbQ==
+  dependencies:
+    whatwg-url "^5.0.0"
+
+node-fetch@^2.6.7:
+  version "2.6.8"
+  resolved "https://registry.yarnpkg.com/node-fetch/-/node-fetch-2.6.8.tgz#a68d30b162bc1d8fd71a367e81b997e1f4d4937e"
+  integrity sha512-RZ6dBYuj8dRSfxpUSu+NsdF1dpPpluJxwOp+6IoDp/sH2QNDSvurYsAa+F1WxY2RjA1iP93xhcsUoYbF2XBqVg==
   dependencies:
     whatwg-url "^5.0.0"
 
