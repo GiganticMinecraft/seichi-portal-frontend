@@ -12,7 +12,7 @@ jobs:
       - uses: actions/checkout@v3
         with:
           submodules: 'true'
-      - name: Setup Node.js with Volta
+      - name: Setup Node.js
         uses: ./.github/actions/setup-node
       - name: Run ESLint
         run: yarn lint
@@ -23,7 +23,7 @@ jobs:
       - uses: actions/checkout@v3
         with:
           submodules: 'true'
-      - name: Setup Node.js with Volta
+      - name: Setup Node.js
         uses: ./.github/actions/setup-node
       - name: Run Prettier
         run: yarn format
@@ -34,7 +34,7 @@ jobs:
       - uses: actions/checkout@v3
         with:
           submodules: 'true'
-      - name: Setup Node.js with Volta
+      - name: Setup Node.js
         uses: ./.github/actions/setup-node
       - name: Run test
         run: yarn test
@@ -45,7 +45,7 @@ jobs:
       - uses: actions/checkout@v3
         with:
           submodules: 'true'
-      - name: Setup Node.js with Volta
+      - name: Setup Node.js
         uses: ./.github/actions/setup-node
       - name: Restore Next.js build cache
         uses: actions/cache@v3

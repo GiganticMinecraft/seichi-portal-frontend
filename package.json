@@ -82,9 +82,5 @@
     "openapi2aspida": "^0.21.0",
     "prettier": "^2.8.0",
     "typesync": "^0.10.0"
-  },
-  "volta": {
-    "node": "18.14.0",
-    "yarn": "1.22.19"
   }
 }
