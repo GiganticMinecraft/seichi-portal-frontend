@@ -10,6 +10,11 @@ export const ServerLogo = ({ color, width, height }: Props) => (
   <Image
     src={`https://github.com/GiganticMinecraft/branding/blob/master/server-logo-${color}.png?raw=true`}
     alt="ギガンティック☆整地鯖のロゴ"
+    // https://ebisu.com/note/next-image-migration/
+    style={{
+      maxWidth: '100%',
+      height: 'auto',
+    }}
     {...{ width, height }}
   />
 );
