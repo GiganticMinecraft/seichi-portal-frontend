@@ -18,7 +18,6 @@ export const Layout = ({
     </header>
     <main>
       <Helmet {...{ title, description }} />
-
       <Container my={2}>
         <Heading as="h1" size="xl" mb="3">
           {title}
