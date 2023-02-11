@@ -33,8 +33,8 @@ describe('Helmet', () => {
 
   test.each`
     received              | expected
-    ${'This is my site!'} | ${'This is my site!'}
-    ${'Hello World.'}     | ${'Hello World.'}
+    ${'This is my site!'} | ${`${siteDescription}This is my site!`}
+    ${'Hello World.'}     | ${`${siteDescription}Hello World.`}
     ${''}                 | ${siteDescription}
     ${undefined}          | ${siteDescription}
   `(

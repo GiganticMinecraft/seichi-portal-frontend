@@ -13,7 +13,9 @@ export const Helmet = ({ title, description }: HelmetProps) => (
     <meta
       data-testid="meta-desc"
       name="description"
-      content={description || siteDescription}
+      content={
+        description ? `${siteDescription}${description}` : siteDescription
+      }
     />
   </Head>
 );
