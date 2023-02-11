@@ -1,20 +1,12 @@
-import Image, { type ImageProps } from 'next/image';
+import { useColorMode } from '@chakra-ui/react';
 
-type Props = {
-  width: NonNullable<ImageProps['width']>;
-  height: NonNullable<ImageProps['height']>;
-  color: 'dark' | 'light';
+import { Presenter, type ServerLogoProps } from './presenter';
+
+type Props = Omit<ServerLogoProps, 'color'>;
+
+export const ServerLogo = ({ width, height }: Props) => {
+  const { colorMode } = useColorMode();
+  const color = colorMode === 'light' ? 'dark' : 'light';
+
+  return <Presenter {...{ color, width, height }} />;
 };
-
-export const ServerLogo = ({ color, width, height }: Props) => (
-  <Image
-    src={`https://github.com/GiganticMinecraft/branding/blob/master/server-logo-${color}.png?raw=true`}
-    alt="ギガンティック☆整地鯖のロゴ"
-    // https://ebisu.com/note/next-image-migration/
-    style={{
-      maxWidth: '100%',
-      height: 'auto',
-    }}
-    {...{ width, height }}
-  />
-);

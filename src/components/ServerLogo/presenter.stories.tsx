@@ -1,13 +1,13 @@
 import { ComponentMeta, ComponentStoryObj } from '@storybook/react';
 
-import { ServerLogo } from '.';
+import { Presenter } from './presenter';
 
 export default {
-  component: ServerLogo,
+  component: Presenter,
   title: 'components/ServerLogo',
-} as ComponentMeta<typeof ServerLogo>;
+} as ComponentMeta<typeof Presenter>;
 
-export const Dark: ComponentStoryObj<typeof ServerLogo> = {
+export const Dark: ComponentStoryObj<typeof Presenter> = {
   args: {
     width: 300,
     height: 200,
@@ -15,7 +15,7 @@ export const Dark: ComponentStoryObj<typeof ServerLogo> = {
   },
 };
 
-export const Light: ComponentStoryObj<typeof ServerLogo> = {
+export const Light: ComponentStoryObj<typeof Presenter> = {
   args: {
     width: 300,
     height: 200,

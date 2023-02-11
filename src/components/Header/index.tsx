@@ -10,6 +10,6 @@ export const Header = () => (
     justifyContent="center"
     position="relative"
   >
-    <ServerLogo width={120} height={100} color="dark" />
+    <ServerLogo width={120} height={100} />
   </Box>
 );
