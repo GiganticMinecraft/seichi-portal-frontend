@@ -5,13 +5,14 @@ import { Helmet, type HelmetProps } from '../Helmet';
 
 type Props = {
   children: React.ReactNode;
+  title: string;
 };
 
 export const Layout = ({
   children,
   title,
   description,
-}: Props & HelmetProps) => (
+}: Props & Omit<HelmetProps, 'title'>) => (
   <>
     <header>
       <Header />
