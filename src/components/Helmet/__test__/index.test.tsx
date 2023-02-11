@@ -1,7 +1,8 @@
 import { render } from '@testing-library/react';
 
+import { siteName, siteDescription } from '@/const/siteMeta';
+
 import { Helmet } from '..';
-import { siteDescription, siteName } from '../defaultValues';
 
 jest.mock('next/head', () => ({
   __esModule: true,

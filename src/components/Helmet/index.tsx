@@ -1,6 +1,6 @@
 import Head from 'next/head';
 
-import { siteName, siteDescription } from './defaultValues';
+import { siteDescription, siteName } from '@/const/siteMeta';
 
 export type HelmetProps = {
   title?: string;
