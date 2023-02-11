@@ -13,6 +13,6 @@ export const Presenter = ({
   <IconButton
     onClick={toggleColorMode}
     aria-label="カラーモードを切り替える"
-    icon={colorMode === 'light' ? <FaRegSun /> : <FaRegMoon />}
+    icon={colorMode === 'light' ? <FaRegMoon /> : <FaRegSun />}
   />
 );
