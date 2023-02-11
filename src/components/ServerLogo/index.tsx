@@ -1,8 +1,8 @@
 import { useColorMode } from '@chakra-ui/react';
 
-import { Presenter, type ServerLogoProps } from './presenter';
+import { Presenter, type PresenterProps } from './presenter';
 
-type Props = Omit<ServerLogoProps, 'color'>;
+type Props = Omit<PresenterProps, 'color'>;
 
 export const ServerLogo = ({ width, height }: Props) => {
   const { colorMode } = useColorMode();

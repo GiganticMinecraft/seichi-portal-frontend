@@ -1,12 +1,12 @@
 import Image, { type ImageProps } from 'next/image';
 
-export type ServerLogoProps = {
+export type PresenterProps = {
   width: NonNullable<ImageProps['width']>;
   height: NonNullable<ImageProps['height']>;
   color: 'dark' | 'light';
 };
 
-export const Presenter = ({ color, width, height }: ServerLogoProps) => (
+export const Presenter = ({ color, width, height }: PresenterProps) => (
   <Image
     src={`https://github.com/GiganticMinecraft/branding/blob/master/server-logo-${color}.png?raw=true`}
     alt="ギガンティック☆整地鯖のロゴ"
