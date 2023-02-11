@@ -1,9 +1,9 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import { ChakraProvider, extendTheme } from '@chakra-ui/react';
+import { ChakraProvider } from '@chakra-ui/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
-import type { AppProps } from 'next/app';
+import { customTheme } from '@/config/customTheme';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -15,23 +15,6 @@ const queryClient = new QueryClient({
     },
     mutations: {
       retry: 0,
-    },
-  },
-});
-
-const customTheme = extendTheme({
-  breakPoints: {
-    xl: '1440px',
-    '2xl': '2560px',
-  },
-  components: {
-    Container: {
-      baseStyle: {
-        maxW: {
-          base: '60ch',
-          md: '120ch',
-        },
-      },
     },
   },
 });
