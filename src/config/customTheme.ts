@@ -18,6 +18,12 @@ const containerStyle: ComponentSingleStyleConfig = {
   },
 };
 
+const buttonStyle: ComponentSingleStyleConfig = {
+  baseStyle: {
+    variant: 'ghost',
+  },
+};
+
 export const customChakraTheme = extendTheme({
   ...theme,
   breakPoints: {
@@ -26,5 +32,6 @@ export const customChakraTheme = extendTheme({
   },
   components: {
     Container: containerStyle,
+    Button: buttonStyle,
   },
 });
