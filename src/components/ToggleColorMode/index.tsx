@@ -1,9 +1,15 @@
 import { useColorMode } from '@chakra-ui/react';
 
-import { Presenter } from './presenter';
+import { Presenter, type ToggleColorModeProps } from './presenter';
 
-export const ToggleColorMode = () => {
+export const ToggleColorMode = (props: ToggleColorModeProps) => {
   const { colorMode, toggleColorMode } = useColorMode();
 
-  return <Presenter {...{ currentColorMode: colorMode, toggleColorMode }} />;
+  return (
+    <Presenter
+      // eslint-disable-next-line react/jsx-props-no-spreading
+      {...props}
+      {...{ currentColorMode: colorMode, toggleColorMode }}
+    />
+  );
 };
