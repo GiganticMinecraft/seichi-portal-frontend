@@ -19,7 +19,7 @@ const containerStyle: ComponentSingleStyleConfig = {
 };
 
 const buttonStyle: ComponentSingleStyleConfig = {
-  baseStyle: {
+  defaultProps: {
     variant: 'ghost',
   },
 };
