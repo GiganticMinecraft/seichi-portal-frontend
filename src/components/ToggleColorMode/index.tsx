@@ -5,5 +5,5 @@ import { Presenter } from './presenter';
 export const ToggleColorMode = () => {
   const { colorMode, toggleColorMode } = useColorMode();
 
-  return <Presenter {...{ colorMode, toggleColorMode }} />;
+  return <Presenter {...{ currentColorMode: colorMode, toggleColorMode }} />;
 };

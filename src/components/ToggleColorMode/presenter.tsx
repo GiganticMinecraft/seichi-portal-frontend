@@ -2,12 +2,12 @@ import { ColorMode, IconButton } from '@chakra-ui/react';
 import { FaRegMoon, FaRegSun } from 'react-icons/fa';
 
 type Props = {
-  colorMode: ColorMode;
+  currentColorMode: ColorMode;
   toggleColorMode?: () => void;
 };
 
 export const Presenter = ({
-  colorMode,
+  currentColorMode: colorMode,
   toggleColorMode = () => undefined,
 }: Props) => (
   <IconButton
