@@ -4,6 +4,7 @@ import { siteName, siteDescription } from '@/const/siteMeta';
 
 import { Helmet } from '..';
 
+// https://zenn.dev/nskij/articles/f7e8f8baa766e7
 jest.mock('next/head', () => ({
   __esModule: true,
   default: ({ children }: { children: Array<React.ReactElement> }) => (
