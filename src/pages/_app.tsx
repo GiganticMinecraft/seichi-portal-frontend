@@ -5,20 +5,9 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { type AppProps } from 'next/app';
 
 import { customTheme } from '@/config/customTheme';
+import { queryClientConfig } from '@/config/queryClientConfig';
 
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      retry: 0,
-      suspense: true,
-      // fetchして60秒（1000ms * 60）はcacheを読み込む
-      staleTime: 60 * 1000,
-    },
-    mutations: {
-      retry: 0,
-    },
-  },
-});
+const queryClient = new QueryClient(queryClientConfig);
 
 const App = ({ Component, pageProps }: AppProps) => (
   <QueryClientProvider client={queryClient}>
