@@ -1,8 +1,10 @@
 import { useColorMode } from '@chakra-ui/react';
 
-import { Presenter, type ToggleColorModeProps } from './presenter';
+import { Presenter, type PresenterProps } from './presenter';
 
-export const ToggleColorMode = (props: ToggleColorModeProps) => {
+type Props = Omit<PresenterProps, 'currentColorMode' | 'toggleColorMode'>;
+
+export const ToggleColorMode = (props: Props) => {
   const { colorMode: currentColorMode, toggleColorMode } = useColorMode();
 
   return (

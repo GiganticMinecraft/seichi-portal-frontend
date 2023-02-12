@@ -1,21 +1,16 @@
 import { ColorMode, IconButton, type IconButtonProps } from '@chakra-ui/react';
 import { FaRegMoon, FaRegSun } from 'react-icons/fa';
 
-type Props = {
+export type PresenterProps = {
   currentColorMode: ColorMode;
   toggleColorMode?: () => void;
-};
-
-export type ToggleColorModeProps = Omit<
-  IconButtonProps,
-  'aria-label' | 'icon' | 'onClick'
->;
+} & Omit<IconButtonProps, 'aria-label' | 'icon' | 'onClick'>;
 
 export const Presenter = ({
   currentColorMode: colorMode,
   toggleColorMode = () => undefined,
   ...props
-}: Props & ToggleColorModeProps) => (
+}: PresenterProps) => (
   <IconButton
     onClick={toggleColorMode}
     aria-label="カラーモードを切り替える"
