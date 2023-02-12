@@ -10,7 +10,6 @@ export default {
 export const Dark: ComponentStoryObj<typeof Presenter> = {
   args: {
     width: 300,
-    height: 200,
     color: 'dark',
   },
 };
@@ -18,7 +17,6 @@ export const Dark: ComponentStoryObj<typeof Presenter> = {
 export const Light: ComponentStoryObj<typeof Presenter> = {
   args: {
     width: 300,
-    height: 200,
     color: 'light',
   },
 };

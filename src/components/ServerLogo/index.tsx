@@ -4,9 +4,10 @@ import { Presenter, type PresenterProps } from './presenter';
 
 type Props = Omit<PresenterProps, 'color'>;
 
-export const ServerLogo = ({ width, height }: Props) => {
+export const ServerLogo = ({ width, ...props }: Props) => {
   const { colorMode } = useColorMode();
   const color = colorMode === 'light' ? 'dark' : 'light';
 
-  return <Presenter {...{ color, width, height }} />;
+  // eslint-disable-next-line react/jsx-props-no-spreading
+  return <Presenter {...{ color, width }} {...props} />;
 };
