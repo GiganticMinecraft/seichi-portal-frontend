@@ -19,7 +19,13 @@ export const Presenter = ({
   <IconButton
     onClick={toggleColorMode}
     aria-label="カラーモードを切り替える"
-    icon={colorMode === 'light' ? <FaRegMoon /> : <FaRegSun />}
+    icon={
+      colorMode === 'light' ? (
+        <FaRegMoon data-testid="toggle-icon-moon" />
+      ) : (
+        <FaRegSun data-testid="toggle-icon-sun" />
+      )
+    }
     // eslint-disable-next-line react/jsx-props-no-spreading
     {...props}
   />
