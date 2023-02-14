@@ -5,14 +5,17 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { type AppProps } from 'next/app';
 
 import { queryClientConfig, customChakraTheme } from '@/config';
+import { MsalProvider } from '@/features/user/components/MsalProvider';
 
 const queryClient = new QueryClient(queryClientConfig);
 
 const App = ({ Component, pageProps }: AppProps) => (
   <QueryClientProvider client={queryClient}>
     <ChakraProvider theme={customChakraTheme}>
-      <Component {...pageProps} />
-      <ReactQueryDevtools initialIsOpen={false} />
+      <MsalProvider>
+        <Component {...pageProps} />
+        <ReactQueryDevtools initialIsOpen={false} />
+      </MsalProvider>
     </ChakraProvider>
   </QueryClientProvider>
 );
