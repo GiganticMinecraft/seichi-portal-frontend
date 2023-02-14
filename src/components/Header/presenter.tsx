@@ -1,4 +1,4 @@
-import { Box } from '@chakra-ui/react';
+import { Box, ButtonGroup } from '@chakra-ui/react';
 
 import { SignIn } from '@/features/user/components/SignIn';
 import { SignOut } from '@/features/user/components/SignOut';
@@ -20,12 +20,12 @@ export const Presenter = ({ isAuthenticated }: Props) => (
     position="relative"
   >
     <ServerLogo width={120} />
-    <Box
+    <ButtonGroup
       position={{ base: 'relative', md: 'absolute' }}
       right={{ base: 0, md: 40 }}
     >
       <ToggleColorMode />
       {isAuthenticated ? <SignOut /> : <SignIn />}
-    </Box>
+    </ButtonGroup>
   </Box>
 );
