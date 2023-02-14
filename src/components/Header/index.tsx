@@ -1,23 +1,9 @@
-import { Box } from '@chakra-ui/react';
+import { useIsAuthenticated } from '@azure/msal-react';
 
-import { ServerLogo } from '../ServerLogo';
-import { ToggleColorMode } from '../ToggleColorMode';
+import { Presenter } from './presenter';
 
-export const Header = () => (
-  <Box
-    boxShadow="md"
-    p={3}
-    display="flex"
-    justifyContent={{ base: 'space-between', md: 'center' }}
-    alignItems="center"
-    position="relative"
-  >
-    <ServerLogo width={120} />
-    <Box
-      position={{ base: 'relative', md: 'absolute' }}
-      right={{ base: 0, md: 40 }}
-    >
-      <ToggleColorMode />
-    </Box>
-  </Box>
-);
+export const Header = () => {
+  const isAuthenticated = useIsAuthenticated();
+
+  return <Presenter isAuthenticated={isAuthenticated} />;
+};
