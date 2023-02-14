@@ -9,5 +9,5 @@ export const ServerLogo = ({ width, ...props }: Props) => {
   const color = colorMode === 'light' ? 'dark' : 'light';
 
   // eslint-disable-next-line react/jsx-props-no-spreading
-  return <Presenter {...{ color, width }} {...props} />;
+  return <Presenter {...props} {...{ color, width }} />;
 };

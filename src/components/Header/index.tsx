@@ -5,5 +5,5 @@ import { Presenter } from './presenter';
 export const Header = () => {
   const isAuthenticated = useIsAuthenticated();
 
-  return <Presenter isAuthenticated={isAuthenticated} />;
+  return <Presenter {...{ isAuthenticated }} />;
 };

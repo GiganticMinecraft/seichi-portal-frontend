@@ -17,5 +17,5 @@ export const SignIn = ({ ...props }: Props) => {
   };
 
   // eslint-disable-next-line react/jsx-props-no-spreading
-  return <Presenter onClick={onClick} isSigningIn={isSigningIn} {...props} />;
+  return <Presenter {...props} {...{ isSigningIn, onClick }} />;
 };

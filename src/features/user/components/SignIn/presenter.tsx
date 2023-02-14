@@ -7,15 +7,14 @@ export type PresenterProps = {
 
 export const Presenter = ({
   onClick,
-  isSigningIn,
+  isSigningIn: isLoading,
   ...props
 }: PresenterProps) => (
   <Button
     // eslint-disable-next-line react/jsx-props-no-spreading
     {...props}
-    onClick={onClick}
+    {...{ onClick, isLoading }}
     aria-label="サインインする"
-    isLoading={isSigningIn}
     variant="solid"
     colorScheme="blue"
   >
