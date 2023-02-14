@@ -54,6 +54,23 @@
   dependencies:
     aspida "^1.7.1"
 
+"@azure/msal-browser@^2.33.0":
+  version "2.33.0"
+  resolved "https://registry.yarnpkg.com/@azure/msal-browser/-/msal-browser-2.33.0.tgz#4703e59ad7db72a7878b22caca581800f0b062fb"
+  integrity sha512-c7CVh1tfUfxiWkEIhoIb11hL4PGo4hz0M+gMy34ATagAKdLK7qyEu/5AXJWAf5lz5eE+vQhm7+LKiuETrcXXGw==
+  dependencies:
+    "@azure/msal-common" "^10.0.0"
+
+"@azure/msal-common@^10.0.0":
+  version "10.0.0"
+  resolved "https://registry.yarnpkg.com/@azure/msal-common/-/msal-common-10.0.0.tgz#07fc39ae2a2e6f2c1da8e26657058317de52b65a"
+  integrity sha512-/LghpT93jsZLy55QzTsRZWMx6R1Mjc1Aktwps8sKSGE3WbrGwbSsh2uhDlpl6FMcKChYjJ0ochThWwwOodrQNg==
+
+"@azure/msal-react@^1.5.3":
+  version "1.5.3"
+  resolved "https://registry.yarnpkg.com/@azure/msal-react/-/msal-react-1.5.3.tgz#9a36b8f17f3dbb6fc1cce7a70a18b29f33023f68"
+  integrity sha512-PIbksHzNDzEA8iV9BGiKTdxNZVryvJ4CZ/sFhuqX87I5xbCbcxF/oz6iv1qWqtHAeovUigARBZPw7lQOUVsQmg==
+
 "@babel/code-frame@^7.0.0", "@babel/code-frame@^7.10.4", "@babel/code-frame@^7.12.13", "@babel/code-frame@^7.18.6", "@babel/code-frame@^7.5.5", "@babel/code-frame@^7.8.3":
   version "7.18.6"
   resolved "https://registry.yarnpkg.com/@babel/code-frame/-/code-frame-7.18.6.tgz#3b25d38c89600baa2dcc219edfa88a74eb2c427a"
