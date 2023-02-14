@@ -3,7 +3,7 @@ import { Button, ButtonProps } from '@chakra-ui/react';
 export type PresenterProps = {
   onClick: () => void;
   isSigningIn: boolean;
-} & Omit<ButtonProps, 'onClick' | 'aria-label' | 'isLoading'>;
+} & ButtonProps;
 
 export const Presenter = ({
   onClick,
@@ -11,11 +11,13 @@ export const Presenter = ({
   ...props
 }: PresenterProps) => (
   <Button
+    // eslint-disable-next-line react/jsx-props-no-spreading
+    {...props}
     onClick={onClick}
     aria-label="サインインする"
     isLoading={isSigningIn}
-    // eslint-disable-next-line react/jsx-props-no-spreading
-    {...props}
+    variant="solid"
+    colorScheme="blue"
   >
     サインインする
   </Button>
