@@ -1,8 +1,10 @@
 import { Configuration } from '@azure/msal-browser';
 
+import { MS_APP_CLIENT_ID } from '@/const/env';
+
 export const msalConfig: Configuration = {
   auth: {
-    clientId: 'd5eee1d8-63e7-4404-9b57-9e74f8e5215f',
+    clientId: MS_APP_CLIENT_ID,
     authority: 'https://login.microsoftonline.com/consumers',
     redirectUri: 'http://localhost:3000',
   },
@@ -12,11 +14,6 @@ export const msalConfig: Configuration = {
   },
 };
 
-// Add scopes here for ID token to be used at Microsoft identity platform endpoints.
 export const loginRequest = {
-  scopes: ['User.Read'],
-};
-
-export const graphConfig = {
-  graphMeEndpoint: 'https://graph.microsoft.com/v1.0/me',
+  scopes: ['XboxLive.signin offline_access'],
 };
