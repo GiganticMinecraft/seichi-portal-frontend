@@ -11,3 +11,8 @@ export type MsAuthResult = {
   token: string;
   userHash: string;
 };
+
+export type McProfile = {
+  id: string;
+  name: string;
+};
