@@ -1,10 +1,10 @@
 import { jsonHeaders } from '@/const/headers';
 
-import { msAuthJson, MsAuthResult } from '../types';
+import { requireXboxTokenResponse, XboxToken } from '../types';
 
 const url = 'https://xsts.auth.xboxlive.com/xsts/authorize';
 
-const getBodyWithToken = (xblToken: string) => ({
+const genBodyWithToken = (xblToken: string) => ({
   Properties: {
     SandboxId: 'RETAIL',
     UserTokens: [xblToken],
@@ -13,17 +13,17 @@ const getBodyWithToken = (xblToken: string) => ({
   TokenType: 'JWT',
 });
 
-export const getXstsToken = async (
-  msAuth: MsAuthResult,
-): Promise<MsAuthResult> => {
-  const body = JSON.stringify(getBodyWithToken(msAuth.token));
+export const requireXstsToken = async (
+  xblToken: XboxToken,
+): Promise<XboxToken> => {
+  const body = JSON.stringify(genBodyWithToken(xblToken.token));
   const response = await fetch(url, {
     method: 'POST',
     headers: jsonHeaders,
     body,
   });
   if (!response.ok) throw new Error('');
-  const res = msAuthJson.parse(response.json);
+  const res = requireXboxTokenResponse.parse(response.json);
 
   return {
     token: res.Token,

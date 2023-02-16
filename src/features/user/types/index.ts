@@ -1,13 +1,17 @@
 import { z } from 'zod';
 
-export const msAuthJson = z.object({
+export type MsAccessToken = {
+  token: string;
+};
+
+export const requireXboxTokenResponse = z.object({
   Token: z.string(),
   DisplayClaims: z.object({
     xui: z.array(z.object({ uhs: z.string() })),
   }),
 });
 
-export type MsAuthResult = {
+export type XboxToken = {
   token: string;
   userHash: string;
 };
