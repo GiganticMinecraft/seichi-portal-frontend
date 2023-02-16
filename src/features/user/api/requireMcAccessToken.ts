@@ -2,7 +2,7 @@ import { z } from 'zod';
 
 import { jsonHeaders } from '@/const/headers';
 
-import { XboxToken } from '../types';
+import { McAccessToken, XboxToken } from '../types';
 
 const url = 'https://api.minecraftservices.com/authentication/login_with_xbox';
 
@@ -13,10 +13,6 @@ const genBodyWithToken = (userHash: string, xstsToken: string) => ({
 const requireMcAccessTokenResponse = z.object({
   Token: z.string(),
 });
-
-export type McAccessToken = {
-  token: string;
-};
 
 export const requireMcAccessToken = async (
   xstsToken: XboxToken,

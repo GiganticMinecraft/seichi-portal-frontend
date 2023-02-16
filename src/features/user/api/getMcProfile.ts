@@ -2,9 +2,7 @@ import { z } from 'zod';
 
 import { jsonHeaders } from '@/const/headers';
 
-import { McAccessToken } from './requireMcAccessToken';
-
-import { McProfile } from '../types';
+import { McAccessToken, McProfile } from '../types';
 
 const url = 'https://api.minecraftservices.com/minecraft/profile';
 
