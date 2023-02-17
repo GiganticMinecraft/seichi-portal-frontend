@@ -1,30 +1,26 @@
-import {
-  AuthenticatedTemplate,
-  UnauthenticatedTemplate,
-  useIsAuthenticated,
-} from '@azure/msal-react';
-
 import { Layout } from '@/components/elements/Layout';
 import { SignIn } from '@/features/user/components/SignIn';
 import { SignOut } from '@/features/user/components/SignOut';
+import { useMcProfile } from '@/features/user/hooks';
 
 export const Signin = () => {
-  // TODO: これだとMSアカウントにログインしているかどうかしか考慮しないので、GameProfileが格納されているかどうかも考慮する
-  const isAuthenticated = useIsAuthenticated();
+  // TODO: MSアカウントにログインしているかどうかとGameProfileが格納されているかどうかの両方を考慮しきれているか？
+  const profile = useMcProfile();
+  const isAuthenticated = !!profile;
 
   return (
     <Layout
       title="サインイン"
       description="このページではサインインを行います。"
     >
-      <p>Hello!</p>
       {isAuthenticated ? <SignOut /> : <SignIn />}
-      <AuthenticatedTemplate>
-        <p>SignIn done!</p>
-      </AuthenticatedTemplate>
-      <UnauthenticatedTemplate>
+      {isAuthenticated ? (
+        <p>
+          {profile.name} {profile.id}
+        </p>
+      ) : (
         <p>You are not signed in! Please sign in.</p>
-      </UnauthenticatedTemplate>
+      )}
     </Layout>
   );
 };
