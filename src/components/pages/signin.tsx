@@ -9,6 +9,7 @@ import { SignIn } from '@/features/user/components/SignIn';
 import { SignOut } from '@/features/user/components/SignOut';
 
 export const Signin = () => {
+  // TODO: これだとMSアカウントにログインしているかどうかしか考慮しないので、GameProfileが格納されているかどうかも考慮する
   const isAuthenticated = useIsAuthenticated();
 
   return (
