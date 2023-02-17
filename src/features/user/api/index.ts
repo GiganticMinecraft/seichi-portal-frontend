@@ -20,7 +20,7 @@ export const getMinecraftGameProfile = async ([
   const mcAccessToken = await requireMcAccessToken(xstsToken);
   const hasMc = await hasMcAccount(mcAccessToken);
   if (!hasMc) {
-    throw new Error('');
+    throw new Error("The Microsoft account doesn't own Minecraft.");
   }
 
   return getMcProfile(mcAccessToken);

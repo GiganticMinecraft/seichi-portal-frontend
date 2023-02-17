@@ -21,7 +21,8 @@ export const getMcProfile = async (
       Authorization: `Bearer ${token.token}`,
     },
   });
-  if (!response.ok) throw new Error('');
+  if (!response.ok)
+    throw new Error(`Network Error: ${response.status} ${response.statusText}`);
   const res = responseJsonSchema.parse(response.json());
 
   return {

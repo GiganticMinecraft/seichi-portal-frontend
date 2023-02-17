@@ -22,7 +22,8 @@ export const requireXstsToken = async (
     headers: jsonHeaders,
     body,
   });
-  if (!response.ok) throw new Error('');
+  if (!response.ok)
+    throw new Error(`Network Error: ${response.status} ${response.statusText}`);
   const res = requireXboxTokenResponse.parse(response.json);
 
   return {

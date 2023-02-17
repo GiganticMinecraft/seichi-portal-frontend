@@ -25,7 +25,8 @@ export const hasMcAccount = async (token: McAccessToken) => {
       Authorization: `Bearer ${token.token}`,
     },
   });
-  if (!response.ok) throw new Error('');
+  if (!response.ok)
+    throw new Error(`Network Error: ${response.status} ${response.statusText}`);
   // TODO: the signature should always be checked with the public key from Mojang to verify that it is a legitimate response from the official servers
   const res = hasMcAccountResponse.parse(response.json());
 
