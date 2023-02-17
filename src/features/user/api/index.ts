@@ -36,7 +36,7 @@ export const loginAndGetGameProfile = async (
   // TODO: catch and rethrow error
   const { account } = await instance.loginPopup(loginRequest);
   if (!account) {
-    throw new Error('AccountInfo is null.');
+    throw new Error('Failed to fetch account info.');
   }
 
   return getMinecraftGameProfile([instance, account, loginRequest.scopes]);
