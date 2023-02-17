@@ -2,6 +2,8 @@ import { z } from 'zod';
 
 import { jsonHeaders } from '@/const/headers';
 
+import { McAccessToken } from '../types';
+
 const url = 'https://api.minecraftservices.com/entitlements/mcstore';
 
 const hasMcAccountResponse = z.object({
@@ -15,10 +17,13 @@ const hasMcAccountResponse = z.object({
   ),
 });
 
-export const hasMcAccount = async (token: string) => {
+export const hasMcAccount = async (token: McAccessToken) => {
   const response = await fetch(url, {
     method: 'GET',
-    headers: { Accept: jsonHeaders.Accept, Authorization: `Bearer ${token}` },
+    headers: {
+      Accept: jsonHeaders.Accept,
+      Authorization: `Bearer ${token.token}`,
+    },
   });
   if (!response.ok) throw new Error('');
   // TODO: the signature should always be checked with the public key from Mojang to verify that it is a legitimate response from the official servers
