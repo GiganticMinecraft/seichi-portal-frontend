@@ -4,7 +4,7 @@ import { jsonHeaders } from '@/const/headers';
 
 import { McAccessToken, McProfile } from '../types';
 
-const url = 'https://api.minecraftservices.com/minecraft/profile';
+const url = '/externalApi/mcProfile';
 
 const responseJsonSchema = z.object({
   id: z.string(),

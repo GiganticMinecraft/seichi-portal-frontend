@@ -2,7 +2,7 @@ import { jsonHeaders } from '@/const/headers';
 
 import { MsAccessToken, requireXboxTokenResponse, XboxToken } from '../types';
 
-const url = 'https://user.auth.xboxlive.com/user/authenticate';
+const url = '/externalApi/xbl';
 
 const genBodyWithToken = (token: string) => ({
   Properties: {

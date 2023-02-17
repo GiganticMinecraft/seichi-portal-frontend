@@ -4,14 +4,14 @@ import { jsonHeaders } from '@/const/headers';
 
 import { McAccessToken, XboxToken } from '../types';
 
-const url = 'https://api.minecraftservices.com/authentication/login_with_xbox';
+const url = '/externalApi/mcToken';
 
 const genBodyWithToken = (userHash: string, xstsToken: string) => ({
   identityToken: `XBL3.0 x=${userHash};${xstsToken}`,
 });
 
 const requireMcAccessTokenResponse = z.object({
-  Token: z.string(),
+  access_token: z.string(),
 });
 
 export const requireMcAccessToken = async (
@@ -29,5 +29,5 @@ export const requireMcAccessToken = async (
     throw new Error(`Network Error: ${response.status} ${response.statusText}`);
   const res = requireMcAccessTokenResponse.parse(await response.json());
 
-  return { token: res.Token };
+  return { token: res.access_token };
 };

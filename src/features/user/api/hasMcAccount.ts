@@ -4,7 +4,7 @@ import { jsonHeaders } from '@/const/headers';
 
 import { McAccessToken } from '../types';
 
-const url = 'https://api.minecraftservices.com/entitlements/mcstore';
+const url = '/externalApi/mcOwn';
 
 const hasMcAccountResponse = z.object({
   signature: z.string(),
@@ -29,6 +29,7 @@ export const hasMcAccount = async (token: McAccessToken) => {
     throw new Error(`Network Error: ${response.status} ${response.statusText}`);
   // TODO: the signature should always be checked with the public key from Mojang to verify that it is a legitimate response from the official servers
   const res = hasMcAccountResponse.parse(await response.json());
+  console.dir(res);
 
   return res.items.length !== 0;
 };
