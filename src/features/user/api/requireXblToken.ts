@@ -25,7 +25,7 @@ export const requireXblToken = async (
   });
   if (!response.ok)
     throw new Error(`Network Error: ${response.status} ${response.statusText}`);
-  const res = requireXboxTokenResponse.parse(response.json);
+  const res = requireXboxTokenResponse.parse(await response.json());
 
   return {
     token: res.Token,

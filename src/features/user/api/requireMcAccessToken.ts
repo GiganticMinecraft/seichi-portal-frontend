@@ -27,7 +27,7 @@ export const requireMcAccessToken = async (
   });
   if (!response.ok)
     throw new Error(`Network Error: ${response.status} ${response.statusText}`);
-  const res = requireMcAccessTokenResponse.parse(response.json);
+  const res = requireMcAccessTokenResponse.parse(await response.json());
 
   return { token: res.Token };
 };
