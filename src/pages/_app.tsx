@@ -14,9 +14,9 @@ const App = ({ Component, pageProps }: AppProps) => (
     <ChakraProvider theme={customChakraTheme}>
       <MsalProvider>
         <Component {...pageProps} />
-        <ReactQueryDevtools initialIsOpen={false} />
       </MsalProvider>
     </ChakraProvider>
+    <ReactQueryDevtools initialIsOpen={false} />
   </QueryClientProvider>
 );
 
