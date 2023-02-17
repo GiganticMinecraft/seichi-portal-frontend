@@ -1,3 +1,5 @@
+import { IPublicClientApplication } from '@azure/msal-browser';
+
 import { getMcProfile } from './getMcProfile';
 import { hasMcAccount } from './hasMcAccount';
 import { requireMcAccessToken } from './requireMcAccessToken';
@@ -5,11 +7,11 @@ import { requireMsAccountAccessToken } from './requireMsAccountAccessToken';
 import { requireXblToken } from './requireXblToken';
 import { requireXstsToken } from './requireXstsToken';
 
-export const getMinecraftGameProfile = async ([
-  instance,
-  account,
-  scopes,
-]: Parameters<typeof requireMsAccountAccessToken>) => {
+import { loginRequest } from '../config/msal';
+
+const getMinecraftGameProfile = async ([instance, account, scopes]: Parameters<
+  typeof requireMsAccountAccessToken
+>) => {
   const msAccessToken = await requireMsAccountAccessToken(
     instance,
     account,
@@ -26,4 +28,16 @@ export const getMinecraftGameProfile = async ([
   }
 
   return getMcProfile(mcAccessToken);
+};
+
+export const loginAndGetGameProfile = async (
+  instance: IPublicClientApplication,
+) => {
+  // TODO: catch and rethrow error
+  const { account } = await instance.loginPopup(loginRequest);
+  if (!account) {
+    throw new Error('AccountInfo is null.');
+  }
+
+  return getMinecraftGameProfile([instance, account, loginRequest.scopes]);
 };
