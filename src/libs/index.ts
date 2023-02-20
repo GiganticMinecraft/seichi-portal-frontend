@@ -9,7 +9,7 @@
  * @see https://zenn.dev/uhyo/articles/array-n-keys-yamero
  */
 export function* rangeIter(start: number, length: number) {
-  for (let i = start; i < length; i += 1) {
+  for (let i = start; i < start + length; i += 1) {
     yield i;
   }
 }
