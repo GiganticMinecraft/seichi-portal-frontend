@@ -1,13 +1,6 @@
 import { z } from 'zod';
 
 /**
- * Microsoftアカウントにアクセスするためのトークン
- */
-export type MsAccessToken = {
-  token: string;
-};
-
-/**
  * XBoxLiveサービスにアクセスしたときに返ってくるResponseのスキーマ
  */
 export const requireXboxTokenResponse = z.object({

@@ -1,6 +1,6 @@
 import { jsonHeaders } from '@/const/headers';
 
-import { MsAccessToken, requireXboxTokenResponse, XboxToken } from '../types';
+import { requireXboxTokenResponse, XboxToken } from '../types';
 
 const url = '/externalApi/xbl';
 
@@ -14,10 +14,8 @@ const genBodyWithToken = (token: string) => ({
   TokenType: 'JWT',
 });
 
-export const requireXblToken = async (
-  token: MsAccessToken,
-): Promise<XboxToken> => {
-  const body = JSON.stringify(genBodyWithToken(token.token));
+export const requireXblToken = async (token: string): Promise<XboxToken> => {
+  const body = JSON.stringify(genBodyWithToken(token));
   const response = await fetch(url, {
     method: 'POST',
     headers: jsonHeaders,
