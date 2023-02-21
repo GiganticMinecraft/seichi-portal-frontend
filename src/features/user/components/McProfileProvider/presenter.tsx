@@ -6,7 +6,7 @@ import { McProfile } from '../../types';
 export type PresenterProps = {
   children: React.ReactNode;
   profile?: McProfile;
-  setProfile: Dispatch<SetStateAction<McProfile>>;
+  setProfile: Dispatch<SetStateAction<McProfile | undefined>>;
 };
 
 export const Presenter = ({

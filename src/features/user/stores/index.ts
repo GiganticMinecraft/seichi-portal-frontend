@@ -4,5 +4,5 @@ import { McProfile } from '../types';
 
 export const mcProfile = React.createContext<McProfile | undefined>(undefined);
 export const setMcProfile = React.createContext<
-  Dispatch<SetStateAction<McProfile>>
+  Dispatch<SetStateAction<McProfile | undefined>>
 >(() => undefined);
