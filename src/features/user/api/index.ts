@@ -9,14 +9,10 @@ import { requireXstsToken } from './requireXstsToken';
 
 import { loginRequest } from '../config/msal';
 
-const getMinecraftGameProfile = async ([instance, account, scopes]: Parameters<
-  typeof requireMsAccountAccessToken
->) => {
-  const msAccessToken = await requireMsAccountAccessToken(
-    instance,
-    account,
-    scopes,
-  );
+const getMinecraftGameProfile = async (
+  params: Parameters<typeof requireMsAccountAccessToken>,
+) => {
+  const msAccessToken = await requireMsAccountAccessToken(...params);
   const xblToken = await requireXblToken(msAccessToken);
   const xstsToken = await requireXstsToken(xblToken);
   const mcAccessToken = await requireMcAccessToken(xstsToken);
