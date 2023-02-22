@@ -1,8 +1,17 @@
+import {
+  isOk,
+  unwrapOk,
+  createErr,
+  andThenAsyncForResult,
+  createOk,
+} from 'option-t/lib/PlainResult';
+import { tryCatchIntoResultWithEnsureErrorAsync } from 'option-t/lib/PlainResult/tryCatchAsync';
 import { z } from 'zod';
 
 import { jsonHeaders } from '@/const/headers';
 
-import { McAccessToken, XboxToken } from '../types';
+import { XboxToken } from '../types';
+import { NetworkError } from '../types/error';
 
 const url = '/externalApi/mcToken';
 
@@ -14,20 +23,35 @@ const requireMcAccessTokenResponse = z.object({
   access_token: z.string(),
 });
 
-export const requireMcAccessToken = async (
-  xstsToken: XboxToken,
-): Promise<McAccessToken> => {
+export const requireMcAccessToken = async (xstsToken: XboxToken) => {
   const body = JSON.stringify(
     genBodyWithToken(xstsToken.userHash, xstsToken.token),
   );
-  const response = await fetch(url, {
-    method: 'POST',
-    headers: jsonHeaders,
-    body,
-  });
-  if (!response.ok)
-    throw new Error(`Network Error: ${response.status} ${response.statusText}`);
-  const res = requireMcAccessTokenResponse.parse(await response.json());
 
-  return { token: res.access_token };
+  const responseResult = await tryCatchIntoResultWithEnsureErrorAsync(() =>
+    fetch(url, {
+      method: 'POST',
+      headers: jsonHeaders,
+      body,
+    }),
+  );
+  if (isOk(responseResult) && !unwrapOk(responseResult).ok) {
+    const response = unwrapOk(responseResult);
+
+    return createErr(new NetworkError(response.status, response.statusText));
+  }
+
+  return andThenAsyncForResult(responseResult, async (response) => {
+    const parsedResponse = requireMcAccessTokenResponse.safeParse(
+      await response.json(),
+    );
+
+    if (!parsedResponse.success) {
+      return createErr(parsedResponse.error);
+    }
+
+    return createOk({
+      token: parsedResponse.data.access_token,
+    });
+  });
 };

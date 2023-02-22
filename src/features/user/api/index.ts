@@ -1,4 +1,13 @@
 import { IPublicClientApplication } from '@azure/msal-browser';
+import {
+  andThenAsyncForResult,
+  andThenForResult,
+  createErr,
+  createOk,
+  isOk,
+  unwrapOk,
+} from 'option-t/lib/PlainResult';
+import { tryCatchIntoResultWithEnsureErrorAsync } from 'option-t/lib/PlainResult/tryCatchAsync';
 
 import { getMcProfile } from './getMcProfile';
 import { hasMcAccount } from './hasMcAccount';
@@ -8,32 +17,44 @@ import { requireXblToken } from './requireXblToken';
 import { requireXstsToken } from './requireXstsToken';
 
 import { loginRequest } from '../config/msal';
+import { HasNoMinecraft } from '../types/error';
 
 const getMinecraftGameProfile = async (
   params: Parameters<typeof requireMsAccountAccessToken>,
 ) => {
   const msAccessToken = await requireMsAccountAccessToken(...params);
-  const xblToken = await requireXblToken(msAccessToken);
-  const xstsToken = await requireXstsToken(xblToken);
-  const mcAccessToken = await requireMcAccessToken(xstsToken);
-  const hasMc = await hasMcAccount(mcAccessToken);
+  const xblToken = await andThenAsyncForResult(msAccessToken, requireXblToken);
+  const xstsToken = await andThenAsyncForResult(xblToken, requireXstsToken);
+  const mcAccessToken = await andThenAsyncForResult(
+    xstsToken,
+    requireMcAccessToken,
+  );
+  const hasMc = await andThenAsyncForResult(mcAccessToken, hasMcAccount);
   // TODO: ここの条件分岐がfalseになる（MCアカウントをもっている）のに、getMcProfileが404になる場合がある
   // これは、アカウントをもっているにも関わらず、アカウント名を設定していないため
-  if (!hasMc) {
-    throw new Error("The Microsoft account doesn't own Minecraft.");
+  if (isOk(hasMc) && !unwrapOk(hasMc)) {
+    return createErr(new HasNoMinecraft());
   }
 
-  return getMcProfile(mcAccessToken);
+  return andThenAsyncForResult(mcAccessToken, getMcProfile);
 };
 
 export const loginAndGetGameProfile = async (
   instance: IPublicClientApplication,
 ) => {
-  // TODO: catch and rethrow error
-  const { account } = await instance.loginPopup(loginRequest);
-  if (!account) {
-    throw new Error('Failed to fetch account info.');
-  }
+  const loginResult = await tryCatchIntoResultWithEnsureErrorAsync(() =>
+    instance.loginPopup(loginRequest),
+  );
 
-  return getMinecraftGameProfile([instance, account, loginRequest.scopes]);
+  return andThenAsyncForResult(
+    andThenForResult(loginResult, (r) => {
+      if (!r.account) {
+        return createErr(new Error('Failed to fetch account info.'));
+      }
+
+      return createOk(r.account);
+    }),
+    (account) =>
+      getMinecraftGameProfile([instance, account, loginRequest.scopes]),
+  );
 };
