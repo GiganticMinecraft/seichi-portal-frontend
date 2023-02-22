@@ -12346,6 +12346,11 @@ openapi3-ts@^2.0.2:
   dependencies:
     yaml "^1.10.2"
 
+option-t@^33.11.1:
+  version "33.11.1"
+  resolved "https://registry.yarnpkg.com/option-t/-/option-t-33.11.1.tgz#a87276c9ad208f7b4f04411426fb375acae88bb2"
+  integrity sha512-t6+OMXpMSWOpTxLvVicx85szYEbGoX2FN19CbsQOxDx+EY+qBBe4MItFW2YWXUR898CBA4N6tFcLwIAyzW/91g==
+
 optionator@^0.8.1:
   version "0.8.3"
   resolved "https://registry.yarnpkg.com/optionator/-/optionator-0.8.3.tgz#84fa1d036fe9d3c7e21d99884b601167ec8fb495"
