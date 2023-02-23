@@ -9,6 +9,8 @@ import { z } from 'zod';
 
 import { jsonHeaders } from '@/const/headers';
 
+import { verifyAllSigns } from './verifyAllSigns';
+
 import { McAccessToken } from '../types';
 import { NetworkError } from '../types/error';
 
@@ -36,8 +38,6 @@ export const hasMcAccount = async (token: McAccessToken) => {
     }),
   );
 
-  // TODO: the signature should always be checked with the public key from Mojang to verify that it is a legitimate response from the official servers
-
   return andThenAsyncForResult(
     andThenForResult(responseResult, (response) => {
       if (!response.ok) {
@@ -55,6 +55,16 @@ export const hasMcAccount = async (token: McAccessToken) => {
 
       if (!parsedResponse.success) {
         return createErr(parsedResponse.error);
+      }
+
+      const allSignsAreVerified = verifyAllSigns([
+        parsedResponse.data.signature,
+        ...parsedResponse.data.items.map(({ signature }) => signature),
+      ]);
+      if (!allSignsAreVerified) {
+        return createErr(
+          new Error('APIから受け取った署名の中に不正なものがあります'),
+        );
       }
 
       return createOk(parsedResponse.data.items.length !== 0);
