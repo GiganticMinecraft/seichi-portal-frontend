@@ -30,8 +30,7 @@ const getMinecraftGameProfile = async (
     requireMcAccessToken,
   );
   const hasMc = await andThenAsyncForResult(mcAccessToken, hasMcAccount);
-  // TODO: ここの条件分岐がfalseになる（MCアカウントをもっている）のに、getMcProfileが404になる場合がある
-  // これは、アカウントをもっているにも関わらず、アカウント名を設定していないため
+  // NOTE: ここの条件分岐がfalseになる（MCアカウントをもっている）のに、getMcProfileが404になる場合がある。これは、アカウントをもっているにも関わらず、アカウント名を設定していないため
   if (isOk(hasMc) && !unwrapOk(hasMc)) {
     return createErr(new HasNoMinecraft());
   }
