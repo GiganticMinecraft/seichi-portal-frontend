@@ -1,10 +1,9 @@
 import {
   Result,
-  unwrapOk,
   createErr,
   createOk,
-  isOk,
   andThenAsyncForResult,
+  andThenForResult,
 } from 'option-t/lib/PlainResult';
 import { tryCatchIntoResultWithEnsureErrorAsync } from 'option-t/lib/PlainResult/tryCatchAsync';
 
@@ -37,24 +36,29 @@ export const requireXblToken = async (
     }),
   );
 
-  if (isOk(responseResult) && !unwrapOk(responseResult).ok) {
-    const response = unwrapOk(responseResult);
+  return andThenAsyncForResult(
+    andThenForResult(responseResult, (response) => {
+      if (!response.ok) {
+        return createErr(
+          new NetworkError(response.status, response.statusText),
+        );
+      }
 
-    return createErr(new NetworkError(response.status, response.statusText));
-  }
+      return createOk(response);
+    }),
+    async (response) => {
+      const parsedResponse = requireXboxTokenResponse.safeParse(
+        await response.json(),
+      );
 
-  return andThenAsyncForResult(responseResult, async (response) => {
-    const parsedResponse = requireXboxTokenResponse.safeParse(
-      await response.json(),
-    );
+      if (!parsedResponse.success) {
+        return createErr(parsedResponse.error);
+      }
 
-    if (!parsedResponse.success) {
-      return createErr(parsedResponse.error);
-    }
-
-    return createOk({
-      token: parsedResponse.data.Token,
-      userHash: parsedResponse.data.DisplayClaims.xui[0].uhs,
-    });
-  });
+      return createOk({
+        token: parsedResponse.data.Token,
+        userHash: parsedResponse.data.DisplayClaims.xui[0].uhs,
+      });
+    },
+  );
 };

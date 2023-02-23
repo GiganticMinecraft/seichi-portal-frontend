@@ -1,9 +1,8 @@
 import {
-  isOk,
-  unwrapOk,
   createErr,
   andThenAsyncForResult,
   createOk,
+  andThenForResult,
 } from 'option-t/lib/PlainResult';
 import { tryCatchIntoResultWithEnsureErrorAsync } from 'option-t/lib/PlainResult/tryCatchAsync';
 import { z } from 'zod';
@@ -35,23 +34,29 @@ export const requireMcAccessToken = async (xstsToken: XboxToken) => {
       body,
     }),
   );
-  if (isOk(responseResult) && !unwrapOk(responseResult).ok) {
-    const response = unwrapOk(responseResult);
 
-    return createErr(new NetworkError(response.status, response.statusText));
-  }
+  return andThenAsyncForResult(
+    andThenForResult(responseResult, (response) => {
+      if (!response.ok) {
+        return createErr(
+          new NetworkError(response.status, response.statusText),
+        );
+      }
 
-  return andThenAsyncForResult(responseResult, async (response) => {
-    const parsedResponse = requireMcAccessTokenResponse.safeParse(
-      await response.json(),
-    );
+      return createOk(response);
+    }),
+    async (response) => {
+      const parsedResponse = requireMcAccessTokenResponse.safeParse(
+        await response.json(),
+      );
 
-    if (!parsedResponse.success) {
-      return createErr(parsedResponse.error);
-    }
+      if (!parsedResponse.success) {
+        return createErr(parsedResponse.error);
+      }
 
-    return createOk({
-      token: parsedResponse.data.access_token,
-    });
-  });
+      return createOk({
+        token: parsedResponse.data.access_token,
+      });
+    },
+  );
 };

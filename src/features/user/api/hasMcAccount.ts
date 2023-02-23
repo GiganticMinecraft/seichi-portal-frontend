@@ -1,9 +1,8 @@
 import {
-  isOk,
-  unwrapOk,
   createErr,
   andThenAsyncForResult,
   createOk,
+  andThenForResult,
 } from 'option-t/lib/PlainResult';
 import { tryCatchIntoResultWithEnsureErrorAsync } from 'option-t/lib/PlainResult/tryCatchAsync';
 import { z } from 'zod';
@@ -36,23 +35,29 @@ export const hasMcAccount = async (token: McAccessToken) => {
       },
     }),
   );
-  if (isOk(responseResult) && !unwrapOk(responseResult).ok) {
-    const response = unwrapOk(responseResult);
-
-    return createErr(new NetworkError(response.status, response.statusText));
-  }
 
   // TODO: the signature should always be checked with the public key from Mojang to verify that it is a legitimate response from the official servers
 
-  return andThenAsyncForResult(responseResult, async (response) => {
-    const parsedResponse = hasMcAccountResponse.safeParse(
-      await response.json(),
-    );
+  return andThenAsyncForResult(
+    andThenForResult(responseResult, (response) => {
+      if (!response.ok) {
+        return createErr(
+          new NetworkError(response.status, response.statusText),
+        );
+      }
 
-    if (!parsedResponse.success) {
-      return createErr(parsedResponse.error);
-    }
+      return createOk(response);
+    }),
+    async (response) => {
+      const parsedResponse = hasMcAccountResponse.safeParse(
+        await response.json(),
+      );
 
-    return createOk(parsedResponse.data.items.length !== 0);
-  });
+      if (!parsedResponse.success) {
+        return createErr(parsedResponse.error);
+      }
+
+      return createOk(parsedResponse.data.items.length !== 0);
+    },
+  );
 };

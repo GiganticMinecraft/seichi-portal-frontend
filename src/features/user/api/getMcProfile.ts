@@ -1,9 +1,8 @@
 import {
   andThenAsyncForResult,
+  andThenForResult,
   createErr,
   createOk,
-  isOk,
-  unwrapOk,
 } from 'option-t/lib/PlainResult';
 import { tryCatchIntoResultWithEnsureErrorAsync } from 'option-t/lib/PlainResult/tryCatchAsync';
 import { z } from 'zod';
@@ -30,22 +29,30 @@ export const getMcProfile = async (token: McAccessToken) => {
       },
     }),
   );
-  if (isOk(responseResult) && !unwrapOk(responseResult).ok) {
-    const response = unwrapOk(responseResult);
 
-    return createErr(new NetworkError(response.status, response.statusText));
-  }
+  return andThenAsyncForResult(
+    andThenForResult(responseResult, (response) => {
+      if (!response.ok) {
+        return createErr(
+          new NetworkError(response.status, response.statusText),
+        );
+      }
 
-  return andThenAsyncForResult(responseResult, async (response) => {
-    const parsedResponse = responseJsonSchema.safeParse(await response.json());
+      return createOk(response);
+    }),
+    async (response) => {
+      const parsedResponse = responseJsonSchema.safeParse(
+        await response.json(),
+      );
 
-    if (!parsedResponse.success) {
-      return createErr(parsedResponse.error);
-    }
+      if (!parsedResponse.success) {
+        return createErr(parsedResponse.error);
+      }
 
-    return createOk({
-      id: parsedResponse.data.id,
-      name: parsedResponse.data.name,
-    });
-  });
+      return createOk({
+        id: parsedResponse.data.id,
+        name: parsedResponse.data.name,
+      });
+    },
+  );
 };
