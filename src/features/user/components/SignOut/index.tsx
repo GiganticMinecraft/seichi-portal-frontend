@@ -9,17 +9,18 @@ type Props = Omit<PresenterProps, 'onClick' | 'isSigningOut'>;
 
 export const SignOut = ({ ...props }: Props) => {
   const { instance } = useMsal();
-  const [isSigningOut, { toggle: toggleIsSigningOut }] = useBoolean(false);
+  const [isSigningOut, { on: startSignOut, off: endSignOut }] =
+    useBoolean(false);
   const setMcProfile = useSetMcProfile();
   const onClick = async () => {
-    toggleIsSigningOut();
+    startSignOut();
     // TODO: catch error
     await instance
       .logoutPopup({
         postLogoutRedirectUri: '/signin',
         mainWindowRedirectUri: '/signin',
       })
-      .finally(() => toggleIsSigningOut());
+      .finally(() => endSignOut());
 
     setMcProfile(undefined);
   };
