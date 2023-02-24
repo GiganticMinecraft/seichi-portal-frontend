@@ -11,6 +11,7 @@ export const SignOut = ({ ...props }: Props) => {
   const onClick = async () => {
     toggleIsSigningOut();
     // TODO: catch error
+    // TODO: storeにあるGamerofileをクリアする
     await instance
       .logoutPopup({
         postLogoutRedirectUri: '/signin',
