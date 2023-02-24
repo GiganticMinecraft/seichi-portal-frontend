@@ -8,9 +8,9 @@ import { tryCatchIntoResultWithEnsureErrorAsync } from 'option-t/lib/PlainResult
 import { z } from 'zod';
 
 import { jsonHeaders } from '@/const/headers';
+import { NetworkError } from '@/types';
 
 import { XboxToken } from '../types';
-import { NetworkError } from '../types/error';
 
 const url = '/externalApi/mcToken';
 

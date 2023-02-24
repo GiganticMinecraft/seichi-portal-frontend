@@ -1,5 +1,7 @@
 import { z } from 'zod';
 
+export * from './error';
+
 /**
  * XBoxLiveサービスにアクセスしたときに返ってくるResponseのスキーマ
  */

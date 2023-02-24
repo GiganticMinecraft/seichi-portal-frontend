@@ -8,9 +8,9 @@ import {
 import { tryCatchIntoResultWithEnsureErrorAsync } from 'option-t/lib/PlainResult/tryCatchAsync';
 
 import { jsonHeaders } from '@/const/headers';
+import { NetworkError } from '@/types';
 
 import { requireXboxTokenResponse, XboxToken } from '../types';
-import { NetworkError } from '../types/error';
 
 const url = '/externalApi/xbl';
 

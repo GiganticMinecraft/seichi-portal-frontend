@@ -17,7 +17,7 @@ import { requireXblToken } from './requireXblToken';
 import { requireXstsToken } from './requireXstsToken';
 
 import { loginRequest } from '../config/msal';
-import { HasNoMinecraft } from '../types/error';
+import { MsAccountOwnsNoMcAccount } from '../types';
 
 const getMinecraftGameProfile = async (
   params: Parameters<typeof requireMsAccountAccessToken>,
@@ -32,7 +32,7 @@ const getMinecraftGameProfile = async (
   const hasMc = await andThenAsyncForResult(mcAccessToken, hasMcAccount);
   // NOTE: ここの条件分岐がfalseになる（MCアカウントをもっている）のに、getMcProfileが404になる場合がある。これは、アカウントをもっているにも関わらず、アカウント名を設定していないため
   if (isOk(hasMc) && !unwrapOk(hasMc)) {
-    return createErr(new HasNoMinecraft());
+    return createErr(new MsAccountOwnsNoMcAccount());
   }
 
   return andThenAsyncForResult(mcAccessToken, getMcProfile);
