@@ -17,8 +17,8 @@ export const SignOut = ({ ...props }: Props) => {
     // TODO: catch error
     await instance
       .logoutPopup({
-        postLogoutRedirectUri: '/signin',
-        mainWindowRedirectUri: '/signin',
+        postLogoutRedirectUri: '/',
+        mainWindowRedirectUri: '/',
       })
       .finally(() => endSignOut());
 

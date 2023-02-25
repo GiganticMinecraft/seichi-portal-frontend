@@ -1,23 +1,10 @@
-import { Box, ButtonGroup } from '@chakra-ui/react';
+import { useMcProfile } from '@/features/user/hooks';
 
-import { ServerLogo } from '../ServerLogo';
-import { ToggleColorMode } from '../ToggleColorMode';
+import { Presenter } from './presenter';
 
-export const Header = () => (
-  <Box
-    boxShadow="md"
-    p={3}
-    display="flex"
-    justifyContent={{ base: 'space-between', md: 'center' }}
-    alignItems="center"
-    position="relative"
-  >
-    <ServerLogo width={120} />
-    <ButtonGroup
-      position={{ base: 'relative', md: 'absolute' }}
-      right={{ base: 0, md: 40 }}
-    >
-      <ToggleColorMode />
-    </ButtonGroup>
-  </Box>
-);
+export const Header = () => {
+  const profile = useMcProfile();
+  const isAuthenticated = !!profile;
+
+  return <Presenter {...{ isAuthenticated }} />;
+};
