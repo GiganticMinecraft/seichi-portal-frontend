@@ -8,7 +8,7 @@ import { Presenter, type PresenterProps } from './presenter';
 
 import { loginAndGetGameProfile } from '../../api';
 import { useSetMcProfile } from '../../hooks';
-import { MsAccountOwnsNoMcAccount } from '../../types';
+import { MsAccountOwnsNoMcAccount, UserCancelledMsSignIn } from '../../types';
 
 type Props = Omit<PresenterProps, 'onClick' | 'isSigningIn'>;
 
@@ -45,7 +45,10 @@ export const SignIn = ({ ...props }: Props) => {
       title: 'サインイン中にエラーが発生しました',
     };
 
-    if (error instanceof MsAccountOwnsNoMcAccount) {
+    if (
+      error instanceof MsAccountOwnsNoMcAccount ||
+      error instanceof UserCancelledMsSignIn
+    ) {
       toast({
         ...errorToastOptions,
         description: error.message,

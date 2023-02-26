@@ -1,10 +1,14 @@
-import { IPublicClientApplication } from '@azure/msal-browser';
+import {
+  BrowserAuthError,
+  IPublicClientApplication,
+} from '@azure/msal-browser';
 import {
   andThenAsyncForResult,
   andThenForResult,
   createErr,
   createOk,
   isOk,
+  mapErrForResult,
   unwrapOk,
 } from 'option-t/lib/PlainResult';
 import { tryCatchIntoResultWithEnsureErrorAsync } from 'option-t/lib/PlainResult/tryCatchAsync';
@@ -17,7 +21,7 @@ import { requireXblToken } from './requireXblToken';
 import { requireXstsToken } from './requireXstsToken';
 
 import { loginRequest } from '../config/msal';
-import { MsAccountOwnsNoMcAccount } from '../types';
+import { MsAccountOwnsNoMcAccount, UserCancelledMsSignIn } from '../types';
 
 const getMinecraftGameProfile = async (
   params: Parameters<typeof requireMsAccountAccessToken>,
@@ -44,9 +48,16 @@ export const loginAndGetGameProfile = async (
   const loginResult = await tryCatchIntoResultWithEnsureErrorAsync(() =>
     instance.loginPopup(loginRequest),
   );
+  const result = mapErrForResult(loginResult, (e) => {
+    if (e instanceof BrowserAuthError && e.errorCode === 'user_cancelled') {
+      return new UserCancelledMsSignIn();
+    }
+
+    return e;
+  });
 
   return andThenAsyncForResult(
-    andThenForResult(loginResult, (r) => {
+    andThenForResult(result, (r) => {
       if (!r.account) {
         return createErr(new Error('Failed to fetch account info.'));
       }
