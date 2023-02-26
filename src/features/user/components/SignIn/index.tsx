@@ -2,7 +2,7 @@ import { useMsal } from '@azure/msal-react';
 import { useBoolean, useToast, UseToastOptions } from '@chakra-ui/react';
 import { isOk, unwrapErr, unwrapOk } from 'option-t/lib/PlainResult';
 
-import { defaultToastOptions } from '@/libs';
+import { defaultToastOptions } from '@/config';
 
 import { Presenter, type PresenterProps } from './presenter';
 

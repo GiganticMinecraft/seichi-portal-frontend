@@ -1,5 +1,3 @@
-import { UseToastOptions } from '@chakra-ui/react';
-
 /**
  * `start`から始まる`length`個分の数値のジェネレータを生成する。
  * あくまでジェネレータなので、`number`の配列そのものではないことに注意。
@@ -15,9 +13,3 @@ export function* rangeIter(start: number, length: number) {
     yield i;
   }
 }
-
-export const defaultToastOptions: UseToastOptions = {
-  isClosable: true,
-  duration: 1000 * 15,
-  position: 'top',
-};
