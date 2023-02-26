@@ -55,6 +55,7 @@ export const SignIn = ({ ...props }: Props) => {
         ...errorToastOptions,
         description: `${error.name}(${error.message})`,
       });
+      throw error;
     }
   };
 
