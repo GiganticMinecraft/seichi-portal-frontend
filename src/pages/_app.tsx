@@ -6,18 +6,15 @@ import { type AppProps } from 'next/app';
 
 import { queryClientConfig, customChakraTheme } from '@/config';
 import { McProfileProvider } from '@/features/user/components/McProfileProvider';
-import { MsalProvider } from '@/features/user/components/MsalProvider';
 
 const queryClient = new QueryClient(queryClientConfig);
 
 const App = ({ Component, pageProps }: AppProps) => (
   <QueryClientProvider client={queryClient}>
     <ChakraProvider theme={customChakraTheme}>
-      <MsalProvider>
-        <McProfileProvider>
-          <Component {...pageProps} />
-        </McProfileProvider>
-      </MsalProvider>
+      <McProfileProvider>
+        <Component {...pageProps} />
+      </McProfileProvider>
     </ChakraProvider>
     <ReactQueryDevtools initialIsOpen={false} />
   </QueryClientProvider>

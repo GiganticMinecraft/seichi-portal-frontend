@@ -1,5 +1,7 @@
 import { Container, Heading } from '@chakra-ui/react';
 
+import { MsalProvider } from '@/features/user/components/MsalProvider';
+
 import { Header } from '../Header';
 import { Helmet, type HelmetProps } from '../Helmet';
 
@@ -15,7 +17,9 @@ export const Layout = ({
 }: Props & Omit<HelmetProps, 'title'>) => (
   <>
     <header>
-      <Header />
+      <MsalProvider>
+        <Header />
+      </MsalProvider>
     </header>
     <main>
       <Helmet {...{ title, description }} />
