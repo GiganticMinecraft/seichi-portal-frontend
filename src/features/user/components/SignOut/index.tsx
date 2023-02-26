@@ -3,7 +3,7 @@ import { useBoolean } from '@chakra-ui/react';
 
 import { Presenter, type PresenterProps } from './presenter';
 
-import { useSetMcProfile } from '../../hooks';
+import { useMcProfile } from '../../hooks';
 
 type Props = Omit<PresenterProps, 'onClick' | 'isSigningOut'>;
 
@@ -11,7 +11,7 @@ export const SignOut = ({ ...props }: Props) => {
   const { instance } = useMsal();
   const [isSigningOut, { on: startSignOut, off: endSignOut }] =
     useBoolean(false);
-  const setMcProfile = useSetMcProfile();
+  const { setMcProfile } = useMcProfile();
   const onClick = async () => {
     startSignOut();
     // TODO: catch error

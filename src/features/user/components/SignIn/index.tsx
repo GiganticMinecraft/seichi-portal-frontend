@@ -7,7 +7,7 @@ import { defaultToastOptions } from '@/config';
 import { Presenter, type PresenterProps } from './presenter';
 
 import { loginAndGetGameProfile } from '../../api';
-import { useSetMcProfile } from '../../hooks';
+import { useMcProfile } from '../../hooks';
 import { MsAccountOwnsNoMcAccount, UserCancelledMsSignIn } from '../../types';
 
 type Props = Omit<PresenterProps, 'onClick' | 'isSigningIn'>;
@@ -15,7 +15,7 @@ type Props = Omit<PresenterProps, 'onClick' | 'isSigningIn'>;
 export const SignIn = ({ ...props }: Props) => {
   const [isSigningIn, { on: startSignIn, off: endSignIn }] = useBoolean(false);
   const { instance } = useMsal();
-  const setMcProfile = useSetMcProfile();
+  const { setMcProfile } = useMcProfile();
   const toast = useToast();
   const onClick = async () => {
     startSignIn();
