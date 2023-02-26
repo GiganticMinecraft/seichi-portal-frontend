@@ -13,3 +13,5 @@ export function* rangeIter(start: number, length: number) {
     yield i;
   }
 }
+
+export * from './result';
