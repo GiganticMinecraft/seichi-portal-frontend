@@ -6,9 +6,19 @@ const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
   webpack(config) {
-    config.resolve.alias['@'] = path.join(__dirname, 'src');
+    /** @type {import('webpack').Configuration} */
+    const replacedConfig = {
+      ...config,
+      resolve: {
+        ...config.resolve,
+        alias: {
+          ...config.resolve.alias,
+          '@': path.join(__dirname, 'src'),
+        },
+      },
+    };
 
-    return config;
+    return replacedConfig;
   },
   images: {
     remotePatterns: [
