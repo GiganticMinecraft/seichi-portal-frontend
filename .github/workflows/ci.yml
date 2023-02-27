@@ -42,7 +42,7 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           package-manager: 'yarn'
-          test-script: yarn test:coverage
+          test-script: npm run test:coverage
           skip-step: 'install'
       - name: Run tests by Jest
         if: ${{ github.event_name != 'pull_request' }}
