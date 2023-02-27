@@ -4,6 +4,7 @@ const createJestConfig = nextJest({ dir: './' });
 
 /** @type {import('jest').Config} */
 const customJestConfig = {
+  coverageReporters: [['text', { file: 'result-jest.txt' }]],
   testPathIgnorePatterns: ['<rootDir>/.next/', '<rootDir>/node_modules/'],
   // パスエイリアスの設定
   moduleNameMapper: { '^@/(.*)$': '<rootDir>/src/$1' },
