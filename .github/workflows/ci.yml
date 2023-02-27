@@ -55,8 +55,15 @@ jobs:
           submodules: 'true'
       - name: Setup Node.js
         uses: ./.github/actions/setup-node
+      - name: Build Storybook
+        run: yarn sb:build
+      - name: Serve Files
+        uses: Eun/http-server-action@v1
+        with:
+          directory: storybook-static
+          port: 9001
       - name: Run tests by Storybook
-        run: yarn sb:test
+        run: yarn sb:test:run
   build:
     name: Run Build
     runs-on: ubuntu-latest
