@@ -36,8 +36,12 @@ jobs:
           submodules: 'true'
       - name: Setup Node.js
         uses: ./.github/actions/setup-node
-      - name: Run test
-        run: yarn test
+      - name: Run tests with Jest
+        uses: ArtiomTr/jest-coverage-report-action@v2.2.1
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          package-manager: 'yarn'
+          test-script: yarn test:coverage
   build:
     name: Run Build
     runs-on: ubuntu-latest
