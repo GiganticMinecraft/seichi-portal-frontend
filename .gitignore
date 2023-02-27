@@ -40,3 +40,6 @@ nextjs-routes.d.ts
 # OpenAPI
 src/api/
 src/libs/openapi.yml
+
+# Storybook
+storybook-static/
