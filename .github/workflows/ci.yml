@@ -27,8 +27,8 @@ jobs:
         uses: ./.github/actions/setup-node
       - name: Run Prettier
         run: yarn format
-  test:
-    name: Run Test
+  test-jest:
+    name: Run Test by Jest
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -46,9 +46,15 @@ jobs:
           package-manager: 'yarn'
           skip-step: 'all'
           coverage-file: ./coverage/report.json
-      - name: Run tests by Jest
-        if: ${{ github.event_name != 'pull_request' }}
-        run: yarn test
+  test-storybook:
+    name: Run Test by Storybook
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: 'true'
+      - name: Setup Node.js
+        uses: ./.github/actions/setup-node
       - name: Run tests by Storybook
         run: yarn sb:test
   build:
