@@ -38,14 +38,6 @@ jobs:
         uses: ./.github/actions/setup-node
       - name: Run coverage tests by Jest
         run: yarn test:coverage
-      - name: Output coverages
-        uses: ArtiomTr/jest-coverage-report-action@v2.2.1
-        if: ${{ github.event_name == 'pull_request' }}
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          package-manager: 'yarn'
-          skip-step: 'all'
-          coverage-file: ./coverage/report.json
   test-storybook:
     name: Run Test by Storybook
     runs-on: ubuntu-latest
