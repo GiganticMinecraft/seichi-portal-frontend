@@ -13,7 +13,7 @@
     "format:fix": "prettier --write --loglevel=warn 'src/**/*.{js,jsx,ts,tsx,html,json}'",
     "test": "jest",
     "test:watch": "jest --watch",
-    "test:coverage": "jest --coverage --silent --testLocationInResults --ci --json --outputFile=\"coverage/report.json\"",
+    "test:coverage": "jest --coverage --testLocationInResults --ci",
     "postinstall": "typesync || :",
     "prepare": "husky install",
     "sb": "start-storybook -p 9001",
