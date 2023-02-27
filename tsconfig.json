@@ -20,5 +20,13 @@
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules"],
+  /** StorybookをTypeScript対応させるための設定 */
+  /** See: https://zenn.dev/kazuma1989/scraps/41384241ae7f27 */
+  "ts-node": {
+    "transpileOnly": true,
+    "compilerOptions": {
+      "module": "CommonJS"
+    }
+  }
 }
