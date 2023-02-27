@@ -36,12 +36,18 @@ jobs:
           submodules: 'true'
       - name: Setup Node.js
         uses: ./.github/actions/setup-node
-      - name: Run tests with Jest
+      - name: Run coverage tests by Jest
         uses: ArtiomTr/jest-coverage-report-action@v2.2.1
+        if: ${{ github.event_name == 'pull_request' }}
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           package-manager: 'yarn'
           test-script: yarn test:coverage
+      - name: Run tests by Jest
+        if: ${{ github.event_name != 'pull_request' }}
+        run: yarn test
+      - name: Run tests by Storybook
+        run: yarn sb:test
   build:
     name: Run Build
     runs-on: ubuntu-latest
