@@ -1,5 +1,4 @@
 import * as nextImage from 'next/image';
-import React from 'react';
 
 Object.defineProperty(nextImage, 'default', {
   configurable: true,
