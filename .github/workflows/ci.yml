@@ -83,7 +83,8 @@ jobs:
         id: jest
         run: |
           tail -n +2 result-jest.txt | head -n -1 > result.txt
-          echo "coverage=$(cat result.txt)" >> $GITHUB_OUTPUT
+          cov=$(cat result.txt)
+          echo "coverage=$cov" >> $GITHUB_OUTPUT
       - name: Download storybook coverage
         uses: actions/download-artifact@v3
         with:
@@ -92,7 +93,8 @@ jobs:
         id: storybook
         run: |
           tail -n +4 result-storybook.txt | head -n -2 > result.txt
-          echo "coverage=$(cat result.txt)" >> $GITHUB_OUTPUT
+          cov=$(cat result.txt)
+          echo "coverage=$cov" >> $GITHUB_OUTPUT
       - name: Write to summary
         uses: actions/github-script@v6
         if: github.event_name == 'pull_request'
