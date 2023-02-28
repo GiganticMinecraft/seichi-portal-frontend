@@ -38,6 +38,11 @@ jobs:
         uses: ./.github/actions/setup-node
       - name: Run coverage tests by Jest
         run: yarn test:coverage
+      - name: Upload coverage result
+        uses: actions/upload-artifact@v3
+        with:
+          name: jest-coverage
+          path: coverage/result-jest.txt
   test-storybook:
     name: Run Test by Storybook
     runs-on: ubuntu-latest
@@ -56,6 +61,53 @@ jobs:
           port: 9001
       - name: Run tests by Storybook
         run: yarn sb:test:run
+      - name: Output coverage
+        run: yarn nyc report --reporter=text -t coverage/storybook --report-dir coverage/storybook > coverage/result-storybook.txt
+      - name: Upload coverage result
+        uses: actions/upload-artifact@v3
+        with:
+          name: storybook-coverage
+          path: coverage/result-storybook.txt
+  summary-coverages:
+    name: Write coverages to job summary
+    runs-on: ubuntu-latest
+    needs:
+      - test-jest
+      - test-storybook
+    steps:
+      - name: Download jest coverage
+        uses: actions/download-artifact@v3
+        with:
+          name: jest-coverage
+      - name: Edit result file
+        id: jest
+        run: |
+          tail -n +2 result-jest.txt | head -n -1 > result.txt
+          echo "coverage=$(cat result.txt)" >> $GITHUB_OUTPUT
+      - name: Download storybook coverage
+        uses: actions/download-artifact@v3
+        with:
+          name: storybook-coverage
+      - name: Edit result file
+        id: storybook
+        run: |
+          tail -n +4 result-storybook.txt | head -n -2 > result.txt
+          echo "coverage=$(cat result.txt)" >> $GITHUB_OUTPUT
+      - name: Write to summary
+        uses: actions/github-script@v6
+        if: github.event_name == 'pull_request'
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const output = `\n
+              ## Jest\n\n
+              ${{ steps.jest.outputs.result }}\n\n
+              ## Storybook\n\n
+              ${{ steps.storybook.outputs.result }}`;
+            await core.summary
+              .addHeading('Test Coverages')
+              .addRaw(output)
+              .write();
   build:
     name: Run Build
     runs-on: ubuntu-latest
