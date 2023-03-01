@@ -1,7 +1,7 @@
 import { Button, ButtonProps } from '@chakra-ui/react';
 
 export type PresenterProps = {
-  onClick: () => void;
+  onClick: (event: React.MouseEvent<HTMLButtonElement>) => void;
   isSigningOut: boolean;
 } & ButtonProps;
 
