@@ -74,6 +74,7 @@ jobs:
     needs:
       - test-jest
       - test-storybook
+    if: github.event_name == 'pull_request'
     steps:
       - name: Download jest coverage
         uses: actions/download-artifact@v3
@@ -93,7 +94,6 @@ jobs:
           mv result.txt result-storybook.txt
       - name: Write to summary
         uses: actions/github-script@v6
-        if: github.event_name == 'pull_request'
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
