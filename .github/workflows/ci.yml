@@ -80,32 +80,31 @@ jobs:
         with:
           name: jest-coverage
       - name: Edit result file
-        id: jest
         run: |
           tail -n +2 result-jest.txt | head -n -1 > result.txt
-          cov=$(cat result.txt)
-          echo "coverage=$cov" >> $GITHUB_OUTPUT
+          mv result.txt result-jest.txt
       - name: Download storybook coverage
         uses: actions/download-artifact@v3
         with:
           name: storybook-coverage
       - name: Edit result file
-        id: storybook
         run: |
           tail -n +4 result-storybook.txt | head -n -2 > result.txt
-          cov=$(cat result.txt)
-          echo "coverage=$cov" >> $GITHUB_OUTPUT
+          mv result.txt result-storybook.txt
       - name: Write to summary
         uses: actions/github-script@v6
         if: github.event_name == 'pull_request'
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
+            const fs = require("fs").promises;
+            const jest = await fs.readFile("./result-jest.txt").then((b) => b.toString());
+            const storybook = await fs.readFile("./result-storybook.txt").then((b) => b.toString());
             const output = `\n
               ## Jest\n\n
-              ${{ steps.jest.outputs.result }}\n\n
+              ${jest}\n\n
               ## Storybook\n\n
-              ${{ steps.storybook.outputs.result }}`;
+              ${storybook}`;
             await core.summary
               .addHeading('Test Coverages')
               .addRaw(output)
