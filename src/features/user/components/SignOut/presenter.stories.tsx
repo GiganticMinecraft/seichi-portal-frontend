@@ -23,7 +23,7 @@ export const Index: ComponentStoryObj<typeof Presenter> = {
 
 export const IsSigningOut: ComponentStoryObj<typeof Presenter> = {
   args: {
-    onClick: () => undefined,
+    onClick: jest.fn(),
     isSigningOut: true,
   },
   play: async ({ canvasElement, args: { onClick } }) => {
