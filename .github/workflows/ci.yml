@@ -69,7 +69,7 @@ jobs:
           name: storybook-coverage
           path: coverage/result-storybook.txt
   summary-coverages:
-    name: Write coverages to job summary
+    name: Show coverages
     runs-on: ubuntu-latest
     needs:
       - test-jest
