@@ -3,14 +3,15 @@ import {
   andThenForResult,
   createErr,
   createOk,
+  Result,
 } from 'option-t/lib/PlainResult';
 import { tryCatchIntoResultWithEnsureErrorAsync } from 'option-t/lib/PlainResult/tryCatchAsync';
 import { z } from 'zod';
 
 import { jsonHeaders } from '@/const/headers';
-import { NetworkError } from '@/types';
+import { BaseError, NetworkError } from '@/types';
 
-import { McAccessToken } from '../types';
+import { McAccessToken, McProfile } from '../types';
 
 const url = '/externalApi/mcProfile';
 
@@ -19,7 +20,9 @@ const responseJsonSchema = z.object({
   name: z.string(),
 });
 
-export const getMcProfile = async (token: McAccessToken) => {
+export const getMcProfile = async (
+  token: McAccessToken,
+): Promise<Result<McProfile, Error>> => {
   const responseResult = await tryCatchIntoResultWithEnsureErrorAsync(() =>
     fetch(url, {
       method: 'GET',
@@ -32,13 +35,14 @@ export const getMcProfile = async (token: McAccessToken) => {
 
   return andThenAsyncForResult(
     andThenForResult(responseResult, (response) => {
-      if (!response.ok) {
-        return createErr(
-          new NetworkError(response.status, response.statusText),
-        );
+      if (response.ok) {
+        return createOk(response);
+      }
+      if (response.status === 404) {
+        return createErr(new BaseError('MinecraftIDが設定されていません'));
       }
 
-      return createOk(response);
+      return createErr(new NetworkError(response.status, response.statusText));
     }),
     async (response) => {
       const parsedResponse = responseJsonSchema.safeParse(
