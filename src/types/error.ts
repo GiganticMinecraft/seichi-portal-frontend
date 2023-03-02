@@ -6,9 +6,12 @@ import { ZodError } from 'zod';
 export type WrappedResult<T> = Result<T, BaseError>;
 
 export class BaseError extends Error {
-  constructor(message: string) {
+  readonly causeError?: Error;
+
+  constructor(message: string, error?: Error) {
     super(message);
     this.name = this.constructor.name;
+    this.causeError = error;
   }
 }
 
@@ -25,10 +28,7 @@ export class NetworkError extends BaseError {
 }
 
 export class ValidationError extends BaseError {
-  readonly cause: ZodError;
-
   constructor(zodError: ZodError) {
-    super('予期しない型を受け取りました');
-    this.cause = zodError;
+    super('予期しない型を受け取りました', zodError);
   }
 }

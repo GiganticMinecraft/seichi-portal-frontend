@@ -31,10 +31,7 @@ export class MinecraftIdIsUndefined extends BaseError {
 }
 
 export class MicrosoftAuthenticationLibError extends BaseError {
-  readonly cause: AuthError;
-
   constructor(error: AuthError) {
-    super('Microsoftとの認証中にエラーが発生しました');
-    this.cause = error;
+    super('Microsoftとの認証中にエラーが発生しました', error);
   }
 }
