@@ -1,9 +1,8 @@
 import { useMsal } from '@azure/msal-react';
-import { useBoolean, useToast, UseToastOptions } from '@chakra-ui/react';
+import { useBoolean, useToast } from '@chakra-ui/react';
 import { isOk, unwrapOk, unwrapErr } from 'option-t/lib/PlainResult';
 
 import { defaultToastOptions } from '@/config';
-import { BaseError } from '@/types';
 
 import { useMcProfile } from './mcProfile';
 import { useSignOut } from './signOut';
@@ -16,6 +15,7 @@ export const useSignIn = () => {
   const { signOut } = useSignOut();
   const { setMcProfile } = useMcProfile();
   const toast = useToast();
+
   const doSignIn = async () => {
     const profileResult = await loginAndGetGameProfile(instance);
 
@@ -23,36 +23,24 @@ export const useSignIn = () => {
       const profile = unwrapOk(profileResult);
       toast({
         ...defaultToastOptions,
+        status: 'success',
         title: 'サインインに成功しました',
         description: `ようこそ、${profile.name}さん`,
-        status: 'success',
       });
       setMcProfile(profile);
 
       return;
     }
 
-    const error = unwrapErr(profileResult);
-    const errorToastOptions: UseToastOptions = {
-      ...defaultToastOptions,
-      status: 'error',
-      title: 'サインイン中にエラーが発生しました',
-    };
-
     await signOut();
 
-    if (error instanceof BaseError) {
-      toast({
-        ...errorToastOptions,
-        description: error.message,
-      });
-    } else {
-      toast({
-        ...errorToastOptions,
-        description: `${error.name}(${error.message})`,
-      });
-      throw error;
-    }
+    const error = unwrapErr(profileResult);
+    toast({
+      ...defaultToastOptions,
+      status: 'error',
+      title: 'サインイン中にエラーが発生したため、サインアウトしました',
+      description: error.message,
+    });
   };
   const signIn = async () => {
     startSignIn();
