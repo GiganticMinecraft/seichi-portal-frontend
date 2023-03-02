@@ -1,6 +1,7 @@
 import {
   BrowserAuthError,
   IPublicClientApplication,
+  ServerError,
 } from '@azure/msal-browser';
 import {
   andThenAsyncForResult,
@@ -21,7 +22,11 @@ import { requireXblToken } from './requireXblToken';
 import { requireXstsToken } from './requireXstsToken';
 
 import { loginRequest } from '../config/msal';
-import { MsAccountOwnsNoMcAccount, UserCancelledMsSignIn } from '../types';
+import {
+  MsAccountOwnsNoMcAccount,
+  UserCancelledMsSignIn,
+  UserDeniedAccess,
+} from '../types';
 
 const getMinecraftGameProfile = async (
   params: Parameters<typeof requireMsAccountAccessToken>,
@@ -51,6 +56,9 @@ export const loginAndGetGameProfile = async (
   const result = mapErrForResult(loginResult, (e) => {
     if (e instanceof BrowserAuthError && e.errorCode === 'user_cancelled') {
       return new UserCancelledMsSignIn();
+    }
+    if (e instanceof ServerError && e.errorCode === 'access_denied') {
+      return new UserDeniedAccess();
     }
 
     return e;
