@@ -1,5 +1,7 @@
 /* eslint-disable max-classes-per-file */
 
+import { AuthError } from '@azure/msal-browser';
+
 import { BaseError } from '@/types';
 
 export class MsAccountOwnsNoMcAccount extends BaseError {
@@ -25,5 +27,14 @@ export class UserDeniedAccess extends BaseError {
 export class MinecraftIdIsUndefined extends BaseError {
   constructor() {
     super('MinecraftIDが設定されていません');
+  }
+}
+
+export class MicrosoftAuthenticationLibError extends BaseError {
+  readonly error: AuthError;
+
+  constructor(error: AuthError) {
+    super('Microsoftとの認証中にエラーが発生しました');
+    this.error = error;
   }
 }
