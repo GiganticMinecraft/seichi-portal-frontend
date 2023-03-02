@@ -3,12 +3,12 @@ import { useBoolean, useToast, UseToastOptions } from '@chakra-ui/react';
 import { isOk, unwrapErr, unwrapOk } from 'option-t/lib/PlainResult';
 
 import { defaultToastOptions } from '@/config';
+import { BaseError } from '@/types';
 
 import { Presenter, type PresenterProps } from './presenter';
 
 import { loginAndGetGameProfile } from '../../api';
 import { useMcProfile } from '../../hooks';
-import { MsAccountOwnsNoMcAccount, UserCancelledMsSignIn } from '../../types';
 
 type Props = Omit<PresenterProps, 'onClick' | 'isSigningIn'>;
 
@@ -45,10 +45,7 @@ export const SignIn = ({ ...props }: Props) => {
       title: 'サインイン中にエラーが発生しました',
     };
 
-    if (
-      error instanceof MsAccountOwnsNoMcAccount ||
-      error instanceof UserCancelledMsSignIn
-    ) {
+    if (error instanceof BaseError) {
       toast({
         ...errorToastOptions,
         description: error.message,
