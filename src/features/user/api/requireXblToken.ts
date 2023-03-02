@@ -57,7 +57,9 @@ export const requireXblToken = async (
 
       return createOk({
         token: parsedResponse.data.Token,
-        userHash: parsedResponse.data.DisplayClaims.xui[0].uhs,
+        // 型スキーマで空ではないことを保証しているので、このNonNullAssertionは安全
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        userHash: parsedResponse.data.DisplayClaims.xui[0]!.uhs,
       });
     },
   );

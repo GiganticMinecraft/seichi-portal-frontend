@@ -8,7 +8,7 @@ export * from './error';
 export const requireXboxTokenResponse = z.object({
   Token: z.string(),
   DisplayClaims: z.object({
-    xui: z.array(z.object({ uhs: z.string() })),
+    xui: z.array(z.object({ uhs: z.string() })).nonempty(),
   }),
 });
 
