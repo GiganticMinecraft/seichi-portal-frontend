@@ -25,10 +25,10 @@ export class NetworkError extends BaseError {
 }
 
 export class ValidationError extends BaseError {
-  readonly zodError: ZodError;
+  readonly cause: ZodError;
 
   constructor(zodError: ZodError) {
     super('予期しない型を受け取りました');
-    this.zodError = zodError;
+    this.cause = zodError;
   }
 }
