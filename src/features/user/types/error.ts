@@ -10,6 +10,14 @@ export class MsAccountOwnsNoMcAccount extends BaseError {
 
 export class UserCancelledMsSignIn extends BaseError {
   constructor() {
-    super('Microsoftアカウントへのサインインを取り消しました');
+    super('Microsoftアカウントへのサインインが取り消されました');
+  }
+}
+
+export class UserDeniedAccess extends BaseError {
+  constructor() {
+    super(
+      '本サービスがあなたのMicrosoftアカウントにアクセスすることが拒否されました',
+    );
   }
 }
