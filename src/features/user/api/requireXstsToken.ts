@@ -3,18 +3,33 @@ import {
   Result,
   createOk,
   andThenAsyncForResult,
-  andThenForResult,
 } from 'option-t/lib/PlainResult';
 import { tryCatchIntoResultWithEnsureErrorAsync } from 'option-t/lib/PlainResult/tryCatchAsync';
+import { z } from 'zod';
 
 import { jsonHeaders } from '@/const/headers';
-import { NetworkError } from '@/types';
+import { BaseError, NetworkError } from '@/types';
 
 import { requireXboxTokenResponse, XboxToken } from '../types';
 
 const url = '/externalApi/xsts';
 
-const genBodyWithToken = (xblToken: string) => ({
+const unAuthorizedBodySchema = z.object({
+  Identity: z.string(),
+  XErr: z.number(),
+  Message: z.string(),
+});
+
+const unauthorizedErrorCodes: Record<number, string> = {
+  2148916233: 'あなたのMicrosoftアカウントにはXboxアカウントが含まれていません',
+  2148916235: 'お住まいの国ではXboxLiveをご利用いただけません',
+  2148916236: '年齢認証が必要です',
+  2148916237: '年齢認証が必要です',
+  2148916238:
+    'あなたのMicrosoftアカウントは、年齢制限のため、保護者のMicrosoftアカウントに結び付けられる必要があります',
+};
+
+const genSuccessBodyWithToken = (xblToken: string) => ({
   Properties: {
     SandboxId: 'RETAIL',
     UserTokens: [xblToken],
@@ -26,7 +41,7 @@ const genBodyWithToken = (xblToken: string) => ({
 export const requireXstsToken = async (
   xblToken: XboxToken,
 ): Promise<Result<XboxToken, Error>> => {
-  const body = JSON.stringify(genBodyWithToken(xblToken.token));
+  const body = JSON.stringify(genSuccessBodyWithToken(xblToken.token));
   const responseResult = await tryCatchIntoResultWithEnsureErrorAsync(() =>
     fetch(url, {
       method: 'POST',
@@ -36,14 +51,29 @@ export const requireXstsToken = async (
   );
 
   return andThenAsyncForResult(
-    andThenForResult(responseResult, (response) => {
-      if (!response.ok) {
+    await andThenAsyncForResult(responseResult, async (response) => {
+      if (response.ok) {
+        return createOk(response);
+      }
+      if (response.status !== 401) {
         return createErr(
           new NetworkError(response.status, response.statusText),
         );
       }
 
-      return createOk(response);
+      const parsedResponse = unAuthorizedBodySchema.safeParse(
+        await response.json(),
+      );
+
+      if (!parsedResponse.success) {
+        return createErr(parsedResponse.error);
+      }
+
+      const message =
+        unauthorizedErrorCodes[parsedResponse.data.XErr] ??
+        'XBoxのセキュリティトークンを取得中に、認証に失敗しました（原因不明）';
+
+      return createErr(new BaseError(message));
     }),
     async (response) => {
       const parsedResponse = requireXboxTokenResponse.safeParse(
