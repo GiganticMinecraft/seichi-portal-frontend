@@ -21,3 +21,9 @@ export class UserDeniedAccess extends BaseError {
     );
   }
 }
+
+export class MinecraftIdIsUndefined extends BaseError {
+  constructor() {
+    super('MinecraftIDが設定されていません');
+  }
+}

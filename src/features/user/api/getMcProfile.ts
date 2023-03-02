@@ -9,9 +9,9 @@ import { tryCatchIntoResultWithEnsureErrorAsync } from 'option-t/lib/PlainResult
 import { z } from 'zod';
 
 import { jsonHeaders } from '@/const/headers';
-import { BaseError, NetworkError } from '@/types';
+import { NetworkError } from '@/types';
 
-import { McAccessToken, McProfile } from '../types';
+import { McAccessToken, McProfile, MinecraftIdIsUndefined } from '../types';
 
 const url = '/externalApi/mcProfile';
 
@@ -39,7 +39,7 @@ export const getMcProfile = async (
         return createOk(response);
       }
       if (response.status === 404) {
-        return createErr(new BaseError('MinecraftIDが設定されていません'));
+        return createErr(new MinecraftIdIsUndefined());
       }
 
       return createErr(new NetworkError(response.status, response.statusText));
