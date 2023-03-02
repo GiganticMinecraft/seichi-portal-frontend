@@ -3,13 +3,12 @@ import {
   andThenForResult,
   createErr,
   createOk,
-  Result,
 } from 'option-t/lib/PlainResult';
 import { tryCatchIntoResultWithEnsureErrorAsync } from 'option-t/lib/PlainResult/tryCatchAsync';
 import { z } from 'zod';
 
 import { jsonHeaders } from '@/const/headers';
-import { NetworkError } from '@/types';
+import { NetworkError, ValidationError, WrappedResult } from '@/types';
 
 import { McAccessToken, McProfile, MinecraftIdIsUndefined } from '../types';
 
@@ -22,7 +21,7 @@ const responseJsonSchema = z.object({
 
 export const getMcProfile = async (
   token: McAccessToken,
-): Promise<Result<McProfile, Error>> => {
+): Promise<WrappedResult<McProfile>> => {
   const responseResult = await tryCatchIntoResultWithEnsureErrorAsync(() =>
     fetch(url, {
       method: 'GET',
@@ -50,7 +49,7 @@ export const getMcProfile = async (
       );
 
       if (!parsedResponse.success) {
-        return createErr(parsedResponse.error);
+        return createErr(new ValidationError(parsedResponse.error));
       }
 
       return createOk({

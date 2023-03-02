@@ -8,7 +8,12 @@ import { tryCatchIntoResultWithEnsureErrorAsync } from 'option-t/lib/PlainResult
 import { z } from 'zod';
 
 import { jsonHeaders } from '@/const/headers';
-import { NetworkError } from '@/types';
+import {
+  BaseError,
+  NetworkError,
+  ValidationError,
+  WrappedResult,
+} from '@/types';
 
 import { verifyAllSigns } from './verifyAllSigns';
 
@@ -27,7 +32,9 @@ const hasMcAccountResponse = z.object({
   ),
 });
 
-export const hasMcAccount = async (token: McAccessToken) => {
+export const hasMcAccount = async (
+  token: McAccessToken,
+): Promise<WrappedResult<boolean>> => {
   const responseResult = await tryCatchIntoResultWithEnsureErrorAsync(() =>
     fetch(url, {
       method: 'GET',
@@ -54,7 +61,7 @@ export const hasMcAccount = async (token: McAccessToken) => {
       );
 
       if (!parsedResponse.success) {
-        return createErr(parsedResponse.error);
+        return createErr(new ValidationError(parsedResponse.error));
       }
 
       const allSignsAreVerified = verifyAllSigns([
@@ -63,7 +70,7 @@ export const hasMcAccount = async (token: McAccessToken) => {
       ]);
       if (!allSignsAreVerified) {
         return createErr(
-          new Error('APIから受け取った署名の中に不正なものがあります'),
+          new BaseError('APIから受け取った署名の中に不正なものがあります'),
         );
       }
 

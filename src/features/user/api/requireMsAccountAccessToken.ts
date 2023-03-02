@@ -1,6 +1,14 @@
-import { AccountInfo, IPublicClientApplication } from '@azure/msal-browser';
-import { createOk, mapForResult } from 'option-t/lib/PlainResult';
+import {
+  AccountInfo,
+  AuthError,
+  IPublicClientApplication,
+} from '@azure/msal-browser';
+import { createOk } from 'option-t/lib/PlainResult';
 import { tryCatchIntoResultWithEnsureErrorAsync } from 'option-t/lib/PlainResult/tryCatchAsync';
+
+import { matchForResult } from '@/libs';
+
+import { MicrosoftAuthenticationLibError } from '../types';
 
 export const requireMsAccountAccessToken = async (
   instance: IPublicClientApplication,
@@ -21,5 +29,10 @@ export const requireMsAccountAccessToken = async (
       ),
     );
 
-  return mapForResult(result, (r) => r.accessToken);
+  return matchForResult(
+    result,
+    (r) => r.accessToken,
+    // NOTE: MSAL.jsがthrowする例外はすべてAuthErrorを継承しているので、型assertionしても問題ない
+    (e) => new MicrosoftAuthenticationLibError(e as AuthError),
+  );
 };

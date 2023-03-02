@@ -1,6 +1,9 @@
 /* eslint-disable max-classes-per-file */
 
+import { Result } from 'option-t/lib/PlainResult';
 import { ZodError } from 'zod';
+
+export type WrappedResult<T> = Result<T, BaseError>;
 
 export class BaseError extends Error {
   constructor(message: string) {

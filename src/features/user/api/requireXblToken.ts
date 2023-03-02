@@ -1,5 +1,4 @@
 import {
-  Result,
   createErr,
   createOk,
   andThenAsyncForResult,
@@ -8,7 +7,7 @@ import {
 import { tryCatchIntoResultWithEnsureErrorAsync } from 'option-t/lib/PlainResult/tryCatchAsync';
 
 import { jsonHeaders } from '@/const/headers';
-import { NetworkError } from '@/types';
+import { NetworkError, ValidationError, WrappedResult } from '@/types';
 
 import { requireXboxTokenResponse, XboxToken } from '../types';
 
@@ -26,7 +25,7 @@ const genBodyWithToken = (token: string) => ({
 
 export const requireXblToken = async (
   token: string,
-): Promise<Result<XboxToken, Error>> => {
+): Promise<WrappedResult<XboxToken>> => {
   const body = JSON.stringify(genBodyWithToken(token));
   const responseResult = await tryCatchIntoResultWithEnsureErrorAsync(() =>
     fetch(url, {
@@ -52,7 +51,7 @@ export const requireXblToken = async (
       );
 
       if (!parsedResponse.success) {
-        return createErr(parsedResponse.error);
+        return createErr(new ValidationError(parsedResponse.error));
       }
 
       return createOk({

@@ -8,9 +8,9 @@ import { tryCatchIntoResultWithEnsureErrorAsync } from 'option-t/lib/PlainResult
 import { z } from 'zod';
 
 import { jsonHeaders } from '@/const/headers';
-import { NetworkError } from '@/types';
+import { NetworkError, ValidationError, WrappedResult } from '@/types';
 
-import { XboxToken } from '../types';
+import { XboxToken, McAccessToken } from '../types';
 
 const url = '/externalApi/mcToken';
 
@@ -22,7 +22,9 @@ const requireMcAccessTokenResponse = z.object({
   access_token: z.string(),
 });
 
-export const requireMcAccessToken = async (xstsToken: XboxToken) => {
+export const requireMcAccessToken = async (
+  xstsToken: XboxToken,
+): Promise<WrappedResult<McAccessToken>> => {
   const body = JSON.stringify(
     genBodyWithToken(xstsToken.userHash, xstsToken.token),
   );
@@ -51,7 +53,7 @@ export const requireMcAccessToken = async (xstsToken: XboxToken) => {
       );
 
       if (!parsedResponse.success) {
-        return createErr(parsedResponse.error);
+        return createErr(new ValidationError(parsedResponse.error));
       }
 
       return createOk({

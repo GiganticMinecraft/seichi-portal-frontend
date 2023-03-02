@@ -1,4 +1,5 @@
 import {
+  AuthError,
   BrowserAuthError,
   IPublicClientApplication,
   ServerError,
@@ -14,6 +15,8 @@ import {
 } from 'option-t/lib/PlainResult';
 import { tryCatchIntoResultWithEnsureErrorAsync } from 'option-t/lib/PlainResult/tryCatchAsync';
 
+import { BaseError, WrappedResult } from '@/types';
+
 import { getMcProfile } from './getMcProfile';
 import { hasMcAccount } from './hasMcAccount';
 import { requireMcAccessToken } from './requireMcAccessToken';
@@ -23,6 +26,8 @@ import { requireXstsToken } from './requireXstsToken';
 
 import { loginRequest } from '../config/msal';
 import {
+  McProfile,
+  MicrosoftAuthenticationLibError,
   MsAccountOwnsNoMcAccount,
   UserCancelledMsSignIn,
   UserDeniedAccess,
@@ -30,7 +35,7 @@ import {
 
 const getMinecraftGameProfile = async (
   params: Parameters<typeof requireMsAccountAccessToken>,
-) => {
+): Promise<WrappedResult<McProfile>> => {
   const msAccessToken = await requireMsAccountAccessToken(...params);
   const xblToken = await andThenAsyncForResult(msAccessToken, requireXblToken);
   const xstsToken = await andThenAsyncForResult(xblToken, requireXstsToken);
@@ -48,7 +53,7 @@ const getMinecraftGameProfile = async (
 
 export const loginAndGetGameProfile = async (
   instance: IPublicClientApplication,
-) => {
+): Promise<WrappedResult<McProfile>> => {
   const loginResult = await tryCatchIntoResultWithEnsureErrorAsync(() =>
     instance.loginPopup(loginRequest),
   );
@@ -60,13 +65,14 @@ export const loginAndGetGameProfile = async (
       return new UserDeniedAccess();
     }
 
-    return e;
+    // NOTE: MSAL.jsがthrowする例外はすべてAuthErrorを継承しているので、型assertionしても問題ない
+    return new MicrosoftAuthenticationLibError(e as AuthError);
   });
 
   return andThenAsyncForResult(
     andThenForResult(result, (r) => {
       if (!r.account) {
-        return createErr(new Error('Failed to fetch account info.'));
+        return createErr(new BaseError('アカウント情報がありません'));
       }
 
       return createOk(r.account);
