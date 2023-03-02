@@ -41,6 +41,10 @@ export const useSignIn = () => {
       title: 'サインイン中にエラーが発生したため、サインアウトしました',
       description: error.message,
     });
+
+    if (error.causeError) {
+      throw error.causeError;
+    }
   };
   const signIn = async () => {
     startSignIn();
