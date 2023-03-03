@@ -9,7 +9,6 @@ type Props = {
   onError?: () => void;
 };
 type State = { hasError: boolean; error: Error | null };
-const DEFAULT_MESSAGES: StatusMessages = { 0: 'サーバエラー' };
 
 export class ErrorBoundary extends PureComponent<Props, State> {
   constructor(props: Props) {
@@ -34,14 +33,13 @@ export class ErrorBoundary extends PureComponent<Props, State> {
     const { children, statusMessages = {} } = this.props;
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { hasError, error } = this.state;
-    const messages = { ...DEFAULT_MESSAGES, ...statusMessages };
 
     if (hasError) {
       // TODO: HTTPErrorやほかのErrorに対応する
       return (
         <Alert
           status="error"
-          title={messages[0]}
+          title={statusMessages[0] ?? 'サーバーエラーです'}
           description="URL・直前に行った動作など、提供できるすべての情報を管理者に連絡・提供してください。"
         />
       );
