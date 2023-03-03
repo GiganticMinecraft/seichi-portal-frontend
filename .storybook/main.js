@@ -7,6 +7,15 @@ module.exports = {
     '@storybook/addon-essentials',
     '@storybook/addon-interactions',
     '@storybook/addon-a11y',
+    {
+      name: '@storybook/addon-coverage',
+      options: {
+        istanbul: {
+          include: ['src/**/components/**/**.tsx'],
+        },
+      },
+    },
+    'storybook-addon-next',
     '@chakra-ui/storybook-addon',
   ],
   features: {
@@ -22,6 +31,7 @@ module.exports = {
       ...config.resolve.alias,
       '@': path.resolve(__dirname, '../src'),
     };
+    config.resolve.fallback.stream = require.resolve('stream-browserify');
 
     return config;
   },

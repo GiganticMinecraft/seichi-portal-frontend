@@ -2,33 +2,21 @@
 import { ChakraProvider } from '@chakra-ui/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+import { type AppProps } from 'next/app';
 
-import { MainLayout } from '@/shared/Layout';
+import { queryClientConfig, customChakraTheme } from '@/config';
+import { McProfileProvider } from '@/features/user/components/McProfileProvider';
 
-import type { AppProps } from 'next/app';
-
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      retry: 0,
-      suspense: true,
-      // fetchして1分間はcacheを読み込む
-      staleTime: 60 * 1000,
-    },
-    mutations: {
-      retry: 0,
-    },
-  },
-});
+const queryClient = new QueryClient(queryClientConfig);
 
 const App = ({ Component, pageProps }: AppProps) => (
   <QueryClientProvider client={queryClient}>
-    <ChakraProvider>
-      <MainLayout>
+    <ChakraProvider theme={customChakraTheme}>
+      <McProfileProvider>
         <Component {...pageProps} />
-      </MainLayout>
-      <ReactQueryDevtools initialIsOpen={false} />
+      </McProfileProvider>
     </ChakraProvider>
+    <ReactQueryDevtools initialIsOpen={false} />
   </QueryClientProvider>
 );
 
