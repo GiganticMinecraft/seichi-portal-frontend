@@ -21,6 +21,7 @@ Seichi Portalではフロントエンドとバックエンド間の通信に RES
 ## 開発環境とミドルウェア
 
 フロントエンドの実装にはNode.jsとTypeScript、フレームワークにはNext.jsを採用しています。
+
 また、テストにJestとStorybook、リンターにESLintとPrettierを使用しています。
 
 その他開発環境の準備や手順の詳細については、[CONTRIBUTING.md](./CONTRIBUTING.md)を参照してください。
