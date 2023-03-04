@@ -13726,10 +13726,10 @@ opener@^1.5.1:
   resolved "https://registry.yarnpkg.com/opener/-/opener-1.5.2.tgz#5d37e1f35077b9dcac4301372271afdeb2a13598"
   integrity sha512-ur5UIdyw5Y7yEj9wLzhqXiy6GZ3Mwx0yGI+5sMn2r0N0v3cKJvUmFH5yPP+WXh9e0xfyzyJX95D8l088DNFj7A==
 
-option-t@^33.11.1:
-  version "33.11.1"
-  resolved "https://registry.yarnpkg.com/option-t/-/option-t-33.11.1.tgz#a87276c9ad208f7b4f04411426fb375acae88bb2"
-  integrity sha512-t6+OMXpMSWOpTxLvVicx85szYEbGoX2FN19CbsQOxDx+EY+qBBe4MItFW2YWXUR898CBA4N6tFcLwIAyzW/91g==
+option-t@^35.0.0:
+  version "35.0.0"
+  resolved "https://registry.yarnpkg.com/option-t/-/option-t-35.0.0.tgz#9b105212570c7b7afbd612b5179464da98b63e03"
+  integrity sha512-b1HyNiHz8vnfxI91MkCVAPwvCj8fuhjjFDSXuG3X8lT0a1UePERfkqux45IvD25RYlP7PaRJrRh5M2XY77vAGg==
 
 optionator@^0.8.1:
   version "0.8.3"
