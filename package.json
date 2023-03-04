@@ -34,7 +34,7 @@
     "framer-motion": "10.0.1",
     "jsonwebtoken": "8.5.1",
     "next": "13.2.3",
-    "option-t": "^33.11.1",
+    "option-t": "^35.0.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-hook-form": "7.43.4",
