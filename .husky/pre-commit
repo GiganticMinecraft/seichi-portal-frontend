@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
 
-export PATH=$HOME/.asdf/shims:$PATH
+export PATH=$HOME/.volta/bin:$PATH
 
 yarn lint-staged
