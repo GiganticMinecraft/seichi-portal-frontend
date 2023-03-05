@@ -74,7 +74,6 @@ jobs:
     needs:
       - test-jest
       - test-storybook
-    if: github.event_name == 'pull_request'
     steps:
       - name: Download jest coverage
         uses: actions/download-artifact@v3
