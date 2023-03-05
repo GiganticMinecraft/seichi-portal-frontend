@@ -44,6 +44,8 @@ StorybookとJestの2種類のライブラリを用いてテストを記載して
 
 [こちらの記事](https://zenn.dev/yodaka/articles/eca2d4bf552aeb)を参考にして作成しています。
 
+// TODO: 直接ファイルツリーに説明を書かない？
+
 ```tree
 ├── openapi: git submoduleです。seichi-api-schemaリポジトリの内容です。
 └── src
