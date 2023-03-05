@@ -64,7 +64,7 @@ export const hasMcAccount = async (
         return createErr(new ValidationError(parsedResponse.error));
       }
 
-      const allSignsAreVerified = verifyAllSigns([
+      const allSignsAreVerified = await verifyAllSigns([
         parsedResponse.data.signature,
         ...parsedResponse.data.items.map(({ signature }) => signature),
       ]);
