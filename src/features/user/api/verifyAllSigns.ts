@@ -1,6 +1,5 @@
 import { importSPKI, jwtVerify } from 'jose';
-import { andThenForResult, isOk } from 'option-t/PlainResult';
-import { tryCatchIntoResult } from 'option-t/PlainResult/tryCatch';
+import { andThenAsyncForResult, isOk } from 'option-t/PlainResult';
 import { tryCatchIntoResultAsync } from 'option-t/PlainResult/tryCatchAsync';
 
 const pubKey = `-----BEGIN PUBLIC KEY-----
@@ -24,8 +23,10 @@ export const verifyAllSigns = async (signatures: string[]) => {
   );
 
   return isOk(
-    andThenForResult(importedKey, (key) =>
-      tryCatchIntoResult(() => signatures.map((sign) => jwtVerify(sign, key))),
+    await andThenAsyncForResult(importedKey, async (key) =>
+      tryCatchIntoResultAsync(async () =>
+        Promise.all(signatures.map(async (sign) => jwtVerify(sign, key))),
+      ),
     ),
   );
 };
