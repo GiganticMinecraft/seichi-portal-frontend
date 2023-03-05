@@ -32,11 +32,7 @@
     "@tanstack/react-query": "4.26.0",
     "@tanstack/react-query-devtools": "4.26.0",
     "framer-motion": "10.0.2",
-<<<<<<< HEAD
-    "jsonwebtoken": "8.5.1",
-=======
     "jose": "^4.13.1",
->>>>>>> 5a169ca (chore(deps): remove jsonwebtoken)
     "next": "13.2.3",
     "option-t": "^37.0.0",
     "react": "18.2.0",
