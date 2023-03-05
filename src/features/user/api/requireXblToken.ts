@@ -3,8 +3,8 @@ import {
   createOk,
   andThenAsyncForResult,
   andThenForResult,
-} from 'option-t/lib/PlainResult';
-import { tryCatchIntoResultWithEnsureErrorAsync } from 'option-t/lib/PlainResult/tryCatchAsync';
+} from 'option-t/PlainResult';
+import { tryCatchIntoResultWithEnsureErrorAsync } from 'option-t/PlainResult/tryCatchAsync';
 
 import { jsonHeaders } from '@/const/headers';
 import { NetworkError, ValidationError, WrappedResult } from '@/types';

@@ -12,8 +12,8 @@ import {
   isOk,
   mapErrForResult,
   unwrapOk,
-} from 'option-t/lib/PlainResult';
-import { tryCatchIntoResultWithEnsureErrorAsync } from 'option-t/lib/PlainResult/tryCatchAsync';
+} from 'option-t/PlainResult';
+import { tryCatchIntoResultWithEnsureErrorAsync } from 'option-t/PlainResult/tryCatchAsync';
 
 import { BaseError, WrappedResult } from '@/types';
 

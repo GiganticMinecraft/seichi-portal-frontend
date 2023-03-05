@@ -1,9 +1,5 @@
-import {
-  mapErrForResult,
-  mapForResult,
-  Result,
-} from 'option-t/lib/PlainResult';
-import { TransformFn } from 'option-t/lib/internal/Function';
+import { mapErrForResult, mapForResult, Result } from 'option-t/PlainResult';
+import { TransformFn } from 'option-t/internal/Function';
 
 /**
  * Result<T, E>に対して、Ok(T)のときにwhenOk(TransformFn<T, U>)、Err(E)のときにwhenErr(TransformFn<E, F>)の関数をそれぞれ適用したResult<U, F>を返す。

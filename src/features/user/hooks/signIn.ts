@@ -1,6 +1,6 @@
 import { useMsal } from '@azure/msal-react';
 import { useBoolean, useToast } from '@chakra-ui/react';
-import { isOk, unwrapOk, unwrapErr } from 'option-t/lib/PlainResult';
+import { isOk, unwrapOk, unwrapErr } from 'option-t/PlainResult';
 
 import { defaultToastOptions } from '@/config';
 

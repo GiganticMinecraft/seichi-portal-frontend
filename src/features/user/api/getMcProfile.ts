@@ -3,8 +3,8 @@ import {
   andThenForResult,
   createErr,
   createOk,
-} from 'option-t/lib/PlainResult';
-import { tryCatchIntoResultWithEnsureErrorAsync } from 'option-t/lib/PlainResult/tryCatchAsync';
+} from 'option-t/PlainResult';
+import { tryCatchIntoResultWithEnsureErrorAsync } from 'option-t/PlainResult/tryCatchAsync';
 import { z } from 'zod';
 
 import { jsonHeaders } from '@/const/headers';
