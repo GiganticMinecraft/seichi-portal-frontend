@@ -3,8 +3,8 @@ import {
   AuthError,
   IPublicClientApplication,
 } from '@azure/msal-browser';
-import { createOk } from 'option-t/lib/PlainResult';
-import { tryCatchIntoResultWithEnsureErrorAsync } from 'option-t/lib/PlainResult/tryCatchAsync';
+import { createOk } from 'option-t/PlainResult';
+import { tryCatchIntoResultWithEnsureErrorAsync } from 'option-t/PlainResult/tryCatchAsync';
 
 import { matchForResult } from '@/libs';
 

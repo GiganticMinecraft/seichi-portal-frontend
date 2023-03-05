@@ -1,6 +1,6 @@
 import { verify } from 'jsonwebtoken';
-import { isOk } from 'option-t/lib/PlainResult';
-import { tryCatchIntoResultWithEnsureError } from 'option-t/lib/PlainResult/tryCatch';
+import { isOk } from 'option-t/PlainResult';
+import { tryCatchIntoResultWithEnsureError } from 'option-t/PlainResult/tryCatch';
 
 const pubKey = `-----BEGIN PUBLIC KEY-----
 MIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEAtz7jy4jRH3psj5AbVS6W

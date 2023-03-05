@@ -1,4 +1,4 @@
-import { createErr, createOk } from 'option-t/lib/PlainResult';
+import { createErr, createOk } from 'option-t/PlainResult';
 
 import { matchForResult } from '../result';
 
