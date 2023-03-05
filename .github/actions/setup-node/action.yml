@@ -3,12 +3,12 @@ description: Setup Node.js with Volta
 runs:
   using: composite
   steps:
-    - name: Read .tool-versions
-      uses: marocchino/tool-versions-action@v1
-      id: versions
+    - name: Get node version from Volta
+      id: get-node-version
+      uses: keita-hino/get-node-version-from-volta@main
     - uses: actions/setup-node@v3
       with:
-        node-version: ${{ steps.versions.outputs.nodejs }}
+        node-version: ${{ steps.get-node-version.outputs.nodeVersion }}
         cache: yarn
     - name: Install dependencies
       run: yarn
