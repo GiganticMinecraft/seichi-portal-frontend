@@ -1,6 +1,6 @@
-import { verify } from 'jsonwebtoken';
-import { isOk } from 'option-t/PlainResult';
-import { tryCatchIntoResultWithEnsureError } from 'option-t/PlainResult/tryCatch';
+import { importSPKI, jwtVerify } from 'jose';
+import { andThenAsyncForResult, isOk } from 'option-t/PlainResult';
+import { tryCatchIntoResultAsync } from 'option-t/PlainResult/tryCatchAsync';
 
 const pubKey = `-----BEGIN PUBLIC KEY-----
 MIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEAtz7jy4jRH3psj5AbVS6W
@@ -17,9 +17,16 @@ HsMs+NxEnN4E9a8PDB23b4yjKOQ9VHDxBxuaZJU60GBCIOF9tslb7OAkheSJx5Xy
 EYblHbogFGPRFU++NrSQRX0CAwEAAQ==
 -----END PUBLIC KEY-----`;
 
-export const verifyAllSigns = (signatures: string[]) =>
-  isOk(
-    tryCatchIntoResultWithEnsureError(() =>
-      signatures.map((sign) => verify(sign, pubKey)),
+export const verifyAllSigns = async (signatures: string[]) => {
+  const importedKey = await tryCatchIntoResultAsync(() =>
+    importSPKI(pubKey, 'RS256'),
+  );
+
+  return isOk(
+    await andThenAsyncForResult(importedKey, async (key) =>
+      tryCatchIntoResultAsync(async () =>
+        Promise.all(signatures.map(async (sign) => jwtVerify(sign, key))),
+      ),
     ),
   );
+};

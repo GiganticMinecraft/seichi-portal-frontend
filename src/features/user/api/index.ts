@@ -9,9 +9,7 @@ import {
   andThenForResult,
   createErr,
   createOk,
-  isOk,
   mapErrForResult,
-  unwrapOk,
 } from 'option-t/PlainResult';
 import { tryCatchIntoResultWithEnsureErrorAsync } from 'option-t/PlainResult/tryCatchAsync';
 
@@ -43,12 +41,18 @@ const getMinecraftGameProfile = async (
     xstsToken,
     requireMcAccessToken,
   );
-  const hasMc = await andThenAsyncForResult(mcAccessToken, hasMcAccount);
-  if (isOk(hasMc) && !unwrapOk(hasMc)) {
-    return createErr(new MsAccountOwnsNoMcAccount());
-  }
+  const hasMcAccountResult = await andThenAsyncForResult(
+    mcAccessToken,
+    hasMcAccount,
+  );
 
-  return andThenAsyncForResult(mcAccessToken, getMcProfile);
+  return andThenAsyncForResult(hasMcAccountResult, async (hasMc) => {
+    if (!hasMc) {
+      return createErr(new MsAccountOwnsNoMcAccount());
+    }
+
+    return andThenAsyncForResult(mcAccessToken, getMcProfile);
+  });
 };
 
 export const loginAndGetGameProfile = async (
