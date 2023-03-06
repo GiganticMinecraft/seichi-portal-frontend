@@ -2,6 +2,23 @@
 
 ## 開発を開始するには
 
+### Microsoft Azure Portalにアプリケーションを登録する
+
+基本は、Microsoftが出している`MSAL.js`のチュートリアルの中で行う「[シングルページ アプリケーション：アプリの登録](https://learn.microsoft.com/ja-jp/azure/active-directory/develop/scenario-spa-app-registration)」と同様です。
+
+1. [Microsoft Azure Portal](https://portal.azure.com/)にアクセスします。
+1. はじめてAzure Portalにアクセスした場合は、自動でAzure Active Directory（Azure AD）が作成されます。
+はじめてではない場合や別のAzure ADを使用したい場合は、トップメニューの「ディレクトリとサブスクリプション」フィルターを使用して、アプリケーションを登録するテナントを選択します。
+1. Azure Active Directory を検索して選択します。
+1. 左側ペインメニューにある「管理」カテゴリの中の 「アプリの登録」をクリックします。
+1. 「新規作成」をクリックします。
+1. アプリケーションの 「名前」欄に`Seichi Portal`と入力します。（別の名前でも問題ありません。）この名前は、アプリのユーザーに表示される場合があります。また、後で変更することができます。
+1. 「アプリケーションでサポートされているアカウントの種類」欄では「個人用 Microsoft アカウントのみ」を選択します。
+1. 「リダイレクトURI」欄では、「シングルページ アプリケーション (SPA)」を選択し、右のテキストボックスに`http://localhost:3000`と入力します。`http`と`https`をよく間違えやすいので注意してください。
+1. 左側ペインメニューにある「概要」をクリックすると、「アプリケーション (クライアント) ID」が表示されますので、メモしておきます。
+
+### 実際に動かす
+
 1. `git submodule update --init --recursive`
 Submoduleをpullします。
 1. `yarn install`
@@ -10,9 +27,11 @@ Submoduleをpullします。
 [husky](https://github.com/typicode/husky)をセットアップします。これによって、`git commit`時に毎回ESLintとPrettierが実行されます。
 1. `yarn api`
 OpenAPIの定義ファイルからAPIクライアントの型を生成します。これには、[@redocly-cli](https://github.com/Redocly/redocly-cli)と[openapi2aspida](https://github.com/aspida/openapi2aspida)を利用しています。
+1. `cp .env.example .env.local`
+環境変数を.envから自動で読み込むようになっているので、.envを作成します。各項目については[環境変数について](#環境変数について)を参照してください。
 1. `yarn dev`
 開発用サーバーを起動します。[http://localhost:3000](http://localhost:3000)でアクセスできます。
-このとき、[prism](https://github.com/stoplightio/prism)によって、OpenAPIに準拠したAPIサーバーが起動します。開発中は、バックエンドサーバーの代わりに、このサーバーを使用します。（アドレスは同じです）
+このとき、[prism](https://github.com/stoplightio/prism)によって、OpenAPIに準拠したモックサーバーが起動します。開発中は、実際のバックエンドサーバーの代わりに、このモックサーバーを使用します。
 
 ## テスト
 
@@ -39,6 +58,15 @@ StorybookとJestの2種類のライブラリを用いてテストを記載して
 ### E2Eテスト
 
 未実装です。
+
+## 環境変数について
+
+| 名前 | 説明 |
+| --- | --- |
+| NODE_ENV | 実行環境を示す値です。 |
+| NEXT_PUBLIC_BACKEND_API_URL | バックエンドAPIのURLです。 |
+| NEXT_PUBLIC_MS_APP_CLIENT_ID | Azure Portalで登録したアプリの「アプリケーション (クライアント) ID」です。 |
+| NEXT_PUBLIC_MS_APP_REDIRECT_URL | Azure Portalで登録したアプリの「リダイレクトURI」です。`http`と`https`をよく間違えやすいので注意してください。 |
 
 ## ディレクトリ構造
 
