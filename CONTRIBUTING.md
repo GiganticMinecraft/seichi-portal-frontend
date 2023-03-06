@@ -11,7 +11,7 @@ Submoduleをpullします。
 1. `yarn api`
 OpenAPIの定義ファイルからAPIクライアントの型を生成します。これには、[@redocly-cli](https://github.com/Redocly/redocly-cli)と[openapi2aspida](https://github.com/aspida/openapi2aspida)を利用しています。
 1. `cp .env.example .env.local`
-環境変数を.envから自動で読み込むようになっているので、.envを作成します。
+環境変数を.envから自動で読み込むようになっているので、.envを作成します。各項目については[環境変数について](#環境変数について)を参照してください。
 1. `yarn dev`
 開発用サーバーを起動します。[http://localhost:3000](http://localhost:3000)でアクセスできます。
 このとき、[prism](https://github.com/stoplightio/prism)によって、OpenAPIに準拠したAPIサーバーが起動します。開発中は、バックエンドサーバーの代わりに、このサーバーを使用します。（アドレスは同じです）
@@ -41,6 +41,14 @@ StorybookとJestの2種類のライブラリを用いてテストを記載して
 ### E2Eテスト
 
 未実装です。
+
+## 環境変数について
+
+| 名前 | 説明 |
+| --- | --- |
+| NODE_ENV | 実行環境を示す値です。 |
+| NEXT_PUBLIC_BACKEND_API_URL | バックエンドAPIのURLです。 |
+| NEXT_PUBLIC_MS_APP_CLIENT_ID | Azure Portalで登録したアプリの「アプリケーション (クライアント) ID」です。 |
 
 ## ディレクトリ構造
 
