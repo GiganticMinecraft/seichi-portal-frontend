@@ -4,7 +4,7 @@ import { useMcProfile } from '../../hooks';
 
 type Props = Omit<PresenterProps, 'isAuthenticated'>;
 
-export const UnAuthenticatedTemplate = ({ children }: Props) => {
+export const UnauthenticatedTemplate = ({ children }: Props) => {
   const { isMcProfile: isAuthenticated } = useMcProfile();
 
   return <Presenter {...{ isAuthenticated }}>{children}</Presenter>;

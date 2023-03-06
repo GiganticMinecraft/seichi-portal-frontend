@@ -9,7 +9,7 @@ export default {
   title: 'features/user/components/AuthenticatedTemplate',
 } as ComponentMeta<typeof Presenter>;
 
-export const IsUnAuthenticated: ComponentStoryObj<typeof Presenter> = {
+export const IsUnauthenticated: ComponentStoryObj<typeof Presenter> = {
   args: {
     isAuthenticated: false,
     children: <p data-testid="target-text">表示されるべきではない要素です。</p>,
