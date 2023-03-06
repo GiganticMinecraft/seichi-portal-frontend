@@ -44,7 +44,7 @@ const nextConfig = {
         'https://api.minecraftservices.com/authentication/login_with_xbox',
     },
     {
-      source: '/externalApi/mcOwn',
+      source: '/externalApi/ownMc',
       destination: 'https://api.minecraftservices.com/entitlements/mcstore',
     },
     {

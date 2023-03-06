@@ -17,9 +17,10 @@ import {
 
 import { verifyAllSigns } from './verifyAllSigns';
 
+import { overrideApiUrl } from '../libs/overrideApiUrl';
 import { McAccessToken } from '../types';
 
-const url = '/externalApi/mcOwn';
+const url = overrideApiUrl('ownMc');
 
 const hasMcAccountResponse = z.object({
   signature: z.string(),

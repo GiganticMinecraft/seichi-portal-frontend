@@ -4,6 +4,8 @@ import { mapErrForResult, mapForResult, Result } from 'option-t/PlainResult';
 // https://github.com/option-t/option-t/blob/main/packages/option-t/src/internal/Function.ts#L1
 type TransformFn<in T, out U> = (input: T) => U;
 
+// TODO: add test
+
 /**
  * Result<T, E>に対して、Ok(T)のときにwhenOk(TransformFn<T, U>)、Err(E)のときにwhenErr(TransformFn<E, F>)の関数をそれぞれ適用したResult<U, F>を返す。
  */

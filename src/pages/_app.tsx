@@ -6,6 +6,7 @@ import { type AppProps } from 'next/app';
 
 import { queryClientConfig, customChakraTheme } from '@/config';
 import { McProfileProvider } from '@/features/user/components/McProfileProvider';
+import { isProduction } from '@/libs';
 
 const queryClient = new QueryClient(queryClientConfig);
 
@@ -21,7 +22,7 @@ const App = ({ Component, pageProps }: AppProps) => (
 );
 
 // https://zenn.dev/sora_kumo/articles/e86bbf0291d4a7
-if (process.env.NODE_ENV !== 'production') {
+if (!isProduction) {
   App.getInitialProps = async () => ({ pageProps: {} });
 }
 

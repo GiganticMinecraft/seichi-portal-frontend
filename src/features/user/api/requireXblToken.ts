@@ -9,9 +9,10 @@ import { tryCatchIntoResultWithEnsureErrorAsync } from 'option-t/PlainResult/try
 import { jsonHeaders } from '@/const/headers';
 import { NetworkError, ValidationError, WrappedResult } from '@/types';
 
+import { overrideApiUrl } from '../libs/overrideApiUrl';
 import { requireXboxTokenResponse, XboxToken } from '../types';
 
-const url = '/externalApi/xbl';
+const url = overrideApiUrl('xbl');
 
 const genBodyWithToken = (token: string) => ({
   Properties: {
