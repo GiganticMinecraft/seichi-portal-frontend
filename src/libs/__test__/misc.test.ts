@@ -1,4 +1,4 @@
-import { rangeIter } from '..';
+import { rangeIter } from '../misc';
 
 describe('rangeIter', () => {
   test.each`
