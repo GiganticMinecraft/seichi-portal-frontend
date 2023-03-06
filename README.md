@@ -1,6 +1,6 @@
 # seichi-portal-frontend
 
-このリポジトリは、Seichi Portalのフロントエンド実装です。
+このリポジトリは、Seichi Portalのフロントエンド実装です。ご利用は[こちら](https://portal.seichi.click)から。
 
 プロジェクトの目的やバックエンドなどの関連リポジトリについては、[こちらのリポジトリ](https://github.com/GiganticMinecraft/seichi-portal)を参照してください。
 
@@ -28,7 +28,7 @@ Seichi Portalではフロントエンドとバックエンド間の通信に RES
 
 ## 本番環境
 
-`main`ブランチに更新があると、[GitHub Actionsがビルドを行い](./.github/workflows/ci-and-cd.yml)、[GitHub Pages](https://portal.seichi.click/)にデプロイを行います。
+`main`ブランチに更新があると、[GitHub Actionsがビルドを行い](./.github/workflows/ci-and-cd.yml)、GitHub Pagesにデプロイを行います。
 
 ## プロジェクト俯瞰図
 
