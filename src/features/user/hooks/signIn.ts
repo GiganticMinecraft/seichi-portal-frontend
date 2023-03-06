@@ -14,7 +14,7 @@ export const useSignIn = () => {
   const [isSigningIn, { on: startSignIn, off: endSignIn }] = useBoolean(false);
   const { signOut } = useSignOut();
   const { setMcProfile } = useMcProfile();
-  const toast = useToast();
+  const toast = useToast(defaultToastOptions);
 
   const doSignIn = async () => {
     const profileResult = await loginAndGetGameProfile(instance);
@@ -22,7 +22,6 @@ export const useSignIn = () => {
     if (isOk(profileResult)) {
       const profile = unwrapOk(profileResult);
       toast({
-        ...defaultToastOptions,
         status: 'success',
         title: 'サインインに成功しました',
         description: `ようこそ、${profile.name}さん`,
@@ -36,7 +35,6 @@ export const useSignIn = () => {
 
     const error = unwrapErr(profileResult);
     toast({
-      ...defaultToastOptions,
       status: 'error',
       title: 'サインイン中にエラーが発生したため、サインアウトしました',
       description: error.message,
