@@ -2,6 +2,8 @@ import { Overrides } from '@/libs/overrideUrl';
 
 export type UserApiKey = 'xbl' | 'xsts' | 'mcToken' | 'ownMc' | 'mcProfile';
 
+// TODO: next.config.jsと重複しているのでどうにかする
+
 export const overrides: Overrides<UserApiKey> = {
   xbl: {
     override: '/externalApi/xbl',
@@ -17,7 +19,7 @@ export const overrides: Overrides<UserApiKey> = {
       'https://api.minecraftservices.com/authentication/login_with_xbox',
   },
   ownMc: {
-    override: '/externalApi/mcOwn',
+    override: '/externalApi/ownMc',
     original: 'https://api.minecraftservices.com/entitlements/mcstore',
   },
   mcProfile: {
