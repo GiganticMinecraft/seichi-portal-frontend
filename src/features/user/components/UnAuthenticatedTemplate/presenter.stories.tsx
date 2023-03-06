@@ -6,10 +6,10 @@ import { Presenter } from './presenter';
 
 export default {
   component: Presenter,
-  title: 'features/user/components/UnAuthenticatedTemplate',
+  title: 'features/user/components/UnauthenticatedTemplate',
 } as ComponentMeta<typeof Presenter>;
 
-export const IsUnAuthenticated: ComponentStoryObj<typeof Presenter> = {
+export const IsUnauthenticated: ComponentStoryObj<typeof Presenter> = {
   args: {
     isAuthenticated: false,
     children: <p data-testid="target-text">表示されるべき要素です。</p>,
