@@ -66,6 +66,7 @@ StorybookとJestの2種類のライブラリを用いてテストを記載して
 | NODE_ENV | 実行環境を示す値です。 |
 | NEXT_PUBLIC_BACKEND_API_URL | バックエンドAPIのURLです。 |
 | NEXT_PUBLIC_MS_APP_CLIENT_ID | Azure Portalで登録したアプリの「アプリケーション (クライアント) ID」です。 |
+| NEXT_PUBLIC_MS_APP_REDIRECT_URL | Azure Portalで登録したアプリの「リダイレクトURI」です。 |
 
 ## ディレクトリ構造
 
