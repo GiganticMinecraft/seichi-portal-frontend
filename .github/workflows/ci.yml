@@ -39,16 +39,14 @@ jobs:
       - name: Run coverage tests
         run: yarn test:coverage
       - name: Edit result file
-        run: |
-          tail -n +2 coverages/result-jest.txt | head -n -1 > result.txt
-          mv result.txt result-jest.txt
+        run: tail -n +2 coverage/result-jest.txt | head -n -1 > result.txt
       - name: Write coverages to summary
         uses: actions/github-script@v6
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             const fs = require("fs").promises;
-            const jest = await fs.readFile("./result-jest.txt").then((b) => b.toString());
+            const jest = await fs.readFile("./result.txt").then((b) => b.toString());
             const output = `\n${jest}`;
             await core.summary
               .addHeading('Jest Coverages')
