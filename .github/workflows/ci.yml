@@ -69,12 +69,13 @@ jobs:
           key: ${{ runner.os }}-nextjs-${{ hashFiles('**/yarn.lock') }}-${{ hashFiles('**.[jt]s', '**.[jt]sx') }}
           restore-keys: ${{ runner.os }}-nextjs-${{ hashFiles('**/yarn.lock') }}-
       - name: Make envfile
-        uses: SpicyPizza/create-envfile@v1.3
-        with:
-          envkey_NODE_ENV: ${{ vars.NODE_ENV }}
-          envkey_NEXT_PUBLIC_BACKEND_API_URL: ${{ secrets.NEXT_PUBLIC_BACKEND_API_URL }}
-          envkey_NEXT_PUBLIC_MS_APP_CLIENT_ID: ${{ secrets.NEXT_PUBLIC_MS_APP_CLIENT_ID }}
-          envkey_NEXT_PUBLIC_MS_APP_REDIRECT_URL: ${{ vars.NEXT_PUBLIC_MS_APP_REDIRECT_URL }}
+        run: |
+          cat > .env <<EOD
+          NODE_ENV=${{ vars.NODE_ENV }}
+          NEXT_PUBLIC_BACKEND_API_URL=${{ secrets.NEXT_PUBLIC_BACKEND_API_URL }}
+          NEXT_PUBLIC_MS_APP_CLIENT_ID=${{ secrets.NEXT_PUBLIC_MS_APP_CLIENT_ID }}
+          NEXT_PUBLIC_MS_APP_REDIRECT_URL=${{ vars.NEXT_PUBLIC_MS_APP_REDIRECT_URL }}
+          EOD
       - name: Run build
         run: yarn build
       - name: Upload artifacts for GitHub Pages
