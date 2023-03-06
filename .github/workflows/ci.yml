@@ -27,8 +27,8 @@ jobs:
         uses: ./.github/actions/setup-node
       - name: Run Prettier
         run: yarn format
-  test-jest:
-    name: Run Test by Jest
+  test:
+    name: Run Test
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -36,76 +36,22 @@ jobs:
           submodules: 'true'
       - name: Setup Node.js with Volta
         uses: ./.github/actions/setup-node
-      - name: Run coverage tests by Jest
+      - name: Run coverage tests
         run: yarn test:coverage
-      - name: Upload coverage result
-        uses: actions/upload-artifact@v3
-        with:
-          name: jest-coverage
-          path: coverage/result-jest.txt
-  test-storybook:
-    name: Run Test by Storybook
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          submodules: 'true'
-      - name: Setup Node.js
-        uses: ./.github/actions/setup-node
-      - name: Build Storybook
-        run: yarn sb:build
-      - name: Serve Files
-        uses: Eun/http-server-action@v1.0.6
-        with:
-          directory: storybook-static
-          port: 9001
-      - name: Run tests by Storybook
-        run: yarn sb:test:run
-      - name: Output coverage
-        run: yarn nyc report --reporter=text -t coverage/storybook --report-dir coverage/storybook > coverage/result-storybook.txt
-      - name: Upload coverage result
-        uses: actions/upload-artifact@v3
-        with:
-          name: storybook-coverage
-          path: coverage/result-storybook.txt
-  summary-coverages:
-    name: Show coverages
-    runs-on: ubuntu-latest
-    needs:
-      - test-jest
-      - test-storybook
-    steps:
-      - name: Download jest coverage
-        uses: actions/download-artifact@v3
-        with:
-          name: jest-coverage
       - name: Edit result file
         run: |
-          tail -n +2 result-jest.txt | head -n -1 > result.txt
+          tail -n +2 coverages/result-jest.txt | head -n -1 > result.txt
           mv result.txt result-jest.txt
-      - name: Download storybook coverage
-        uses: actions/download-artifact@v3
-        with:
-          name: storybook-coverage
-      - name: Edit result file
-        run: |
-          tail -n +4 result-storybook.txt | head -n -2 > result.txt
-          mv result.txt result-storybook.txt
-      - name: Write to summary
+      - name: Write coverages to summary
         uses: actions/github-script@v6
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             const fs = require("fs").promises;
             const jest = await fs.readFile("./result-jest.txt").then((b) => b.toString());
-            const storybook = await fs.readFile("./result-storybook.txt").then((b) => b.toString());
-            const output = `\n
-              ## Jest\n\n
-              ${jest}\n\n
-              ## Storybook\n\n
-              ${storybook}`;
+            const output = `\n${jest}`;
             await core.summary
-              .addHeading('Test Coverages')
+              .addHeading('Jest Coverages')
               .addRaw(output)
               .write();
   build:
