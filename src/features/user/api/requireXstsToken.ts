@@ -14,9 +14,10 @@ import {
   WrappedResult,
 } from '@/types';
 
+import { overrideApiUrl } from '../libs/overrideApiUrl';
 import { requireXboxTokenResponse, XboxToken } from '../types';
 
-const url = '/externalApi/xsts';
+const url = overrideApiUrl('xsts');
 
 const unAuthorizedBodySchema = z.object({
   Identity: z.string(),

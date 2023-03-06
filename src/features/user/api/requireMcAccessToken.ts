@@ -10,9 +10,10 @@ import { z } from 'zod';
 import { jsonHeaders } from '@/const/headers';
 import { NetworkError, ValidationError, WrappedResult } from '@/types';
 
+import { overrideApiUrl } from '../libs/overrideApiUrl';
 import { XboxToken, McAccessToken } from '../types';
 
-const url = '/externalApi/mcToken';
+const url = overrideApiUrl('mcToken');
 
 const genBodyWithToken = (userHash: string, xstsToken: string) => ({
   identityToken: `XBL3.0 x=${userHash};${xstsToken}`,

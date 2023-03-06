@@ -10,9 +10,10 @@ import { z } from 'zod';
 import { jsonHeaders } from '@/const/headers';
 import { NetworkError, ValidationError, WrappedResult } from '@/types';
 
+import { overrideApiUrl } from '../libs/overrideApiUrl';
 import { McAccessToken, McProfile, MinecraftIdIsUndefined } from '../types';
 
-const url = '/externalApi/mcProfile';
+const url = overrideApiUrl('mcProfile');
 
 const responseJsonSchema = z.object({
   id: z.string(),
