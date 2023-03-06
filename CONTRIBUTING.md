@@ -10,6 +10,8 @@ Submoduleをpullします。
 [husky](https://github.com/typicode/husky)をセットアップします。これによって、`git commit`時に毎回ESLintとPrettierが実行されます。
 1. `yarn api`
 OpenAPIの定義ファイルからAPIクライアントの型を生成します。これには、[@redocly-cli](https://github.com/Redocly/redocly-cli)と[openapi2aspida](https://github.com/aspida/openapi2aspida)を利用しています。
+1. `cp .env.example .env.local`
+環境変数を.envから自動で読み込むようになっているので、.envを作成します。
 1. `yarn dev`
 開発用サーバーを起動します。[http://localhost:3000](http://localhost:3000)でアクセスできます。
 このとき、[prism](https://github.com/stoplightio/prism)によって、OpenAPIに準拠したAPIサーバーが起動します。開発中は、バックエンドサーバーの代わりに、このサーバーを使用します。（アドレスは同じです）
