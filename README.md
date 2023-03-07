@@ -16,7 +16,7 @@
 
 ## API定義
 
-Seichi Portalではフロントエンドとバックエンド間の通信に REST APIを使っています。詳細については、[seicihi-portal-backend](https://github.com/GiganticMinecraft/seichi-portal-backend)および[seichi-api-schema](https://github.com/GiganticMinecraft/seichi-api-schema)を参照してください。
+Seichi Portalではフロントエンドとバックエンド間の通信に REST APIを使っています。詳細については、[seicihi-portal-backend](https://github.com/GiganticMinecraft/seichi-portal-backend)および[seichi-portal-api-schema](https://github.com/GiganticMinecraft/seichi-portal-api-schema)を参照してください。
 
 ## 開発環境とミドルウェア
 
