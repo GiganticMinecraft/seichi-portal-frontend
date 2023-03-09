@@ -4,6 +4,8 @@
 
 ### Microsoft Azure Portalにアプリケーションを登録する
 
+本サイトは、Microsoftアカウントによるサインイン・サインアウトを行うので、ユーザーに関連する操作を行うには以下の操作が必要です。その操作を行わないのであれば、[実際に動かす](#実際に動かす)まで手順をスキップできます。
+
 基本は、Microsoftが出している`MSAL.js`のチュートリアルの中で行う「[シングルページ アプリケーション：アプリの登録](https://learn.microsoft.com/ja-jp/azure/active-directory/develop/scenario-spa-app-registration)」と同様です。
 
 1. [Microsoft Azure Portal](https://portal.azure.com/)にアクセスします。
@@ -19,18 +21,18 @@
 
 ### 実際に動かす
 
-1. `git submodule update --init --recursive`
-Submoduleをpullします。
-1. `yarn install`
+1. `git clone --recursive https://github.com/GiganticMinecraft/seichi-portal-frontend.git`  
+リポジトリをクローンします。
+1. `yarn install`  
 依存関係をインストールします。
-1. `yarn prepare`
+1. `yarn prepare`  
 [husky](https://github.com/typicode/husky)をセットアップします。これによって、`git commit`時に毎回ESLintとPrettierが実行されます。
-1. `yarn api`
+1. `yarn api`  
 OpenAPIの定義ファイルからAPIクライアントの型を生成します。これには、[@redocly-cli](https://github.com/Redocly/redocly-cli)と[openapi2aspida](https://github.com/aspida/openapi2aspida)を利用しています。
-1. `cp .env.example .env.local`
+1. `cp .env.example .env.local`  
 環境変数を.envから自動で読み込むようになっているので、.envを作成します。各項目については[環境変数について](#環境変数について)を参照してください。
-1. `yarn dev`
-開発用サーバーを起動します。[http://localhost:3000](http://localhost:3000)でアクセスできます。
+1. `yarn dev`  
+開発用サーバーを起動します。[http://localhost:3000](http://localhost:3000)でアクセスできます。  
 このとき、[prism](https://github.com/stoplightio/prism)によって、OpenAPIに準拠したモックサーバーが起動します。開発中は、実際のバックエンドサーバーの代わりに、このモックサーバーを使用します。
 
 ## テスト
