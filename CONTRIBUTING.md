@@ -4,6 +4,8 @@
 
 ### Microsoft Azure Portalにアプリケーションを登録する
 
+本サイトは、Microsoftアカウントによるサインイン・サインアウトを行うので、ユーザーに関連する操作を行うには以下の操作が必要です。その操作を行わないのであれば、[実際に動かす](#実際に動かす)まで手順をスキップできます。
+
 基本は、Microsoftが出している`MSAL.js`のチュートリアルの中で行う「[シングルページ アプリケーション：アプリの登録](https://learn.microsoft.com/ja-jp/azure/active-directory/develop/scenario-spa-app-registration)」と同様です。
 
 1. [Microsoft Azure Portal](https://portal.azure.com/)にアクセスします。
