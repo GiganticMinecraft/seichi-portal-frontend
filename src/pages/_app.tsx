@@ -4,6 +4,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { type AppProps } from 'next/app';
 
+import { mockServer } from '@/__mocks__/server';
 import { queryClientConfig, customChakraTheme } from '@/config';
 import { McProfileProvider } from '@/features/user/components/McProfileProvider';
 import { isProduction } from '@/libs';
@@ -28,8 +29,7 @@ if (!isProduction) {
 
   // mswのモックサーバーを実行する
   // See: https://chaika.hatenablog.com/entry/2021/08/30/083000
-  const runMockServer = () => import('@/__mocks__/worker.js');
-  runMockServer();
+  mockServer.listen();
 }
 
 export default App;

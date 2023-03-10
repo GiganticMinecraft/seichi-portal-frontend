@@ -3,9 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "npm-run-all -p dev:*",
-    "dev:mock": "prism mock openapi/schema/openapi.yml -p 3001",
-    "dev:next": "next dev",
+    "dev": "next dev",
     "build": "next build && next export && next-export-optimize-images",
     "lint": "next lint",
     "lint:fix": "next lint --fix",
