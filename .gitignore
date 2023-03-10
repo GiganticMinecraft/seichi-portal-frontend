@@ -37,9 +37,8 @@ yarn-error.log*
 next-env.d.ts
 nextjs-routes.d.ts
 
-# OpenAPI
-src/api/
-src/libs/openapi.yml
+# auto generated files and directories
+src/generated/
 
 # Storybook
 storybook-static/
