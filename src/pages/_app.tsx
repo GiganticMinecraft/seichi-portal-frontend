@@ -21,10 +21,13 @@ const App = ({ Component, pageProps }: AppProps) => (
   </QueryClientProvider>
 );
 
-// https://zenn.dev/sora_kumo/articles/e86bbf0291d4a7
 if (!isProduction) {
+  // Next.jsのqueryが2回呼ばれるので対処
+  // See: https://zenn.dev/sora_kumo/articles/e86bbf0291d4a7
   App.getInitialProps = async () => ({ pageProps: {} });
 
+  // mswのモックサーバーを実行する
+  // See: https://chaika.hatenablog.com/entry/2021/08/30/083000
   const runMockServer = () => import('@/__mocks__/worker.js');
   runMockServer();
 }
