@@ -24,6 +24,9 @@ const App = ({ Component, pageProps }: AppProps) => (
 // https://zenn.dev/sora_kumo/articles/e86bbf0291d4a7
 if (!isProduction) {
   App.getInitialProps = async () => ({ pageProps: {} });
+
+  const runMockServer = () => import('@/__mocks__/worker.js');
+  runMockServer();
 }
 
 export default App;
