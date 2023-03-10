@@ -19,6 +19,7 @@ module.exports = {
     'plugin:@typescript-eslint/recommended',
     'plugin:react/recommended',
     'plugin:storybook/recommended',
+    'plugin:testing-library/react',
     'airbnb',
     'airbnb-typescript',
     'prettier',
@@ -142,10 +143,6 @@ module.exports = {
         'import/prefer-default-export': 'error',
         'import/no-default-export': 'off',
       },
-    },
-    {
-      files: ['**/*.test.*'],
-      extends: ['plugin:testing-library/react'],
     },
   ],
 };
