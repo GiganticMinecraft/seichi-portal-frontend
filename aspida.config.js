@@ -1,6 +1,6 @@
 module.exports = {
-  input: 'src/api',
+  input: 'src/generated/api',
   openapi: {
-    inputFile: 'src/libs/openapi.yml',
+    inputFile: 'src/generated/bundled-openapi.json',
   },
 };
