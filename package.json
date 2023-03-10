@@ -21,7 +21,7 @@
     "sb:build": "build-storybook",
     "sb:test": "yarn sb:build && npm-run-all -p -r sb:start sb:test:run",
     "sb:test:run": "test-storybook --url http://localhost:9001 --coverage",
-    "api": "redocly bundle openapi/schema/openapi.yml -o src/libs/openapi.yml && rm -rf src/api && openapi2aspida"
+    "api": "redocly bundle openapi/schema/openapi.yml -o src/generated/bundled-openapi.json && rm -rf src/generated/api && openapi2aspida"
   },
   "dependencies": {
     "@azure/msal-browser": "^2.33.0",
