@@ -10,5 +10,5 @@ node_modules
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-# OpenAPI
-src/api
+# auto generated files
+src/generated
