@@ -1,5 +1,5 @@
 import { components } from './components';
-import { endPoints, ResponseFunctionReturn } from './helper';
+import { endPoints, ResponseFunctionReturn } from './helpers';
 
 export const handlers: {
   [usecases: string]: {
