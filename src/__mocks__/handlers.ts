@@ -2,9 +2,9 @@ import { components } from './components';
 import { endPoints, ResponseFunctionReturn } from './helpers';
 
 export const handlers: {
-  [usecases: string]: {
+  [usecase: string]: {
     ok: ResponseFunctionReturn;
-    [responses: string]: ResponseFunctionReturn;
+    [response: string]: ResponseFunctionReturn;
   };
 } = {
   getFormList: {
@@ -13,5 +13,5 @@ export const handlers: {
 };
 
 export const defaultHandlers = Object.entries(handlers).map(
-  ([_usecases, statusHandlers]) => statusHandlers.ok,
+  ([_usecase, statusHandlers]) => statusHandlers.ok,
 );
