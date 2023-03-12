@@ -144,5 +144,15 @@ module.exports = {
         'import/no-default-export': 'off',
       },
     },
+    {
+      files: ['src/__mocks__/**/*.ts'],
+      rules: {
+        'import/no-extraneous-dependencies': 'off',
+      },
+    },
+    {
+      files: ['**/*.test.*'],
+      extends: ['plugin:testing-library/react'],
+    },
   ],
 };
