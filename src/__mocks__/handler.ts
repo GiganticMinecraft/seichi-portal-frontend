@@ -1,12 +1,17 @@
 import { components } from './components';
-import { get } from './helper';
+import { endPoints, ResponseFunctionReturn } from './helper';
 
-export const handlers = {
-  get_form_list: {
-    ok: get('/forms', components.forms),
+export const handlers: {
+  [usecases: string]: {
+    ok: ResponseFunctionReturn;
+    [responses: string]: ResponseFunctionReturn;
+  };
+} = {
+  getFormList: {
+    ok: endPoints.get('/forms', components.forms),
   },
 };
 
 export const defaultHandlers = Object.entries(handlers).map(
-  ([_path, statusHandlers]) => statusHandlers.ok,
+  ([_usecases, statusHandlers]) => statusHandlers.ok,
 );
