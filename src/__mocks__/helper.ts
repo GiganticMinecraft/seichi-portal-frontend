@@ -2,7 +2,7 @@ import { MockedRequest, rest, RestHandler, DefaultBodyType } from 'msw';
 
 import { BACKEND_API_URL } from '@/const/env';
 
-const getRequest =
+const request =
   (method: typeof rest.get) =>
   (
     path: string,
@@ -14,4 +14,4 @@ const getRequest =
       res(ctx.status(status), ctx.json(response)),
     );
 
-export const get = getRequest(rest.get);
+export const get = request(rest.get);
