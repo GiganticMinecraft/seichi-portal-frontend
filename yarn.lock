@@ -13437,9 +13437,9 @@ opener@^1.5.1:
   integrity sha512-ur5UIdyw5Y7yEj9wLzhqXiy6GZ3Mwx0yGI+5sMn2r0N0v3cKJvUmFH5yPP+WXh9e0xfyzyJX95D8l088DNFj7A==
 
 option-t@^37.0.0:
-  version "37.0.2"
-  resolved "https://registry.yarnpkg.com/option-t/-/option-t-37.0.2.tgz#a88d2071538025cdbb03338ac30736053a2ee41d"
-  integrity sha512-rwTz0bsw8KhH1g2KGeHUWpDxG9CivuKmBPOfKxUzNQcBVxjK5ZCJr+pXFuIXSQhpq0m+LVrRClCo/g/FndKZyQ==
+  version "37.0.3"
+  resolved "https://registry.yarnpkg.com/option-t/-/option-t-37.0.3.tgz#73d9b93403587b89c6cf590ab01bdec0426eb64c"
+  integrity sha512-unK2gb3EFwhWBZG6g9NWsXjrK/NaK/OMm6QAWksxjBguz7W+XdoPr2GZpagypH/XKZc+2sZjuhFMIvupA1Pt7Q==
 
 optionator@^0.8.1:
   version "0.8.3"
