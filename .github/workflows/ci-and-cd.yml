@@ -103,10 +103,12 @@ jobs:
         id: content
         if: always() && github.event_name == 'pull_request'
         run: |
+          outputStatus() { echo "CONTENT=$1" >> $GITHUB_OUTPUT; }
+
           if [ $STATUS = 'success' ]; then
-            echo "CONTENT=✅  Deployment succeeded." >> $GITHUB_OUTPUT
+            outputStatus "✅  Deployment succeeded."
           else
-            echo "CONTENT=🚫  Deployment failed." >> $GITHUB_OUTPUT
+            outputStatus "🚫  Deployment failed."
           fi
         env:
           STATUS: ${{ steps.cf.outcome }}
