@@ -1,6 +1,5 @@
-name: CI
+name: CI and CD
 on:
-  workflow_call:
   push:
     branches:
       - main
@@ -58,6 +57,10 @@ jobs:
   build:
     name: Run Build
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+      deployments: write
     steps:
       - uses: actions/checkout@v3
         with:
@@ -72,7 +75,6 @@ jobs:
           key: ${{ runner.os }}-nextjs-${{ hashFiles('**/yarn.lock') }}-${{ hashFiles('**.[jt]s', '**.[jt]sx') }}
           restore-keys: ${{ runner.os }}-nextjs-${{ hashFiles('**/yarn.lock') }}-
       - name: Make envfile
-        if: github.ref == 'refs/heads/main'
         run: |
           cat > .env <<EOD
           NODE_ENV=${{ vars.NODE_ENV }}
@@ -82,3 +84,53 @@ jobs:
           EOD
       - name: Run build
         run: yarn build
+      - name: Publish to Cloudflare Pages
+        uses: cloudflare/pages-action@v1
+        id: cf
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_PAGES_API_TOKEN }}
+          accountId: 9e9e88e2b19878c4a911c3c8a715a168
+          projectName: seichi-portal
+          directory: out
+          gitHubToken: ${{ secrets.GITHUB_TOKEN }}
+      - name: Output short git SHA
+        id: sha
+        if: always() && github.event_name == 'pull_request'
+        run: |
+          SHORT_SHA=$(git log --format='%h' -n 1)
+          echo "SHORT_SHA=$SHORT_SHA" >> $GITHUB_OUTPUT
+      - name: Output deployment status
+        id: content
+        if: always() && github.event_name == 'pull_request'
+        run: |
+          outputStatus() { echo "CONTENT=$1" >> $GITHUB_OUTPUT; }
+
+          if [ $STATUS = 'success' ]; then
+            outputStatus "✅  Deployment succeeded."
+          else
+            outputStatus "🚫  Deployment failed."
+          fi
+        env:
+          STATUS: ${{ steps.cf.outcome }}
+      - name: Notify deployment status and its URL
+        uses: actions-cool/maintain-one-comment@v3
+        if: always() && github.event_name == 'pull_request'
+        with:
+          body: |
+            ## Deploying with  <a href="https://pages.dev"><img alt="Cloudflare Pages" src="https://user-images.githubusercontent.com/23264/106598434-9e719e00-654f-11eb-9e59-6167043cfa01.png" width="16"></a>  Cloudflare Pages
+
+            <table>
+              <tr>
+                <td><strong>Latest commit:</strong> </td>
+                <td><code>${{ steps.sha.outputs.SHORT_SHA }}</code></td>
+              </tr>
+              <tr>
+                <td><strong>Status:</strong></td>
+                <td>${{ steps.content.outputs.CONTENT }}</td>
+              </tr>
+              <tr>
+                <td><strong>Deployment URL:</strong></td>
+                <td><a href="${{ steps.cf.outputs.url }}">${{ steps.cf.outputs.url }}</a></td>
+              </tr>
+            </table>
+          body-include: '<!-- Created by actions-cool/maintain-one-comment -->'
