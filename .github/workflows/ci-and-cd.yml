@@ -104,7 +104,6 @@ jobs:
         run: |
           if [ $STATUS = 'success' ]; then
             echo "CONTENT='✅  Deployment succeeded.'" >> $GITHUB_ENV
-            outputBuildStatus '✅  Deployment succeeded.'
           else
             echo "CONTENT='🚫  Deployment failed.'" >> $GITHUB_ENV
           fi
