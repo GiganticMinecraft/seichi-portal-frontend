@@ -93,6 +93,8 @@ jobs:
           projectName: seichi-portal
           directory: out
           gitHubToken: ${{ secrets.GITHUB_TOKEN }}
+      - name: Debug
+        run: echo ${{ steps.cf.outputs.environment }}
       - name: Output short git SHA
         id: sha
         if: always() && github.event_name == 'pull_request'
