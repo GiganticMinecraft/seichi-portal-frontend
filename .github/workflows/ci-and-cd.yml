@@ -108,6 +108,8 @@ jobs:
           else
             echo "CONTENT='🚫  Deployment failed.'" >> $GITHUB_ENV
           fi
+
+          echo $GITHUB_ENV
         env:
           STATUS: ${{ steps.cf.outcome }}
       - name: Notify deployment status and its URL
