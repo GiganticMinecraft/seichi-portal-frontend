@@ -94,7 +94,7 @@ jobs:
           directory: out
           gitHubToken: ${{ secrets.GITHUB_TOKEN }}
       - name: Debug
-        run: echo ${{ steps.cf.outputs.environment }}
+        run: echo ${{ steps.cf.outputs.environment }}kkkk
       - name: Output short git SHA
         id: sha
         if: always() && github.event_name == 'pull_request'
