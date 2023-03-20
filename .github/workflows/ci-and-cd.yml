@@ -1,4 +1,4 @@
-name: CI
+name: CI and CD
 on:
   workflow_call:
   push:
@@ -58,6 +58,9 @@ jobs:
   build:
     name: Run Build
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      deployments: write
     steps:
       - uses: actions/checkout@v3
         with:
@@ -82,3 +85,11 @@ jobs:
           EOD
       - name: Run build
         run: yarn build
+      - name: Publish to Cloudflare Pages
+        uses: cloudflare/pages-action@v1
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: 9e9e88e2b19878c4a911c3c8a715a168
+          projectName: seichi-portal
+          directory: out
+          gitHubToken: ${{ secrets.GITHUB_TOKEN }}
