@@ -1,6 +1,5 @@
 name: CI and CD
 on:
-  workflow_call:
   push:
     branches:
       - main
