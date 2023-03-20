@@ -87,7 +87,7 @@ jobs:
       - name: Publish to Cloudflare Pages
         uses: cloudflare/pages-action@v1
         with:
-          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          apiToken: ${{ secrets.CLOUDFLARE_PAGES_PUB_API_TOKEN }}
           accountId: 9e9e88e2b19878c4a911c3c8a715a168
           projectName: seichi-portal
           directory: out
