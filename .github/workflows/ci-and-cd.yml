@@ -83,7 +83,7 @@ jobs:
       - uses: actions/upload-artifact@v3
         with:
           name: output
-          path: ./out
+          path: out
   deploy:
     name: Deploy
     runs-on: ubuntu-latest
