@@ -82,7 +82,3 @@ jobs:
           EOD
       - name: Run build
         run: yarn build
-      - name: Upload artifacts for GitHub Pages
-        uses: actions/upload-pages-artifact@v1
-        with:
-          path: ./out
