@@ -95,13 +95,13 @@ jobs:
           gitHubToken: ${{ secrets.GITHUB_TOKEN }}
       - name: Output short git SHA
         id: sha
-        if: always()
+        if: always() && github.event_name == 'pull_request'
         run: |
           SHORT_SHA=$(git log --format='%h' -n 1)
           echo "SHORT_SHA=$SHORT_SHA" >> $GITHUB_ENV
       - name: Output deployment status
         id: content
-        if: always()
+        if: always() && github.event_name == 'pull_request'
         run: |
           if [ $STATUS = 'success' ]; then
             echo "CONTENT='✅  Deployment succeeded.'" >> $GITHUB_ENV
@@ -112,7 +112,7 @@ jobs:
           STATUS: ${{ steps.cf.outcome }}
       - name: Notify deployment status and its URL
         uses: actions-cool/maintain-one-comment@v3
-        if: always()
+        if: always() && github.event_name == 'pull_request'
         with:
           body: |
             ## Deploying with  <a href="https://pages.dev"><img alt="Cloudflare Pages" src="https://user-images.githubusercontent.com/23264/106598434-9e719e00-654f-11eb-9e59-6167043cfa01.png" width="16"></a>  Cloudflare Pages
