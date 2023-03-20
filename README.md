@@ -28,7 +28,7 @@ Seichi Portalではフロントエンドとバックエンド間の通信に RES
 
 ## 本番環境
 
-`main`ブランチに更新があると、[GitHub Actionsがビルドを行い](./.github/workflows/ci-and-cd.yml)、GitHub Pagesにデプロイを行います。
+`main`ブランチに更新があると、Cloudflare Pagesにデプロイを行います。
 
 ## プロジェクト俯瞰図
 
