@@ -130,7 +130,7 @@ jobs:
               </tr>
               <tr>
                 <td><strong>Deployment URL:</strong></td>
-                <td>[${{ steps.cf.outputs.url }}](${{ steps.cf.outputs.url }})</td>
+                <td><a href="${{ steps.cf.outputs.url }}">${{ steps.cf.outputs.url }}</a></td>
               </tr>
             </table>
           body-include: '<!-- Created by actions-cool/maintain-one-comment -->'
