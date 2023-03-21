@@ -10,8 +10,13 @@ runs:
       with:
         node-version: ${{ steps.get-node-version.outputs.nodeVersion }}
         cache: yarn
+        # GitHub Packagesから依存関係をインストールするため、認証設定をする
+        always-auth: true
+        registry-url: 'https://npm.pkg.github.com'
     - name: Install dependencies
       run: yarn
+      env:
+        NODE_AUTH_TOKEN: ${{ secrets.AUTH_TOKEN_FOR_GITHUBPKG }}
       shell: bash
     - name: Build api files from OpenAPI
       run: yarn api
