@@ -18,6 +18,7 @@
     "sb:build": "build-storybook",
     "sb:test": "yarn sb:build && run-p -r sb:start sb:test:run",
     "sb:test:run": "test-storybook --url http://localhost:9001 --coverage",
+    "rewrite": "next-rewrite-url",
     "api": "redocly bundle openapi/schema/openapi.yml -o src/generated/bundled-openapi.json && rm -rf src/generated/api && openapi2aspida"
   },
   "dependencies": {
