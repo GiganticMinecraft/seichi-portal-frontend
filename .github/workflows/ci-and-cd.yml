@@ -16,6 +16,8 @@ jobs:
           submodules: 'true'
       - name: Setup Node.js with Volta
         uses: ./.github/actions/setup-node
+        with:
+          NODE_AUTH_TOKEN: ${{ secrets.AUTH_TOKEN_FOR_GITHUBPKG }}
       - name: Run ESLint
         run: yarn lint
   format:
@@ -27,6 +29,8 @@ jobs:
           submodules: 'true'
       - name: Setup Node.js with Volta
         uses: ./.github/actions/setup-node
+        with:
+          NODE_AUTH_TOKEN: ${{ secrets.AUTH_TOKEN_FOR_GITHUBPKG }}
       - name: Run Prettier
         run: yarn format
   test:
@@ -38,6 +42,8 @@ jobs:
           submodules: 'true'
       - name: Setup Node.js with Volta
         uses: ./.github/actions/setup-node
+        with:
+          NODE_AUTH_TOKEN: ${{ secrets.AUTH_TOKEN_FOR_GITHUBPKG }}
       - name: Run coverage tests
         run: yarn test:coverage
       - name: Edit result file
@@ -63,6 +69,8 @@ jobs:
           submodules: 'true'
       - name: Setup Node.js with Volta
         uses: ./.github/actions/setup-node
+        with:
+          NODE_AUTH_TOKEN: ${{ secrets.AUTH_TOKEN_FOR_GITHUBPKG }}
       - name: Restore Next.js build cache
         uses: actions/cache@v3
         with:
