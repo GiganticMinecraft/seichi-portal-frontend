@@ -1,3 +1,13 @@
 {
-  "extends": ["github>Lucky3028/renovate"]
+  "extends": ["github>Lucky3028/renovate"],
+  "npmrc": "@lucky3028:registry=https://npm.pkg.github.com/",
+  "hostRules": [
+    {
+      "matchHost": "https://npm.pkg.github.com/",
+      "hostType": "npm",
+      "encrypted": {
+        "token": "wcFMA/xDdHCJBTolAQ/9FAOWXlbU5BQuNu/ASPEIYo9NE0d2t873gvc9Amu6zgGK9PqsGcUHpeu1/YADCWZZ5woN5hIOA+rMLX698icxKiuqcDhNgcc+Y6n7x6PLhiWaQrVaK52b79qaD2VrqDQr9AMKmptHDeLhdaPxD6bG0i7rWMC0o2Pp8VrgMF2EzhajDudqLAX1Td/TBliX8iARXwprv/Oa6ztPGLxoHOd0HsdICxeFasALg0ZbETlMaSyoei9+R6mxtSRT4Qw0ByroXYpfmfrwyfMnOf6rbEHFWOvGac2k/DpdkOP03PlDT1HLrUlqrtuwf2djxAFrBFWTufHxAT3HiEQvwhTfQP00RDsse9PLW8tM4s8pagkl0vbnBXaFB9LdrdMwqsleOZBYlp5b9SnXA7N9RoPYYpKDULQTVXLsDnUFmMDCO6jE5m98yaNj8z9DpjRWItdSs+QldFlZWYxghMZpSi5DbkJh7jRNCpWzA1kX5lCCq/du5pka2ct+gIZ9Ksc8HBAXH+Q03GTj9abmW4LlvUDjjIsXfB9yif4nifN1ORNHoLpaMVs1moB0i2E75981zlc9+LIV+Ixsd/562NIPrdeskfx2Pal9sKHfOxJ74Em0fyAACi8wczSRkcy0R7SW5ILLmFhGOiEc8yQaUdEjlVMhmuwtvasXylIydMI/YVTBx6n2ljHSeQEApb/LT7rRYolAfyubgXavSTj/WJDM+kM+UtEIvDTrj7lwmQEvr8k+6Th/55x0MyEPoTiSH8oRO8x80qz07VhYOviu2HlwIxIcWLpdQnKoC5RIkX5+tZDiAeqjGKNyXpOUJ7M+hFxsFu+HlpLDC0mkzFC5+p7Lgis"
+      }
+    }
+  ]
 }
