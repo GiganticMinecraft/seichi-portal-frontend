@@ -91,7 +91,7 @@
     "prettier": "^2.8.0",
     "storybook-addon-next": "^1.7.2",
     "stream-browserify": "^3.0.0",
-    "typescript": "5.0.3",
+    "typescript": "5.0.4",
     "typesync": "^0.10.0"
   },
   "volta": {
