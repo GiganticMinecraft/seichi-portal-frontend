@@ -2,7 +2,7 @@ import { mapErrForResult, mapForResult, Result } from 'option-t/PlainResult';
 
 // NOTE: option-tで利用されている内製の型をここで作成
 // https://github.com/option-t/option-t/blob/main/packages/option-t/src/internal/Function.ts#L1
-type TransformFn<in T, out U> = (input: T) => U;
+type TransformFn<T, U> = (input: T) => U;
 
 // TODO: add test
 
