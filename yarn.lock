@@ -3167,7 +3167,7 @@
   resolved "https://registry.yarnpkg.com/@juggle/resize-observer/-/resize-observer-3.4.0.tgz#08d6c5e20cf7e4cc02fd181c4b0c225cd31dbb60"
   integrity sha512-dfLbk+PwWvFzSxwk3n5ySL0hfBog779o8h68wK/7/APo/7cgyWp5jcXockbxdk5kFRkbeXWm4Fbi9FrdN381sA==
 
-"@lucky3028/next-rewrite-url@^0.2.2":
+"@lucky3028/next-rewrite-url@^0.7.3":
   version "0.7.3"
   resolved "https://npm.pkg.github.com/download/@lucky3028/next-rewrite-url/0.7.3/d9bbcb1c31d885c9cccb4ade0147fc8c4f1f3d94#d9bbcb1c31d885c9cccb4ade0147fc8c4f1f3d94"
   integrity sha512-hS+sn2Xjt35LHB8G2kWdySNzAGzXCgmcm/jbUHSlTSuOpQYOsxaNvALj0c5YIt/bhXrfX+CSVI+QkOJDCFN1hg==
