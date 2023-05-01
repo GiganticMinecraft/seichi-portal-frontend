@@ -1,5 +1,9 @@
 name: setup-node
 description: Setup Node.js with Volta
+inputs:
+  NODE_AUTH_TOKEN:
+    description: A token to login to GitHub Packages
+    required: true
 runs:
   using: composite
   steps:
@@ -10,8 +14,13 @@ runs:
       with:
         node-version: ${{ steps.get-node-version.outputs.nodeVersion }}
         cache: yarn
+        # GitHub Packagesから依存関係をインストールするため、認証設定をする
+        always-auth: true
+        registry-url: 'https://npm.pkg.github.com'
     - name: Install dependencies
       run: yarn
+      env:
+        NODE_AUTH_TOKEN: ${{ inputs.NODE_AUTH_TOKEN }}
       shell: bash
     - name: Build api files from OpenAPI
       run: yarn api

@@ -12,13 +12,13 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage --testLocationInResults --ci",
-    "postinstall": "typesync || :",
     "prepare": "husky install",
     "sb": "start-storybook -p 9001",
     "sb:start": "http-server -s -p 9001 storybook-static",
     "sb:build": "build-storybook",
-    "sb:test": "yarn sb:build && npm-run-all -p -r sb:start sb:test:run",
+    "sb:test": "yarn sb:build && run-p -r sb:start sb:test:run",
     "sb:test:run": "test-storybook --url http://localhost:9001 --coverage",
+    "rewrite": "next-rewrite-url",
     "api": "redocly bundle openapi/schema/openapi.yml -o src/generated/bundled-openapi.json && rm -rf src/generated/api && openapi2aspida"
   },
   "dependencies": {
@@ -42,6 +42,7 @@
   "devDependencies": {
     "@babel/core": "^7.20.2",
     "@chakra-ui/storybook-addon": "^4.0.13",
+    "@lucky3028/next-rewrite-url": "^0.7.3",
     "@redocly/cli": "^1.0.0-beta.117",
     "@storybook/addon-a11y": "^7.0.0",
     "@storybook/addon-actions": "^7.0.0",
