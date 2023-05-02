@@ -25,3 +25,6 @@ runs:
     - name: Build api files from OpenAPI
       run: yarn api
       shell: bash
+    - name: Generate rewrite rules for Next.js
+      run: yarn rewrite
+      shell: bash
