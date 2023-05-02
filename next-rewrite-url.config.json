@@ -1,0 +1,22 @@
+{
+  "rewrites": {
+    "externalApi": {
+      "xbl": "https://user.auth.xboxlive.com/user/authenticate",
+      "xsts": "https://xsts.auth.xboxlive.com/xsts/authorize",
+      "mcToken": "https://api.minecraftservices.com/authentication/login_with_xbox",
+      "ownMc": "https://api.minecraftservices.com/entitlements/mcstore",
+      "mcProfile": "https://api.minecraftservices.com/minecraft/profile"
+    }
+  },
+  "outputs": {
+    "ts": {
+      "enabled": true,
+      "output": "./src/generated/rewrites/out.ts",
+      "exportType": "named"
+    },
+    "json": {
+      "enabled": true,
+      "output": "./src/generated/rewrites/out.json"
+    }
+  }
+}
