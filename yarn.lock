@@ -3167,10 +3167,10 @@
   resolved "https://registry.yarnpkg.com/@juggle/resize-observer/-/resize-observer-3.4.0.tgz#08d6c5e20cf7e4cc02fd181c4b0c225cd31dbb60"
   integrity sha512-dfLbk+PwWvFzSxwk3n5ySL0hfBog779o8h68wK/7/APo/7cgyWp5jcXockbxdk5kFRkbeXWm4Fbi9FrdN381sA==
 
-"@lucky3028/next-rewrite-url@^0.8.0":
-  version "0.8.0"
-  resolved "https://npm.pkg.github.com/download/@lucky3028/next-rewrite-url/0.8.0/74d19f7d6e994433c9a20d6f435cc0a1aea2b2dd#74d19f7d6e994433c9a20d6f435cc0a1aea2b2dd"
-  integrity sha512-QsP+jAnghOpQ/seyEtDy0I9bZtEk/7T87SKCV8/0B4wren+JD/w+8ikvLhQbQNGXe+sM2r8y9Nq8vwYpms2iqw==
+"@lucky3028/next-rewrite-url@^0.8.1":
+  version "0.8.1"
+  resolved "https://npm.pkg.github.com/download/@lucky3028/next-rewrite-url/0.8.1/742ff5f1db757219379070c34921f77f9219e518#742ff5f1db757219379070c34921f77f9219e518"
+  integrity sha512-VRpTzW+k6QePBsEm2TnNAHJmHmOurXQrSD8oVQzzb6++uhRowAe/OwfNfwE7he8EnnbAm0UpI3oLnlAXGMZ3gw==
   dependencies:
     pino "^8.11.0"
     pino-pretty "^10.0.0"
