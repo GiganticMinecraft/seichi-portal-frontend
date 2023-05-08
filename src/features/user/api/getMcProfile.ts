@@ -13,7 +13,7 @@ import { NetworkError, ValidationError, WrappedResult } from '@/types';
 import { overrideApiUrl } from '../libs/overrideApiUrl';
 import { McAccessToken, McProfile, MinecraftIdIsUndefined } from '../types';
 
-const url = overrideApiUrl('mcProfile');
+const url = overrideApiUrl('/externalApi/mcProfile');
 
 const responseJsonSchema = z.object({
   id: z.string(),

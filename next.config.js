@@ -1,5 +1,6 @@
 const path = require('path');
 const withExportImages = require('next-export-optimize-images');
+const rewrites = require('./src/generated/rewrites/out.json');
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -29,29 +30,7 @@ const nextConfig = {
       },
     ],
   },
-  rewrites: async () => [
-    {
-      source: '/externalApi/xbl',
-      destination: 'https://user.auth.xboxlive.com/user/authenticate',
-    },
-    {
-      source: '/externalApi/xsts',
-      destination: 'https://xsts.auth.xboxlive.com/xsts/authorize',
-    },
-    {
-      source: '/externalApi/mcToken',
-      destination:
-        'https://api.minecraftservices.com/authentication/login_with_xbox',
-    },
-    {
-      source: '/externalApi/ownMc',
-      destination: 'https://api.minecraftservices.com/entitlements/mcstore',
-    },
-    {
-      source: '/externalApi/mcProfile',
-      destination: 'https://api.minecraftservices.com/minecraft/profile',
-    },
-  ],
+  rewrites: async () => rewrites,
 };
 
 module.exports = withExportImages(nextConfig);

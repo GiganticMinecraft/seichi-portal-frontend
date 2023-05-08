@@ -17,7 +17,7 @@ import {
 import { overrideApiUrl } from '../libs/overrideApiUrl';
 import { requireXboxTokenResponse, XboxToken } from '../types';
 
-const url = overrideApiUrl('xsts');
+const url = overrideApiUrl('/externalApi/xsts');
 
 const unAuthorizedBodySchema = z.object({
   Identity: z.string(),

@@ -1,5 +1,7 @@
+import { rewriteRules } from '@/generated/rewrites/out';
 import { overrideUrl } from '@/libs/overrideUrl';
 
-import { overrides, UserApiKey } from '../config/overrideUrl';
+import { UserApiKey } from '../config/overrideUrl';
 
-export const overrideApiUrl = (key: UserApiKey) => overrideUrl(overrides, key);
+export const overrideApiUrl = (key: UserApiKey) =>
+  overrideUrl(rewriteRules, key);
