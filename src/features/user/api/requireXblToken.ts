@@ -12,7 +12,7 @@ import { NetworkError, ValidationError, WrappedResult } from '@/types';
 import { overrideApiUrl } from '../libs/overrideApiUrl';
 import { requireXboxTokenResponse, XboxToken } from '../types';
 
-const url = overrideApiUrl('xbl');
+const url = overrideApiUrl('/externalApi/xbl');
 
 const genBodyWithToken = (token: string) => ({
   Properties: {
