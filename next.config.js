@@ -1,5 +1,7 @@
 const path = require('path');
 const withExportImages = require('next-export-optimize-images');
+const { withSentryConfig } = require('@sentry/nextjs');
+
 const rewrites = require('./src/generated/rewrites/out.json');
 
 /** @type {import('next').NextConfig} */
@@ -30,7 +32,10 @@ const nextConfig = {
       },
     ],
   },
+  sentry: {
+    hideSourceMaps: true,
+  },
   rewrites: async () => rewrites,
 };
 
-module.exports = withExportImages(nextConfig);
+module.exports = withSentryConfig(withExportImages(nextConfig));
