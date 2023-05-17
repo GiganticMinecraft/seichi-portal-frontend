@@ -11,6 +11,8 @@ if (isProduction) {
     // We recommend adjusting this value in production
     tracesSampleRate: 0.25,
 
+    ignoreErrors: ['popup_window_error'],
+
     // ...
 
     // Note: if you want to override the automatic release value, do not set a

@@ -23,6 +23,7 @@ if (isProduction) {
 
       return scope;
     },
+    ignoreErrors: ['popup_window_error'],
 
     // ...
 
