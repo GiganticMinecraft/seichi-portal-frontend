@@ -11,6 +11,11 @@ if (isProduction) {
     // We recommend adjusting this value in production
     tracesSampleRate: 0.25,
 
+    initialScope: (scope) => {
+      scope.setLevel('warning');
+
+      return scope;
+    },
     ignoreErrors: ['popup_window_error'],
 
     // ...
