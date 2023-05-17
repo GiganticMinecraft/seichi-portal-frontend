@@ -12,21 +12,21 @@ export class MsAccountOwnsNoMcAccount extends BaseError {
 
 export class UserCancelledMsSignIn extends BaseError {
   constructor() {
-    super('Microsoftアカウントへのサインインが取り消されました');
+    super('Microsoftアカウントへのサインインを取り消しました');
   }
 }
 
 export class UserDeniedAccess extends BaseError {
   constructor() {
     super(
-      '本サービスがあなたのMicrosoftアカウントにアクセスすることが拒否されました',
+      'あなたのMicrosoftアカウントにアクセスすることが拒否されました。許可してください',
     );
   }
 }
 
 export class MinecraftIdIsUndefined extends BaseError {
   constructor() {
-    super('MinecraftIDが設定されていません');
+    super('MinecraftIDが設定されていません。Minecraft側で設定してください');
   }
 }
 
