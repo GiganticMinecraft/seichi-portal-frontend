@@ -1,4 +1,3 @@
-import { AuthError } from '@azure/msal-browser';
 import * as Sentry from '@sentry/nextjs';
 import { NextPage } from 'next';
 import NextErrorComponent, { ErrorProps } from 'next/error';
@@ -39,23 +38,6 @@ MyError.getInitialProps = async (context) => {
     return errorInitialProps;
   }
 
-  if (!err) {
-    // If this point is reached, getInitialProps was called without any
-    // information about what the error might be. This is unexpected and may
-    // indicate a bug introduced in Next.js, so record it in Sentry
-    Sentry.captureException(
-      new Error(`_error.tsx getInitialProps missing data at path: ${asPath}`),
-    );
-    await Sentry.flush(2000);
-
-    return errorInitialProps;
-  }
-
-  // ポップアップウィンドウがブロックされたというエラーはSentryに送信しない
-  if (err instanceof AuthError && err.errorMessage === 'pop_window_error') {
-    return errorInitialProps;
-  }
-
   // Running on the server, the response object (`res`) is available.
   //
   // Next.js will pass an err on the server if a page's data fetching methods
@@ -69,10 +51,22 @@ MyError.getInitialProps = async (context) => {
   //    Boundary. Read more about what types of exceptions are caught by Error
   //    Boundaries: https://reactjs.org/docs/error-boundaries.html
 
-  Sentry.captureException(err);
+  if (err) {
+    Sentry.captureException(err);
 
-  // Flushing before returning is necessary if deploying to Vercel, see
-  // https://vercel.com/docs/platform/limits#streaming-responses
+    // Flushing before returning is necessary if deploying to Vercel, see
+    // https://vercel.com/docs/platform/limits#streaming-responses
+    await Sentry.flush(2000);
+
+    return errorInitialProps;
+  }
+
+  // If this point is reached, getInitialProps was called without any
+  // information about what the error might be. This is unexpected and may
+  // indicate a bug introduced in Next.js, so record it in Sentry
+  Sentry.captureException(
+    new Error(`_error.tsx getInitialProps missing data at path: ${asPath}`),
+  );
   await Sentry.flush(2000);
 
   return errorInitialProps;
