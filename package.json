@@ -24,7 +24,7 @@
   "dependencies": {
     "@azure/msal-browser": "^2.33.0",
     "@azure/msal-react": "^1.5.3",
-    "@chakra-ui/react": "2.6.1",
+    "@chakra-ui/react": "2.7.0",
     "@emotion/react": "11.11.0",
     "@emotion/styled": "11.11.0",
     "@sentry/nextjs": "^7.51.2",
@@ -37,7 +37,7 @@
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-hook-form": "7.44.3",
-    "react-icons": "4.8.0",
+    "react-icons": "4.9.0",
     "zod": "^3.20.6"
   },
   "devDependencies": {
