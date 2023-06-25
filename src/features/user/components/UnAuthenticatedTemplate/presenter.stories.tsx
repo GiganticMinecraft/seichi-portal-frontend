@@ -27,6 +27,6 @@ export const IsAuthenticated: StoryObj<typeof Presenter> = {
   },
   play: async ({ canvasElement }) => {
     const { queryByTestId } = within(canvasElement);
-    expect(queryByTestId('target-text')).not.toBeDefined();
+    expect(queryByTestId('target-text')).toBeFalsy();
   },
 };
