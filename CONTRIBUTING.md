@@ -9,29 +9,29 @@
 基本は、Microsoftが出している`MSAL.js`のチュートリアルの中で行う「[シングルページ アプリケーション：アプリの登録](https://learn.microsoft.com/ja-jp/azure/active-directory/develop/scenario-spa-app-registration)」と同様です。
 
 1. [Microsoft Azure Portal](https://portal.azure.com/)にアクセスします。
-1. はじめてAzure Portalにアクセスした場合は、自動でAzure Active Directory（Azure AD）が作成されます。
+2. はじめてAzure Portalにアクセスした場合は、自動でAzure Active Directory（Azure AD）が作成されます。
 はじめてではない場合や別のAzure ADを使用したい場合は、トップメニューの「ディレクトリとサブスクリプション」フィルターを使用して、アプリケーションを登録するテナントを選択します。
-1. Azure Active Directory を検索して選択します。
-1. 左側ペインメニューにある「管理」カテゴリの中の 「アプリの登録」をクリックします。
-1. 「新規作成」をクリックします。
-1. アプリケーションの 「名前」欄に`Seichi Portal`と入力します。（別の名前でも問題ありません。）この名前は、アプリのユーザーに表示される場合があります。また、後で変更することができます。
-1. 「アプリケーションでサポートされているアカウントの種類」欄では「個人用 Microsoft アカウントのみ」を選択します。
-1. 「リダイレクトURI」欄では、「シングルページ アプリケーション (SPA)」を選択し、右のテキストボックスに`http://localhost:3000`と入力します。`http`と`https`をよく間違えやすいので注意してください。
-1. 左側ペインメニューにある「概要」をクリックすると、「アプリケーション (クライアント) ID」が表示されますので、メモしておきます。
+3. Azure Active Directory を検索して選択します。
+4. 左側ペインメニューにある「管理」カテゴリの中の 「アプリの登録」をクリックします。
+5. 「新規作成」をクリックします。
+6. アプリケーションの 「名前」欄に`Seichi Portal`と入力します。（別の名前でも問題ありません。）この名前は、アプリのユーザーに表示される場合があります。また、後で変更することができます。
+7. 「アプリケーションでサポートされているアカウントの種類」欄では「個人用 Microsoft アカウントのみ」を選択します。
+8. 「リダイレクトURI」欄では、「シングルページ アプリケーション (SPA)」を選択し、右のテキストボックスに`http://localhost:3000`と入力します。`http`と`https`をよく間違えやすいので注意してください。
+9. 左側ペインメニューにある「概要」をクリックすると、「アプリケーション (クライアント) ID」が表示されますので、メモしておきます。
 
 ### 実際に動かす
 
 1. `git clone --recursive https://github.com/GiganticMinecraft/seichi-portal-frontend.git`  
 リポジトリをクローンします。
-1. `yarn install`  
+2. `yarn install`  
 依存関係をインストールします。
-1. `yarn prepare`  
+3. `yarn prepare`  
 [husky](https://github.com/typicode/husky)をセットアップします。これによって、`git commit`時に毎回ESLintとPrettierが実行されます。
-1. `yarn api`  
+4. `yarn api`  
 OpenAPIの定義ファイルからAPIクライアントの型を生成します。これには、[@redocly-cli](https://github.com/Redocly/redocly-cli)と[openapi2aspida](https://github.com/aspida/openapi2aspida)を利用しています。
-1. `cp .env.example .env.local`  
+5. `cp .env.example .env.local`  
 環境変数を.envから自動で読み込むようになっているので、.envを作成します。各項目については[環境変数について](#環境変数について)を参照してください。
-1. `yarn dev`  
+6. `yarn dev`  
 開発用サーバーを起動します。[http://localhost:3000](http://localhost:3000)でアクセスできます。  
 このとき、[msw](https://github.com/mswjs/msw)がHTTPリクエスト・レスポンスをモックします。開発中は、実際のバックエンドサーバーの代わりに、このモックを使用します。
 
@@ -45,8 +45,8 @@ StorybookとJestの2種類のライブラリを用いてテストを記載して
   * `yarn sb:test`
   * または次の手順でも確認できます。
     1. `yarn sb`でStorybookを起動します。
-    1. <http://localhost:9001>にアクセスします。
-    1. 各コンポーネントの`Interactions`タブを開きます。
+    2. <http://localhost:9001>にアクセスします。
+    3. 各コンポーネントの`Interactions`タブを開きます。
   * UIコンポーネントは、基本的にStorybookを使用してカタログを作成しています。
   * 同時にテストをCLIだけでなく視覚的に実行できます。
 * Jest
@@ -106,15 +106,15 @@ StorybookとJestの2種類のライブラリを用いてテストを記載して
 1. 基本は[
 TypeScript Deep Dive 日本語版 スタイルガイド（コーディング規約）](https://typescript-jp.gitbook.io/deep-dive/styleguide)に従ってください。
 ただし、この後の内容と矛盾する内容がある場合は、この後の内容のほうが優先されます。
-1. ESLint及びPrettierの実行結果に従ってください。
-1. 1コミットあたりの粒度はなるべく最小限になるようにしてください。
-1. できる限り`interface`よりは`type`を使用してください。
+2. ESLint及びPrettierの実行結果に従ってください。
+3. 1コミットあたりの粒度はなるべく最小限になるようにしてください。
+4. できる限り`interface`よりは`type`を使用してください。
 これは不必要な`extends`や、意図せず同名の`interface`を定義した際に型が合成されることを避けるためです。
-1. `Enum`は使用しないでください。代わりに`Union`型を使用してください。詳細は、[こちらのサイト](https://typescriptbook.jp/reference/values-types-variables/enum/enum-problems-and-alternatives-to-enums)を参照してください。
-1. Reactコンポーネントの定義にはアロー関数を使用してください。
-1. `export default`よりは名前付き`export`を使用してください。
-1. 型アサーション（`as`）は使用しないでください。コンパイラの型推論が明らかに間違っていて、アサーション先の型にしかならない場合にのみ使用してください。
+5. `Enum`は使用しないでください。代わりに`Union`型を使用してください。詳細は、[こちらのサイト](https://typescriptbook.jp/reference/values-types-variables/enum/enum-problems-and-alternatives-to-enums)を参照してください。
+6. Reactコンポーネントの定義にはアロー関数を使用してください。
+7. `export default`よりは名前付き`export`を使用してください。
+8. 型アサーション（`as`）は使用しないでください。コンパイラの型推論が明らかに間違っていて、アサーション先の型にしかならない場合にのみ使用してください。
 また、使用する際には、なぜ使用できるのかという理由を記載してください。
-1. 非nullアサーション演算子（`!`や`!!`）は使用しないでください。明らかに`null`または`undefined`にならない場合にのみ使用してください。
+9. 非nullアサーション演算子（`!`や`!!`）は使用しないでください。明らかに`null`または`undefined`にならない場合にのみ使用してください。
 また、使用する際には、なぜ使用できるのかという理由を記載してください。
-1. `any`型は使用しないでください。
+10. `any`型は使用しないでください。
