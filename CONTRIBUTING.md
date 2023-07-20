@@ -35,6 +35,40 @@ OpenAPIの定義ファイルからAPIクライアントの型を生成します�
 開発用サーバーを起動します。[http://localhost:3000](http://localhost:3000)でアクセスできます。  
 このとき、[msw](https://github.com/mswjs/msw)がHTTPリクエスト・レスポンスをモックします。開発中は、実際のバックエンドサーバーの代わりに、このモックを使用します。
 
+#### `next-rewrite-url` インストール時のエラーについて
+
+seichi-portal-frontend で使用されている `next-rewrite-url` パッケージは GitHub Package Registry で公開されているためログインしないとインストールできません。
+
+ログインしていない状態で `yarn install` を実行すると以下のエラーが発生します。
+
+```
+yarn install v1.22.19
+[1/4] 🔍  Resolving packages...
+[2/4] 🚚  Fetching packages...
+error An unexpected error occurred: "https://npm.pkg.github.com/download/@lucky3028/next-rewrite-url/0.8.2/ad6f12f9774eade4c2327d53a0d04fac59d31fab: Request failed \"401 Unauthorized\""
+```
+
+このようなエラーが発生した際は次の手順で GitHub Package Registry にログインしてください。
+
+1. GitHub で Personal Access Token を作成します。
+   1. [`Settings` -> `Developer Settings`](https://github.com/settings/tokens) -> `Personal access tokens` -> `Personal access tokens (classic)` にアクセスします。
+   2. `Generate new token` をクリックし、ドロップダウンメニューから `Generate new token (classic)` を選択します。
+   3. `Note` にはトークンの使用目的などを記入します。
+   4. `Expiration` にはトークンの失効期限を指定します。お勧めは `90 days` です。( `No expiration` はセキュリティ上の観点からお勧めしません。)
+   5. `Select scopes` には `repo` と `read:packages` を選択します。
+   6. `Generate token` をクリックします。
+   7. トークンが生成されるので、大切な場所に保管してください。
+2. 以下のコマンドを実行してください。
+   ```shell
+   echo "//npm.pkg.github.com/:_authToken=<The token value>" >> ~/.npmrc
+   cat > .yarnrc <<EOD
+   registry "https://registry.npmjs.org"
+   "@lucky3028:registry" "https://npm.pkg.github.com"
+   EOD
+   ```
+
+ログインが成功していれば `yarn install` が問題なく実行できます。
+
 ## テスト
 
 ### 単体テスト
