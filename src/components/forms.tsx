@@ -10,67 +10,66 @@ import Typography from '@mui/material/Typography';
 import Paper from '@mui/material/Paper';
 import Stack from '@mui/material/Stack';
 import { styled } from '@mui/material/styles';
-import { getForms } from '@/api/form';
 import { Form } from '@/schemas/formSchema';
 
 const bull = (
-    <Box
-        component="span"
-        sx={{ display: 'inline-block', mx: '2px', transform: 'scale(0.8)' }}
-    >
-        •
-    </Box>
+  <Box
+    component="span"
+    sx={{ display: 'inline-block', mx: '2px', transform: 'scale(0.8)' }}
+  >
+    •
+  </Box>
 );
 
 function OutlinedCard({ form }: { form: Form }) {
-    return (
-        <Box sx={{ minWidth: 275 }}>
-            <Card variant="outlined">
-                <CardContent>
-                    <Typography variant="h5" component="div">
-                        {form.title}
-                    </Typography>
-                    <Typography sx={{ mb: 1.5 }} color="text.secondary">
-                        {form.description.description}
-                    </Typography>
-                    <Typography variant="body2">
-                        well meaning and kindly.
-                        <br />
-                        {'"a benevolent smile"'}
-                    </Typography>
-                </CardContent>
-                <CardActions>
-                    <Button size="small">Learn More</Button>
-                </CardActions>
-            </Card>
-        </Box>
-    );
+  return (
+    <Box sx={{ minWidth: 275 }}>
+      <Card variant="outlined">
+        <CardContent>
+          <Typography variant="h5" component="div">
+            {form.title}
+          </Typography>
+          <Typography sx={{ mb: 1.5 }} color="text.secondary">
+            {form.description.description}
+          </Typography>
+          <Typography variant="body2">
+            well meaning and kindly.
+            <br />
+            {'"a benevolent smile"'}
+          </Typography>
+        </CardContent>
+        <CardActions>
+          <Button size="small">Learn More</Button>
+        </CardActions>
+      </Card>
+    </Box>
+  );
 }
 
 const Item = styled(Paper)(({ theme }) => ({
-    backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
-    ...theme.typography.body2,
-    padding: theme.spacing(1),
-    textAlign: 'center',
-    color: theme.palette.text.secondary,
+  backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
+  ...theme.typography.body2,
+  padding: theme.spacing(1),
+  textAlign: 'center',
+  color: theme.palette.text.secondary,
 }));
 
 interface Props {
-    forms: Form[];
+  forms: Form[];
 }
 
 export default function Forms({ forms }: Props) {
-    return (
-        <Box sx={{ width: '100%' }}>
-            <Stack spacing={2}>
-                {forms.map((form, index) => {
-                    return (
-                        <Item key={index}>
-                            <OutlinedCard form={form} />
-                        </Item>
-                    );
-                })}
-            </Stack>
-        </Box>
-    );
+  return (
+    <Box sx={{ width: '100%' }}>
+      <Stack spacing={2}>
+        {forms.map((form, index) => {
+          return (
+            <Item key={index}>
+              <OutlinedCard form={form} />
+            </Item>
+          );
+        })}
+      </Stack>
+    </Box>
+  );
 }
