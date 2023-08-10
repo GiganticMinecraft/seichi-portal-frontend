@@ -26,6 +26,7 @@ export async function getForm(formId: number): Promise<Form> {
     },
   }).then(async (response) => {
     const formJson = await response.json();
+    console.log(formJson);
     return formSchema.parse(formJson);
   });
 }

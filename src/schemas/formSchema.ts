@@ -1,9 +1,9 @@
 import { z } from 'zod';
 
 const questionSchema = z.object({
-  questionTitle: z.string(),
-  questionDescription: z.string(),
-  questionType: z.enum(['TEXT', 'SINGLE', 'MULTIPLE']),
+  title: z.string(),
+  description: z.string(),
+  question_type: z.enum(['TEXT', 'SINGLE', 'MULTIPLE']),
   choices: z.array(z.string()),
 });
 
