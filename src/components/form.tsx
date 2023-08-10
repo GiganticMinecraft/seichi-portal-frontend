@@ -16,6 +16,10 @@ import Stack from '@mui/material/Stack';
 import { styled } from '@mui/material/styles';
 import Button from '@mui/material/Button';
 import SendIcon from '@mui/icons-material/Send';
+import Alert from '@mui/material/Alert';
+import AlertTitle from '@mui/material/AlertTitle';
+import Divider from '@mui/material/Divider';
+import Link from 'next/link';
 
 interface Props {
   form: Form;
@@ -30,48 +34,85 @@ const Item = styled(Paper)(({ theme }) => ({
 }));
 
 export default function Questions(form: Props) {
-  return (
-    <Box sx={{ width: '100%' }}>
-      <Stack spacing={2}>
-        {form.form.questions.map((question, index) => {
-          switch (question.question_type) {
-            case 'TEXT':
-              return (
-                <Item key={index}>
-                  {textQuestion({
-                    title: question.title,
-                    description: question.description,
-                  })}
-                </Item>
-              );
-            case 'SINGLE':
-              return (
-                <Item key={index}>
-                  {radioQuestion({
-                    title: question.title,
-                    description: question.description,
-                    choices: question.choices,
-                  })}
-                </Item>
-              );
-            case 'MULTIPLE':
-              return (
-                <Item key={index}>
-                  {checkboxQuestion({
-                    title: question.title,
-                    description: question.description,
-                    choices: question.choices,
-                  })}
-                </Item>
-              );
-          }
-        })}
-        <Button variant="contained" endIcon={<SendIcon />}>
-          送信
-        </Button>
-      </Stack>
-    </Box>
-  );
+  const [isSended, changeSendedState] = React.useState(false);
+
+  const send = () => {
+    changeSendedState(true);
+  };
+
+  const unSend = () => {
+    changeSendedState(false);
+  };
+
+  if (isSended) {
+    return (
+      <Box sx={{ width: '20%' }}>
+        <Alert severity="success">
+          <AlertTitle>Success</AlertTitle>
+          回答を送信しました
+        </Alert>
+        <Stack
+          direction="row"
+          divider={<Divider orientation="vertical" flexItem />}
+          spacing={2}
+        >
+          <Item>
+            <Button variant="contained" onClick={unSend}>
+              ← 別の回答をする
+            </Button>
+          </Item>
+          <Item>
+            <Link href="/forms">
+              <Button variant="contained">フォーム一覧へ →</Button>
+            </Link>
+          </Item>
+        </Stack>
+      </Box>
+    );
+  } else {
+    return (
+      <Box sx={{ width: '100%' }}>
+        <Stack spacing={2}>
+          {form.form.questions.map((question, index) => {
+            switch (question.question_type) {
+              case 'TEXT':
+                return (
+                  <Item key={index}>
+                    {textQuestion({
+                      title: question.title,
+                      description: question.description,
+                    })}
+                  </Item>
+                );
+              case 'SINGLE':
+                return (
+                  <Item key={index}>
+                    {radioQuestion({
+                      title: question.title,
+                      description: question.description,
+                      choices: question.choices,
+                    })}
+                  </Item>
+                );
+              case 'MULTIPLE':
+                return (
+                  <Item key={index}>
+                    {checkboxQuestion({
+                      title: question.title,
+                      description: question.description,
+                      choices: question.choices,
+                    })}
+                  </Item>
+                );
+            }
+          })}
+          <Button variant="contained" endIcon={<SendIcon />} onClick={send}>
+            送信
+          </Button>
+        </Stack>
+      </Box>
+    );
+  }
 }
 
 function checkboxQuestion(question: {
