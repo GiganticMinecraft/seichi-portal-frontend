@@ -30,7 +30,7 @@ function OutlinedCard({ form }: { form: Form }) {
             {form.title}
           </Typography>
           <Typography sx={{ mb: 1.5 }} color="text.secondary">
-            {form.description.description}
+            {form.description}
           </Typography>
           <Typography variant="body2">
             well meaning and kindly.
