@@ -12,6 +12,7 @@ import { Form } from '@/schemas/formSchema';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
+import Link from 'next/link';
 
 dayjs.extend(timezone);
 dayjs.extend(utc);
@@ -77,9 +78,11 @@ export default function Forms({ forms }: Props) {
       <Stack spacing={2}>
         {forms.map((form, index) => {
           return (
-            <Item key={index}>
-              <OutlinedCard form={form} />
-            </Item>
+            <Link href={`/forms/${form.id}`}>
+              <Item key={index}>
+                <OutlinedCard form={form} />
+              </Item>
+            </Link>
           );
         })}
       </Stack>
