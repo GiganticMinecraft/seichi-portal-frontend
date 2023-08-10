@@ -20,6 +20,8 @@ import Alert from '@mui/material/Alert';
 import AlertTitle from '@mui/material/AlertTitle';
 import Divider from '@mui/material/Divider';
 import Link from 'next/link';
+import RadioGroup from '@mui/material/RadioGroup';
+import FormControl from '@mui/material/FormControl';
 
 interface Props {
   form: Form;
@@ -156,11 +158,19 @@ function radioQuestion(question: {
           {question.description}
         </Typography>
         <Typography variant="body2">
-          <FormGroup>
-            {question.choices.map((choice) => {
-              return <FormControlLabel control={<Radio />} label={choice} />;
-            })}
-          </FormGroup>
+          <FormControl>
+            <RadioGroup name={question.title} defaultChecked>
+              {question.choices.map((choice) => {
+                return (
+                  <FormControlLabel
+                    control={<Radio />}
+                    value={choice}
+                    label={choice}
+                  />
+                );
+              })}
+            </RadioGroup>
+          </FormControl>
         </Typography>
       </CardContent>
     </Card>
