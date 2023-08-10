@@ -2,7 +2,7 @@ import { Form, formsSchema } from '@/schemas/formSchema';
 
 export async function getForms(): Promise<Form[]> {
   const params = {
-    offset: '1',
+    offset: '0',
     limit: '4',
   };
   const query = new URLSearchParams(params);

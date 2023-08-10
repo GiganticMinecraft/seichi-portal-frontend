@@ -3,23 +3,40 @@
 import * as React from 'react';
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
-import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
-import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import Paper from '@mui/material/Paper';
 import Stack from '@mui/material/Stack';
 import { styled } from '@mui/material/styles';
 import { Form } from '@/schemas/formSchema';
+import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
+import timezone from 'dayjs/plugin/timezone';
 
-const bull = (
-  <Box
-    component="span"
-    sx={{ display: 'inline-block', mx: '2px', transform: 'scale(0.8)' }}
-  >
-    •
-  </Box>
-);
+dayjs.extend(timezone);
+dayjs.extend(utc);
+dayjs.tz.setDefault('Asia/Tokyo');
+
+function formResponsePeriodToString(
+  startAt: string | null,
+  endAt: string | null
+) {
+  if (startAt != null && endAt != null) {
+    const formatString = 'YYYY年MM月DD日 HH時mm分';
+
+    const startDateTime = dayjs(new Date(startAt))
+      .tz('Asia/Tokyo')
+      .format(formatString);
+
+    const endDateTime = dayjs(new Date(endAt))
+      .tz('Asia/Tokyo')
+      .format(formatString);
+
+    return `回答可能期間: ${startDateTime} ~ ${endDateTime}`;
+  } else {
+    return `回答期限なし`;
+  }
+}
 
 function OutlinedCard({ form }: { form: Form }) {
   return (
@@ -30,17 +47,13 @@ function OutlinedCard({ form }: { form: Form }) {
             {form.title}
           </Typography>
           <Typography sx={{ mb: 1.5 }} color="text.secondary">
-            {form.description}
+            {formResponsePeriodToString(
+              form.settings.response_period.start_at,
+              form.settings.response_period.end_at
+            )}
           </Typography>
-          <Typography variant="body2">
-            well meaning and kindly.
-            <br />
-            {'"a benevolent smile"'}
-          </Typography>
+          <Typography variant="body2">{form.description}</Typography>
         </CardContent>
-        <CardActions>
-          <Button size="small">Learn More</Button>
-        </CardActions>
       </Card>
     </Box>
   );
