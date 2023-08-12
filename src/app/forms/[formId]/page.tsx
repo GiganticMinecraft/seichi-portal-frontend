@@ -8,7 +8,7 @@ export default async function Home({ params }: { params: { formId: number } }) {
 
   console.log(form);
   return (
-    <main className={styles.main}>
+    <main className={styles['main']}>
       <ButtonAppBar />
       <Questions form={form} />
     </main>

@@ -27,6 +27,7 @@
     "zod": "^3.21.4"
   },
   "devDependencies": {
+    "@tsconfig/strictest": "^2.0.1",
     "prettier": "^3.0.1"
   }
 }

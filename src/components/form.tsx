@@ -38,12 +38,33 @@ const Item = styled(Paper)(({ theme }) => ({
 export default function Questions(form: Props) {
   const [isSended, changeSendedState] = React.useState(false);
 
-  const send = () => {
-    changeSendedState(true);
-  };
-
   const unSend = () => {
     changeSendedState(false);
+  };
+
+  type FormDataType = {
+    [key: string]: string;
+  };
+
+  const [formData, setFormData] = React.useState<FormDataType>({});
+
+  const updateData = (e: any) => {
+    if (e.target.type == 'checkbox' && formData[e.target.name] != undefined) {
+      setFormData({
+        ...formData,
+        [e.target.name]: undefined,
+      });
+    } else {
+      setFormData({
+        ...formData,
+        [e.target.name]: e.target.value,
+      });
+    }
+  };
+
+  const handleSubmit = (e: React.MouseEvent<HTMLElement, MouseEvent>) => {
+    e.preventDefault();
+    changeSendedState(true);
   };
 
   if (isSended) {
@@ -80,131 +101,110 @@ export default function Questions(form: Props) {
               case 'TEXT':
                 return (
                   <Item key={index}>
-                    {textQuestion({
-                      title: question.title,
-                      description: question.description,
-                    })}
+                    <Card sx={{ minWidth: 275 }}>
+                      <CardContent>
+                        <Typography variant="h5" component="div">
+                          {question.title}
+                        </Typography>
+                        <Typography sx={{ mb: 1.5 }} color="text.secondary">
+                          {question.description}
+                        </Typography>
+                        <Typography variant="body2">
+                          <Box
+                            component="form"
+                            sx={{
+                              '& .MuiTextField-root': { m: 1, width: '25ch' },
+                            }}
+                            noValidate
+                            autoComplete="off"
+                          >
+                            <TextField
+                              id="outlined-multiline-static"
+                              name={question.title}
+                              label="回答を入力"
+                              multiline
+                              rows={4}
+                              onChange={updateData}
+                            />
+                          </Box>
+                        </Typography>
+                      </CardContent>
+                    </Card>
                   </Item>
                 );
               case 'SINGLE':
                 return (
                   <Item key={index}>
-                    {radioQuestion({
-                      title: question.title,
-                      description: question.description,
-                      choices: question.choices,
-                    })}
+                    <Card sx={{ minWidth: 275 }}>
+                      <CardContent>
+                        <Typography variant="h5" component="div">
+                          {question.title}
+                        </Typography>
+                        <Typography sx={{ mb: 1.5 }} color="text.secondary">
+                          {question.description}
+                        </Typography>
+                        <Typography variant="body2">
+                          <FormControl>
+                            <RadioGroup name={question.title} defaultChecked>
+                              {question.choices.map((choice) => {
+                                return (
+                                  <FormControlLabel
+                                    key={index}
+                                    control={<Radio />}
+                                    value={choice}
+                                    label={choice}
+                                    onChange={updateData}
+                                  />
+                                );
+                              })}
+                            </RadioGroup>
+                          </FormControl>
+                        </Typography>
+                      </CardContent>
+                    </Card>
                   </Item>
                 );
               case 'MULTIPLE':
                 return (
                   <Item key={index}>
-                    {checkboxQuestion({
-                      title: question.title,
-                      description: question.description,
-                      choices: question.choices,
-                    })}
+                    <Card sx={{ minWidth: 275 }}>
+                      <CardContent>
+                        <Typography variant="h5" component="div">
+                          {question.title}
+                        </Typography>
+                        <Typography sx={{ mb: 1.5 }} color="text.secondary">
+                          {question.description}
+                        </Typography>
+                        <Typography variant="body2">
+                          <FormGroup>
+                            {question.choices.map((choice) => {
+                              return (
+                                <FormControlLabel
+                                  key={index}
+                                  control={<Checkbox />}
+                                  name={choice}
+                                  label={choice}
+                                  onChange={updateData}
+                                />
+                              );
+                            })}
+                          </FormGroup>
+                        </Typography>
+                      </CardContent>
+                    </Card>
                   </Item>
                 );
             }
           })}
-          <Button variant="contained" endIcon={<SendIcon />} onClick={send}>
+          <Button
+            variant="contained"
+            endIcon={<SendIcon />}
+            onClick={handleSubmit}
+          >
             送信
           </Button>
         </Stack>
       </Box>
     );
   }
-}
-
-function checkboxQuestion(question: {
-  title: string;
-  description: string;
-  choices: string[];
-}) {
-  return (
-    <Card sx={{ minWidth: 275 }}>
-      <CardContent>
-        <Typography variant="h5" component="div">
-          {question.title}
-        </Typography>
-        <Typography sx={{ mb: 1.5 }} color="text.secondary">
-          {question.description}
-        </Typography>
-        <Typography variant="body2">
-          <FormGroup>
-            {question.choices.map((choice) => {
-              return <FormControlLabel control={<Checkbox />} label={choice} />;
-            })}
-          </FormGroup>
-        </Typography>
-      </CardContent>
-    </Card>
-  );
-}
-
-function radioQuestion(question: {
-  title: string;
-  description: string;
-  choices: string[];
-}) {
-  return (
-    <Card sx={{ minWidth: 275 }}>
-      <CardContent>
-        <Typography variant="h5" component="div">
-          {question.title}
-        </Typography>
-        <Typography sx={{ mb: 1.5 }} color="text.secondary">
-          {question.description}
-        </Typography>
-        <Typography variant="body2">
-          <FormControl>
-            <RadioGroup name={question.title} defaultChecked>
-              {question.choices.map((choice) => {
-                return (
-                  <FormControlLabel
-                    control={<Radio />}
-                    value={choice}
-                    label={choice}
-                  />
-                );
-              })}
-            </RadioGroup>
-          </FormControl>
-        </Typography>
-      </CardContent>
-    </Card>
-  );
-}
-
-function textQuestion(question: { title: string; description: string }) {
-  return (
-    <Card sx={{ minWidth: 275 }}>
-      <CardContent>
-        <Typography variant="h5" component="div">
-          {question.title}
-        </Typography>
-        <Typography sx={{ mb: 1.5 }} color="text.secondary">
-          {question.description}
-        </Typography>
-        <Typography variant="body2">
-          <Box
-            component="form"
-            sx={{
-              '& .MuiTextField-root': { m: 1, width: '25ch' },
-            }}
-            noValidate
-            autoComplete="off"
-          >
-            <TextField
-              id="outlined-multiline-static"
-              label="回答を入力"
-              multiline
-              rows={4}
-            />
-          </Box>
-        </Typography>
-      </CardContent>
-    </Card>
-  );
 }

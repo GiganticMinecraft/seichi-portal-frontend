@@ -78,8 +78,8 @@ export default function Forms({ forms }: Props) {
       <Stack spacing={2}>
         {forms.map((form, index) => {
           return (
-            <Link href={`/forms/${form.id}`}>
-              <Item key={index}>
+            <Link href={`/forms/${form.id}`} key={index}>
+              <Item>
                 <OutlinedCard form={form} />
               </Item>
             </Link>

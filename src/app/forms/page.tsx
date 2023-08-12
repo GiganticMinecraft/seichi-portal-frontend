@@ -6,7 +6,7 @@ import styles from '../page.module.css';
 export default async function Home() {
   const forms = await getForms();
   return (
-    <main className={styles.main}>
+    <main className={styles['main']}>
       <ButtonAppBar />
       <Forms forms={forms} />
     </main>
