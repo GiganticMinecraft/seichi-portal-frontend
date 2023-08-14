@@ -1,6 +1,7 @@
 import { z } from 'zod';
 
 const questionSchema = z.object({
+  id: z.number(),
   title: z.string(),
   description: z.string(),
   question_type: z.enum(['TEXT', 'SINGLE', 'MULTIPLE']),
@@ -34,3 +35,5 @@ export const formSchema = z.object({
 export const formsSchema = z.array(formSchema);
 
 export type Form = z.infer<typeof formSchema>;
+
+export type FormQuestion = z.infer<typeof questionSchema>;
