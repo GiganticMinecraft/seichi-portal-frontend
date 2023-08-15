@@ -31,16 +31,21 @@ export async function getForm(formId: number): Promise<Form> {
 }
 
 export async function postAnswers(
-  answers: { questionId: number; answer: string }[]
-): Promise<void> {
+  answers: { question_id: number; answer: string }[]
+): Promise<boolean> {
   const answersJson = JSON.stringify({
     uuid: '3fa85f64-5717-4562-b3fc-2c963f66afa6', //todo: user側の処理を実装したら書き換える
-    timestamp: Date.now(),
+    timestamp: new Date(),
     answers,
   });
 
-  await fetch(`http://localhost:9000/forms/answers`, {
+  return await fetch(`http://localhost:9000/forms/answers`, {
     method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
     body: answersJson,
+  }).then(async (response) => {
+    return response.ok;
   });
 }

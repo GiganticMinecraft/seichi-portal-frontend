@@ -18,6 +18,11 @@ import MenuItem from '@mui/material/MenuItem';
 import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
+import { postAnswers } from '@/api/form';
+import Alert from '@mui/material/Alert';
+import AlertTitle from '@mui/material/AlertTitle';
+import Divider from '@mui/material/Divider';
+import Link from '@mui/material/Link';
 
 interface Props {
   form: Form;
@@ -32,11 +37,11 @@ const Item = styled(Paper)(({ theme }) => ({
 }));
 
 export default function Questions(form: Props) {
-  // const [isSended, changeSendedState] = React.useState(false);
+  const [isSubmitted, changeSubmitState] = React.useState(false);
 
-  // const unSend = () => {
-  //   changeSendedState(false);
-  // };
+  const unSubmit = () => {
+    changeSubmitState(false);
+  };
 
   type NonEmptyArray<T> = [T, ...T[]];
 
@@ -46,8 +51,29 @@ export default function Questions(form: Props) {
 
   const { register, handleSubmit } = useForm<IFormInput>();
 
-  const onSubmit = (data: IFormInput) => {
-    alert(JSON.stringify(data));
+  const onSubmit = async (data: IFormInput) => {
+    const formAnswers = Object.entries(data).flatMap(function ([key, values]) {
+      // Note: ここで型をstringかどうか判定しているのは、valuesに複数の値が入っていた場合にmapを使って
+      // 一つのquestion_idとanswerに分離したいという理由がある。
+      // valuesは本来NonEmptyArray<string>であるはずだが、React-Hook-Formが渡してくるデータは、
+      // 単一の解答であった場合、string、そうでない場合stringの配列となる仕様ため、
+      // 仕方なく型によって処理を分離することになった。
+      if (typeof values == 'string') {
+        return {
+          question_id: Number(key),
+          answer: values,
+        };
+      } else {
+        return values.map((value) => ({
+          question_id: Number(key),
+          answer: value,
+        }));
+      }
+    });
+
+    if (await postAnswers(formAnswers)) {
+      changeSubmitState(true);
+    }
   };
 
   const generateInputSpace = (question: FormQuestion) => {
@@ -61,7 +87,7 @@ export default function Questions(form: Props) {
         );
       case 'SINGLE': //todo: 選択をリセットできるようにする
         return (
-          <Select {...register(question.id.toString())}>
+          <Select {...register(question.id.toString())} defaultValue="">
             {question.choices.map((choice, index) => {
               return (
                 <MenuItem key={index} value={choice}>
@@ -91,231 +117,67 @@ export default function Questions(form: Props) {
     }
   };
 
-  return (
-    <form onSubmit={handleSubmit(onSubmit)}>
-      <Box sx={{ width: '100%' }}>
-        <Stack spacing={2}>
-          {form.form.questions.map((question, index) => {
-            return (
-              <Item key={index}>
-                <Box sx={{ width: '100%' }}>
-                  <Stack spacing={2}>
-                    <Card sx={{ minWidth: 275 }}>
-                      <CardContent>
-                        <Typography variant="h5" component="div">
-                          {question.title}
-                        </Typography>
-                        <Typography sx={{ mb: 1.5 }} color="text.secondary">
-                          {question.description}
-                        </Typography>
-                        <Typography variant="body2">
-                          {generateInputSpace(question)}
-                        </Typography>
-                      </CardContent>
-                    </Card>
-                  </Stack>
-                </Box>
-              </Item>
-            );
-          })}
+  if (isSubmitted) {
+    return (
+      <Box sx={{ width: '20%' }}>
+        <Alert severity="success">
+          <AlertTitle>Success</AlertTitle>
+          回答を送信しました
+        </Alert>
+        <Stack
+          direction="row"
+          divider={<Divider orientation="vertical" flexItem />}
+          spacing={2}
+        >
           <Item>
-            <Button type="submit" variant="contained" endIcon={<SendIcon />}>
-              送信
+            <Button variant="contained" onClick={unSubmit}>
+              ← 別の回答をする
             </Button>
+          </Item>
+          <Item>
+            <Link href="/forms">
+              <Button variant="contained">フォーム一覧へ →</Button>
+            </Link>
           </Item>
         </Stack>
       </Box>
-    </form>
-  );
-
-  // type FormDataType = {
-  //   [key: number]: NonEmptyArray<string>;
-  // };
-
-  // const [formData, setFormData] = React.useState<FormDataType>({});
-
-  // const updateMultipleData = (e: any) => {
-  //   assert(e.target.type == 'checkbox');
-
-  //   if (formData[e.target.name]?.includes(e.target.value)) {
-  //     setFormData({
-  //       ...formData,
-  //       [e.target.name]: formData[e.target.name]?.filter(
-  //         (data) => data == e.target.value
-  //       ),
-  //     });
-  //   } else if (formData[e.target.name] == undefined) {
-  //     setFormData({
-  //       ...formData,
-  //       [e.target.name]: [e.target.value],
-  //     });
-  //   } else {
-  //     setFormData({
-  //       ...formData,
-  //       [e.target.name]: formData[e.target.name]?.concat(e.target.value),
-  //     });
-  //   }
-  // };
-
-  // const updateData = (e: any) => {
-  //   setFormData({
-  //     ...formData,
-  //     [e.target.name]: [e.target.value],
-  //   });
-  // };
-
-  // const handleSubmit = (e: React.MouseEvent<HTMLElement, MouseEvent>) => {
-  //   e.preventDefault();
-  //   console.log(formData);
-  //   interface Answers {
-  //     questionId: number;
-  //   }
-  //   Object.entries(formData).map(function ([key, value]) {});
-  //   changeSendedState(true);
-  // };
-
-  // if (isSended) {
-  //   return (
-  //     <Box sx={{ width: '20%' }}>
-  //       <Alert severity="success">
-  //         <AlertTitle>Success</AlertTitle>
-  //         回答を送信しました
-  //       </Alert>
-  //       <Stack
-  //         direction="row"
-  //         divider={<Divider orientation="vertical" flexItem />}
-  //         spacing={2}
-  //       >
-  //         <Item>
-  //           <Button variant="contained" onClick={unSend}>
-  //             ← 別の回答をする
-  //           </Button>
-  //         </Item>
-  //         <Item>
-  //           <Link href="/forms">
-  //             <Button variant="contained">フォーム一覧へ →</Button>
-  //           </Link>
-  //         </Item>
-  //       </Stack>
-  //     </Box>
-  //   );
-  // } else {
-  //   return (
-  //     <Box sx={{ width: '100%' }}>
-  //       <Stack spacing={2}>
-  //         {form.form.questions.map((question, index) => {
-  //           switch (question.question_type) {
-  //             case 'TEXT':
-  //               return (
-  //                 <Item key={index}>
-  //                   <Card sx={{ minWidth: 275 }}>
-  //                     <CardContent>
-  //                       <Typography variant="h5" component="div">
-  //                         {question.title}
-  //                       </Typography>
-  //                       <Typography sx={{ mb: 1.5 }} color="text.secondary">
-  //                         {question.description}
-  //                       </Typography>
-  //                       <Typography variant="body2">
-  //                         <Box
-  //                           component="form"
-  //                           sx={{
-  //                             '& .MuiTextField-root': { m: 1, width: '25ch' },
-  //                           }}
-  //                           noValidate
-  //                           autoComplete="off"
-  //                         >
-  //                           <TextField
-  //                             id="outlined-multiline-static"
-  //                             name={question.id.toString()}
-  //                             label="回答を入力"
-  //                             multiline
-  //                             rows={4}
-  //                             onChange={updateData}
-  //                           />
-  //                         </Box>
-  //                       </Typography>
-  //                     </CardContent>
-  //                   </Card>
-  //                 </Item>
-  //               );
-  //             case 'SINGLE':
-  //               return (
-  //                 <Item key={index}>
-  //                   <Card sx={{ minWidth: 275 }}>
-  //                     <CardContent>
-  //                       <Typography variant="h5" component="div">
-  //                         {question.title}
-  //                       </Typography>
-  //                       <Typography sx={{ mb: 1.5 }} color="text.secondary">
-  //                         {question.description}
-  //                       </Typography>
-  //                       <Typography variant="body2">
-  //                         <FormControl>
-  //                           <RadioGroup
-  //                             name={question.id.toString()}
-  //                             defaultChecked
-  //                           >
-  //                             {question.choices.map((choice, index) => {
-  //                               return (
-  //                                 <FormControlLabel
-  //                                   key={index}
-  //                                   control={<Radio />}
-  //                                   value={choice}
-  //                                   label={choice}
-  //                                   onChange={updateData}
-  //                                 />
-  //                               );
-  //                             })}
-  //                           </RadioGroup>
-  //                         </FormControl>
-  //                       </Typography>
-  //                     </CardContent>
-  //                   </Card>
-  //                 </Item>
-  //               );
-  //             case 'MULTIPLE':
-  //               return (
-  //                 <Item key={index}>
-  //                   <Card sx={{ minWidth: 275 }}>
-  //                     <CardContent>
-  //                       <Typography variant="h5" component="div">
-  //                         {question.title}
-  //                       </Typography>
-  //                       <Typography sx={{ mb: 1.5 }} color="text.secondary">
-  //                         {question.description}
-  //                       </Typography>
-  //                       <Typography variant="body2">
-  //                         <FormGroup>
-  //                           {question.choices.map((choice, index) => {
-  //                             return (
-  //                               <FormControlLabel
-  //                                 key={index}
-  //                                 control={<Checkbox />}
-  //                                 name={question.id.toString()}
-  //                                 label={choice}
-  //                                 value={choice}
-  //                                 onChange={updateMultipleData}
-  //                               />
-  //                             );
-  //                           })}
-  //                         </FormGroup>
-  //                       </Typography>
-  //                     </CardContent>
-  //                   </Card>
-  //                 </Item>
-  //               );
-  //           }
-  //         })}
-  //         <Button
-  //           variant="contained"
-  //           endIcon={<SendIcon />}
-  //           onClick={handleSubmit}
-  //         >
-  //           送信
-  //         </Button>
-  //       </Stack>
-  //     </Box>
-  //   );
-  // }
+    );
+  } else {
+    return (
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <Box sx={{ width: '100%' }}>
+          <Stack spacing={2}>
+            {form.form.questions.map((question, index) => {
+              return (
+                <Item key={index}>
+                  <Box sx={{ width: '100%' }}>
+                    <Stack spacing={2}>
+                      <Card sx={{ minWidth: 275 }}>
+                        <CardContent>
+                          <Typography variant="h5" component="div">
+                            {question.title}
+                          </Typography>
+                          <Typography sx={{ mb: 1.5 }} color="text.secondary">
+                            {question.description}
+                          </Typography>
+                          <Typography variant="body2">
+                            {generateInputSpace(question)}
+                          </Typography>
+                        </CardContent>
+                      </Card>
+                    </Stack>
+                  </Box>
+                </Item>
+              );
+            })}
+            <Item>
+              <Button type="submit" variant="contained" endIcon={<SendIcon />}>
+                送信
+              </Button>
+            </Item>
+          </Stack>
+        </Box>
+      </form>
+    );
+  }
 }
