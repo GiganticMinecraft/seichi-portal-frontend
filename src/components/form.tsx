@@ -83,11 +83,16 @@ export default function Questions(form: Props) {
           <Input
             {...register(question.id.toString())}
             className="materialUIInput"
+            required={question.is_required}
           />
         );
       case 'SINGLE': //todo: 選択をリセットできるようにする
         return (
-          <Select {...register(question.id.toString())} defaultValue="">
+          <Select
+            {...register(question.id.toString())}
+            required={question.is_required}
+            defaultValue=""
+          >
             {question.choices.map((choice, index) => {
               return (
                 <MenuItem key={index} value={choice}>
@@ -99,7 +104,7 @@ export default function Questions(form: Props) {
         );
       case 'MULTIPLE':
         return (
-          <FormGroup>
+          <FormGroup aria-required={question.is_required}>
             {question.choices.map((choice, index) => (
               <FormControlLabel
                 key={index}
@@ -156,6 +161,7 @@ export default function Questions(form: Props) {
                         <CardContent>
                           <Typography variant="h5" component="div">
                             {question.title}
+                            {question.is_required ? ' *' : null}
                           </Typography>
                           <Typography sx={{ mb: 1.5 }} color="text.secondary">
                             {question.description}

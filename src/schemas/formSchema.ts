@@ -6,6 +6,7 @@ const questionSchema = z.object({
   description: z.string(),
   question_type: z.enum(['TEXT', 'SINGLE', 'MULTIPLE']),
   choices: z.array(z.string()),
+  is_required: z.boolean(),
 });
 
 const metadataSchema = z.object({
