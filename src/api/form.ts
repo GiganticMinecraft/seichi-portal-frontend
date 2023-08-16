@@ -12,6 +12,7 @@ export async function getForms(): Promise<Form[]> {
     headers: {
       Accept: 'application/json',
     },
+    cache: 'no-cache',
   }).then(async (response) => {
     const formsJson = await response.json();
     return formsSchema.parse(formsJson);
@@ -24,6 +25,7 @@ export async function getForm(formId: number): Promise<Form> {
     headers: {
       Accept: 'application/json',
     },
+    cache: 'no-cache',
   }).then(async (response) => {
     const formJson = await response.json();
     return formSchema.parse(formJson);
@@ -45,6 +47,7 @@ export async function postAnswers(
       'Content-Type': 'application/json',
     },
     body: answersJson,
+    cache: 'no-cache',
   }).then(async (response) => {
     return response.ok;
   });
