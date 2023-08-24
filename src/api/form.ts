@@ -1,13 +1,7 @@
 import { Form, formSchema, formsSchema } from '@/schemas/formSchema';
 
 export async function getForms(): Promise<Form[]> {
-  const params = {
-    offset: '0',
-    limit: '4',
-  };
-  const query = new URLSearchParams(params);
-
-  return await fetch(`http://localhost:9000/forms?${query}`, {
+  return await fetch('http://localhost:9000/forms', {
     method: 'GET',
     headers: {
       Accept: 'application/json',
