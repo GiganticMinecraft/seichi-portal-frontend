@@ -46,3 +46,5 @@ export async function postAnswers(
     return response.ok;
   });
 }
+
+export async function getAnswers(): Promise<
