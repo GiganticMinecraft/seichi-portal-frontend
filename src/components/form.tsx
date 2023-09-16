@@ -33,7 +33,7 @@ interface Props {
 type NonEmptyArray<T> = [T, ...T[]];
 
 interface IFormInput {
-  [key: string]: NonEmptyArray<string>;
+  [key: string]: string | NonEmptyArray<string> | boolean;
 }
 
 const Item = styled(Paper)(({ theme }) => ({
@@ -68,13 +68,22 @@ export default function Questions({ form }: Props) {
       // ここで型をstringかどうか判定しているのは、valuesに複数の値が入っていた場合にmapを使って
       // 一つのquestion_idとanswerに分離したいという理由がある。
       // valuesは本来NonEmptyArray<string>であるはずだが、React-Hook-Formが渡してくるデータは、
-      // 単一の解答であった場合、string、そうでない場合stringの配列となる仕様のため、
-      // 仕方なく型によって処理を分離することになった。
+      // 以下のような仕様のため、仕方なく型によって処理を分離することになった。
+      // 単一の解答: string
+      // 複数選択可能で選択されているものがある回答: NonEmptyArray<string>
+      // 複数選択可能で選択されているものがない回答: boolean
       if (typeof values == 'string') {
         return {
           question_id: Number(key),
           answer: values,
         };
+      } else if (typeof values === 'boolean') {
+        return [
+          {
+            question_id: Number(key),
+            answer: '',
+          },
+        ];
       } else {
         return values.map((value) => ({
           question_id: Number(key),
@@ -162,11 +171,12 @@ export default function Questions({ form }: Props) {
                         validate: {
                           itemMustBeChecked: (v) => {
                             if (!question.is_required) return true;
+                            const errorMessage =
+                              'この項目は必須です。少なくとも1つの項目にチェックを入れてください';
+                            // valueがbooleanであることは、何も選択されている項目がないことを示しているので、エラーとしてよい
+                            if (typeof v === 'boolean') return errorMessage;
 
-                            return (
-                              (v && v.length >= 1) ||
-                              'この項目は必須です。少なくとも1つの項目にチェックを入れてください'
-                            );
+                            return v.length >= 1 || errorMessage;
                           },
                         },
                       })}
