@@ -99,6 +99,7 @@ export default function Questions({ form }: Props) {
             className="materialUIInput"
             required={question.is_required}
             multiline
+            fullWidth
           />
         );
       case 'SINGLE': //todo: 選択をリセットできるようにする
