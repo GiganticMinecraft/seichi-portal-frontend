@@ -109,7 +109,7 @@ export default function Questions({ form }: Props) {
               selectedValue === '' ? <p>（未選択）</p> : <p>{selectedValue}</p>
             }
             displayEmpty
-            style={{ paddingLeft: '1rem' }}
+            style={{ paddingLeft: '1rem', marginTop: '1rem' }}
           >
             {question.choices.map((choice, index) => {
               return (
