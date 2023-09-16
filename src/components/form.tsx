@@ -200,7 +200,11 @@ export default function Questions({ form }: Props) {
                   >
                     <Typography variant="h5">
                       {question.title}
-                      {question.is_required ? ' *' : null}
+                      {question.is_required ? (
+                        <Typography display={'inline'} color={'red'}>
+                          {' *'}
+                        </Typography>
+                      ) : null}
                     </Typography>
                     <Typography color="text.secondary" marginBottom={1.5}>
                       {question.description}
