@@ -34,6 +34,7 @@ const Item = styled(Paper)(({ theme }) => ({
   padding: theme.spacing(1),
   textAlign: 'center',
   color: theme.palette.text.secondary,
+  width: '100%',
 }));
 
 export default function Questions({ form }: Props) {
@@ -154,11 +155,22 @@ export default function Questions({ form }: Props) {
     return (
       <Box sx={{ width: '100%' }}>
         <form onSubmit={handleSubmit(onSubmit)}>
-          <Stack spacing={2}>
+          <Stack
+            spacing={4}
+            display={'flex'}
+            alignItems={'center'}
+            flexDirection={'column'}
+          >
             {form.questions.map((question) => {
               return (
                 <Item key={question.id}>
-                  <Box width="100%" padding="1rem">
+                  <Box
+                    width="100%"
+                    padding="1rem"
+                    display={'flex'}
+                    alignItems={'center'}
+                    flexDirection={'column'}
+                  >
                     <Typography variant="h5">
                       {question.title}
                       {question.is_required ? ' *' : null}
@@ -166,18 +178,14 @@ export default function Questions({ form }: Props) {
                     <Typography sx={{ mb: 1.5 }} color="text.secondary">
                       {question.description}
                     </Typography>
-                    <Typography variant="body2" component={'div'}>
-                      {generateInputSpace(question)}
-                    </Typography>
+                    <Box width={'70%'}>{generateInputSpace(question)}</Box>
                   </Box>
                 </Item>
               );
             })}
-            <Item>
-              <Button type="submit" variant="contained" endIcon={<SendIcon />}>
-                送信
-              </Button>
-            </Item>
+            <Button type="submit" variant="contained" endIcon={<SendIcon />}>
+              送信
+            </Button>
           </Stack>
         </form>
       </Box>
