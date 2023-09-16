@@ -9,6 +9,7 @@ import {
   Select,
   MenuItem,
   FormGroup,
+  FormHelperText,
   FormControlLabel,
   Checkbox,
   Box,
@@ -124,7 +125,9 @@ export default function Questions({ form }: Props) {
           <FormGroup
             sx={{
               display: 'flex',
-              flexDirection: 'column',
+              flexWrap: 'wrap',
+              flexDirection: 'row',
+              justifyContent: 'center',
               alignItems: 'center',
             }}
           >
