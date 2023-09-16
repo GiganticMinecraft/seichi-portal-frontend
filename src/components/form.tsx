@@ -53,10 +53,11 @@ export default function Questions(form: Props) {
 
   const onSubmit = async (data: IFormInput) => {
     const formAnswers = Object.entries(data).flatMap(function ([key, values]) {
-      // Note: ここで型をstringかどうか判定しているのは、valuesに複数の値が入っていた場合にmapを使って
+      // Note:
+      // ここで型をstringかどうか判定しているのは、valuesに複数の値が入っていた場合にmapを使って
       // 一つのquestion_idとanswerに分離したいという理由がある。
       // valuesは本来NonEmptyArray<string>であるはずだが、React-Hook-Formが渡してくるデータは、
-      // 単一の解答であった場合、string、そうでない場合stringの配列となる仕様ため、
+      // 単一の解答であった場合、string、そうでない場合stringの配列となる仕様のため、
       // 仕方なく型によって処理を分離することになった。
       if (typeof values == 'string') {
         return {
