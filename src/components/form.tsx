@@ -94,7 +94,6 @@ export default function Questions({ form }: Props) {
             className="materialUIInput"
             required={question.is_required}
             multiline
-            fullWidth
           />
         );
       case 'SINGLE': //todo: 選択をリセットできるようにする
@@ -109,7 +108,10 @@ export default function Questions({ form }: Props) {
               selectedValue === '' ? <p>（未選択）</p> : <p>{selectedValue}</p>
             }
             displayEmpty
-            style={{ paddingLeft: '1rem', marginTop: '1rem' }}
+            style={{
+              paddingLeft: '1rem',
+              marginTop: '1rem',
+            }}
           >
             {question.choices.map((choice, index) => {
               return (
@@ -122,43 +124,45 @@ export default function Questions({ form }: Props) {
         );
       case 'MULTIPLE':
         return (
-          <FormGroup
-            sx={{
-              display: 'flex',
-              flexWrap: 'wrap',
-              flexDirection: 'row',
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}
-          >
-            {question.choices.map((choice, index) => (
-              <FormControlLabel
-                key={`q-${question.id}.a-${index}`}
-                sx={{ width: '25%' }}
-                control={
-                  <Checkbox
-                    {...register(question.id.toString(), {
-                      validate: {
-                        rrr: (v) =>
-                          (v && v.length >= 1) ||
-                          'この項目は必須です。少なくとも1つの項目にチェックを入れてください',
-                      },
-                    })}
-                    value={choice}
-                    sx={{
-                      wordBreak: 'break-all',
-                    }}
-                  />
-                }
-                label={choice}
-              />
-            ))}
+          <>
+            <FormGroup
+              sx={{
+                display: 'flex',
+                flexWrap: 'wrap',
+                flexDirection: 'row',
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}
+            >
+              {question.choices.map((choice, index) => (
+                <FormControlLabel
+                  key={`q-${question.id}.a-${index}`}
+                  sx={{ width: '24%', justifyContent: 'center' }}
+                  control={
+                    <Checkbox
+                      {...register(question.id.toString(), {
+                        validate: {
+                          rrr: (v) =>
+                            (v && v.length >= 1) ||
+                            'この項目は必須です。少なくとも1つの項目にチェックを入れてください',
+                        },
+                      })}
+                      value={choice}
+                      sx={{
+                        wordBreak: 'break-all',
+                      }}
+                    />
+                  }
+                  label={choice}
+                />
+              ))}
+            </FormGroup>
             {errors[question.id.toString()] && (
-              <FormHelperText sx={{ color: 'red' }}>
+              <FormHelperText sx={{ color: 'red', textAlign: 'center' }}>
                 {errors[question.id.toString()]?.message}
               </FormHelperText>
             )}
-          </FormGroup>
+          </>
         );
     }
   };
