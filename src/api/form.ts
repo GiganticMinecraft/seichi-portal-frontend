@@ -1,29 +1,29 @@
 import { Form, formSchema, formsSchema } from '@/schemas/formSchema';
 
 export async function getForms(): Promise<Form[]> {
-  return await fetch('http://localhost:9000/forms', {
+  const response = await fetch('http://localhost:9000/forms', {
     method: 'GET',
     headers: {
       Accept: 'application/json',
     },
     cache: 'no-cache',
-  }).then(async (response) => {
-    const formsJson = await response.json();
-    return formsSchema.parse(formsJson);
   });
+  const formsJson = await response.json();
+
+  return formsSchema.parse(formsJson);
 }
 
 export async function getForm(formId: number): Promise<Form> {
-  return await fetch(`http://localhost:9000/forms/${formId}`, {
+  const response = await fetch(`http://localhost:9000/forms/${formId}`, {
     method: 'GET',
     headers: {
       Accept: 'application/json',
     },
     cache: 'no-cache',
-  }).then(async (response) => {
-    const formJson = await response.json();
-    return formSchema.parse(formJson);
   });
+  const formJson = await response.json();
+
+  return formSchema.parse(formJson);
 }
 
 export async function postAnswers(
@@ -34,17 +34,18 @@ export async function postAnswers(
     timestamp: new Date(),
     answers,
   });
-
-  return await fetch(`http://localhost:9000/forms/answers`, {
+  const response = await fetch(`http://localhost:9000/forms/answers`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
     body: answersJson,
     cache: 'no-cache',
-  }).then(async (response) => {
-    return response.ok;
   });
+
+  return response.ok;
 }
 
-export async function getAnswers(): Promise<
+export async function getAnswers(): Promise<undefined> {
+  return undefined;
+}
