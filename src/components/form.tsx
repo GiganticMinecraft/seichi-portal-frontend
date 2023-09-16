@@ -41,7 +41,9 @@ const Item = styled(Paper)(({ theme }) => ({
 
 export default function Questions({ form }: Props) {
   const [isSubmitted, changeSubmitState] = useState(false);
-  const [selectedValue, setSelectedValue] = useState('');
+  const [selectedValues, setSelectedValues] = useState<{ [x: string]: string }>(
+    {}
+  );
 
   const unSubmit = () => {
     changeSubmitState(false);
@@ -84,7 +86,7 @@ export default function Questions({ form }: Props) {
     if (await postAnswers(form.id, formAnswers)) {
       changeSubmitState(true);
       reset();
-      setSelectedValue('');
+      setSelectedValues({});
     }
   };
 
@@ -100,15 +102,25 @@ export default function Questions({ form }: Props) {
           />
         );
       case 'SINGLE': //todo: 選択をリセットできるようにする
+        const questionId = question.id.toString();
         return (
           <Select
-            {...register(question.id.toString())}
+            {...register(questionId)}
             required={question.is_required}
             autoWidth
-            value={selectedValue}
-            onChange={(event) => setSelectedValue(event.target.value)}
+            value={selectedValues[questionId] ?? ''}
+            onChange={(event) => {
+              setSelectedValues({
+                ...selectedValues,
+                [questionId]: event.target.value as string,
+              });
+            }}
             renderValue={() =>
-              selectedValue === '' ? <p>（未選択）</p> : <p>{selectedValue}</p>
+              !!selectedValues[questionId] ? (
+                <p>{selectedValues[questionId]}</p>
+              ) : (
+                <p>（未選択）</p>
+              )
             }
             displayEmpty
             style={{
