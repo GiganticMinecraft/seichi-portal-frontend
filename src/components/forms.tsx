@@ -9,14 +9,14 @@ import Paper from '@mui/material/Paper';
 import Stack from '@mui/material/Stack';
 import { styled } from '@mui/material/styles';
 import Typography from '@mui/material/Typography';
-import dayjs from 'dayjs';
+import dayjs, { extend } from 'dayjs';
 import timezone from 'dayjs/plugin/timezone';
 import utc from 'dayjs/plugin/utc';
 import Link from 'next/link';
 import { Form } from '@/schemas/formSchema';
 
-dayjs.extend(timezone);
-dayjs.extend(utc);
+extend(timezone);
+extend(utc);
 dayjs.tz.setDefault('Asia/Tokyo');
 
 function formResponsePeriodToString(
