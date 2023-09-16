@@ -4,7 +4,6 @@ import {
   AppBar,
   Toolbar,
   IconButton,
-  Menu,
   Typography,
   Button,
 } from '@mui/material';
