@@ -142,7 +142,7 @@ export default function Questions({ form }: Props) {
                     <Checkbox
                       {...register(question.id.toString(), {
                         validate: {
-                          rrr: (v) =>
+                          itemMustBeChecked: (v) =>
                             (v && v.length >= 1) ||
                             'この項目は必須です。少なくとも1つの項目にチェックを入れてください',
                         },
