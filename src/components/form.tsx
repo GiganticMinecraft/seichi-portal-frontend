@@ -19,8 +19,8 @@ import {
   Divider,
   Button,
   Typography,
+  Link,
 } from '@mui/material';
-import Link from 'next/link';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { postAnswers } from '@/api/form';
