@@ -56,7 +56,9 @@ function OutlinedCard({ form }: { form: Form }) {
               form.settings.response_period.end_at
             )}
           </Typography>
-          <Typography variant="body2">{form.description}</Typography>
+          {form.description && (
+            <Typography variant="body2">{form.description}</Typography>
+          )}
         </CardContent>
       </Card>
     </Box>

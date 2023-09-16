@@ -223,9 +223,11 @@ export default function Questions({ form }: Props) {
                         </Typography>
                       ) : null}
                     </Typography>
-                    <Typography color="text.secondary" marginBottom={1.5}>
-                      {question.description}
-                    </Typography>
+                    {question.description && (
+                      <Typography color="text.secondary" marginBottom={1.5}>
+                        {question.description}
+                      </Typography>
+                    )}
                     <Box width={'70%'}>{generateInputSpace(question)}</Box>
                   </Box>
                 </Item>
