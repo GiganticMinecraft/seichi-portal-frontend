@@ -117,30 +117,28 @@ export default function Questions({ form }: Props) {
         );
       case 'MULTIPLE':
         return (
-          <FormGroup aria-required={question.is_required}>
-            <div
-              style={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-              }}
-            >
-              {question.choices.map((choice, index) => (
-                <FormControlLabel
-                  key={`q-${question.id}.a-${index}`}
-                  control={
-                    <Checkbox
-                      {...register(question.id.toString())}
-                      value={choice}
-                      sx={{
-                        wordBreak: 'break-all',
-                      }}
-                    />
-                  }
-                  label={choice}
-                />
-              ))}
-            </div>
+          <FormGroup
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+            }}
+          >
+            {question.choices.map((choice, index) => (
+              <FormControlLabel
+                key={`q-${question.id}.a-${index}`}
+                control={
+                  <Checkbox
+                    {...register(question.id.toString())}
+                    value={choice}
+                    sx={{
+                      wordBreak: 'break-all',
+                    }}
+                  />
+                }
+                label={choice}
+              />
+            ))}
           </FormGroup>
         );
     }
