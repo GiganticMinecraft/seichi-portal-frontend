@@ -62,6 +62,7 @@ export default function Questions({ form }: Props) {
   };
 
   const onSubmit = async (data: IFormInput) => {
+    console.info(data);
     const formAnswers = Object.entries(data).flatMap(function ([key, values]) {
       // Note:
       // ここで型をstringかどうか判定しているのは、valuesに複数の値が入っていた場合にmapを使って
@@ -159,9 +160,14 @@ export default function Questions({ form }: Props) {
                     <Checkbox
                       {...register(question.id.toString(), {
                         validate: {
-                          itemMustBeChecked: (v) =>
-                            (v && v.length >= 1) ||
-                            'この項目は必須です。少なくとも1つの項目にチェックを入れてください',
+                          itemMustBeChecked: (v) => {
+                            if (!question.is_required) return true;
+
+                            return (
+                              (v && v.length >= 1) ||
+                              'この項目は必須です。少なくとも1つの項目にチェックを入れてください'
+                            );
+                          },
                         },
                       })}
                       value={choice}
