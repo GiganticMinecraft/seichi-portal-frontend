@@ -46,7 +46,7 @@ const Item = styled(Paper)(({ theme }) => ({
 }));
 
 export default function Questions({ form }: Props) {
-  const [isSubmitted, changeSubmitState] = useState(false);
+  const [isSubmitted, toggleIsSubmitted] = useState(false);
   const [selectedValues, setSelectedValues] = useState<{ [x: string]: string }>(
     {}
   );
@@ -58,7 +58,7 @@ export default function Questions({ form }: Props) {
   } = useForm<IFormInput>();
 
   const unSubmit = () => {
-    changeSubmitState(false);
+    toggleIsSubmitted(false);
   };
 
   const onSubmit = async (data: IFormInput) => {
@@ -83,7 +83,7 @@ export default function Questions({ form }: Props) {
     });
 
     if (await postAnswers(form.id, formAnswers)) {
-      changeSubmitState(true);
+      toggleIsSubmitted(true);
       reset();
       setSelectedValues({});
     }
