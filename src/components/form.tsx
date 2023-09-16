@@ -21,6 +21,7 @@ import Alert from '@mui/material/Alert';
 import AlertTitle from '@mui/material/AlertTitle';
 import Divider from '@mui/material/Divider';
 import Link from '@mui/material/Link';
+import { ArrowBack, ArrowForward } from '@mui/icons-material';
 
 interface Props {
   form: Form;
@@ -141,11 +142,17 @@ export default function Questions({ form }: Props) {
           divider={<Divider orientation="vertical" flexItem />}
           spacing={2}
         >
-          <Button variant="contained" onClick={unSubmit}>
-            ← 別の回答をする
+          <Button
+            variant="contained"
+            onClick={unSubmit}
+            startIcon={<ArrowBack />}
+          >
+            別の回答をする
           </Button>
           <Link href="/forms">
-            <Button variant="contained">フォーム一覧へ →</Button>
+            <Button variant="contained" endIcon={<ArrowForward />}>
+              フォーム一覧へ
+            </Button>
           </Link>
         </Stack>
       </Box>
