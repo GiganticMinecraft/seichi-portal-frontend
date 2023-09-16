@@ -8,8 +8,6 @@ import Stack from '@mui/material/Stack';
 import Box from '@mui/material/Box';
 import { styled } from '@mui/material/styles';
 import Paper from '@mui/material/Paper';
-import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import SendIcon from '@mui/icons-material/Send';
@@ -38,7 +36,7 @@ const Item = styled(Paper)(({ theme }) => ({
 }));
 
 export default function Questions({ form }: Props) {
-  const [isSubmitted, changeSubmitState] = React.useState(false);
+  const [isSubmitted, changeSubmitState] = React.useState(true);
 
   const unSubmit = () => {
     changeSubmitState(false);
@@ -128,7 +126,12 @@ export default function Questions({ form }: Props) {
 
   if (isSubmitted) {
     return (
-      <Box sx={{ width: '20%' }}>
+      <Box
+        sx={{ width: '100%' }}
+        display={'flex'}
+        alignItems={'center'}
+        flexDirection={'column'}
+      >
         <Alert severity="success">
           <AlertTitle>Success</AlertTitle>
           回答を送信しました
@@ -138,16 +141,12 @@ export default function Questions({ form }: Props) {
           divider={<Divider orientation="vertical" flexItem />}
           spacing={2}
         >
-          <Item>
-            <Button variant="contained" onClick={unSubmit}>
-              ← 別の回答をする
-            </Button>
-          </Item>
-          <Item>
-            <Link href="/forms">
-              <Button variant="contained">フォーム一覧へ →</Button>
-            </Link>
-          </Item>
+          <Button variant="contained" onClick={unSubmit}>
+            ← 別の回答をする
+          </Button>
+          <Link href="/forms">
+            <Button variant="contained">フォーム一覧へ →</Button>
+          </Link>
         </Stack>
       </Box>
     );
