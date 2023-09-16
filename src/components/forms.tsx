@@ -50,14 +50,16 @@ function OutlinedCard({ form }: { form: Form }) {
           <Typography variant="h5" component="div">
             {form.title}
           </Typography>
-          <Typography sx={{ mb: 1.5 }} color="text.secondary">
+          <Typography color="text.secondary">
             {formResponsePeriodToString(
               form.settings.response_period.start_at,
               form.settings.response_period.end_at
             )}
           </Typography>
           {form.description && (
-            <Typography variant="body2">{form.description}</Typography>
+            <Typography sx={{ marginTop: 1.5 }} variant="body2">
+              {form.description}
+            </Typography>
           )}
         </CardContent>
       </Card>
