@@ -72,7 +72,7 @@ export default function Questions({ form }: Props) {
       }
     });
 
-    if (await postAnswers(formAnswers)) {
+    if (await postAnswers(form.id, formAnswers)) {
       changeSubmitState(true);
     }
   };
