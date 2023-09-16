@@ -56,6 +56,7 @@ export default function Questions({ form }: Props) {
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm<IFormInput>();
 
@@ -82,6 +83,8 @@ export default function Questions({ form }: Props) {
 
     if (await postAnswers(form.id, formAnswers)) {
       changeSubmitState(true);
+      reset();
+      setSelectedValue('');
     }
   };
 
