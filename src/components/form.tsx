@@ -102,6 +102,7 @@ export default function Questions({ form }: Props) {
               selectedValue === '' ? <p>（未選択）</p> : <p>{selectedValue}</p>
             }
             displayEmpty
+            style={{ paddingLeft: '1rem' }}
           >
             {question.choices.map((choice, index) => {
               return (
@@ -115,18 +116,29 @@ export default function Questions({ form }: Props) {
       case 'MULTIPLE':
         return (
           <FormGroup aria-required={question.is_required}>
-            {question.choices.map((choice, index) => (
-              <FormControlLabel
-                key={`q-${question.id}.a-${index}`}
-                control={
-                  <Checkbox
-                    {...register(question.id.toString())}
-                    value={choice}
-                  />
-                }
-                label={choice}
-              />
-            ))}
+            <div
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+              }}
+            >
+              {question.choices.map((choice, index) => (
+                <FormControlLabel
+                  key={`q-${question.id}.a-${index}`}
+                  control={
+                    <Checkbox
+                      {...register(question.id.toString())}
+                      value={choice}
+                      sx={{
+                        wordBreak: 'break-all',
+                      }}
+                    />
+                  }
+                  label={choice}
+                />
+              ))}
+            </div>
           </FormGroup>
         );
     }
