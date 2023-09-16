@@ -57,7 +57,7 @@ export default function Questions({ form }: Props) {
     formState: { errors },
   } = useForm<IFormInput>();
 
-  const unSubmit = () => {
+  const resetIsSubmitted = () => {
     toggleIsSubmitted(false);
   };
 
@@ -201,7 +201,7 @@ export default function Questions({ form }: Props) {
         >
           <Button
             variant="contained"
-            onClick={unSubmit}
+            onClick={resetIsSubmitted}
             startIcon={<ArrowBack />}
           >
             別の回答をする
