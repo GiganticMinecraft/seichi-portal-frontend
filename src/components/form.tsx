@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import { useState } from 'react';
 import { Form, FormQuestion } from '@/schemas/formSchema';
 import { useForm } from 'react-hook-form';
 import { Input } from '@material-ui/core';
@@ -37,7 +37,8 @@ const Item = styled(Paper)(({ theme }) => ({
 }));
 
 export default function Questions({ form }: Props) {
-  const [isSubmitted, changeSubmitState] = React.useState(false);
+  const [isSubmitted, changeSubmitState] = useState(false);
+  const [selectedValue, setSelectedValue] = useState('');
 
   const unSubmit = () => {
     changeSubmitState(false);
@@ -94,7 +95,13 @@ export default function Questions({ form }: Props) {
           <Select
             {...register(question.id.toString())}
             required={question.is_required}
-            defaultValue=""
+            autoWidth
+            value={selectedValue}
+            onChange={(event) => setSelectedValue(event.target.value)}
+            renderValue={() =>
+              selectedValue === '' ? <p>（未選択）</p> : <p>{selectedValue}</p>
+            }
+            displayEmpty
           >
             {question.choices.map((choice, index) => {
               return (
