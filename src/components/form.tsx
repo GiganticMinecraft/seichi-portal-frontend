@@ -30,6 +30,12 @@ interface Props {
   form: Form;
 }
 
+type NonEmptyArray<T> = [T, ...T[]];
+
+interface IFormInput {
+  [key: string]: NonEmptyArray<string>;
+}
+
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
   ...theme.typography.body2,
@@ -48,12 +54,6 @@ export default function Questions({ form }: Props) {
   const unSubmit = () => {
     changeSubmitState(false);
   };
-
-  type NonEmptyArray<T> = [T, ...T[]];
-
-  interface IFormInput {
-    [key: string]: NonEmptyArray<string>;
-  }
 
   const {
     register,
