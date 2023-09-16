@@ -101,7 +101,8 @@ export default function Questions({ form }: Props) {
             fullWidth
           />
         );
-      case 'SINGLE': //todo: 選択をリセットできるようにする
+      case 'SINGLE':
+        // TODO: 選択をリセットできるようにする
         // TODO: 何も選択されなかったとき、APIに送られる値は空文字になるが許容されるか？undefinedやnullでなくてよい？
         const questionId = question.id.toString();
         return (
