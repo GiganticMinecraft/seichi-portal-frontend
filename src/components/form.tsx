@@ -1,6 +1,6 @@
 'use client';
 
-import * as React from 'react';
+import React from 'react';
 import { Form, FormQuestion } from '@/schemas/formSchema';
 import { useForm } from 'react-hook-form';
 import { Input } from '@material-ui/core';
