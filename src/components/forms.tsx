@@ -42,7 +42,7 @@ function formResponsePeriodToString(
   }
 }
 
-function OutlinedCard({ form }: { form: Form }) {
+function EachForm({ form }: { form: Form }) {
   return (
     <Box sx={{ minWidth: 275 }}>
       <Card variant="outlined">
@@ -93,7 +93,7 @@ export default function Forms({ forms }: Props) {
             return (
               <Link href={`/forms/${form.id}`} key={form.id}>
                 <Item>
-                  <OutlinedCard form={form} />
+                  <EachForm form={form} />
                 </Item>
               </Link>
             );
