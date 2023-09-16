@@ -1,6 +1,6 @@
 'use client';
 
-import { Button, Link } from '@mui/material';
+import { Button, Link, Typography } from '@mui/material';
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
 import { styled } from '@mui/material/styles';
@@ -19,13 +19,19 @@ export default function Menu() {
     <Box sx={{ width: '100%' }}>
       <Stack spacing={2}>
         <Link href="/forms">
-          <Item as={'div'}>フォーム一覧</Item>
+          <Item as={'div'}>
+            <Typography variant="h5">フォーム一覧</Typography>
+          </Item>
         </Link>
         <Link href="/punishments">
-          <Item as={'div'}>処罰履歴</Item>
+          <Item as={'div'}>
+            <Typography variant="h5">処罰履歴</Typography>
+          </Item>
         </Link>
         <Link href="/announcements">
-          <Item as={'div'}>お知らせ一覧</Item>
+          <Item as={'div'}>
+            <Typography variant="h5">お知らせ一覧</Typography>
+          </Item>
         </Link>
       </Stack>
     </Box>
