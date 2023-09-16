@@ -12,6 +12,8 @@ import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
 import Link from 'next/link';
+import Alert from '@mui/material/Alert';
+import AlertTitle from '@mui/material/AlertTitle';
 
 dayjs.extend(timezone);
 dayjs.extend(utc);
@@ -75,15 +77,22 @@ export default function Forms({ forms }: Props) {
   return (
     <Box sx={{ width: '100%' }}>
       <Stack spacing={2}>
-        {forms.map((form) => {
-          return (
-            <Link href={`/forms/${form.id}`} key={form.id}>
-              <Item>
-                <OutlinedCard form={form} />
-              </Item>
-            </Link>
-          );
-        })}
+        {forms.length === 0 ? (
+          <Alert severity="warning">
+            <AlertTitle>フォームがありません</AlertTitle>
+            現在回答可能なフォームがありません
+          </Alert>
+        ) : (
+          forms.map((form) => {
+            return (
+              <Link href={`/forms/${form.id}`} key={form.id}>
+                <Item>
+                  <OutlinedCard form={form} />
+                </Item>
+              </Link>
+            );
+          })
+        )}
       </Stack>
     </Box>
   );
