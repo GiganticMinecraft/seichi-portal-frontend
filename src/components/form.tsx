@@ -52,7 +52,11 @@ export default function Questions({ form }: Props) {
     [key: string]: NonEmptyArray<string>;
   }
 
-  const { register, handleSubmit } = useForm<IFormInput>();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<IFormInput>();
 
   const onSubmit = async (data: IFormInput) => {
     const formAnswers = Object.entries(data).flatMap(function ([key, values]) {
@@ -127,9 +131,16 @@ export default function Questions({ form }: Props) {
             {question.choices.map((choice, index) => (
               <FormControlLabel
                 key={`q-${question.id}.a-${index}`}
+                sx={{ width: '25%' }}
                 control={
                   <Checkbox
-                    {...register(question.id.toString())}
+                    {...register(question.id.toString(), {
+                      validate: {
+                        rrr: (v) =>
+                          (v && v.length >= 1) ||
+                          'この項目は必須です。少なくとも1つの項目にチェックを入れてください',
+                      },
+                    })}
                     value={choice}
                     sx={{
                       wordBreak: 'break-all',
@@ -139,6 +150,11 @@ export default function Questions({ form }: Props) {
                 label={choice}
               />
             ))}
+            {errors[question.id.toString()] && (
+              <FormHelperText sx={{ color: 'red' }}>
+                {errors[question.id.toString()]?.message}
+              </FormHelperText>
+            )}
           </FormGroup>
         );
     }
