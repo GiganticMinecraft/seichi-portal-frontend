@@ -150,8 +150,8 @@ export default function Questions({ form }: Props) {
     );
   } else {
     return (
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <Box sx={{ width: '100%' }}>
+      <Box sx={{ width: '100%' }}>
+        <form onSubmit={handleSubmit(onSubmit)}>
           <Stack spacing={2}>
             {form.questions.map((question) => {
               return (
@@ -160,14 +160,14 @@ export default function Questions({ form }: Props) {
                     <Stack spacing={2}>
                       <Card sx={{ minWidth: 275 }}>
                         <CardContent>
-                          <Typography variant="h5" component="div">
+                          <Typography variant="h5">
                             {question.title}
                             {question.is_required ? ' *' : null}
                           </Typography>
                           <Typography sx={{ mb: 1.5 }} color="text.secondary">
                             {question.description}
                           </Typography>
-                          <Typography variant="body2">
+                          <Typography variant="body2" component={'div'}>
                             {generateInputSpace(question)}
                           </Typography>
                         </CardContent>
@@ -183,8 +183,8 @@ export default function Questions({ form }: Props) {
               </Button>
             </Item>
           </Stack>
-        </Box>
-      </form>
+        </form>
+      </Box>
     );
   }
 }
