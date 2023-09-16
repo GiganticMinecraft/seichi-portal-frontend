@@ -156,21 +156,17 @@ export default function Questions({ form }: Props) {
             {form.questions.map((question) => {
               return (
                 <Item key={question.id}>
-                  <Box sx={{ width: '100%' }}>
-                    <Card sx={{ minWidth: 275 }}>
-                      <CardContent>
-                        <Typography variant="h5">
-                          {question.title}
-                          {question.is_required ? ' *' : null}
-                        </Typography>
-                        <Typography sx={{ mb: 1.5 }} color="text.secondary">
-                          {question.description}
-                        </Typography>
-                        <Typography variant="body2" component={'div'}>
-                          {generateInputSpace(question)}
-                        </Typography>
-                      </CardContent>
-                    </Card>
+                  <Box width="100%" padding="1rem">
+                    <Typography variant="h5">
+                      {question.title}
+                      {question.is_required ? ' *' : null}
+                    </Typography>
+                    <Typography sx={{ mb: 1.5 }} color="text.secondary">
+                      {question.description}
+                    </Typography>
+                    <Typography variant="body2" component={'div'}>
+                      {generateInputSpace(question)}
+                    </Typography>
                   </Box>
                 </Item>
               );
