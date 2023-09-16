@@ -9,12 +9,12 @@
           "external",
           "internal",
           [
-            "parent",
-            "sibling"
+            "index",
+            "sibling",
+            "parent"
           ],
           "object",
-          "type",
-          "index"
+          "type"
         ],
         "pathGroupsExcludedImportTypes": [
           "builtin"

@@ -1,7 +1,7 @@
 import { getForms } from '@/api/form';
-import ButtonAppBar from '../components/buttonAppBar';
-import Forms from '../components/forms';
-import styles from '../page.module.css';
+import styles from '@/app/page.module.css';
+import ButtonAppBar from '@/components/buttonAppBar';
+import Forms from '@/components/forms';
 
 export default async function Home() {
   const forms = await getForms();

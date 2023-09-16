@@ -1,8 +1,8 @@
-import ButtonAppBar from '@/components/buttonAppBar';
 import './globals.css';
-import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
+import ButtonAppBar from '@/components/buttonAppBar';
 import styles from './page.module.css';
+import type { Metadata } from 'next';
 
 const inter = Inter({ subsets: ['latin'] });
 
