@@ -202,7 +202,7 @@ export default function Questions({ form }: Props) {
                       {question.title}
                       {question.is_required ? ' *' : null}
                     </Typography>
-                    <Typography sx={{ mb: 1.5 }} color="text.secondary">
+                    <Typography color="text.secondary" marginBottom={1.5}>
                       {question.description}
                     </Typography>
                     <Box width={'70%'}>{generateInputSpace(question)}</Box>
