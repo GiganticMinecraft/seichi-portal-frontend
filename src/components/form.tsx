@@ -37,7 +37,7 @@ const Item = styled(Paper)(({ theme }) => ({
 }));
 
 export default function Questions({ form }: Props) {
-  const [isSubmitted, changeSubmitState] = React.useState(true);
+  const [isSubmitted, changeSubmitState] = React.useState(false);
 
   const unSubmit = () => {
     changeSubmitState(false);
