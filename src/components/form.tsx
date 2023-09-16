@@ -50,17 +50,16 @@ export default function Questions({ form }: Props) {
   const [selectedValues, setSelectedValues] = useState<{ [x: string]: string }>(
     {}
   );
-
-  const unSubmit = () => {
-    changeSubmitState(false);
-  };
-
   const {
     register,
     handleSubmit,
     reset,
     formState: { errors },
   } = useForm<IFormInput>();
+
+  const unSubmit = () => {
+    changeSubmitState(false);
+  };
 
   const onSubmit = async (data: IFormInput) => {
     const formAnswers = Object.entries(data).flatMap(function ([key, values]) {
