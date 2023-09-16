@@ -10,12 +10,12 @@ import {
   Stack,
   Alert,
   AlertTitle,
-  Link,
 } from '@mui/material';
 import dayjs, { extend } from 'dayjs';
 import timezone from 'dayjs/plugin/timezone';
 import utc from 'dayjs/plugin/utc';
 import { Form } from '@/schemas/formSchema';
+import { Link } from './link';
 
 extend(timezone);
 extend(utc);
