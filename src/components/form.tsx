@@ -96,7 +96,7 @@ export default function Questions(form: Props) {
           >
             {question.choices.map((choice, index) => {
               return (
-                <MenuItem key={index} value={choice}>
+                <MenuItem key={`q-${question.id}.a-${index}`} value={choice}>
                   {choice}
                 </MenuItem>
               );
@@ -108,7 +108,7 @@ export default function Questions(form: Props) {
           <FormGroup aria-required={question.is_required}>
             {question.choices.map((choice, index) => (
               <FormControlLabel
-                key={index}
+                key={`q-${question.id}.a-${index}`}
                 control={
                   <Checkbox
                     {...register(question.id.toString())}
@@ -155,7 +155,7 @@ export default function Questions(form: Props) {
           <Stack spacing={2}>
             {form.form.questions.map((question, index) => {
               return (
-                <Item key={index}>
+                <Item key={question.id}>
                   <Box sx={{ width: '100%' }}>
                     <Stack spacing={2}>
                       <Card sx={{ minWidth: 275 }}>

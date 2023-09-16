@@ -22,9 +22,9 @@ export default function DashboardMenu() {
       </Typography>
       <Demo>
         <List>
-          {['Dashboard', 'Forms', 'Announcements'].map((value, index) => {
+          {['Dashboard', 'Forms', 'Announcements'].map((value) => {
             return (
-              <ListItem key={index}>
+              <ListItem key={value}>
                 <ListItemIcon>
                   <StarIcon />
                 </ListItemIcon>

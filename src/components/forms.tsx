@@ -76,9 +76,9 @@ export default function Forms({ forms }: Props) {
   return (
     <Box sx={{ width: '100%' }}>
       <Stack spacing={2}>
-        {forms.map((form, index) => {
+        {forms.map((form) => {
           return (
-            <Link href={`/forms/${form.id}`} key={index}>
+            <Link href={`/forms/${form.id}`} key={form.id}>
               <Item>
                 <OutlinedCard form={form} />
               </Item>
