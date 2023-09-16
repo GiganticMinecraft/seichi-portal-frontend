@@ -36,7 +36,7 @@ const Item = styled(Paper)(({ theme }) => ({
   color: theme.palette.text.secondary,
 }));
 
-export default function Questions(form: Props) {
+export default function Questions({ form }: Props) {
   const [isSubmitted, changeSubmitState] = React.useState(false);
 
   const unSubmit = () => {
@@ -153,7 +153,7 @@ export default function Questions(form: Props) {
       <form onSubmit={handleSubmit(onSubmit)}>
         <Box sx={{ width: '100%' }}>
           <Stack spacing={2}>
-            {form.form.questions.map((question, index) => {
+            {form.questions.map((question) => {
               return (
                 <Item key={question.id}>
                   <Box sx={{ width: '100%' }}>
