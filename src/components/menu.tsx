@@ -1,9 +1,6 @@
 'use client';
 
-import { Button, Link, Typography } from '@mui/material';
-import Box from '@mui/material/Box';
-import Stack from '@mui/material/Stack';
-import { styled } from '@mui/material/styles';
+import { Box, Button, Link, styled, Stack, Typography } from '@mui/material';
 
 const Item = styled(Button)(({ theme }) => ({
   backgroundColor:

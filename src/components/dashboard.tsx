@@ -1,4 +1,5 @@
 'use client';
+
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 
 const columns: GridColDef[] = [

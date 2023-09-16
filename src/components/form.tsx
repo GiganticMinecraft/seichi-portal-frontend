@@ -1,23 +1,25 @@
 'use client';
 
-import { Input } from '@material-ui/core';
 import { ArrowBack, ArrowForward } from '@mui/icons-material';
 import SendIcon from '@mui/icons-material/Send';
-import Alert from '@mui/material/Alert';
-import AlertTitle from '@mui/material/AlertTitle';
-import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import Checkbox from '@mui/material/Checkbox';
-import Divider from '@mui/material/Divider';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import FormGroup from '@mui/material/FormGroup';
-import Link from '@mui/material/Link';
-import MenuItem from '@mui/material/MenuItem';
-import Paper from '@mui/material/Paper';
-import Select from '@mui/material/Select';
-import Stack from '@mui/material/Stack';
-import { styled } from '@mui/material/styles';
-import Typography from '@mui/material/Typography';
+import {
+  styled,
+  Paper,
+  Input,
+  Select,
+  MenuItem,
+  FormGroup,
+  FormControlLabel,
+  Checkbox,
+  Box,
+  Alert,
+  AlertTitle,
+  Stack,
+  Divider,
+  Button,
+  Typography,
+} from '@mui/material';
+import Link from 'next/link';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { postAnswers } from '@/api/form';
