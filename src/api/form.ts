@@ -1,4 +1,4 @@
-import { Form, formSchema, formsSchema } from '@/schemas/formSchema';
+import { formSchema, formsSchema, type Form } from '@/schemas/formSchema';
 
 export async function getForms(): Promise<Form[]> {
   const response = await fetch('http://localhost:9000/forms', {

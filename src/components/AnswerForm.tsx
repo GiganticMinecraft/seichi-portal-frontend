@@ -23,8 +23,8 @@ import {
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { postAnswers } from '@/api/form';
-import { Form, FormQuestion } from '@/schemas/formSchema';
 import { Link } from './link';
+import type { Form, FormQuestion } from '@/schemas/formSchema';
 
 interface Props {
   form: Form;
