@@ -1,6 +1,7 @@
 'use client';
-
 import { DataGrid, type GridColDef } from '@mui/x-data-grid';
+import * as React from 'react';
+import { BatchAnswer } from '@/schemas/formSchema';
 
 const columns: GridColDef[] = [
   { field: 'category', headerName: '種別', width: 200 },
@@ -8,68 +9,34 @@ const columns: GridColDef[] = [
   { field: 'date', headerName: '日付', width: 130 },
 ];
 
-const rows = [
-  {
-    id: 1,
-    category: 'お問い合わせ',
-    title: 'なんやかんや',
-    date: '2023-03-23',
-  },
-  {
-    id: 2,
-    category: 'お問い合わせ',
-    title: 'なんやかんや',
-    date: '2023-03-23',
-  },
-  {
-    id: 3,
-    category: 'お問い合わせ',
-    title: 'なんやかんや',
-    date: '2023-03-23',
-  },
-  {
-    id: 4,
-    category: 'お問い合わせ',
-    title: 'なんやかんや',
-    date: '2023-03-23',
-  },
-  {
-    id: 5,
-    category: 'お問い合わせ',
-    title: 'なんやかんや',
-    date: '2023-03-23',
-  },
-  {
-    id: 6,
-    category: 'お問い合わせ',
-    title: 'なんやかんや',
-    date: '2023-03-23',
-  },
-  {
-    id: 7,
-    category: 'お問い合わせ',
-    title: 'なんやかんや',
-    date: '2023-03-23',
-  },
-  {
-    id: 8,
-    category: 'お問い合わせ',
-    title: 'なんやかんや',
-    date: '2023-03-23',
-  },
-  {
-    id: 9,
-    category: 'お問い合わせ',
-    title: 'なんやかんや',
-    date: '2023-03-23',
-  },
-];
+interface Answers {
+  answers: BatchAnswer[];
+}
 
-export default function DataTable() {
+interface Row {
+  id: number;
+  category: string;
+  title: string;
+  date: string;
+}
+
+function prepareRows(answers: Answers) {
+  return answers.answers.map((answer, index) => {
+    const row: Row = {
+      id: index,
+      category: 'unknown category',
+      title: answer.title,
+      date: answer.timestamp,
+    };
+    return row;
+  });
+}
+
+export default function DataTable(answers: Answers) {
   return (
     <div style={{ height: 400, width: '100%' }}>
       <DataGrid
-        rows={rows}
+        rows={prepareRows(answers)}
         columns={columns}
         initialState={{
           pagination: {

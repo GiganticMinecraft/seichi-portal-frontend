@@ -1,4 +1,10 @@
-import { formSchema, formsSchema, type Form } from '@/schemas/formSchema';
+import {
+  BatchAnswer,
+  Form,
+  batchAnswersSchema,
+  formSchema,
+  formsSchema,
+} from '@/schemas/formSchema';
 
 export async function getForms(): Promise<Form[]> {
   const response = await fetch('http://localhost:9000/forms', {
@@ -48,6 +54,15 @@ export async function postAnswers(
   return response.ok;
 }
 
-export async function getAnswers(): Promise<undefined> {
-  return undefined;
+export async function getAllAnswers(): Promise<BatchAnswer[]> {
+  return await fetch(`http://localhost:9000/forms/answers`, {
+    method: 'GET',
+    headers: {
+      Accept: 'application/json',
+    },
+    cache: 'no-cache',
+  }).then(async (response) => {
+    const batchAnswersJson = await response.json();
+    return batchAnswersSchema.parse(batchAnswersJson);
+  });
 }

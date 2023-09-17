@@ -35,6 +35,23 @@ export const formSchema = z.object({
 
 export const formsSchema = z.array(formSchema);
 
+export const answerSchema = z.object({
+  question_id: z.number(),
+  answer: z.string(),
+});
+
+export const batchAnswerSchema = z.object({
+  uuid: z.string(),
+  timestamp: z.string().datetime(),
+  title: z.string(),
+  form_id: z.number(),
+  answers: z.array(answerSchema),
+});
+
+export const batchAnswersSchema = z.array(batchAnswerSchema);
+
+export type BatchAnswer = z.infer<typeof batchAnswerSchema>;
+
 export type Form = z.infer<typeof formSchema>;
 
 export type FormQuestion = z.infer<typeof questionSchema>;
