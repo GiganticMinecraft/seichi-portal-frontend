@@ -21,10 +21,7 @@ extend(timezone);
 extend(utc);
 dayjs.tz.setDefault('Asia/Tokyo');
 
-function formResponsePeriodToString(
-  startAt: string | null,
-  endAt: string | null
-) {
+function formatResponsePeriod(startAt: string | null, endAt: string | null) {
   if (startAt != null && endAt != null) {
     const formatString = 'YYYY年MM月DD日 HH時mm分';
 
@@ -51,7 +48,7 @@ function EachForm({ form }: { form: Form }) {
             {form.title}
           </Typography>
           <Typography color="text.secondary">
-            {formResponsePeriodToString(
+            {formatResponsePeriod(
               form.settings.response_period.start_at,
               form.settings.response_period.end_at
             )}
