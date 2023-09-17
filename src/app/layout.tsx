@@ -4,6 +4,7 @@ import NavBar from '@/components/NavBar';
 import styles from './page.module.css';
 import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
+import { MsalProvider } from '@/components/MsalProvider';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -17,8 +18,10 @@ export default function RootLayout({ children }: { children: ReactNode }) {
     <html lang="ja">
       <body className={inter.className}>
         <main className={styles['main']}>
-          <NavBar />
-          {children}
+          <MsalProvider>
+            <NavBar />
+            {children}
+          </MsalProvider>
         </main>
       </body>
     </html>
