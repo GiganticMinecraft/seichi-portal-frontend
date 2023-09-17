@@ -1,7 +1,7 @@
 import { getForms } from '@/api/form';
-import Forms from '@/components/forms';
+import FormList from '@/components/FormList';
 
 export default async function Home() {
   const forms = await getForms();
-  return <Forms forms={forms} />;
+  return <FormList forms={forms} />;
 }

@@ -79,7 +79,7 @@ interface Props {
   forms: Form[];
 }
 
-export default function Forms({ forms }: Props) {
+export default function FormList({ forms }: Props) {
   return (
     <Box sx={{ width: '100%' }}>
       <Stack spacing={2}>

@@ -8,7 +8,7 @@ import {
   Button,
 } from '@mui/material';
 
-export default function ButtonAppBar() {
+export default function NavBar() {
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="fixed">

@@ -1,8 +1,8 @@
 import { getForm } from '@/api/form';
-import Questions from '@/components/form';
+import AnswerForm from '@/components/AnswerForm';
 
 export default async function Home({ params }: { params: { formId: number } }) {
   const form = await getForm(params.formId);
 
-  return <Questions form={form} />;
+  return <AnswerForm form={form} />;
 }

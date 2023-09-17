@@ -45,7 +45,7 @@ const Item = styled(Paper)(({ theme }) => ({
   width: '100%',
 }));
 
-export default function Questions({ form }: Props) {
+export default function AnswerForm({ form }: Props) {
   const [isSubmitted, toggleIsSubmitted] = useState(false);
   const [selectedValues, setSelectedValues] = useState<{ [x: string]: string }>(
     {}

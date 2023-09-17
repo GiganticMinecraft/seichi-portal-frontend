@@ -1,6 +1,6 @@
 import './globals.css';
 import { Inter } from 'next/font/google';
-import ButtonAppBar from '@/components/buttonAppBar';
+import NavBar from '@/components/NavBar';
 import styles from './page.module.css';
 import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
@@ -17,7 +17,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
     <html lang="ja">
       <body className={inter.className}>
         <main className={styles['main']}>
-          <ButtonAppBar />
+          <NavBar />
           {children}
         </main>
       </body>
