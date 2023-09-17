@@ -3,7 +3,7 @@ import { z } from 'zod';
 const questionSchema = z.object({
   id: z.number(),
   title: z.string(),
-  description: z.string(),
+  description: z.string().nullable(),
   question_type: z.enum(['TEXT', 'SINGLE', 'MULTIPLE']),
   choices: z.array(z.string()),
   is_required: z.boolean(),
@@ -27,7 +27,7 @@ const settingsSchema = z.object({
 export const formSchema = z.object({
   id: z.number(),
   title: z.string(),
-  description: z.string(),
+  description: z.string().nullable(),
   settings: settingsSchema,
   metadata: metadataSchema,
   questions: questionSchema.array(),

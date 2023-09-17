@@ -1,27 +1,27 @@
 'use client';
 
-import * as React from 'react';
-import Box from '@mui/material/Box';
-import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
-import Typography from '@mui/material/Typography';
-import Paper from '@mui/material/Paper';
-import Stack from '@mui/material/Stack';
-import { styled } from '@mui/material/styles';
-import { Form } from '@/schemas/formSchema';
-import dayjs from 'dayjs';
-import utc from 'dayjs/plugin/utc';
+import {
+  Box,
+  Card,
+  CardContent,
+  Typography,
+  styled,
+  Paper,
+  Stack,
+  Alert,
+  AlertTitle,
+} from '@mui/material';
+import dayjs, { extend } from 'dayjs';
 import timezone from 'dayjs/plugin/timezone';
-import Link from 'next/link';
+import utc from 'dayjs/plugin/utc';
+import { Link } from './link';
+import type { Form } from '@/schemas/formSchema';
 
-dayjs.extend(timezone);
-dayjs.extend(utc);
+extend(timezone);
+extend(utc);
 dayjs.tz.setDefault('Asia/Tokyo');
 
-function formResponsePeriodToString(
-  startAt: string | null,
-  endAt: string | null
-) {
+function formatResponsePeriod(startAt: string | null, endAt: string | null) {
   if (startAt != null && endAt != null) {
     const formatString = 'YYYY年MM月DD日 HH時mm分';
 
@@ -39,7 +39,7 @@ function formResponsePeriodToString(
   }
 }
 
-function OutlinedCard({ form }: { form: Form }) {
+function EachForm({ form }: { form: Form }) {
   return (
     <Box sx={{ minWidth: 275 }}>
       <Card variant="outlined">
@@ -47,13 +47,17 @@ function OutlinedCard({ form }: { form: Form }) {
           <Typography variant="h5" component="div">
             {form.title}
           </Typography>
-          <Typography sx={{ mb: 1.5 }} color="text.secondary">
-            {formResponsePeriodToString(
+          <Typography color="text.secondary">
+            {formatResponsePeriod(
               form.settings.response_period.start_at,
               form.settings.response_period.end_at
             )}
           </Typography>
-          <Typography variant="body2">{form.description}</Typography>
+          {form.description && (
+            <Typography sx={{ marginTop: 1.5 }} variant="body2">
+              {form.description}
+            </Typography>
+          )}
         </CardContent>
       </Card>
     </Box>
@@ -72,19 +76,26 @@ interface Props {
   forms: Form[];
 }
 
-export default function Forms({ forms }: Props) {
+export default function FormList({ forms }: Props) {
   return (
     <Box sx={{ width: '100%' }}>
       <Stack spacing={2}>
-        {forms.map((form, index) => {
-          return (
-            <Link href={`/forms/${form.id}`} key={index}>
-              <Item>
-                <OutlinedCard form={form} />
-              </Item>
-            </Link>
-          );
-        })}
+        {forms.length === 0 ? (
+          <Alert severity="warning">
+            <AlertTitle>フォームがありません</AlertTitle>
+            現在回答可能なフォームがありません
+          </Alert>
+        ) : (
+          forms.map((form) => {
+            return (
+              <Link href={`/forms/${form.id}`} key={form.id}>
+                <Item>
+                  <EachForm form={form} />
+                </Item>
+              </Link>
+            );
+          })
+        )}
       </Stack>
     </Box>
   );

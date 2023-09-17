@@ -1,6 +1,6 @@
 'use client';
-import * as React from 'react';
-import { DataGrid, GridColDef } from '@mui/x-data-grid';
+
+import { DataGrid, type GridColDef } from '@mui/x-data-grid';
 
 const columns: GridColDef[] = [
   { field: 'category', headerName: '種別', width: 200 },
