@@ -8,8 +8,8 @@
     "start": "next start",
     "lint": "next lint",
     "lint:fix": "next lint --fix",
-    "fmt": "prettier --check --loglevel=warn './**/*.{ts,tsx,css}'",
-    "fmt:fix": "prettier --write --loglevel=warn './**/*.{ts,tsx,css}'"
+    "fmt": "prettier --check --log-level=warn './**/*.{ts,tsx,css}'",
+    "fmt:fix": "prettier --write --log-level=warn './**/*.{ts,tsx,css}'"
   },
   "dependencies": {
     "@emotion/react": "^11.11.1",
