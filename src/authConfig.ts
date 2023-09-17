@@ -1,6 +1,5 @@
-import { Configuration } from '@azure/msal-browser';
-
 import { MS_APP_CLIENT_ID, MS_APP_REDIRECT_URL } from '@/env';
+import type { Configuration } from '@azure/msal-browser';
 
 export const msalConfig: Configuration = {
   auth: {
