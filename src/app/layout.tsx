@@ -1,10 +1,10 @@
 import './globals.css';
 import { Inter } from 'next/font/google';
+import { MsalProvider } from '@/components/MsalProvider';
 import NavBar from '@/components/NavBar';
 import styles from './page.module.css';
 import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
-import { MsalProvider } from '@/components/MsalProvider';
 
 const inter = Inter({ subsets: ['latin'] });
 
