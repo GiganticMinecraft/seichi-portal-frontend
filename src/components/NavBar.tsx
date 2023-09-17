@@ -7,6 +7,7 @@ import {
   Typography,
   Button,
 } from '@mui/material';
+import { Link } from './link';
 
 export default function NavBar() {
   return (
@@ -23,7 +24,9 @@ export default function NavBar() {
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            Seichi Portal
+            <Link href="/" color="#fff">
+              Seichi Portal
+            </Link>
           </Typography>
           <Button color="inherit">Login</Button>
         </Toolbar>
