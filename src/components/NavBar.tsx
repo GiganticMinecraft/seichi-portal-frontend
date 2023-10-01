@@ -1,13 +1,8 @@
 import MenuIcon from '@mui/icons-material/Menu';
-import {
-  Box,
-  AppBar,
-  Toolbar,
-  IconButton,
-  Typography,
-  Button,
-} from '@mui/material';
+import { Box, AppBar, Toolbar, IconButton, Typography } from '@mui/material';
 import { Link } from './link';
+import { SigninButton } from './SigninButton';
+import { SignoutButton } from './SignoutButton';
 
 export default function NavBar() {
   return (
@@ -28,7 +23,8 @@ export default function NavBar() {
               Seichi Portal
             </Link>
           </Typography>
-          <Button color="inherit">Login</Button>
+          <SigninButton />
+          <SignoutButton />
         </Toolbar>
       </AppBar>
     </Box>
