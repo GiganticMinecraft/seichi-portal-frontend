@@ -13901,9 +13901,9 @@ opener@^1.5.1:
   integrity sha512-ur5UIdyw5Y7yEj9wLzhqXiy6GZ3Mwx0yGI+5sMn2r0N0v3cKJvUmFH5yPP+WXh9e0xfyzyJX95D8l088DNFj7A==
 
 option-t@^38.0.0:
-  version "38.0.9"
-  resolved "https://registry.npmjs.org/option-t/-/option-t-38.0.9.tgz#841a145ef767b06cf87dd95013d7868406284480"
-  integrity sha512-EOthbLbuKiYm+frro8a6e7nFzYUbohtIt8W6qde3Jg/3gP4nZbgJ+CPF06PdUNvaBSOeeyY+k+SxhpdmNRqc2Q==
+  version "38.0.10"
+  resolved "https://registry.npmjs.org/option-t/-/option-t-38.0.10.tgz#e702ba470bced87c3b0d26f5b2bdb33edf91df2e"
+  integrity sha512-YNpPLpENM5HnN6aH6zbS0KGflvEEEyDOJ6ki4LkL6JoR3pyG55f9GYhnoZ2l7u5xiaX9CoBhmgjShMgzBfoNwg==
 
 optionator@^0.9.1:
   version "0.9.1"
