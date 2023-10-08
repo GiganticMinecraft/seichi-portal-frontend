@@ -8,6 +8,7 @@ import {
   acquireMinecraftProfile,
   acquireXboxLiveToken,
   acquireXboxServiceSecurityToken,
+  sendJsonToBackend,
 } from '@/api/login';
 import { loginRequest } from '@/authConfig';
 
@@ -26,6 +27,8 @@ export const SigninButton = () => {
       const xstsToken = await acquireXboxServiceSecurityToken(xblToken);
       const mcAccessToken = await acquireMinecraftAccessToken(xstsToken);
       const profile = await acquireMinecraftProfile(mcAccessToken);
+
+      await sendJsonToBackend(mcAccessToken);
 
       console.log(profile);
     });
