@@ -2,6 +2,7 @@
 
 import {
   minecraftAccessTokenResponseSchema,
+  minecraftProfileResponseSchema,
   xboxLiveServiceTokenResponseSchema,
 } from '@/schemas/loginSchema';
 
@@ -77,4 +78,22 @@ export const acquireMinecraftAccessToken = async ({
   const result = minecraftAccessTokenResponseSchema.parse(json);
 
   return { token: result.access_token };
+};
+
+export const acquireMinecraftProfile = async ({
+  token,
+}: Awaited<ReturnType<typeof acquireMinecraftAccessToken>>) => {
+  const URL = 'https://api.minecraftservices.com/minecraft/profile';
+
+  const json = await fetch(URL, {
+    method: 'GET',
+    headers: {
+      Accept: 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+  }).then(async (r) => r.json());
+
+  const result = minecraftProfileResponseSchema.parse(json);
+
+  return result;
 };

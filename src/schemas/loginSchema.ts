@@ -10,3 +10,8 @@ export const xboxLiveServiceTokenResponseSchema = z.object({
 export const minecraftAccessTokenResponseSchema = z.object({
   access_token: z.string(),
 });
+
+export const minecraftProfileResponseSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+});

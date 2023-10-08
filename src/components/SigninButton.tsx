@@ -5,6 +5,7 @@ import { Button } from '@mui/material';
 import { useTransition } from 'react';
 import {
   acquireMinecraftAccessToken,
+  acquireMinecraftProfile,
   acquireXboxLiveToken,
   acquireXboxServiceSecurityToken,
 } from '@/api/login';
@@ -24,6 +25,7 @@ export const SigninButton = () => {
       acquireXboxLiveToken(token)
         .then(acquireXboxServiceSecurityToken)
         .then(acquireMinecraftAccessToken)
+        .then(acquireMinecraftProfile)
         .then(console.log)
     );
   };
