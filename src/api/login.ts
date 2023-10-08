@@ -24,3 +24,29 @@ export const acquireXboxLiveToken = async (token: string) => {
 
   return { token: result.Token, userHash: result.DisplayClaims.xui[0].uhs };
 };
+
+export const acquireXboxServiceSecurityToken = async ({
+  token,
+}: Awaited<ReturnType<typeof acquireXboxLiveToken>>) => {
+  const URL = 'https://xsts.auth.xboxlive.com/xsts/authorize';
+
+  const json = await fetch(URL, {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      Properties: {
+        SandboxId: 'RETAIL',
+        UserTokens: [token],
+      },
+      RelyingParty: 'rp://api.minecraftservices.com/',
+      TokenType: 'JWT',
+    }),
+  }).then(async (r) => r.json());
+
+  const result = xboxLiveServiceTokenResponseSchema.parse(json);
+
+  return { token: result.Token, userHash: result.DisplayClaims.xui[0].uhs };
+};
