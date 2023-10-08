@@ -6,7 +6,7 @@ import {
   formsSchema,
 } from '@/schemas/formSchema';
 
-export async function getForms(): Promise<Form[]> {
+export const getForms = async () => {
   const response = await fetch('http://localhost:9000/forms', {
     method: 'GET',
     headers: {
@@ -17,7 +17,7 @@ export async function getForms(): Promise<Form[]> {
   const formsJson = await response.json();
 
   return formsSchema.parse(formsJson);
-}
+};
 
 export async function getForm(formId: number): Promise<Form> {
   const response = await fetch(`http://localhost:9000/forms/${formId}`, {
