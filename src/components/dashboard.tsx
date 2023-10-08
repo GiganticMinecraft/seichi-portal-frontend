@@ -1,7 +1,7 @@
 'use client';
 import { DataGrid, type GridColDef } from '@mui/x-data-grid';
 import * as React from 'react';
-import { BatchAnswer } from '@/schemas/formSchema';
+import type { BatchAnswer } from '@/schemas/formSchema';
 
 const columns: GridColDef[] = [
   { field: 'category', headerName: '種別', width: 200 },
