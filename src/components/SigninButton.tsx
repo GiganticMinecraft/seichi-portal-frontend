@@ -4,6 +4,7 @@ import { useMsal } from '@azure/msal-react';
 import { Button } from '@mui/material';
 import { useTransition } from 'react';
 import {
+  acquireMinecraftAccessToken,
   acquireXboxLiveToken,
   acquireXboxServiceSecurityToken,
 } from '@/api/login';
@@ -22,6 +23,7 @@ export const SigninButton = () => {
     startTransition(async () =>
       acquireXboxLiveToken(token)
         .then(acquireXboxServiceSecurityToken)
+        .then(acquireMinecraftAccessToken)
         .then(console.log)
     );
   };
