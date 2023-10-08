@@ -3,7 +3,10 @@
 import { useMsal } from '@azure/msal-react';
 import { Button } from '@mui/material';
 import { useTransition } from 'react';
-import { acquireXboxLiveToken } from '@/api/login';
+import {
+  acquireXboxLiveToken,
+  acquireXboxServiceSecurityToken,
+} from '@/api/login';
 import { loginRequest } from '@/authConfig';
 
 export const SigninButton = () => {
@@ -16,7 +19,11 @@ export const SigninButton = () => {
       .acquireTokenSilent(loginRequest)
       .catch(async () => instance.acquireTokenPopup(loginRequest))
       .then((r) => r.accessToken);
-    startTransition(async () => acquireXboxLiveToken(token).then(console.log));
+    startTransition(async () =>
+      acquireXboxLiveToken(token)
+        .then(acquireXboxServiceSecurityToken)
+        .then(console.log)
+    );
   };
 
   return (
