@@ -12,7 +12,7 @@
     "fmt:fix": "prettier --write --log-level=warn './**/*.{ts,tsx,css}'"
   },
   "dependencies": {
-    "@azure/msal-browser": "^3.1.0",
+    "@azure/msal-browser": "^3.2.0",
     "@azure/msal-react": "^2.0.3",
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
