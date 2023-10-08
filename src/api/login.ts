@@ -1,4 +1,4 @@
-import { xboxLiveTokenResponseJsonSchema } from '@/schemas/loginSchema';
+import { xboxLiveServiceTokenResponseSchema } from '@/schemas/loginSchema';
 
 export const acquireXboxLiveToken = async (token: string) => {
   const URL = 'https://user.auth.xboxlive.com/user/authenticate';
@@ -20,7 +20,7 @@ export const acquireXboxLiveToken = async (token: string) => {
     }),
   }).then(async (r) => r.json());
 
-  const result = xboxLiveTokenResponseJsonSchema.parse(json);
+  const result = xboxLiveServiceTokenResponseSchema.parse(json);
 
   return { token: result.Token, userHash: result.DisplayClaims.xui[0].uhs };
 };
