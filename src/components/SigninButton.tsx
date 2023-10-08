@@ -21,13 +21,14 @@ export const SigninButton = () => {
       .acquireTokenSilent(loginRequest)
       .catch(async () => instance.acquireTokenPopup(loginRequest))
       .then((r) => r.accessToken);
-    startTransition(async () =>
-      acquireXboxLiveToken(token)
-        .then(acquireXboxServiceSecurityToken)
-        .then(acquireMinecraftAccessToken)
-        .then(acquireMinecraftProfile)
-        .then(console.log)
-    );
+    startTransition(async () => {
+      const xblToken = await acquireXboxLiveToken(token);
+      const xstsToken = await acquireXboxServiceSecurityToken(xblToken);
+      const mcAccessToken = await acquireMinecraftAccessToken(xstsToken);
+      const profile = await acquireMinecraftProfile(mcAccessToken);
+
+      console.log(profile);
+    });
   };
 
   return (
