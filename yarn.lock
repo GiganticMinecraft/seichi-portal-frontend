@@ -550,12 +550,25 @@
   resolved "https://registry.yarnpkg.com/@tsconfig/strictest/-/strictest-2.0.2.tgz#97167bf99c03d0a010d9946ae8a702c4f62e2783"
   integrity sha512-jt4jIsWKvUvuY6adJnQJlb/UR7DdjC8CjHI/OaSQruj2yX9/K6+KOvDt/vD6udqos/FUk5Op66CvYT7TBLYO5Q==
 
-"@types/estree@^1.0.0":
+"@types/eslint-config-prettier@^6.11.1":
+  version "6.11.1"
+  resolved "https://registry.yarnpkg.com/@types/eslint-config-prettier/-/eslint-config-prettier-6.11.1.tgz#e4583156ac6db578ed43bf074ef5c3d641562fe3"
+  integrity sha512-7jQDjrJWXj9DsfmSDpMk9paFh5TQ4qPxl9rYUTLvGLglr/xrxmyVMVxb1gs/7y9HQzRI5EPvnQ9yumwy83H3fg==
+
+"@types/eslint@8.44.3":
+  version "8.44.3"
+  resolved "https://registry.yarnpkg.com/@types/eslint/-/eslint-8.44.3.tgz#96614fae4875ea6328f56de38666f582d911d962"
+  integrity sha512-iM/WfkwAhwmPff3wZuPLYiHX18HI24jU8k1ZSH7P8FHwxTjZ2P6CoX2wnF43oprR+YXJM6UUxATkNvyv/JHd+g==
+  dependencies:
+    "@types/estree" "*"
+    "@types/json-schema" "*"
+
+"@types/estree@*", "@types/estree@^1.0.0":
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/@types/estree/-/estree-1.0.2.tgz#ff02bc3dc8317cd668dfec247b750ba1f1d62453"
   integrity sha512-VeiPZ9MMwXjO32/Xu7+OwflfmeoRwkE/qzndw42gGtgJwZopBnzy2gD//NN1+go1mADzkDcqf/KnFRSjTJ8xJA==
 
-"@types/json-schema@^7.0.12":
+"@types/json-schema@*", "@types/json-schema@^7.0.12":
   version "7.0.13"
   resolved "https://registry.yarnpkg.com/@types/json-schema/-/json-schema-7.0.13.tgz#02c24f4363176d2d18fc8b70b9f3c54aba178a85"
   integrity sha512-RbSSoHliUbnXj3ny0CNFOoxrIDV6SUGyStHsvDqosw6CkdPV8TtWGlfecuK4ToyMEAql6pzNxgCFKanovUzlgQ==
