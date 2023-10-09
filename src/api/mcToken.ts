@@ -5,13 +5,13 @@ import type { acquireMinecraftAccessToken } from './login';
 
 const KEY = 'TOKEN';
 
-export const getTokenFromCookie = () => {
+export const getCachedToken = () => {
   const store = cookies();
 
   return store.get(KEY)?.value;
 };
 
-export const saveTokenWithCookie = ({
+export const saveTokenToCache = ({
   token,
   expires,
 }: Awaited<ReturnType<typeof acquireMinecraftAccessToken>>) => {
@@ -24,7 +24,7 @@ export const saveTokenWithCookie = ({
   });
 };
 
-export const clearTokenFromCookie = () => {
+export const clearCachedToken = () => {
   const store = cookies();
 
   store.delete(KEY);
