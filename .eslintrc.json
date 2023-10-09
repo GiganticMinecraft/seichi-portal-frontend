@@ -1,6 +1,6 @@
 {
   "extends": ["next/core-web-vitals", "plugin:@typescript-eslint/recommended-type-checked", "plugin:import/recommended", "plugin:import/typescript", "prettier"],
-  "plugins": ["@typescript-eslint", "unused-imports"],
+  "plugins": ["@typescript-eslint", "unused-imports", "prefer-arrow"],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
     "ecmaVersion": "latest",
@@ -8,7 +8,9 @@
     "sourceType": "module"
   },
   "rules": {
+    "react/function-component-definition": ["error", { "namedComponents": "arrow-function" }],
     "@typescript-eslint/no-unused-vars": "off",
+    "prefer-arrow/prefer-arrow-functions": "error",
 		"unused-imports/no-unused-imports": "error",
 		"unused-imports/no-unused-vars": [
 			"error",
