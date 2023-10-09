@@ -77,7 +77,7 @@ export const acquireMinecraftAccessToken = async ({
 
   const result = minecraftAccessTokenResponseSchema.parse(json);
 
-  return { token: result.access_token };
+  return { token: result.access_token, expires: result.expires_in };
 };
 
 export const acquireMinecraftProfile = async ({
