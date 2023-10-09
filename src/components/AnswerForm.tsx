@@ -124,7 +124,7 @@ export default function AnswerForm({ form }: Props) {
             onChange={(event) => {
               setSelectedValues({
                 ...selectedValues,
-                [questionId]: event.target.value as string,
+                [questionId]: event.target.value ,
               });
             }}
             renderValue={() =>

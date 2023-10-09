@@ -16,9 +16,8 @@ export const getForms = async (token: string) => {
     },
     cache: 'no-cache',
   });
-  const formsJson = await response.json();
 
-  return formsSchema.parse(formsJson);
+  return formsSchema.parse(await response.json());
 };
 
 export async function getForm(formId: number, token: string): Promise<Form> {
@@ -30,9 +29,8 @@ export async function getForm(formId: number, token: string): Promise<Form> {
     },
     cache: 'no-cache',
   });
-  const formJson = await response.json();
 
-  return formSchema.parse(formJson);
+  return formSchema.parse(await response.json());
 }
 
 export async function postAnswers(
@@ -67,8 +65,5 @@ export async function getAllAnswers(token: string): Promise<BatchAnswer[]> {
       Authorization: `Bearer ${token}`,
     },
     cache: 'no-cache',
-  }).then(async (response) => {
-    const batchAnswersJson = await response.json();
-    return batchAnswersSchema.parse(batchAnswersJson);
-  });
+  }).then(async (response) => batchAnswersSchema.parse(await response.json()));
 }

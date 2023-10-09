@@ -9,7 +9,7 @@ import {
 export const acquireXboxLiveToken = async (token: string) => {
   const URL = 'https://user.auth.xboxlive.com/user/authenticate';
 
-  const json = await fetch(URL, {
+  const response = await fetch(URL, {
     method: 'POST',
     headers: {
       Accept: 'application/json',
@@ -24,9 +24,11 @@ export const acquireXboxLiveToken = async (token: string) => {
       RelyingParty: 'http://auth.xboxlive.com',
       TokenType: 'JWT',
     }),
-  }).then(async (r) => r.json());
+  });
 
-  const result = xboxLiveServiceTokenResponseSchema.parse(json);
+  const result = xboxLiveServiceTokenResponseSchema.parse(
+    await response.json()
+  );
 
   return { token: result.Token, userHash: result.DisplayClaims.xui[0].uhs };
 };
@@ -36,7 +38,7 @@ export const acquireXboxServiceSecurityToken = async ({
 }: Awaited<ReturnType<typeof acquireXboxLiveToken>>) => {
   const URL = 'https://xsts.auth.xboxlive.com/xsts/authorize';
 
-  const json = await fetch(URL, {
+  const response = await fetch(URL, {
     method: 'POST',
     headers: {
       Accept: 'application/json',
@@ -50,9 +52,11 @@ export const acquireXboxServiceSecurityToken = async ({
       RelyingParty: 'rp://api.minecraftservices.com/',
       TokenType: 'JWT',
     }),
-  }).then(async (r) => r.json());
+  });
 
-  const result = xboxLiveServiceTokenResponseSchema.parse(json);
+  const result = xboxLiveServiceTokenResponseSchema.parse(
+    await response.json()
+  );
 
   return { token: result.Token, userHash: result.DisplayClaims.xui[0].uhs };
 };
@@ -64,7 +68,7 @@ export const acquireMinecraftAccessToken = async ({
   const URL =
     'https://api.minecraftservices.com/authentication/login_with_xbox';
 
-  const json = await fetch(URL, {
+  const response = await fetch(URL, {
     method: 'POST',
     headers: {
       Accept: 'application/json',
@@ -73,9 +77,11 @@ export const acquireMinecraftAccessToken = async ({
     body: JSON.stringify({
       identityToken: `XBL3.0 x=${userHash};${token}`,
     }),
-  }).then(async (r) => r.json());
+  });
 
-  const result = minecraftAccessTokenResponseSchema.parse(json);
+  const result = minecraftAccessTokenResponseSchema.parse(
+    await response.json()
+  );
 
   return { token: result.access_token, expires: result.expires_in };
 };
@@ -85,15 +91,15 @@ export const acquireMinecraftProfile = async ({
 }: Awaited<ReturnType<typeof acquireMinecraftAccessToken>>) => {
   const URL = 'https://api.minecraftservices.com/minecraft/profile';
 
-  const json = await fetch(URL, {
+  const response = await fetch(URL, {
     method: 'GET',
     headers: {
       Accept: 'application/json',
       Authorization: `Bearer ${token}`,
     },
-  }).then(async (r) => r.json());
+  });
 
-  const result = minecraftProfileResponseSchema.parse(json);
+  const result = minecraftProfileResponseSchema.parse(await response.json());
 
   return result;
 };
