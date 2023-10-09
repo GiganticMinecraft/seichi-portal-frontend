@@ -1,7 +1,10 @@
 import './globals.css';
 import { Inter } from 'next/font/google';
+import { AuthenticatedTemplate } from '@/components/AuthenticatedTemplate';
 import { MsalProvider } from '@/components/MsalProvider';
 import NavBar from '@/components/NavBar';
+import { NeedToSignin } from '@/components/NeedToSignin';
+import { UnauthenticatedTemplate } from '@/components/UnauthenticatedTemplate';
 import styles from './page.module.css';
 import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
@@ -20,7 +23,10 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         <main className={styles['main']}>
           <MsalProvider>
             <NavBar />
-            {children}
+            <AuthenticatedTemplate>{children}</AuthenticatedTemplate>
+            <UnauthenticatedTemplate>
+              <NeedToSignin />
+            </UnauthenticatedTemplate>
           </MsalProvider>
         </main>
       </body>

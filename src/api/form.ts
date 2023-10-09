@@ -1,3 +1,5 @@
+'use server';
+
 import {
   batchAnswersSchema,
   formSchema,
@@ -5,11 +7,12 @@ import {
 } from '@/schemas/formSchema';
 import type { BatchAnswer, Form } from '@/schemas/formSchema';
 
-export const getForms = async () => {
+export const getForms = async (token: string) => {
   const response = await fetch('http://localhost:9000/forms', {
     method: 'GET',
     headers: {
       Accept: 'application/json',
+      Authorization: `Bearer ${token}`,
     },
     cache: 'no-cache',
   });
@@ -18,11 +21,12 @@ export const getForms = async () => {
   return formsSchema.parse(formsJson);
 };
 
-export async function getForm(formId: number): Promise<Form> {
+export async function getForm(formId: number, token: string): Promise<Form> {
   const response = await fetch(`http://localhost:9000/forms/${formId}`, {
     method: 'GET',
     headers: {
       Accept: 'application/json',
+      Authorization: `Bearer ${token}`,
     },
     cache: 'no-cache',
   });
@@ -33,7 +37,8 @@ export async function getForm(formId: number): Promise<Form> {
 
 export async function postAnswers(
   form_id: number,
-  answers: { question_id: number; answer: string }[]
+  answers: { question_id: number; answer: string }[],
+  token: string
 ): Promise<boolean> {
   const answersJson = JSON.stringify({
     uuid: '3fa85f64-5717-4562-b3fc-2c963f66afa6', //todo: user側の処理を実装したら書き換える
@@ -45,6 +50,7 @@ export async function postAnswers(
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
     },
     body: answersJson,
     cache: 'no-cache',
@@ -53,11 +59,12 @@ export async function postAnswers(
   return response.ok;
 }
 
-export async function getAllAnswers(): Promise<BatchAnswer[]> {
+export async function getAllAnswers(token: string): Promise<BatchAnswer[]> {
   return await fetch(`http://localhost:9000/forms/answers`, {
     method: 'GET',
     headers: {
       Accept: 'application/json',
+      Authorization: `Bearer ${token}`,
     },
     cache: 'no-cache',
   }).then(async (response) => {

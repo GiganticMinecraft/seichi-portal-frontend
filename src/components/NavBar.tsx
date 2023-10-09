@@ -1,8 +1,10 @@
 import MenuIcon from '@mui/icons-material/Menu';
 import { Box, AppBar, Toolbar, IconButton, Typography } from '@mui/material';
+import { AuthenticatedTemplate } from './AuthenticatedTemplate';
 import { Link } from './link';
 import { SigninButton } from './SigninButton';
 import { SignoutButton } from './SignoutButton';
+import { UnauthenticatedTemplate } from './UnauthenticatedTemplate';
 
 export default function NavBar() {
   return (
@@ -23,8 +25,12 @@ export default function NavBar() {
               Seichi Portal
             </Link>
           </Typography>
-          <SigninButton />
-          <SignoutButton />
+          <AuthenticatedTemplate>
+            <SignoutButton />
+          </AuthenticatedTemplate>
+          <UnauthenticatedTemplate>
+            <SigninButton />
+          </UnauthenticatedTemplate>
         </Toolbar>
       </AppBar>
     </Box>

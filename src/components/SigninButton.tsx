@@ -5,10 +5,10 @@ import { Button } from '@mui/material';
 import { useTransition } from 'react';
 import {
   acquireMinecraftAccessToken,
-  acquireMinecraftProfile,
   acquireXboxLiveToken,
   acquireXboxServiceSecurityToken,
 } from '@/api/login';
+import { saveTokenToCache } from '@/api/mcToken';
 import { loginRequest } from '@/authConfig';
 
 export const SigninButton = () => {
@@ -25,9 +25,8 @@ export const SigninButton = () => {
       const xblToken = await acquireXboxLiveToken(token);
       const xstsToken = await acquireXboxServiceSecurityToken(xblToken);
       const mcAccessToken = await acquireMinecraftAccessToken(xstsToken);
-      const profile = await acquireMinecraftProfile(mcAccessToken);
 
-      console.log(profile);
+      saveTokenToCache(mcAccessToken);
     });
   };
 

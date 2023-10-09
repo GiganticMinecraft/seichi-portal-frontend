@@ -77,7 +77,7 @@ export const acquireMinecraftAccessToken = async ({
 
   const result = minecraftAccessTokenResponseSchema.parse(json);
 
-  return { token: result.access_token };
+  return { token: result.access_token, expires: result.expires_in };
 };
 
 export const acquireMinecraftProfile = async ({
@@ -96,4 +96,18 @@ export const acquireMinecraftProfile = async ({
   const result = minecraftProfileResponseSchema.parse(json);
 
   return result;
+};
+
+export const sendJsonToBackend = async ({
+  token,
+}: Awaited<ReturnType<typeof acquireMinecraftAccessToken>>) => {
+  const URL = 'http://localhost:9000/forms';
+
+  await fetch(URL, {
+    method: 'GET',
+    headers: {
+      Accept: 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+  });
 };
