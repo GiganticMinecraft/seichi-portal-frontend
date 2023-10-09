@@ -1,5 +1,6 @@
 import './globals.css';
 import { Inter } from 'next/font/google';
+import { AuthenticatedTemplate } from '@/components/AuthenticatedTemplate';
 import { MsalProvider } from '@/components/MsalProvider';
 import NavBar from '@/components/NavBar';
 import styles from './page.module.css';
@@ -20,7 +21,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         <main className={styles['main']}>
           <MsalProvider>
             <NavBar />
-            {children}
+            <AuthenticatedTemplate>{children}</AuthenticatedTemplate>
           </MsalProvider>
         </main>
       </body>
