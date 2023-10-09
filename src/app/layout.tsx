@@ -16,7 +16,7 @@ export const metadata: Metadata = {
   description: '整地鯖公式のポータルサイトです。',
 };
 
-export default function RootLayout({ children }: { children: ReactNode }) {
+const RootLayout = ({ children }: { children: ReactNode }) => {
   return (
     <html lang="ja">
       <body className={inter.className}>
@@ -32,4 +32,6 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       </body>
     </html>
   );
-}
+};
+
+export default RootLayout;

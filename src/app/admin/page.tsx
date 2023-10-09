@@ -5,7 +5,7 @@ import DashboardMenu from '@/components/dashboardMenu';
 import NavBar from '@/components/NavBar';
 import styles from '../page.module.css';
 
-export default async function Home() {
+const Home = async () => {
   const token = getCachedToken() ?? '';
   const answers = await getAllAnswers(token);
   return (
@@ -15,4 +15,6 @@ export default async function Home() {
       <DataTable answers={answers} />
     </main>
   );
-}
+};
+
+export default Home;

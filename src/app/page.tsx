@@ -1,5 +1,7 @@
 import Menu from '@/components/Menu';
 
-export default function Home() {
+const Home = () => {
   return <Menu />;
-}
+};
+
+export default Home;

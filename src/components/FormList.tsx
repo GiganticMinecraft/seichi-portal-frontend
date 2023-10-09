@@ -21,7 +21,7 @@ extend(timezone);
 extend(utc);
 dayjs.tz.setDefault('Asia/Tokyo');
 
-function formatResponsePeriod(startAt: string | null, endAt: string | null) {
+const formatResponsePeriod = (startAt: string | null, endAt: string | null) => {
   if (startAt != null && endAt != null) {
     const formatString = 'YYYY年MM月DD日 HH時mm分';
 
@@ -37,9 +37,9 @@ function formatResponsePeriod(startAt: string | null, endAt: string | null) {
   } else {
     return `回答期限なし`;
   }
-}
+};
 
-function EachForm({ form }: { form: Form }) {
+const EachForm = ({ form }: { form: Form }) => {
   return (
     <Box sx={{ minWidth: 275 }}>
       <Card variant="outlined">
@@ -62,7 +62,7 @@ function EachForm({ form }: { form: Form }) {
       </Card>
     </Box>
   );
-}
+};
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -76,7 +76,7 @@ interface Props {
   forms: Form[];
 }
 
-export default function FormList({ forms }: Props) {
+const FormList = ({ forms }: Props) => {
   return (
     <Box sx={{ width: '100%' }}>
       <Stack spacing={2}>
@@ -99,4 +99,6 @@ export default function FormList({ forms }: Props) {
       </Stack>
     </Box>
   );
-}
+};
+
+export default FormList;
