@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { getCachedToken } from './api/mcToken';
 import type { NextRequest } from 'next/server';
 
-export function middleware(request: NextRequest) {
+export const middleware = (request: NextRequest) => {
   if (request.method !== 'GET') {
     return;
   }
@@ -16,4 +16,4 @@ export function middleware(request: NextRequest) {
   }
 
   return NextResponse.redirect(new URL('/', request.url));
-}
+};

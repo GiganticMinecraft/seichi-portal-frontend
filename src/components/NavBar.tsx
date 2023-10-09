@@ -6,7 +6,7 @@ import { SigninButton } from './SigninButton';
 import { SignoutButton } from './SignoutButton';
 import { UnauthenticatedTemplate } from './UnauthenticatedTemplate';
 
-export default function NavBar() {
+const NavBar = () => {
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="fixed">
@@ -35,4 +35,6 @@ export default function NavBar() {
       </AppBar>
     </Box>
   );
-}
+};
+
+export default NavBar;

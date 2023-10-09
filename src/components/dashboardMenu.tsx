@@ -15,7 +15,7 @@ const Demo = styled('div')(({ theme }) => ({
   backgroundColor: theme.palette.background.paper,
 }));
 
-export default function DashboardMenu() {
+const DashboardMenu = () => {
   return (
     <Grid item xs={12} md={6}>
       <Typography sx={{ mt: 4, mb: 2 }} variant="h6" component="div">
@@ -37,4 +37,6 @@ export default function DashboardMenu() {
       </Demo>
     </Grid>
   );
-}
+};
+
+export default DashboardMenu;

@@ -23,6 +23,7 @@ import {
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { postAnswers } from '@/api/form';
+import { getCachedToken } from '@/api/mcToken';
 import { Link } from './link';
 import type { Form, FormQuestion } from '@/schemas/formSchema';
 
@@ -45,7 +46,7 @@ const Item = styled(Paper)(({ theme }) => ({
   width: '100%',
 }));
 
-export default function AnswerForm({ form }: Props) {
+const AnswerForm = ({ form }: Props) => {
   const [isSubmitted, toggleIsSubmitted] = useState(false);
   const [selectedValues, setSelectedValues] = useState<{ [x: string]: string }>(
     {}
@@ -63,7 +64,7 @@ export default function AnswerForm({ form }: Props) {
 
   const onSubmit = async (data: IFormInput) => {
     console.info(data);
-    const formAnswers = Object.entries(data).flatMap(function ([key, values]) {
+    const formAnswers = Object.entries(data).flatMap(([key, values]) => {
       // Note:
       // ここで型をstringかどうか判定しているのは、valuesに複数の値が入っていた場合にmapを使って
       // 一つのquestion_idとanswerに分離したいという理由がある。
@@ -92,7 +93,8 @@ export default function AnswerForm({ form }: Props) {
       }
     });
 
-    if (await postAnswers(form.id, formAnswers)) {
+    const token = getCachedToken() ?? '';
+    if (await postAnswers(form.id, formAnswers, token)) {
       toggleIsSubmitted(true);
       reset();
       setSelectedValues({});
@@ -124,7 +126,7 @@ export default function AnswerForm({ form }: Props) {
             onChange={(event) => {
               setSelectedValues({
                 ...selectedValues,
-                [questionId]: event.target.value ,
+                [questionId]: event.target.value,
               });
             }}
             renderValue={() =>
@@ -278,4 +280,6 @@ export default function AnswerForm({ form }: Props) {
       </Box>
     );
   }
-}
+};
+
+export default AnswerForm;

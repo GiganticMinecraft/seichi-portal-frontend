@@ -20,7 +20,7 @@ interface Row {
   date: string;
 }
 
-function prepareRows(answers: Answers) {
+const prepareRows = (answers: Answers) => {
   return answers.answers.map((answer, index) => {
     const row: Row = {
       id: index,
@@ -30,9 +30,9 @@ function prepareRows(answers: Answers) {
     };
     return row;
   });
-}
+};
 
-export default function DataTable(answers: Answers) {
+const DataTable = (answers: Answers) => {
   return (
     <div style={{ height: 400, width: '100%' }}>
       <DataGrid
@@ -52,4 +52,6 @@ export default function DataTable(answers: Answers) {
       />
     </div>
   );
-}
+};
+
+export default DataTable;

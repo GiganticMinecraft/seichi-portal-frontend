@@ -20,7 +20,7 @@ export const getForms = async (token: string) => {
   return formsSchema.parse(await response.json());
 };
 
-export async function getForm(formId: number, token: string): Promise<Form> {
+export const getForm = async (formId: number, token: string): Promise<Form> => {
   const response = await fetch(`http://localhost:9000/forms/${formId}`, {
     method: 'GET',
     headers: {
@@ -31,13 +31,13 @@ export async function getForm(formId: number, token: string): Promise<Form> {
   });
 
   return formSchema.parse(await response.json());
-}
+};
 
-export async function postAnswers(
+export const postAnswers = async (
   form_id: number,
   answers: { question_id: number; answer: string }[],
   token: string
-): Promise<boolean> {
+): Promise<boolean> => {
   const answersJson = JSON.stringify({
     uuid: '3fa85f64-5717-4562-b3fc-2c963f66afa6', //todo: user側の処理を実装したら書き換える
     timestamp: new Date(),
@@ -55,9 +55,9 @@ export async function postAnswers(
   });
 
   return response.ok;
-}
+};
 
-export async function getAllAnswers(token: string): Promise<BatchAnswer[]> {
+export const getAllAnswers = async (token: string): Promise<BatchAnswer[]> => {
   return await fetch(`http://localhost:9000/forms/answers`, {
     method: 'GET',
     headers: {
@@ -66,4 +66,4 @@ export async function getAllAnswers(token: string): Promise<BatchAnswer[]> {
     },
     cache: 'no-cache',
   }).then(async (response) => batchAnswersSchema.parse(await response.json()));
-}
+};
