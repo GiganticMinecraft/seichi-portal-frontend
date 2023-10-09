@@ -9,7 +9,6 @@
   },
   "rules": {
     "react/function-component-definition": ["error", { "namedComponents": "arrow-function" }],
-    "prefer-arrow/prefer-arrow-functions": "error",
 		"unused-imports/no-unused-imports": "error",
 		"unused-imports/no-unused-vars": [
 			"error",
