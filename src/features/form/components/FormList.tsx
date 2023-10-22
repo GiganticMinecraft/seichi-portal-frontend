@@ -14,7 +14,7 @@ import {
 import dayjs, { extend } from 'dayjs';
 import timezone from 'dayjs/plugin/timezone';
 import utc from 'dayjs/plugin/utc';
-import { Link } from '../../../components/Link';
+import { Link } from '@/components/Link';
 import type { Form } from '../types/formSchema';
 
 extend(timezone);
