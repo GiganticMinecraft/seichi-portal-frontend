@@ -4,8 +4,8 @@ import {
   batchAnswersSchema,
   formSchema,
   formsSchema,
-} from '@/schemas/formSchema';
-import type { BatchAnswer, Form } from '@/schemas/formSchema';
+} from '../types/formSchema';
+import type { BatchAnswer, Form } from '../types/formSchema';
 
 export const getForms = async (token: string) => {
   const response = await fetch('http://localhost:9000/forms', {

@@ -19,13 +19,13 @@ import {
   Divider,
   Button,
   Typography,
+  Link,
 } from '@mui/material';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { getCachedToken } from '@/api/mcToken';
-import { Link } from '@/components/link';
+import { getCachedToken } from '@/features/user/api/mcToken';
 import { postAnswers } from '../api/form';
-import type { Form, FormQuestion } from '@/schemas/formSchema';
+import type { Form, FormQuestion } from '../types/formSchema';
 
 interface Props {
   form: Form;
