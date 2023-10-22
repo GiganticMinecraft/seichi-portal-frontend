@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getCachedToken } from './api/mcToken';
+import { getCachedToken } from '@/features/user/api/mcToken';
 import type { NextRequest } from 'next/server';
 
 export const middleware = (request: NextRequest) => {

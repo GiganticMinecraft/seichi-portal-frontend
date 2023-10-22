@@ -1,8 +1,8 @@
-import { getAllAnswers } from '@/api/form';
-import { getCachedToken } from '@/api/mcToken';
-import DataTable from '@/components/dashboard';
-import DashboardMenu from '@/components/dashboardMenu';
+import DataTable from '@/components/Dashboard';
+import DashboardMenu from '@/components/DashboardMenu';
 import NavBar from '@/components/NavBar';
+import { getAllAnswers } from '@/features/form/api/form';
+import { getCachedToken } from '@/features/user/api/mcToken';
 import styles from '../page.module.css';
 
 const Home = async () => {

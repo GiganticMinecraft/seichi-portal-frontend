@@ -3,13 +3,13 @@
 import { useMsal } from '@azure/msal-react';
 import { Button } from '@mui/material';
 import { useTransition } from 'react';
+import { loginRequest } from '@/authConfig';
 import {
   acquireMinecraftAccessToken,
   acquireXboxLiveToken,
   acquireXboxServiceSecurityToken,
-} from '@/api/login';
-import { saveTokenToCache } from '@/api/mcToken';
-import { loginRequest } from '@/authConfig';
+} from '../api/login';
+import { saveTokenToCache } from '../api/mcToken';
 
 export const SigninButton = () => {
   const { instance } = useMsal();

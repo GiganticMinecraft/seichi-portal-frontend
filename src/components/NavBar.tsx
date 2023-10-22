@@ -1,10 +1,10 @@
 import MenuIcon from '@mui/icons-material/Menu';
 import { Box, AppBar, Toolbar, IconButton, Typography } from '@mui/material';
-import { AuthenticatedTemplate } from './AuthenticatedTemplate';
-import { Link } from './link';
-import { SigninButton } from './SigninButton';
-import { SignoutButton } from './SignoutButton';
-import { UnauthenticatedTemplate } from './UnauthenticatedTemplate';
+import { Link } from './Link';
+import { AuthenticatedTemplate } from '../features/user/components/AuthenticatedTemplate';
+import { SigninButton } from '../features/user/components/SigninButton';
+import { SignoutButton } from '../features/user/components/SignoutButton';
+import { UnauthenticatedTemplate } from '../features/user/components/UnauthenticatedTemplate';
 
 const NavBar = () => {
   return (

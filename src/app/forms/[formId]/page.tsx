@@ -1,6 +1,6 @@
-import { getForm } from '@/api/form';
-import { getCachedToken } from '@/api/mcToken';
-import AnswerForm from '@/components/AnswerForm';
+import { getForm } from '@/features/form/api/form';
+import AnswerForm from '@/features/form/components/AnswerForm';
+import { getCachedToken } from '@/features/user/api/mcToken';
 
 const Home = async ({ params }: { params: { formId: number } }) => {
   const token = getCachedToken() ?? '';
