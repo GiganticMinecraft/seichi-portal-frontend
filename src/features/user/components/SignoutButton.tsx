@@ -3,7 +3,7 @@
 import { useMsal } from '@azure/msal-react';
 import { Button } from '@mui/material';
 import { useRouter } from 'next/navigation';
-import { clearCachedToken } from '@/api/mcToken';
+import { clearCachedToken } from '../api/mcToken';
 
 export const SignoutButton = () => {
   const { instance } = useMsal();

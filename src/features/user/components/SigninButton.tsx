@@ -7,9 +7,9 @@ import {
   acquireMinecraftAccessToken,
   acquireXboxLiveToken,
   acquireXboxServiceSecurityToken,
-} from '@/api/login';
-import { saveTokenToCache } from '@/api/mcToken';
-import { loginRequest } from '@/authConfig';
+} from '../api/login';
+import { saveTokenToCache } from '../api/mcToken';
+import { loginRequest } from '../const/authConfig';
 
 export const SigninButton = () => {
   const { instance } = useMsal();

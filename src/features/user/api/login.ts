@@ -1,10 +1,10 @@
 'use server';
 
 import {
+  xboxLiveServiceTokenResponseSchema,
   minecraftAccessTokenResponseSchema,
   minecraftProfileResponseSchema,
-  xboxLiveServiceTokenResponseSchema,
-} from '@/schemas/loginSchema';
+} from '../types/loginSchema';
 
 export const acquireXboxLiveToken = async (token: string) => {
   const URL = 'https://user.auth.xboxlive.com/user/authenticate';
