@@ -65,5 +65,7 @@ export const getAllAnswers = async (token: string): Promise<BatchAnswer[]> => {
       Authorization: `Bearer ${token}`,
     },
     cache: 'no-cache',
-  }).then(async (response) => batchAnswersSchema.parse(await response.json()));
+  });
+
+  return batchAnswersSchema.parse(await response.json());
 };
