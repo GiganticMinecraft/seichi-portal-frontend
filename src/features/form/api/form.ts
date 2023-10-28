@@ -5,7 +5,6 @@ import {
   formSchema,
   formsSchema,
 } from '../types/formSchema';
-import type { BatchAnswer, Form } from '../types/formSchema';
 
 export const getForms = async (token: string) => {
   const response = await fetch('http://localhost:9000/forms', {
@@ -20,7 +19,7 @@ export const getForms = async (token: string) => {
   return formsSchema.parse(await response.json());
 };
 
-export const getForm = async (formId: number, token: string): Promise<Form> => {
+export const getForm = async (formId: number, token: string) => {
   const response = await fetch(`http://localhost:9000/forms/${formId}`, {
     method: 'GET',
     headers: {
@@ -37,7 +36,7 @@ export const postAnswers = async (
   form_id: number,
   answers: { question_id: number; answer: string }[],
   token: string
-): Promise<boolean> => {
+) => {
   const answersJson = JSON.stringify({
     uuid: '3fa85f64-5717-4562-b3fc-2c963f66afa6', //todo: user側の処理を実装したら書き換える
     timestamp: new Date(),
@@ -57,8 +56,8 @@ export const postAnswers = async (
   return response.ok;
 };
 
-export const getAllAnswers = async (token: string): Promise<BatchAnswer[]> => {
-  return await fetch(`http://localhost:9000/forms/answers`, {
+export const getAllAnswers = async (token: string) => {
+  const response = await fetch(`http://localhost:9000/forms/answers`, {
     method: 'GET',
     headers: {
       Accept: 'application/json',
