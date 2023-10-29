@@ -12358,10 +12358,10 @@ joi@^17.3.0:
     "@sideway/formula" "^3.0.1"
     "@sideway/pinpoint" "^2.0.0"
 
-jose@^4.13.1:
-  version "4.14.6"
-  resolved "https://registry.npmjs.org/jose/-/jose-4.14.6.tgz#94dca1d04a0ad8c6bff0998cdb51220d473cc3af"
-  integrity sha512-EqJPEUlZD0/CSUMubKtMaYUOtWe91tZXTWMJZoKSbLk+KtdhNdcvppH8lA9XwVu2V4Ailvsj0GBZJ2ZwDjfesQ==
+jose@^5.0.0:
+  version "5.0.1"
+  resolved "https://registry.npmjs.org/jose/-/jose-5.0.1.tgz#a2f0bb241ecfe6ebf37ef435498a491918a1a0e0"
+  integrity sha512-gRVzy7s3RRdGbXmcTdlOswJOjhwPLx1ijIgAqLY6ktzFpOJxxYn4l0fC2vHaHHi4YBX/5FOL3aY+6W0cvQgpug==
 
 joycon@^3.1.1:
   version "3.1.1"
