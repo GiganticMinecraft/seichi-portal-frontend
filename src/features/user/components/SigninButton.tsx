@@ -1,8 +1,16 @@
 'use client';
 
 import { useMsal } from '@azure/msal-react';
-import { Button } from '@mui/material';
-import { useTransition } from 'react';
+import { LoadingButton } from '@mui/lab';
+import { Alert, Snackbar } from '@mui/material';
+import {
+  createErr,
+  createOk,
+  isErr,
+  unwrapErr,
+  unwrapOk,
+} from 'option-t/esm/PlainResult';
+import { useState, useTransition } from 'react';
 import {
   acquireMinecraftAccessToken,
   acquireXboxLiveToken,
@@ -13,26 +21,66 @@ import { loginRequest } from '../const/authConfig';
 
 export const SigninButton = () => {
   const { instance } = useMsal();
-  const [_isPending, startTransition] = useTransition();
+  const [isPending, startTransition] = useTransition();
+  const [error, setError] = useState<Error | undefined>(undefined);
 
-  const onClick = async () => {
-    await instance.initialize();
-    const token = await instance
-      .acquireTokenSilent(loginRequest)
-      .catch(async () => instance.acquireTokenPopup(loginRequest))
-      .then((r) => r.accessToken);
+  const onClick = () => {
+    setError(undefined);
+
     startTransition(async () => {
-      const xblToken = await acquireXboxLiveToken(token);
-      const xstsToken = await acquireXboxServiceSecurityToken(xblToken);
-      const mcAccessToken = await acquireMinecraftAccessToken(xstsToken);
+      await instance.initialize();
+      const token = await instance
+        .acquireTokenSilent(loginRequest)
+        .catch(async () => instance.acquireTokenPopup(loginRequest))
+        .then((r) => createOk(r.accessToken))
+        .catch((e: Error) => createErr(e));
+      if (isErr(token)) {
+        setError(unwrapErr(token));
+        return;
+      }
 
-      saveTokenToCache(mcAccessToken);
+      const xblToken = await acquireXboxLiveToken(unwrapOk(token));
+      if (isErr(xblToken)) {
+        setError(unwrapErr(xblToken));
+        return;
+      }
+      const xstsToken = await acquireXboxServiceSecurityToken(
+        unwrapOk(xblToken)
+      );
+      if (isErr(xstsToken)) {
+        setError(unwrapErr(xstsToken));
+        return;
+      }
+      const mcAccessToken = await acquireMinecraftAccessToken(
+        unwrapOk(xstsToken)
+      );
+      if (isErr(mcAccessToken)) {
+        setError(unwrapErr(mcAccessToken));
+        return;
+      }
+
+      saveTokenToCache(unwrapOk(mcAccessToken));
     });
   };
 
+  const handleClose = () => setError(undefined);
+
+  // TODO: エラーメッセージの表記を分類する
   return (
-    <Button color="inherit" onClick={onClick}>
-      サインイン
-    </Button>
+    <>
+      <LoadingButton color="inherit" loading={isPending} onClick={onClick}>
+        サインイン
+      </LoadingButton>
+      <Snackbar
+        open={!!error}
+        autoHideDuration={10 * 1000}
+        onClose={handleClose}
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+      >
+        <Alert severity="error">
+          サインイン中にエラーが発生しました。: ${error?.message}
+        </Alert>
+      </Snackbar>
+    </>
   );
 };

@@ -1,7 +1,6 @@
 'use server';
 
 import { cookies } from 'next/headers';
-import type { acquireMinecraftAccessToken } from './login';
 import type { RequestCookies } from 'next/dist/compiled/@edge-runtime/cookies';
 
 const KEY = 'SEICHI_PORTAL__MC_TOKEN';
@@ -15,7 +14,10 @@ export const getCachedToken = (cookie?: RequestCookies) => {
 export const saveTokenToCache = ({
   token,
   expires,
-}: Awaited<ReturnType<typeof acquireMinecraftAccessToken>>) => {
+}: {
+  token: string;
+  expires: number;
+}) => {
   const store = cookies();
 
   store.set(KEY, token, {
