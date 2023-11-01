@@ -29,6 +29,7 @@ import type { Form, FormQuestion } from '../types/formSchema';
 
 interface Props {
   form: Form;
+  questions: FormQuestion[];
 }
 
 type NonEmptyArray<T> = [T, ...T[]];
@@ -46,7 +47,7 @@ const Item = styled(Paper)(({ theme }) => ({
   width: '100%',
 }));
 
-const AnswerForm = ({ form }: Props) => {
+const AnswerForm = ({ form, questions }: Props) => {
   const [isSubmitted, toggleIsSubmitted] = useState(false);
   const [selectedValues, setSelectedValues] = useState<{ [x: string]: string }>(
     {}
@@ -63,7 +64,6 @@ const AnswerForm = ({ form }: Props) => {
   };
 
   const onSubmit = async (data: IFormInput) => {
-    console.info(data);
     const formAnswers = Object.entries(data).flatMap(([key, values]) => {
       // Note:
       // ここで型をstringかどうか判定しているのは、valuesに複数の値が入っていた場合にmapを使って
@@ -234,52 +234,62 @@ const AnswerForm = ({ form }: Props) => {
         </Stack>
       </Box>
     );
-  } else {
+  }
+
+  if (questions.length == 0) {
     return (
       <Box sx={{ width: '100%' }}>
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <Stack
-            spacing={4}
-            display={'flex'}
-            alignItems={'center'}
-            flexDirection={'column'}
-          >
-            {form.questions.map((question) => {
-              return (
-                <Item key={question.id}>
-                  <Box
-                    width="100%"
-                    padding="1rem"
-                    display={'flex'}
-                    alignItems={'center'}
-                    flexDirection={'column'}
-                  >
-                    <Typography variant="h5">
-                      {question.title}
-                      {question.is_required ? (
-                        <Typography display={'inline'} color={'red'}>
-                          {' *'}
-                        </Typography>
-                      ) : null}
-                    </Typography>
-                    {question.description && (
-                      <Typography color="text.secondary" marginBottom={1.5}>
-                        {question.description}
-                      </Typography>
-                    )}
-                    <Box width={'70%'}>{generateInputSpace(question)}</Box>
-                  </Box>
-                </Item>
-              );
-            })}
-            <Button type="submit" variant="contained" endIcon={<SendIcon />}>
-              送信
-            </Button>
-          </Stack>
-        </form>
+        <Alert severity="warning">
+          <AlertTitle>質問がありません</AlertTitle>
+        </Alert>
       </Box>
     );
   }
+
+  return (
+    <Box sx={{ width: '100%' }}>
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <Stack
+          spacing={4}
+          display={'flex'}
+          alignItems={'center'}
+          flexDirection={'column'}
+        >
+          {questions.map((question) => {
+            return (
+              <Item key={question.id}>
+                <Box
+                  width="100%"
+                  padding="1rem"
+                  display={'flex'}
+                  alignItems={'center'}
+                  flexDirection={'column'}
+                >
+                  <Typography variant="h5">
+                    {question.title}
+                    {question.is_required ? (
+                      <Typography display={'inline'} color={'red'}>
+                        {' *'}
+                      </Typography>
+                    ) : null}
+                  </Typography>
+                  {question.description && (
+                    <Typography color="text.secondary" marginBottom={1.5}>
+                      {question.description}
+                    </Typography>
+                  )}
+                  <Box width={'70%'}>{generateInputSpace(question)}</Box>
+                </Box>
+              </Item>
+            );
+          })}
+          <Button type="submit" variant="contained" endIcon={<SendIcon />}>
+            送信
+          </Button>
+        </Stack>
+      </form>
+    </Box>
+  );
 };
 
 export default AnswerForm;

@@ -49,8 +49,8 @@ const EachForm = ({ form }: { form: Form }) => {
           </Typography>
           <Typography color="text.secondary">
             {formatResponsePeriod(
-              form.settings.response_period.start_at,
-              form.settings.response_period.end_at
+              form.response_period.start_at,
+              form.response_period.end_at
             )}
           </Typography>
           {form.description && (

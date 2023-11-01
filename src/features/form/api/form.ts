@@ -1,9 +1,16 @@
 'use server';
 
 import {
+  andThenAsyncForResult,
+  andThenForResult,
+  createErr,
+  createOk,
+} from 'option-t/esm/PlainResult';
+import { okOrForUndefinable } from 'option-t/esm/Undefinable/okOr';
+import {
   batchAnswersSchema,
-  formSchema,
   formsSchema,
+  questionsSchema,
 } from '../types/formSchema';
 
 export const getForms = async (token: string) => {
@@ -14,22 +21,49 @@ export const getForms = async (token: string) => {
       Authorization: `Bearer ${token}`,
     },
     cache: 'no-cache',
-  });
+  })
+    .then((r) =>
+      r.ok ? createOk(r) : createErr(new Error(`${r.status}: ${r.statusText}`))
+    )
+    .catch((e: Error) => createErr(e));
 
-  return formsSchema.parse(await response.json());
+  return andThenAsyncForResult(response, async (r) => {
+    const result = formsSchema.safeParse(await r.json());
+
+    return result.success ? createOk(result.data) : createErr(result.error);
+  });
 };
 
-export const getForm = async (formId: number, token: string) => {
-  const response = await fetch(`http://localhost:9000/forms/${formId}`, {
-    method: 'GET',
-    headers: {
-      Accept: 'application/json',
-      Authorization: `Bearer ${token}`,
-    },
-    cache: 'no-cache',
-  });
+export const getForm = async (formId: number, token: string) =>
+  andThenForResult(await getForms(token), (forms) =>
+    okOrForUndefinable(
+      forms.find((f) => f.id == formId),
+      new Error('not found')
+    )
+  );
 
-  return formSchema.parse(await response.json());
+export const getQuestions = async (formId: number, token: string) => {
+  const response = await fetch(
+    `http://localhost:9000/forms/${formId}/questions`,
+    {
+      method: 'GET',
+      headers: {
+        Accept: 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      cache: 'no-cache',
+    }
+  )
+    .then((r) =>
+      r.ok ? createOk(r) : createErr(new Error(`${r.status}: ${r.statusText}`))
+    )
+    .catch((e: Error) => createErr(e));
+
+  return andThenAsyncForResult(response, async (r) => {
+    const result = questionsSchema.safeParse(await r.json());
+
+    return result.success ? createOk(result.data) : createErr(result.error);
+  });
 };
 
 export const postAnswers = async (
