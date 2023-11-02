@@ -1,5 +1,6 @@
 import MenuIcon from '@mui/icons-material/Menu';
 import { Box, AppBar, Toolbar, IconButton, Typography } from '@mui/material';
+import { UserIconButton } from '@/features/user/components/UserIconButton';
 import { Link } from './Link';
 import { AuthenticatedTemplate } from '../features/user/components/AuthenticatedTemplate';
 import { SigninButton } from '../features/user/components/SigninButton';
@@ -26,6 +27,7 @@ const NavBar = () => {
             </Link>
           </Typography>
           <AuthenticatedTemplate>
+            <UserIconButton />
             <SignoutButton />
           </AuthenticatedTemplate>
           <UnauthenticatedTemplate>
