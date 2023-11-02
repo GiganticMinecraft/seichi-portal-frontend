@@ -21,7 +21,13 @@ const Home = async ({ params }: { params: { formId: number } }) => {
     );
   }
 
-  return <AnswerForm form={unwrapOk(form)} questions={unwrapOk(questions)} />;
+  return (
+    <AnswerForm
+      form={unwrapOk(form)}
+      questions={unwrapOk(questions)}
+      token={token}
+    />
+  );
 };
 
 export default Home;

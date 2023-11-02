@@ -21,15 +21,16 @@ import {
   Typography,
   Link,
 } from '@mui/material';
+import { isOk } from 'option-t/esm/PlainResult';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { getCachedToken } from '@/features/user/api/mcToken';
 import { postAnswers } from '../api/form';
 import type { Form, FormQuestion } from '../types/formSchema';
 
 interface Props {
   form: Form;
   questions: FormQuestion[];
+  token: string;
 }
 
 type NonEmptyArray<T> = [T, ...T[]];
@@ -47,7 +48,7 @@ const Item = styled(Paper)(({ theme }) => ({
   width: '100%',
 }));
 
-const AnswerForm = ({ form, questions }: Props) => {
+const AnswerForm = ({ form, questions, token }: Props) => {
   const [isSubmitted, toggleIsSubmitted] = useState(false);
   const [selectedValues, setSelectedValues] = useState<{ [x: string]: string }>(
     {}
@@ -93,11 +94,13 @@ const AnswerForm = ({ form, questions }: Props) => {
       }
     });
 
-    const token = getCachedToken() ?? '';
-    if (await postAnswers(form.id, formAnswers, token)) {
+    const response = await postAnswers(form.id, formAnswers, token);
+    if (isOk(response)) {
       toggleIsSubmitted(true);
       reset();
       setSelectedValues({});
+    } else {
+      // TODO: notify error
     }
   };
 
