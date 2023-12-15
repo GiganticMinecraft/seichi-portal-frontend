@@ -28,9 +28,7 @@ export const formSchema = z.object({
   id: z.number(),
   title: z.string(),
   description: z.string().nullable(),
-  settings: settingsSchema,
-  metadata: metadataSchema,
-  questions: questionSchema.array(),
+  response_period: responsePeriodSchema,
 });
 
 export const formsSchema = z.array(formSchema);
