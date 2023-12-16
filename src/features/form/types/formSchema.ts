@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-const questionSchema = z.object({
+export const questionSchema = z.object({
   id: z.number(),
   title: z.string(),
   description: z.string().nullable(),
@@ -8,6 +8,8 @@ const questionSchema = z.object({
   choices: z.array(z.string()),
   is_required: z.boolean(),
 });
+
+export const questionsSchema = questionSchema.array();
 
 const metadataSchema = z.object({
   created_at: z.string().datetime(),
@@ -22,16 +24,27 @@ const responsePeriodSchema = z.object({
 const settingsSchema = z.object({
   response_period: responsePeriodSchema,
   webhook_url: z.string().nullable(),
+  default_answer_title: z.string().nullable(),
+  visibility: z.enum(['PUBLIC', 'PRIVATE']),
 });
 
-export const formSchema = z.object({
+export const mimimumFormSchema = z.object({
   id: z.number(),
   title: z.string(),
   description: z.string().nullable(),
   response_period: responsePeriodSchema,
 });
 
-export const formsSchema = z.array(formSchema);
+export const mimimumFormsSchema = z.array(mimimumFormSchema);
+
+export const formSchema = z.object({
+  id: z.number(),
+  title: z.string(),
+  description: z.string().nullable(),
+  questions: questionSchema.array(),
+  metadata: metadataSchema,
+  settings: settingsSchema,
+});
 
 export const answerSchema = z.object({
   question_id: z.number(),
@@ -49,6 +62,8 @@ export const batchAnswerSchema = z.object({
 export const batchAnswersSchema = z.array(batchAnswerSchema);
 
 export type BatchAnswer = z.infer<typeof batchAnswerSchema>;
+
+export type MinimumForm = z.infer<typeof mimimumFormSchema>;
 
 export type Form = z.infer<typeof formSchema>;
 

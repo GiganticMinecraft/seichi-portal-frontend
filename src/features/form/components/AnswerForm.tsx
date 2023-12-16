@@ -25,10 +25,11 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { getCachedToken } from '@/features/user/api/mcToken';
 import { postAnswers } from '../api/form';
-import type { Form, FormQuestion } from '../types/formSchema';
+import type { FormQuestion } from '../types/formSchema';
 
 interface Props {
-  form: Form;
+  questions: FormQuestion[];
+  formId: number,
 }
 
 type NonEmptyArray<T> = [T, ...T[]];
@@ -46,7 +47,7 @@ const Item = styled(Paper)(({ theme }) => ({
   width: '100%',
 }));
 
-const AnswerForm = ({ form }: Props) => {
+const AnswerForm = ({ questions: questions, formId }: Props) => {
   const [isSubmitted, toggleIsSubmitted] = useState(false);
   const [selectedValues, setSelectedValues] = useState<{ [x: string]: string }>(
     {}
@@ -94,7 +95,7 @@ const AnswerForm = ({ form }: Props) => {
     });
 
     const token = getCachedToken() ?? '';
-    if (await postAnswers(form.id, formAnswers, token)) {
+    if (await postAnswers(formId, formAnswers, token)) {
       toggleIsSubmitted(true);
       reset();
       setSelectedValues({});
@@ -244,7 +245,7 @@ const AnswerForm = ({ form }: Props) => {
             alignItems={'center'}
             flexDirection={'column'}
           >
-            {form.questions.map((question) => {
+            {questions.map((question) => {
               return (
                 <Item key={question.id}>
                   <Box

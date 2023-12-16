@@ -3,9 +3,11 @@
 import {
   batchAnswersSchema,
   formSchema,
-  formsSchema,
+  mimimumFormsSchema,
+  questionSchema,
+  questionsSchema,
 } from '../types/formSchema';
-import type { BatchAnswer, Form } from '../types/formSchema';
+import type { BatchAnswer, Form, FormQuestion } from '../types/formSchema';
 
 export const getForms = async (token: string) => {
   const response = await fetch('http://localhost:9000/forms', {
@@ -17,7 +19,7 @@ export const getForms = async (token: string) => {
     cache: 'no-cache',
   });
 
-  return formsSchema.parse(await response.json());
+  return mimimumFormsSchema.parse(await response.json());
 };
 
 export const getForm = async (formId: number, token: string): Promise<Form> => {
@@ -31,6 +33,19 @@ export const getForm = async (formId: number, token: string): Promise<Form> => {
   });
 
   return formSchema.parse(await response.json());
+};
+
+export const getFormQuestions = async (formId: number, token: string): Promise<FormQuestion[]> => {
+  const response = await fetch(`http://localhost:9000/forms/${formId}/questions`, {
+    method: 'GET',
+    headers: {
+      Accept: 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    cache: 'no-cache',
+  });
+
+  return questionsSchema.parse(await response.json());
 };
 
 export const postAnswers = async (

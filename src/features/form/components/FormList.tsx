@@ -15,7 +15,7 @@ import dayjs, { extend } from 'dayjs';
 import timezone from 'dayjs/plugin/timezone';
 import utc from 'dayjs/plugin/utc';
 import { Link } from '@/components/Link';
-import type { Form } from '../types/formSchema';
+import type { MinimumForm } from '../types/formSchema';
 
 extend(timezone);
 extend(utc);
@@ -39,7 +39,7 @@ const formatResponsePeriod = (startAt: string | null, endAt: string | null) => {
   }
 };
 
-const EachForm = ({ form }: { form: Form }) => {
+const EachForm = ({ form }: { form: MinimumForm }) => {
   return (
     <Box sx={{ minWidth: 275 }}>
       <Card variant="outlined">
@@ -73,7 +73,7 @@ const Item = styled(Paper)(({ theme }) => ({
 }));
 
 interface Props {
-  forms: Form[];
+  forms: MinimumForm[];
 }
 
 const FormList = ({ forms }: Props) => {
