@@ -29,7 +29,7 @@ import type { FormQuestion } from '../types/formSchema';
 
 interface Props {
   questions: FormQuestion[];
-  formId: number,
+  formId: number;
 }
 
 type NonEmptyArray<T> = [T, ...T[]];

@@ -35,15 +35,21 @@ export const getForm = async (formId: number, token: string): Promise<Form> => {
   return formSchema.parse(await response.json());
 };
 
-export const getFormQuestions = async (formId: number, token: string): Promise<FormQuestion[]> => {
-  const response = await fetch(`http://localhost:9000/forms/${formId}/questions`, {
-    method: 'GET',
-    headers: {
-      Accept: 'application/json',
-      Authorization: `Bearer ${token}`,
-    },
-    cache: 'no-cache',
-  });
+export const getFormQuestions = async (
+  formId: number,
+  token: string
+): Promise<FormQuestion[]> => {
+  const response = await fetch(
+    `http://localhost:9000/forms/${formId}/questions`,
+    {
+      method: 'GET',
+      headers: {
+        Accept: 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      cache: 'no-cache',
+    }
+  );
 
   return questionsSchema.parse(await response.json());
 };
