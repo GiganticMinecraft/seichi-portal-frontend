@@ -4,7 +4,6 @@ import {
   batchAnswersSchema,
   formSchema,
   mimimumFormsSchema,
-  questionSchema,
   questionsSchema,
 } from '../types/formSchema';
 import type { BatchAnswer, Form, FormQuestion } from '../types/formSchema';
