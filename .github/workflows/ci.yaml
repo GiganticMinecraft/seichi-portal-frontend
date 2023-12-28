@@ -32,10 +32,6 @@ jobs:
       - uses: actions/checkout@v4
         with:
           submodules: 'true'
-      - name: Setup Node.js with Volta
-        uses: ./.github/actions/setup-node
-        with:
-          NODE_AUTH_TOKEN: ${{ secrets.AUTH_TOKEN_FOR_GITHUBPKG }}
       - name: Restore Next.js build cache
         uses: actions/cache@v3
         with:
