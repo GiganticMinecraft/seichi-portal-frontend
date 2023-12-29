@@ -6,7 +6,7 @@ import { getCachedToken } from '@/features/user/api/mcToken';
 import styles from '../page.module.css';
 
 const Home = async () => {
-  const token = getCachedToken() ?? '';
+  const token = (await getCachedToken()) ?? '';
   const answers = await getAllAnswers(token);
   return (
     <main className={styles['main']}>

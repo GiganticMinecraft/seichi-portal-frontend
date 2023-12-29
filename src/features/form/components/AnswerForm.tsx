@@ -94,7 +94,7 @@ const AnswerForm = ({ questions: questions, formId }: Props) => {
       }
     });
 
-    const token = getCachedToken() ?? '';
+    const token = (await getCachedToken()) ?? '';
     if (await postAnswers(formId, formAnswers, token)) {
       toggleIsSubmitted(true);
       reset();
