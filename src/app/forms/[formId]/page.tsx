@@ -3,7 +3,7 @@ import AnswerForm from '@/features/form/components/AnswerForm';
 import { getCachedToken } from '@/features/user/api/mcToken';
 
 const Home = async ({ params }: { params: { formId: number } }) => {
-  const token = getCachedToken() ?? '';
+  const token = (await getCachedToken()) ?? '';
   const questions = await getFormQuestions(params.formId, token);
 
   return <AnswerForm questions={questions} formId={params.formId} />;

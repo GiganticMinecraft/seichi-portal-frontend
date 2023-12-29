@@ -6,10 +6,12 @@ import type { RequestCookies } from 'next/dist/compiled/@edge-runtime/cookies';
 
 const KEY = 'SEICHI_PORTAL__MC_TOKEN';
 
-export const getCachedToken = (cookie?: RequestCookies): string | undefined => {
-  const cache = cookie ? cookie.get(KEY) : cookies().get(KEY);
+export const getCachedToken = (cookie?: RequestCookies): Promise<string | undefined> => {
+  return new Promise((resolve, _reject) => {
+    const cache = cookie ? cookie.get(KEY) : cookies().get(KEY);
 
-  return cache?.value;
+    resolve(cache?.value);
+  })
 };
 
 export const saveTokenToCache = ({

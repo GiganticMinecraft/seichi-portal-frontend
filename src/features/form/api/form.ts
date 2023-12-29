@@ -59,7 +59,6 @@ export const postAnswers = async (
   token: string
 ): Promise<boolean> => {
   const answersJson = JSON.stringify({
-    title: 'aaa',
     form_id: Number(form_id),
     answers,
   });
