@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { getCachedToken } from '@/features/user/api/mcToken';
 import type { NextRequest } from 'next/server';
 
-export const middleware = (request: NextRequest) => {
+export const middleware = async (request: NextRequest) => {
   if (request.method !== 'GET') {
     return;
   }
@@ -11,7 +11,7 @@ export const middleware = (request: NextRequest) => {
     return;
   }
 
-  if (!!getCachedToken(request.cookies)) {
+  if (!!await getCachedToken(request.cookies)) {
     return;
   }
 
