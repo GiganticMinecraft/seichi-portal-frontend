@@ -11,7 +11,7 @@ export const middleware = async (request: NextRequest) => {
     return;
   }
 
-  if (!!await getCachedToken(request.cookies)) {
+  if (!!(await getCachedToken(request.cookies))) {
     return;
   }
 
