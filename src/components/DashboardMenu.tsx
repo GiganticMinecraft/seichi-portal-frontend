@@ -5,10 +5,8 @@ import {
   styled,
   Grid,
   Typography,
-  List,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
+  MenuList,
+  MenuItem,
 } from '@mui/material';
 
 const Demo = styled('div')(({ theme }) => ({
@@ -22,18 +20,16 @@ const DashboardMenu = () => {
         Menu
       </Typography>
       <Demo>
-        <List>
+        <MenuList>
           {['Dashboard', 'Forms', 'Announcements'].map((value) => {
             return (
-              <ListItem key={value}>
-                <ListItemIcon>
-                  <Star />
-                </ListItemIcon>
-                <ListItemText primary={value} />
-              </ListItem>
+              <MenuItem key={value}>
+                <Star />
+                {value}
+              </MenuItem>
             );
           })}
-        </List>
+        </MenuList>
       </Demo>
     </Grid>
   );
