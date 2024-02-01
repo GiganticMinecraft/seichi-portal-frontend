@@ -11,29 +11,13 @@ import {
   Alert,
   AlertTitle,
 } from '@mui/material';
-import dayjs, { extend } from 'dayjs';
-import timezone from 'dayjs/plugin/timezone';
-import utc from 'dayjs/plugin/utc';
+import { formatString } from '@/components/DateFormatter';
 import { Link } from '@/components/Link';
 import type { MinimumForm } from '../types/formSchema';
 
-extend(timezone);
-extend(utc);
-dayjs.tz.setDefault('Asia/Tokyo');
-
 const formatResponsePeriod = (startAt: string | null, endAt: string | null) => {
   if (startAt != null && endAt != null) {
-    const formatString = 'YYYY年MM月DD日 HH時mm分';
-
-    const startDateTime = dayjs(new Date(startAt))
-      .tz('Asia/Tokyo')
-      .format(formatString);
-
-    const endDateTime = dayjs(new Date(endAt))
-      .tz('Asia/Tokyo')
-      .format(formatString);
-
-    return `回答可能期間: ${startDateTime} ~ ${endDateTime}`;
+    return `回答可能期間: ${formatString(startAt)} ~ ${formatString(endAt)}`;
   } else {
     return `回答期限なし`;
   }

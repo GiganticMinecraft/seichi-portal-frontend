@@ -1,13 +1,7 @@
 'use client';
 
 import { Star } from '@mui/icons-material';
-import {
-  styled,
-  Grid,
-  Typography,
-  MenuList,
-  MenuItem,
-} from '@mui/material';
+import { styled, Grid, Typography, MenuList, MenuItem } from '@mui/material';
 
 const Demo = styled('div')(({ theme }) => ({
   backgroundColor: theme.palette.background.paper,
