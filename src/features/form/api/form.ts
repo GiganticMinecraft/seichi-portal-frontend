@@ -40,17 +40,14 @@ export const getFormQuestions = async (
   formId: number,
   token: string
 ): Promise<FormQuestion[]> => {
-  const response = await fetch(
-    `${apiServerUrl}/forms/${formId}/questions`,
-    {
-      method: 'GET',
-      headers: {
-        Accept: 'application/json',
-        Authorization: `Bearer ${token}`,
-      },
-      cache: 'no-cache',
-    }
-  );
+  const response = await fetch(`${apiServerUrl}/forms/${formId}/questions`, {
+    method: 'GET',
+    headers: {
+      Accept: 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    cache: 'no-cache',
+  });
 
   return questionsSchema.parse(await response.json());
 };
