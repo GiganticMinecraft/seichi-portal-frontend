@@ -54,8 +54,8 @@ export const answerSchema = z.object({
 export const batchAnswerSchema = z.object({
   uuid: z.string(),
   timestamp: z.string().datetime(),
-  title: z.string(),
   form_id: z.number(),
+  title: z.string(),
   answers: z.array(answerSchema),
 });
 
