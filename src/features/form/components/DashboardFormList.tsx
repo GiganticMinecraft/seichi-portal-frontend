@@ -10,8 +10,9 @@ import Paper from '@mui/material/Paper';
 import { styled } from '@mui/material/styles';
 import Typography from '@mui/material/Typography';
 import * as React from 'react';
-import { formatString } from './DateFormatter';
+import { formatString } from '../../../components/DateFormatter';
 import type { MinimumForm } from '@/features/form/types/formSchema';
+import Add from '@mui/icons-material/Add';
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -66,3 +67,11 @@ export const Forms = ({ forms }: Props) => {
     </Box>
   );
 };
+
+export const CreateFormButton = () => {
+  return (
+    <Button variant="contained" startIcon={<Add />} href='/admin/forms/create'>
+      NEW
+    </Button>
+  )
+}
