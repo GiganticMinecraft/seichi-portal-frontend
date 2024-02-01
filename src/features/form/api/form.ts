@@ -8,8 +8,10 @@ import {
 } from '../types/formSchema';
 import type { BatchAnswer, Form, FormQuestion } from '../types/formSchema';
 
+const apiServerUrl = 'http://localhost:9000';
+
 export const getForms = async (token: string) => {
-  const response = await fetch('http://localhost:9000/forms', {
+  const response = await fetch(`${apiServerUrl}/forms`, {
     method: 'GET',
     headers: {
       Accept: 'application/json',
@@ -22,7 +24,7 @@ export const getForms = async (token: string) => {
 };
 
 export const getForm = async (formId: number, token: string): Promise<Form> => {
-  const response = await fetch(`http://localhost:9000/forms/${formId}`, {
+  const response = await fetch(`${apiServerUrl}/forms/${formId}`, {
     method: 'GET',
     headers: {
       Accept: 'application/json',
@@ -39,7 +41,7 @@ export const getFormQuestions = async (
   token: string
 ): Promise<FormQuestion[]> => {
   const response = await fetch(
-    `http://localhost:9000/forms/${formId}/questions`,
+    `${apiServerUrl}/forms/${formId}/questions`,
     {
       method: 'GET',
       headers: {
@@ -63,7 +65,7 @@ export const postAnswers = async (
     answers,
   });
 
-  const response = await fetch(`http://localhost:9000/forms/answers`, {
+  const response = await fetch(`${apiServerUrl}/forms/answers`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -77,12 +79,14 @@ export const postAnswers = async (
 };
 
 export const getAllAnswers = async (token: string): Promise<BatchAnswer[]> => {
-  return await fetch(`http://localhost:9000/forms/answers`, {
+  const response = await fetch(`${apiServerUrl}/forms/answers`, {
     method: 'GET',
     headers: {
       Accept: 'application/json',
       Authorization: `Bearer ${token}`,
     },
     cache: 'no-cache',
-  }).then(async (response) => batchAnswersSchema.parse(await response.json()));
+  });
+
+  return batchAnswersSchema.parse(await response.json());
 };
