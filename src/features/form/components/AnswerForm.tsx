@@ -26,13 +26,12 @@ import { useForm } from 'react-hook-form';
 import { getCachedToken } from '@/features/user/api/mcToken';
 import { postAnswers } from '../api/form';
 import type { FormQuestion } from '../types/formSchema';
+import { NonEmptyArray } from '@/generic/Types';
 
 interface Props {
   questions: FormQuestion[];
   formId: number;
 }
-
-type NonEmptyArray<T> = [T, ...T[]];
 
 interface IFormInput {
   [key: string]: string | NonEmptyArray<string> | boolean;
@@ -64,7 +63,6 @@ const AnswerForm = ({ questions: questions, formId }: Props) => {
   };
 
   const onSubmit = async (data: IFormInput) => {
-    console.info(data);
     const formAnswers = Object.entries(data).flatMap(([key, values]) => {
       // Note:
       // ここで型をstringかどうか判定しているのは、valuesに複数の値が入っていた場合にmapを使って
