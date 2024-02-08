@@ -9,12 +9,13 @@ import { Input } from '@mui/material';
 import Box from '@mui/material/Box';
 import MenuItem from '@mui/material/MenuItem';
 import Paper from '@mui/material/Paper';
-import { styled } from '@mui/material/styles';
-import * as React from 'react';
-import TextField from '@mui/material/TextField';
-import Stack from '@mui/material/Stack';
-import { FieldArrayWithId, UseFieldArrayAppend, UseFormRegister, useFieldArray, useForm, useWatch } from 'react-hook-form';
 import Select from '@mui/material/Select';
+import Stack from '@mui/material/Stack';
+import { styled } from '@mui/material/styles';
+import TextField from '@mui/material/TextField';
+import * as React from 'react';
+import { useFieldArray, useForm, useWatch } from 'react-hook-form';
+import type { FieldArrayWithId, UseFieldArrayAppend, UseFormRegister} from 'react-hook-form';
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -87,7 +88,7 @@ const InputChoiceItem = ({choiceIndex, appendChoice, removeChoice}: ChoiceProps)
       }}><DeleteIcon />
     </IconButton>
     }} onKeyDown={ e => {
-      // @ts-ignore (KeyBoardEventには入力した値を取得する関数は存在しないが、何も入力されていないときにはこのイベントを発火したくない)
+      // @ts-expect-error (KeyBoardEventには入力した値を取得する関数は存在しないが、何も入力されていないときにはこのイベントを発火したくない)
       if (e.key == 'Enter' && e.target.value != '') {
         appendChoice({choice: ''})
       }
