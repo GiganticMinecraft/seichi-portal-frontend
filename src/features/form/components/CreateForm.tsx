@@ -1,8 +1,6 @@
 'use client'
 
 import Button from '@material-ui/core/Button';
-import Checkbox from '@material-ui/core/Checkbox';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormGroup from '@material-ui/core/FormGroup';
 import IconButton from '@material-ui/core/IconButton';
 import InputLabel from '@material-ui/core/InputLabel';
@@ -20,6 +18,7 @@ import TextField from '@mui/material/TextField';
 import * as React from 'react';
 import { useFieldArray, useForm, useWatch } from 'react-hook-form';
 import type { Control, UseFieldArrayAppend, UseFormRegister} from 'react-hook-form';
+import { createForm } from '../api/form';
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -39,7 +38,11 @@ interface IForm {
   questions: Question[];
 }
 
-export const CreateFormComponent = () => {
+interface Token {
+  token: string
+}
+
+export const CreateFormComponent = ({ token }: Token) => {
   const { register, handleSubmit, control } = useForm<IForm>({
     defaultValues: {
       formTitle: '',
@@ -59,8 +62,8 @@ export const CreateFormComponent = () => {
     }
   });
 
-  const onSubmit = (data: IForm) => {
-    // TODO: 投稿時の処理を書く
+  const onSubmit = async (data: IForm) => {
+    await createForm(token, data.formTitle, data.formDescription, data.questions, data.responsePeriod)
   }
 
   return (
@@ -105,9 +108,9 @@ interface Choice {
 }
 
 interface Question {
-  questionTitle: '',
-  questionDescription: '',
-  answerType: 'TEXT',
+  questionTitle: string,
+  questionDescription: string,
+  answerType: string,
   choices: Choice[]
 }
 

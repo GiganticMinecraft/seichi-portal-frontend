@@ -10,7 +10,7 @@ const Home = async () => {
     <main className={styles['main']}>
       <NavBar />
       <DashboardMenu />
-      <CreateFormComponent />
+      <CreateFormComponent token={token} />
     </main>
   );
 };

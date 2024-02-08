@@ -87,3 +87,44 @@ export const getAllAnswers = async (token: string): Promise<BatchAnswer[]> => {
 
   return batchAnswersSchema.parse(await response.json());
 };
+
+interface Choice {
+  choice: string
+}
+
+interface Questions {
+  questionTitle: string,
+  questionDescription: string,
+  answerType: string,
+  choices: Choice[]
+}
+
+export const createForm = async (
+  token: string,
+  formTitle: string,
+  formDescription: string,
+  questions: Questions[],
+  responsePeriod: {
+    startAt: string,
+    endAt: string
+  }
+) => {
+  const titleAndDescription = JSON.stringify({
+    title: formTitle,
+    description: formDescription
+  })
+
+  return await fetch(`${apiServerUrl}/forms`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: titleAndDescription,
+    cache: 'no-cache',
+  }).then(async (response) => {
+    console.log(await response.status)
+  })
+
+
+}
