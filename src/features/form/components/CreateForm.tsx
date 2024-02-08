@@ -1,18 +1,20 @@
 'use client'
 
-import * as React from 'react';
-import { styled } from '@mui/material/styles';
+import Button from '@material-ui/core/Button';
+import IconButton from '@material-ui/core/IconButton';
+import InputLabel from '@material-ui/core/InputLabel';
+import Add from '@mui/icons-material/Add';
+import DeleteIcon from '@mui/icons-material/Delete';
+import { Input } from '@mui/material';
 import Box from '@mui/material/Box';
+import MenuItem from '@mui/material/MenuItem';
 import Paper from '@mui/material/Paper';
+import { styled } from '@mui/material/styles';
+import * as React from 'react';
 import TextField from '@mui/material/TextField';
 import Stack from '@mui/material/Stack';
-import InputLabel from '@material-ui/core/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import Select, { SelectChangeEvent } from '@mui/material/Select';
-import { useFieldArray, useForm } from 'react-hook-form';
-import { FormGroup, Input } from '@mui/material';
-import DeleteIcon from '@mui/icons-material/Delete';
-import IconButton from '@material-ui/core/IconButton';
+import { FieldArrayWithId, UseFieldArrayAppend, UseFormRegister, useFieldArray, useForm, useWatch } from 'react-hook-form';
+import Select from '@mui/material/Select';
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -39,75 +41,168 @@ const FormTitleAndDescriptionComponent = () => {
   )
 }
 
+interface Choice {
+  choice: string
+}
+
+interface Choices {
+  choices: Choice[]
+}
+
+interface Question {
+  questionTitle: '',
+  questionDescription: '',
+  answerType: 'TEXT',
+  choices: Choices
+}
+
+interface Questions {
+  questions: Question[]
+}
+
+interface QuestionProps {
+  register: UseFormRegister<Questions>;
+  questionIndex: number;
+  removeQuestion: (index: number) => void;
+  answerType: (index: number) => string;
+  choiceRegister: UseFormRegister<Choices>;
+  choicesField: FieldArrayWithId<Choices, "choices", "id">[];
+  appendChoice: UseFieldArrayAppend<Choices, "choices">;
+  removeChoice: (index: number) => void;
+}
+
+interface ChoiceProps {
+  choiceIndex: number;
+  appendChoice: UseFieldArrayAppend<Choices, "choices">;
+  removeChoice: (index: number) => void;
+}
+
+const InputChoiceItem = ({choiceIndex, appendChoice, removeChoice}: ChoiceProps) => {
+  return (
+    <TextField id="outlined-basic" label="選択肢" required variant="outlined" InputProps={{
+      endAdornment: <IconButton aria-label="delete" onClick={() => {
+        if (choiceIndex != 0) {
+          removeChoice(choiceIndex)
+        }
+      }}><DeleteIcon />
+    </IconButton>
+    }} onKeyDown={ e => {
+      // @ts-ignore (KeyBoardEventには入力した値を取得する関数は存在しないが、何も入力されていないときにはこのイベントを発火したくない)
+      if (e.key == 'Enter' && e.target.value != '') {
+        appendChoice({choice: ''})
+      }
+    }} />
+  )
+}
+
+const QuestionItem = (
+  { register, questionIndex, removeQuestion, answerType, choiceRegister, choicesField, appendChoice, removeChoice }: QuestionProps
+  ) => {
+  return (
+    <Box sx={{ flexGrow: 1, backgroundColor: 'white'}}>
+      <IconButton aria-label="delete" onClick={() => {
+        if (questionIndex != 0) {
+          removeQuestion(questionIndex)
+        }
+      }}>
+        <DeleteIcon />
+      </IconButton>
+      <InputLabel id="questionTitle">質問のタイトル</InputLabel>
+      <Input
+        {...register(`questions.${questionIndex}.questionTitle`)}
+        className="materialUIInput"
+        required
+        fullWidth
+      />
+      <InputLabel id="questionDescription">質問の説明</InputLabel>
+      <Input
+        {...register(`questions.${questionIndex}.questionDescription`)}
+        className="materialUIInput"
+        required
+        multiline
+        fullWidth
+      />
+      <InputLabel id="AnswerType">回答方法</InputLabel>
+      <Select
+        {...register(`questions.${questionIndex}.answerType`)}
+        labelId="AnswerType"
+        id="AnswerType"
+        value={answerType(questionIndex)}
+        label="QuestionType"
+        required
+      >
+        <MenuItem value="TEXT">テキスト</MenuItem>
+        <MenuItem value="SINGLE">単一選択</MenuItem>
+        <MenuItem value="MULTIPLE">複数選択</MenuItem>
+      </Select>
+      {answerType(questionIndex) != 'TEXT' ? choicesField.map((field, index) => (
+        <InputChoiceItem
+          {...choiceRegister(`choices.${index}`)}
+          key={field.id}
+          choiceIndex={index}
+          removeChoice={removeChoice}
+          appendChoice={appendChoice}
+        />
+      )) : <></>}
+    </Box>
+  )
+}
+
 const CreateQuestionComponent = () => {
-  const { register, handleSubmit, control } = useForm({
+  const { register, handleSubmit, control } = useForm<Questions>({
     defaultValues: {
-      questionTitle: '',
-      questionDescription: '',
+      questions: [{
+        questionTitle: '',
+        questionDescription: '',
+        answerType: 'TEXT'
+      }]
+    }
+  });
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: `questions`
+  })
+  const answerType = (questionIndex: number) => useWatch({
+    control,
+    name: `questions.${questionIndex}.answerType`
+  })
+
+  const { register: choicesRegister, control: choicesControl } = useForm<Choices>({
+    defaultValues: {
       choices: [{
         choice: ''
       }]
     }
-  });
-
-  const { fields, append, remove } = useFieldArray({
-    control,
-    name: 'choices'
-  });
-
-  const [questionType, setQuestionType] = React.useState('TEXT');
-
-  const handleChangeQuestionType = (event: SelectChangeEvent) => {
-    setQuestionType(event.target.value);
-  };
+  })
+  const { fields: choicesField, append: appendChoice, remove: removeChoice } = useFieldArray({
+    control: choicesControl,
+    name: `choices`
+  })
 
   return (
-    <Box sx={{ flexGrow: 1, backgroundColor: 'white'}}>
-      <FormGroup>
-        <Input
-          {...register("questionTitle")}
-          className="materialUIInput"
-          required
-          fullWidth
-        />
-        <Input
-          {...register("questionDescription")}
-          className="materialUIInput"
-          required
-          multiline
-          fullWidth
-        />
-        <InputLabel id="AnswerType">回答方法</InputLabel>
-        <Select
-          labelId="AnswerType"
-          id="AnswerType"
-          value={questionType}
-          onChange={handleChangeQuestionType}
-          label="QuestionType"
-          required
-        >
-          <MenuItem value="TEXT">テキスト</MenuItem>
-          <MenuItem value="SINGLE">単一選択</MenuItem>
-          <MenuItem value="MULTIPLE">複数選択</MenuItem>
-        </Select>
-        {
-          questionType != 'TEXT' ? fields.map((field, index) =>(
-            <TextField {...register(`choices.${index}.choice`)} key={field.id} id="outlined-basic" label="選択肢" required variant="outlined" InputProps={{
-              endAdornment: <IconButton aria-label="delete" onClick={() => {
-                if (index != 0) {
-                  remove(index)
-                }
-              }}><DeleteIcon />
-            </IconButton>
-            }} onKeyDown={ e => {
-              // @ts-ignore (KeyBoardEventには入力した値を取得する関数は存在しないが、何も入力されていないときにはこのイベントを発火したくない)
-              if (e.key == 'Enter' && e.target.value != '') {
-                append({choice: ''})
-              }
-            }} />
-          )) : <></>
+    <>
+    <Button variant="contained" startIcon={<Add />} onClick={() => append({
+        questionTitle: '',
+        questionDescription: '',
+        answerType: 'TEXT',
+        choices: {
+          choices: []
         }
-      </FormGroup>
-    </Box>
+      })}
+    >質問の追加</Button>
+    {fields.map((field, index) => (
+      <QuestionItem 
+        key={field.id}
+        register={register}
+        questionIndex={index}
+        removeQuestion={remove}
+        answerType={answerType}
+        choiceRegister={choicesRegister}
+        choicesField={choicesField}
+        appendChoice={appendChoice}
+        removeChoice={removeChoice}
+      />
+    ))}
+    </>
   )
 }
