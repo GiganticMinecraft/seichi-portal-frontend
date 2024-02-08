@@ -1,10 +1,12 @@
 'use client'
 
 import Button from '@material-ui/core/Button';
+import FormGroup from '@material-ui/core/FormGroup';
 import IconButton from '@material-ui/core/IconButton';
 import InputLabel from '@material-ui/core/InputLabel';
 import Add from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
+import SendIcon from '@mui/icons-material/Send';
 import { Input } from '@mui/material';
 import Box from '@mui/material/Box';
 import MenuItem from '@mui/material/MenuItem';
@@ -25,18 +27,56 @@ const Item = styled(Paper)(({ theme }) => ({
   color: theme.palette.text.secondary,
 }));
 
+interface IForm {
+  formTitle: '';
+  formDescription: '';
+  questions: Question[]
+}
+
 export const CreateFormComponent = () => {
+  const { register, handleSubmit, control } = useForm<IForm>({
+    defaultValues: {
+      formTitle: '',
+      formDescription: '',
+      questions: [{
+        questionTitle: '',
+        questionDescription: '',
+        answerType: 'TEXT',
+        choices: [{
+          choice: ''
+        }]
+      }]
+    }
+  });
+
+  const onSubmit = (data: IForm) => {
+    // TODO: 投稿時の処理を書く
+  }
+
   return (
-    <><FormTitleAndDescriptionComponent /><CreateQuestionComponent /></>
+    <form onSubmit={handleSubmit(onSubmit)}>
+      <FormGroup>
+        <FormTitleAndDescriptionComponent register={register} control={control} />
+        <CreateQuestionComponent register={register} control={control} />
+        <Button type="submit" variant="contained" endIcon={<SendIcon />}>
+          フォーム作成
+        </Button>
+      </FormGroup>
+    </form>
   )
 }
 
-const FormTitleAndDescriptionComponent = () => {
+interface FormProps {
+  register: UseFormRegister<IForm>;
+  control: Control<IForm, any>;
+}
+
+const FormTitleAndDescriptionComponent = ({ register }: FormProps) => {
   return (
     <Box sx={{ flexGrow: 1 }}>
       <Stack spacing={2}>
-        <Item><TextField id="outlined-basic" label="フォームのタイトル" variant="outlined" required/></Item>
-        <Item><TextField id="outlined-basic" label="フォームの説明" variant="outlined" required/></Item>
+        <Item><TextField {...register("formTitle")} label="フォームのタイトル" variant="outlined" required/></Item>
+        <Item><TextField {...register("formDescription")} label="フォームの説明" variant="outlined" required/></Item>
       </Stack>
     </Box>
   )
@@ -53,13 +93,9 @@ interface Question {
   choices: Choice[]
 }
 
-interface Questions {
-  questions: Question[]
-}
-
 interface QuestionProps {
-  control: Control<Questions, any>;
-  register: UseFormRegister<Questions>;
+  control: Control<IForm, any>;
+  register: UseFormRegister<IForm>;
   questionIndex: number;
   removeQuestion: (index: number) => void;
   answerType: (index: number) => string;
@@ -67,7 +103,7 @@ interface QuestionProps {
 
 interface ChoiceProps {
   choiceIndex: number;
-  appendChoice: UseFieldArrayAppend<Questions, `questions.${number}.choices`>;
+  appendChoice: UseFieldArrayAppend<IForm, `questions.${number}.choices`>;
   removeChoice: (index: number) => void;
 }
 
@@ -146,19 +182,7 @@ const QuestionItem = (
   )
 }
 
-const CreateQuestionComponent = () => {
-  const { register, handleSubmit, control } = useForm<Questions>({
-    defaultValues: {
-      questions: [{
-        questionTitle: '',
-        questionDescription: '',
-        answerType: 'TEXT',
-        choices: [{
-          choice: ''
-        }]
-      }]
-    }
-  });
+const CreateQuestionComponent = ({ register, control }: FormProps) => {
   const { fields, append, remove } = useFieldArray({
     control,
     name: `questions`
