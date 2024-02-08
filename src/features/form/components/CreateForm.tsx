@@ -15,7 +15,7 @@ import { styled } from '@mui/material/styles';
 import TextField from '@mui/material/TextField';
 import * as React from 'react';
 import { useFieldArray, useForm, useWatch } from 'react-hook-form';
-import type { FieldArrayWithId, UseFieldArrayAppend, UseFormRegister} from 'react-hook-form';
+import type { Control, UseFieldArrayAppend, UseFormRegister} from 'react-hook-form';
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -35,8 +35,8 @@ const FormTitleAndDescriptionComponent = () => {
   return (
     <Box sx={{ flexGrow: 1 }}>
       <Stack spacing={2}>
-          <Item><TextField id="outlined-basic" label="フォームのタイトル" variant="outlined" required/></Item>
-          <Item><TextField id="outlined-basic" label="フォームの説明" variant="outlined" required/></Item>
+        <Item><TextField id="outlined-basic" label="フォームのタイトル" variant="outlined" required/></Item>
+        <Item><TextField id="outlined-basic" label="フォームの説明" variant="outlined" required/></Item>
       </Stack>
     </Box>
   )
@@ -46,15 +46,11 @@ interface Choice {
   choice: string
 }
 
-interface Choices {
-  choices: Choice[]
-}
-
 interface Question {
   questionTitle: '',
   questionDescription: '',
   answerType: 'TEXT',
-  choices: Choices
+  choices: Choice[]
 }
 
 interface Questions {
@@ -62,19 +58,16 @@ interface Questions {
 }
 
 interface QuestionProps {
+  control: Control<Questions, any>;
   register: UseFormRegister<Questions>;
   questionIndex: number;
   removeQuestion: (index: number) => void;
   answerType: (index: number) => string;
-  choiceRegister: UseFormRegister<Choices>;
-  choicesField: FieldArrayWithId<Choices, "choices", "id">[];
-  appendChoice: UseFieldArrayAppend<Choices, "choices">;
-  removeChoice: (index: number) => void;
 }
 
 interface ChoiceProps {
   choiceIndex: number;
-  appendChoice: UseFieldArrayAppend<Choices, "choices">;
+  appendChoice: UseFieldArrayAppend<Questions, `questions.${number}.choices`>;
   removeChoice: (index: number) => void;
 }
 
@@ -97,8 +90,13 @@ const InputChoiceItem = ({choiceIndex, appendChoice, removeChoice}: ChoiceProps)
 }
 
 const QuestionItem = (
-  { register, questionIndex, removeQuestion, answerType, choiceRegister, choicesField, appendChoice, removeChoice }: QuestionProps
+  { control, register, questionIndex, removeQuestion, answerType }: QuestionProps
   ) => {
+  const { fields: choicesField, append: appendChoice, remove: removeChoice } = useFieldArray({
+    control: control,
+    name: `questions.${questionIndex}.choices`
+  })
+
   return (
     <Box sx={{ flexGrow: 1, backgroundColor: 'white'}}>
       <IconButton aria-label="delete" onClick={() => {
@@ -138,7 +136,6 @@ const QuestionItem = (
       </Select>
       {answerType(questionIndex) != 'TEXT' ? choicesField.map((field, index) => (
         <InputChoiceItem
-          {...choiceRegister(`choices.${index}`)}
           key={field.id}
           choiceIndex={index}
           removeChoice={removeChoice}
@@ -155,7 +152,10 @@ const CreateQuestionComponent = () => {
       questions: [{
         questionTitle: '',
         questionDescription: '',
-        answerType: 'TEXT'
+        answerType: 'TEXT',
+        choices: [{
+          choice: ''
+        }]
       }]
     }
   });
@@ -168,40 +168,25 @@ const CreateQuestionComponent = () => {
     name: `questions.${questionIndex}.answerType`
   })
 
-  const { register: choicesRegister, control: choicesControl } = useForm<Choices>({
-    defaultValues: {
-      choices: [{
-        choice: ''
-      }]
-    }
-  })
-  const { fields: choicesField, append: appendChoice, remove: removeChoice } = useFieldArray({
-    control: choicesControl,
-    name: `choices`
-  })
-
   return (
     <>
     <Button variant="contained" startIcon={<Add />} onClick={() => append({
         questionTitle: '',
         questionDescription: '',
         answerType: 'TEXT',
-        choices: {
-          choices: []
-        }
+        choices: [{
+          choice: ''
+        }]
       })}
     >質問の追加</Button>
     {fields.map((field, index) => (
       <QuestionItem 
         key={field.id}
+        control={control}
         register={register}
         questionIndex={index}
         removeQuestion={remove}
         answerType={answerType}
-        choiceRegister={choicesRegister}
-        choicesField={choicesField}
-        appendChoice={appendChoice}
-        removeChoice={removeChoice}
       />
     ))}
     </>
