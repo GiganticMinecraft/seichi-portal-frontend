@@ -1,6 +1,8 @@
 'use client'
 
 import Button from '@material-ui/core/Button';
+import Checkbox from '@material-ui/core/Checkbox';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormGroup from '@material-ui/core/FormGroup';
 import IconButton from '@material-ui/core/IconButton';
 import InputLabel from '@material-ui/core/InputLabel';
@@ -28,9 +30,13 @@ const Item = styled(Paper)(({ theme }) => ({
 }));
 
 interface IForm {
-  formTitle: '';
-  formDescription: '';
-  questions: Question[]
+  formTitle: string;
+  formDescription: string;
+  responsePeriod: {
+    startAt: string,
+    endAt: string
+  };
+  questions: Question[];
 }
 
 export const CreateFormComponent = () => {
@@ -38,6 +44,10 @@ export const CreateFormComponent = () => {
     defaultValues: {
       formTitle: '',
       formDescription: '',
+      responsePeriod: {
+        startAt: '',
+        endAt: ''
+      },
       questions: [{
         questionTitle: '',
         questionDescription: '',
@@ -77,6 +87,14 @@ const FormTitleAndDescriptionComponent = ({ register }: FormProps) => {
       <Stack spacing={2}>
         <Item><TextField {...register("formTitle")} label="フォームのタイトル" variant="outlined" required/></Item>
         <Item><TextField {...register("formDescription")} label="フォームの説明" variant="outlined" required/></Item>
+        <Item>
+          <InputLabel htmlFor="avaliable-start-at">回答開始日</InputLabel>
+          <TextField {...register("responsePeriod.startAt")} id="avaliable-start-at" type="datetime-local" variant="outlined" required/>
+        </Item>
+        <Item>
+        <InputLabel htmlFor="avaliable-end-at">回答終了日</InputLabel>
+          <TextField {...register("responsePeriod.endAt")} id="avaliable-end-at" type="datetime-local" variant="outlined" required/>
+        </Item>
       </Stack>
     </Box>
   )
