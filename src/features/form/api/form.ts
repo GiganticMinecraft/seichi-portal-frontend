@@ -96,7 +96,8 @@ interface Questions {
   questionTitle: string,
   questionDescription: string,
   answerType: string,
-  choices: Choice[]
+  choices: Choice[],
+  isRequired: boolean
 }
 
 export const createForm = async (
@@ -140,7 +141,7 @@ export const createForm = async (
           description: question.questionDescription,
           question_type: question.answerType,
           choices: question.choices.filter((choice) => choice.choice != '').map((choice) => choice.choice),
-          is_required: true
+          is_required: question.isRequired
         }
       })
     })

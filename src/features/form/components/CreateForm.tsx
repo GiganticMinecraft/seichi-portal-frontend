@@ -19,6 +19,8 @@ import * as React from 'react';
 import { useFieldArray, useForm, useWatch } from 'react-hook-form';
 import type { Control, UseFieldArrayAppend, UseFormRegister} from 'react-hook-form';
 import { createForm } from '../api/form';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Checkbox from '@mui/material/Checkbox';
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -57,7 +59,8 @@ export const CreateFormComponent = ({ token }: Token) => {
         answerType: 'TEXT',
         choices: [{
           choice: ''
-        }]
+        }],
+        isRequired: false
       }]
     }
   });
@@ -111,7 +114,8 @@ interface Question {
   questionTitle: string,
   questionDescription: string,
   answerType: string,
-  choices: Choice[]
+  choices: Choice[],
+  isRequired: boolean
 }
 
 interface QuestionProps {
@@ -165,6 +169,7 @@ const QuestionItem = (
       }}>
         <DeleteIcon />
       </IconButton>
+      <FormControlLabel {...register(`questions.${questionIndex}.isRequired`)} control={<Checkbox />} label="この質問の回答を必須項目にする"/>
       <InputLabel id="questionTitle">質問のタイトル</InputLabel>
       <Input
         {...register(`questions.${questionIndex}.questionTitle`)}
@@ -225,7 +230,8 @@ const CreateQuestionComponent = ({ register, control }: FormProps) => {
         answerType: 'TEXT',
         choices: [{
           choice: ''
-        }]
+        }],
+        isRequired: false
       })}
     >質問の追加</Button>
     {fields.map((field, index) => (
