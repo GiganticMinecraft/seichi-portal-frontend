@@ -114,7 +114,7 @@ export const createForm = async (
     description: formDescription
   })
 
-  return await fetch(`${apiServerUrl}/forms`, {
+  await fetch(`${apiServerUrl}/forms`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -122,9 +122,41 @@ export const createForm = async (
     },
     body: titleAndDescription,
     cache: 'no-cache',
-  }).then(async (response) => {
-    console.log(await response.status)
   })
+  .then((response) => {
+    if (!response.ok) {
+      // TODO: 異常系処理を書く
+    }
 
+    return response.json()
+  })
+  .then((jsonResponse) => jsonResponse.id)
+  .then(async (createdFormId) => {
+    const body = JSON.stringify({
+      form_id: createdFormId,
+      questions: questions.map((question) => {
+        return {
+          title: question.questionTitle,
+          description: question.questionDescription,
+          question_type: question.answerType,
+          choices: question.choices.filter((choice) => choice.choice != '').map((choice) => choice.choice),
+          is_required: true
+        }
+      })
+    })
+
+    questions.forEach((question) => question.choices.forEach((choice) => choice))
+    console.log(body)
+
+    return await fetch(`${apiServerUrl}/forms/questions`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body,
+      cache: 'no-cache',
+    })
+  })
 
 }

@@ -123,14 +123,16 @@ interface QuestionProps {
 }
 
 interface ChoiceProps {
+  register: UseFormRegister<IForm>;
+  questionIndex: number;
   choiceIndex: number;
   appendChoice: UseFieldArrayAppend<IForm, `questions.${number}.choices`>;
   removeChoice: (index: number) => void;
 }
 
-const InputChoiceItem = ({choiceIndex, appendChoice, removeChoice}: ChoiceProps) => {
+const InputChoiceItem = ({register, questionIndex, choiceIndex, appendChoice, removeChoice}: ChoiceProps) => {
   return (
-    <TextField id="outlined-basic" label="選択肢" required variant="outlined" InputProps={{
+    <TextField {...register(`questions.${questionIndex}.choices.${choiceIndex}.choice`)} id="outlined-basic" label="選択肢" required variant="outlined" InputProps={{
       endAdornment: <IconButton aria-label="delete" onClick={() => {
         if (choiceIndex != 0) {
           removeChoice(choiceIndex)
@@ -194,6 +196,8 @@ const QuestionItem = (
       {answerType(questionIndex) != 'TEXT' ? choicesField.map((field, index) => (
         <InputChoiceItem
           key={field.id}
+          register={register}
+          questionIndex={questionIndex}
           choiceIndex={index}
           removeChoice={removeChoice}
           appendChoice={appendChoice}
