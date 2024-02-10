@@ -6,7 +6,12 @@ import {
   mimimumFormsSchema,
   questionsSchema,
 } from '../types/formSchema';
-import type { BatchAnswer, Form, FormQuestion } from '../types/formSchema';
+import type {
+  BatchAnswer,
+  Form,
+  FormQuestion,
+  Visibility,
+} from '../types/formSchema';
 
 const apiServerUrl = 'http://localhost:9000';
 
@@ -89,15 +94,15 @@ export const getAllAnswers = async (token: string): Promise<BatchAnswer[]> => {
 };
 
 interface Choice {
-  choice: string
+  choice: string;
 }
 
 interface Questions {
-  questionTitle: string,
-  questionDescription: string,
-  answerType: string,
-  choices: Choice[],
-  isRequired: boolean
+  questionTitle: string;
+  questionDescription: string;
+  answerType: string;
+  choices: Choice[];
+  isRequired: boolean;
 }
 
 export const createForm = async (
@@ -105,12 +110,13 @@ export const createForm = async (
   formTitle: string,
   formDescription: string,
   questions: Questions[],
-  responsePeriod: { startAt: string; endAt: string; } | undefined
+  responsePeriod: { startAt: string; endAt: string } | undefined,
+  visibility: Visibility
 ) => {
   const titleAndDescription = JSON.stringify({
     title: formTitle,
-    description: formDescription
-  })
+    description: formDescription,
+  });
 
   await fetch(`${apiServerUrl}/forms`, {
     method: 'POST',
@@ -121,56 +127,68 @@ export const createForm = async (
     body: titleAndDescription,
     cache: 'no-cache',
   })
-  .then((response) => {
-    if (!response.ok) {
-      // TODO: 異常系処理を書く
-    }
+    .then((response) => {
+      if (!response.ok) {
+        // TODO: 異常系処理を書く
+      }
 
-    return response.json()
-  })
-  .then((jsonResponse) => jsonResponse.id)
-  .then(async (createdFormId: number) => {
-    const body = JSON.stringify({
-      form_id: createdFormId,
-      questions: questions.map((question) => {
-        return {
-          title: question.questionTitle,
-          description: question.questionDescription,
-          question_type: question.answerType,
-          choices: question.choices.filter((choice) => choice.choice != '').map((choice) => choice.choice),
-          is_required: question.isRequired
+      return response.json();
+    })
+    .then((jsonResponse) => jsonResponse.id)
+    .then(async (createdFormId: number) => {
+      const body = JSON.stringify({
+        form_id: createdFormId,
+        questions: questions.map((question) => {
+          return {
+            title: question.questionTitle,
+            description: question.questionDescription,
+            question_type: question.answerType,
+            choices: question.choices
+              .filter((choice) => choice.choice != '')
+              .map((choice) => choice.choice),
+            is_required: question.isRequired,
+          };
+        }),
+      });
+
+      const responseAndCreatedFormId: [Response, number] = [
+        await fetch(`${apiServerUrl}/forms/questions`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+          body,
+          cache: 'no-cache',
+        }),
+        createdFormId,
+      ];
+
+      return responseAndCreatedFormId;
+    })
+    .then(async ([response, createdFormId]) => {
+      if (!response.ok) {
+        // TODO: 異常系処理を書く
+      }
+
+      if (responsePeriod == undefined) {
+        // TODO: 回答可能期間を指定しなかったときの処理を書く
+      }
+
+      return await fetch(
+        `${apiServerUrl}/forms/${createdFormId}?start_at=${encodeURIComponent(
+          `${responsePeriod?.startAt}:00+09:00`
+        )}&end_at=${encodeURIComponent(
+          `${responsePeriod?.endAt}:00+09:00`
+        )}&visibility=${encodeURIComponent(visibility)}`,
+        {
+          method: 'PATCH',
+          headers: {
+            Accept: 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+          cache: 'no-cache',
         }
-      })
-    })
-
-    const responseAndCreatedFormId: [Response, number] = [await fetch(`${apiServerUrl}/forms/questions`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
-      },
-      body,
-      cache: 'no-cache',
-    }), createdFormId];
-
-    return responseAndCreatedFormId;
-  }).then(async ([response, createdFormId]) => {
-    if (!response.ok) {
-      // TODO: 異常系処理を書く
-    }
-
-    if (responsePeriod == undefined) {
-      // TODO: 回答可能期間を指定しなかったときの処理を書く
-    }
-
-    return await fetch(`${apiServerUrl}/forms/${createdFormId}?start_at=${encodeURIComponent(`${responsePeriod?.startAt}:00+09:00`)}&end_at=${encodeURIComponent(`${responsePeriod?.endAt}:00+09:00`)}`, {
-      method: 'PATCH',
-      headers: {
-        Accept: 'application/json',
-        Authorization: `Bearer ${token}`,
-      },
-      cache: 'no-cache',
-    })
-  })
-
-}
+      );
+    });
+};

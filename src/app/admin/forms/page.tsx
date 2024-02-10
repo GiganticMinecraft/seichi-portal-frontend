@@ -1,7 +1,10 @@
 import DashboardMenu from '@/components/DashboardMenu';
 import NavBar from '@/components/NavBar';
 import { getForms } from '@/features/form/api/form';
-import { CreateFormButton, Forms } from '@/features/form/components/DashboardFormList';
+import {
+  CreateFormButton,
+  Forms,
+} from '@/features/form/components/DashboardFormList';
 import { getCachedToken } from '@/features/user/api/mcToken';
 import styles from '../../page.module.css';
 

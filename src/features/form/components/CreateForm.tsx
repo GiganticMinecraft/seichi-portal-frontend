@@ -1,4 +1,4 @@
-'use client'
+'use client';
 
 import Button from '@material-ui/core/Button';
 import FormGroup from '@material-ui/core/FormGroup';
@@ -17,10 +17,15 @@ import { styled } from '@mui/material/styles';
 import TextField from '@mui/material/TextField';
 import * as React from 'react';
 import { useFieldArray, useForm, useWatch } from 'react-hook-form';
-import type { Control, UseFieldArrayAppend, UseFormRegister} from 'react-hook-form';
+import type {
+  Control,
+  UseFieldArrayAppend,
+  UseFormRegister,
+} from 'react-hook-form';
 import { createForm } from '../api/form';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
+import { Visibility } from '../types/formSchema';
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -34,14 +39,15 @@ interface IForm {
   formTitle: string;
   formDescription: string;
   responsePeriod: {
-    startAt: string,
-    endAt: string
+    startAt: string;
+    endAt: string;
   };
   questions: Question[];
+  visibility: Visibility;
 }
 
 interface Token {
-  token: string
+  token: string;
 }
 
 export const CreateFormComponent = ({ token }: Token) => {
@@ -51,71 +57,136 @@ export const CreateFormComponent = ({ token }: Token) => {
       formDescription: '',
       responsePeriod: {
         startAt: '',
-        endAt: ''
+        endAt: '',
       },
-      questions: [{
-        questionTitle: '',
-        questionDescription: '',
-        answerType: 'TEXT',
-        choices: [{
-          choice: ''
-        }],
-        isRequired: false
-      }]
-    }
+      questions: [
+        {
+          questionTitle: '',
+          questionDescription: '',
+          answerType: 'TEXT',
+          choices: [
+            {
+              choice: '',
+            },
+          ],
+          isRequired: false,
+        },
+      ],
+      visibility: 'PUBLIC',
+    },
+  });
+
+  const visibility = useWatch({
+    control,
+    name: 'visibility',
   });
 
   const onSubmit = async (data: IForm) => {
-    await createForm(token, data.formTitle, data.formDescription, data.questions, data.responsePeriod)
-  }
+    await createForm(
+      token,
+      data.formTitle,
+      data.formDescription,
+      data.questions,
+      data.responsePeriod,
+      data.visibility
+    );
+  };
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <FormGroup>
-        <FormTitleAndDescriptionComponent register={register} control={control} />
-        <CreateQuestionComponent register={register} control={control} />
+        <FormSettingsConponent
+          register={register}
+          control={control}
+          visibility={visibility}
+        />
+        <CreateQuestionComponent
+          register={register}
+          control={control}
+          visibility={visibility}
+        />
         <Button type="submit" variant="contained" endIcon={<SendIcon />}>
           フォーム作成
         </Button>
       </FormGroup>
     </form>
-  )
-}
+  );
+};
 
 interface FormProps {
   register: UseFormRegister<IForm>;
   control: Control<IForm, any>;
+  visibility: Visibility;
 }
 
-const FormTitleAndDescriptionComponent = ({ register }: FormProps) => {
+const FormSettingsConponent = ({ register, visibility }: FormProps) => {
   return (
     <Box sx={{ flexGrow: 1 }}>
       <Stack spacing={2}>
-        <Item><TextField {...register("formTitle")} label="フォームのタイトル" variant="outlined" required/></Item>
-        <Item><TextField {...register("formDescription")} label="フォームの説明" variant="outlined" required/></Item>
         <Item>
-          <InputLabel htmlFor="avaliable-start-at">回答開始日</InputLabel>
-          <TextField {...register("responsePeriod.startAt")} id="avaliable-start-at" type="datetime-local" variant="outlined" required/>
+          <TextField
+            {...register('formTitle')}
+            label="フォームのタイトル"
+            variant="outlined"
+            required
+          />
         </Item>
         <Item>
-        <InputLabel htmlFor="avaliable-end-at">回答終了日</InputLabel>
-          <TextField {...register("responsePeriod.endAt")} id="avaliable-end-at" type="datetime-local" variant="outlined" required/>
+          <TextField
+            {...register('formDescription')}
+            label="フォームの説明"
+            variant="outlined"
+            required
+          />
+        </Item>
+        <Item>
+          <InputLabel htmlFor="avaliable-start-at">回答開始日</InputLabel>
+          <TextField
+            {...register('responsePeriod.startAt')}
+            id="avaliable-start-at"
+            type="datetime-local"
+            variant="outlined"
+            required
+          />
+        </Item>
+        <Item>
+          <InputLabel htmlFor="avaliable-end-at">回答終了日</InputLabel>
+          <TextField
+            {...register('responsePeriod.endAt')}
+            id="avaliable-end-at"
+            type="datetime-local"
+            variant="outlined"
+            required
+          />
+        </Item>
+        <Item>
+          <Select
+            {...register('visibility')}
+            labelId="Visibility"
+            id="Visibility"
+            value={visibility}
+            label="QuestionType"
+            required
+          >
+            <MenuItem value="PUBLIC">公開</MenuItem>
+            <MenuItem value="PRIVATE">非公開</MenuItem>
+          </Select>
         </Item>
       </Stack>
     </Box>
-  )
-}
+  );
+};
 
 interface Choice {
-  choice: string
+  choice: string;
 }
 
 interface Question {
-  questionTitle: string,
-  questionDescription: string,
-  answerType: string,
-  choices: Choice[],
-  isRequired: boolean
+  questionTitle: string;
+  questionDescription: string;
+  answerType: string;
+  choices: Choice[];
+  isRequired: boolean;
 }
 
 interface QuestionProps {
@@ -134,42 +205,77 @@ interface ChoiceProps {
   removeChoice: (index: number) => void;
 }
 
-const InputChoiceItem = ({register, questionIndex, choiceIndex, appendChoice, removeChoice}: ChoiceProps) => {
+const InputChoiceItem = ({
+  register,
+  questionIndex,
+  choiceIndex,
+  appendChoice,
+  removeChoice,
+}: ChoiceProps) => {
   return (
-    <TextField {...register(`questions.${questionIndex}.choices.${choiceIndex}.choice`)} id="outlined-basic" label="選択肢" required variant="outlined" InputProps={{
-      endAdornment: <IconButton aria-label="delete" onClick={() => {
-        if (choiceIndex != 0) {
-          removeChoice(choiceIndex)
+    <TextField
+      {...register(`questions.${questionIndex}.choices.${choiceIndex}.choice`)}
+      id="outlined-basic"
+      label="選択肢"
+      required
+      variant="outlined"
+      InputProps={{
+        endAdornment: (
+          <IconButton
+            aria-label="delete"
+            onClick={() => {
+              if (choiceIndex != 0) {
+                removeChoice(choiceIndex);
+              }
+            }}
+          >
+            <DeleteIcon />
+          </IconButton>
+        ),
+      }}
+      onKeyDown={(e) => {
+        // @ts-expect-error (KeyBoardEventには入力した値を取得する関数は存在しないが、何も入力されていないときにはこのイベントを発火したくない)
+        if (e.key == 'Enter' && e.target.value != '') {
+          appendChoice({ choice: '' });
         }
-      }}><DeleteIcon />
-    </IconButton>
-    }} onKeyDown={ e => {
-      // @ts-expect-error (KeyBoardEventには入力した値を取得する関数は存在しないが、何も入力されていないときにはこのイベントを発火したくない)
-      if (e.key == 'Enter' && e.target.value != '') {
-        appendChoice({choice: ''})
-      }
-    }} />
-  )
-}
+      }}
+    />
+  );
+};
 
-const QuestionItem = (
-  { control, register, questionIndex, removeQuestion, answerType }: QuestionProps
-  ) => {
-  const { fields: choicesField, append: appendChoice, remove: removeChoice } = useFieldArray({
+const QuestionItem = ({
+  control,
+  register,
+  questionIndex,
+  removeQuestion,
+  answerType,
+}: QuestionProps) => {
+  const {
+    fields: choicesField,
+    append: appendChoice,
+    remove: removeChoice,
+  } = useFieldArray({
     control: control,
-    name: `questions.${questionIndex}.choices`
-  })
+    name: `questions.${questionIndex}.choices`,
+  });
 
   return (
-    <Box sx={{ flexGrow: 1, backgroundColor: 'white'}}>
-      <IconButton aria-label="delete" onClick={() => {
-        if (questionIndex != 0) {
-          removeQuestion(questionIndex)
-        }
-      }}>
+    <Box sx={{ flexGrow: 1, backgroundColor: 'white' }}>
+      <IconButton
+        aria-label="delete"
+        onClick={() => {
+          if (questionIndex != 0) {
+            removeQuestion(questionIndex);
+          }
+        }}
+      >
         <DeleteIcon />
       </IconButton>
-      <FormControlLabel {...register(`questions.${questionIndex}.isRequired`)} control={<Checkbox />} label="この質問の回答を必須項目にする"/>
+      <FormControlLabel
+        {...register(`questions.${questionIndex}.isRequired`)}
+        control={<Checkbox />}
+        label="この質問の回答を必須項目にする"
+      />
       <InputLabel id="questionTitle">質問のタイトル</InputLabel>
       <Input
         {...register(`questions.${questionIndex}.questionTitle`)}
@@ -198,52 +304,66 @@ const QuestionItem = (
         <MenuItem value="SINGLE">単一選択</MenuItem>
         <MenuItem value="MULTIPLE">複数選択</MenuItem>
       </Select>
-      {answerType(questionIndex) != 'TEXT' ? choicesField.map((field, index) => (
-        <InputChoiceItem
-          key={field.id}
-          register={register}
-          questionIndex={questionIndex}
-          choiceIndex={index}
-          removeChoice={removeChoice}
-          appendChoice={appendChoice}
-        />
-      )) : <></>}
+      {answerType(questionIndex) != 'TEXT' ? (
+        choicesField.map((field, index) => (
+          <InputChoiceItem
+            key={field.id}
+            register={register}
+            questionIndex={questionIndex}
+            choiceIndex={index}
+            removeChoice={removeChoice}
+            appendChoice={appendChoice}
+          />
+        ))
+      ) : (
+        <></>
+      )}
     </Box>
-  )
-}
+  );
+};
 
 const CreateQuestionComponent = ({ register, control }: FormProps) => {
   const { fields, append, remove } = useFieldArray({
     control,
-    name: `questions`
-  })
-  const answerType = (questionIndex: number) => useWatch({
-    control,
-    name: `questions.${questionIndex}.answerType`
-  })
+    name: `questions`,
+  });
+  const answerType = (questionIndex: number) =>
+    useWatch({
+      control,
+      name: `questions.${questionIndex}.answerType`,
+    });
 
   return (
     <>
-    <Button variant="contained" startIcon={<Add />} onClick={() => append({
-        questionTitle: '',
-        questionDescription: '',
-        answerType: 'TEXT',
-        choices: [{
-          choice: ''
-        }],
-        isRequired: false
-      })}
-    >質問の追加</Button>
-    {fields.map((field, index) => (
-      <QuestionItem 
-        key={field.id}
-        control={control}
-        register={register}
-        questionIndex={index}
-        removeQuestion={remove}
-        answerType={answerType}
-      />
-    ))}
+      <Button
+        variant="contained"
+        startIcon={<Add />}
+        onClick={() =>
+          append({
+            questionTitle: '',
+            questionDescription: '',
+            answerType: 'TEXT',
+            choices: [
+              {
+                choice: '',
+              },
+            ],
+            isRequired: false,
+          })
+        }
+      >
+        質問の追加
+      </Button>
+      {fields.map((field, index) => (
+        <QuestionItem
+          key={field.id}
+          control={control}
+          register={register}
+          questionIndex={index}
+          removeQuestion={remove}
+          answerType={answerType}
+        />
+      ))}
     </>
-  )
-}
+  );
+};

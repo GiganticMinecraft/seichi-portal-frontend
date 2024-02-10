@@ -21,11 +21,13 @@ const responsePeriodSchema = z.object({
   end_at: z.string().datetime().nullable(),
 });
 
+export const visibility = z.enum(['PUBLIC', 'PRIVATE']);
+
 const settingsSchema = z.object({
   response_period: responsePeriodSchema,
   webhook_url: z.string().nullable(),
   default_answer_title: z.string().nullable(),
-  visibility: z.enum(['PUBLIC', 'PRIVATE']),
+  visibility: visibility,
 });
 
 export const mimimumFormSchema = z.object({
@@ -68,3 +70,5 @@ export type MinimumForm = z.infer<typeof mimimumFormSchema>;
 export type Form = z.infer<typeof formSchema>;
 
 export type FormQuestion = z.infer<typeof questionSchema>;
+
+export type Visibility = z.infer<typeof visibility>;
