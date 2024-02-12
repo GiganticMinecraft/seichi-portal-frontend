@@ -183,16 +183,19 @@ export const createForm = async (
             // TODO: 異常系処理を書く
           }
 
-          if (responsePeriod == undefined) {
-            // TODO: 回答可能期間を指定しなかったときの処理を書く
-          }
+          const responsePeriodParameter =
+            responsePeriod != undefined
+              ? `start_at=${encodeURIComponent(
+                  `${responsePeriod?.startAt}:00+09:00`
+                )}&end_at=${encodeURIComponent(
+                  `${responsePeriod?.endAt}:00+09:00`
+                )}&`
+              : '';
 
           return await fetch(
-            `${apiServerUrl}/forms/${createdFormId}?start_at=${encodeURIComponent(
-              `${responsePeriod?.startAt}:00+09:00`
-            )}&end_at=${encodeURIComponent(
-              `${responsePeriod?.endAt}:00+09:00`
-            )}&visibility=${encodeURIComponent(visibility)}`,
+            `${apiServerUrl}/forms/${createdFormId}?${responsePeriodParameter}visibility=${encodeURIComponent(
+              visibility
+            )}`,
             {
               method: 'PATCH',
               headers: {
