@@ -1,5 +1,6 @@
 'use server';
 
+import { left, map, right } from '@/generic/Types';
 import {
   batchAnswersSchema,
   formSchema,
@@ -118,7 +119,11 @@ export const createForm = async (
     description: formDescription,
   });
 
-  await fetch(`${apiServerUrl}/forms`, {
+  type CreateFormResponse = {
+    id: number;
+  };
+
+  return await fetch(`${apiServerUrl}/forms`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -127,68 +132,77 @@ export const createForm = async (
     body: titleAndDescription,
     cache: 'no-cache',
   })
-    .then((response) => {
+    .then(async (response) => {
       if (!response.ok) {
         // TODO: 異常系処理を書く
+        return left(new Error(''));
       }
 
-      return response.json();
+      return right((await response.json()) as CreateFormResponse);
     })
-    .then((jsonResponse) => jsonResponse.id)
-    .then(async (createdFormId: number) => {
-      const body = JSON.stringify({
-        form_id: createdFormId,
-        questions: questions.map((question) => {
-          return {
-            title: question.questionTitle,
-            description: question.questionDescription,
-            question_type: question.answerType,
-            choices: question.choices
-              .filter((choice) => choice.choice != '')
-              .map((choice) => choice.choice),
-            is_required: question.isRequired,
-          };
-        }),
-      });
+    .then((errorWithResponse) =>
+      map(errorWithResponse, (response) => response.id)
+    )
+    .then((errorWithCreatedFormId) =>
+      map(errorWithCreatedFormId, async (formId) => {
+        const body = JSON.stringify({
+          form_id: formId,
+          questions: questions.map((question) => {
+            return {
+              title: question.questionTitle,
+              description: question.questionDescription,
+              question_type: question.answerType,
+              choices: question.choices
+                .filter((choice) => choice.choice != '')
+                .map((choice) => choice.choice),
+              is_required: question.isRequired,
+            };
+          }),
+        });
 
-      const responseAndCreatedFormId: [Response, number] = [
-        await fetch(`${apiServerUrl}/forms/questions`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`,
-          },
-          body,
-          cache: 'no-cache',
-        }),
-        createdFormId,
-      ];
+        const responseAndCreatedFormId: [Response, number] = [
+          await fetch(`${apiServerUrl}/forms/questions`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${token}`,
+            },
+            body,
+            cache: 'no-cache',
+          }),
+          formId,
+        ];
 
-      return responseAndCreatedFormId;
-    })
-    .then(async ([response, createdFormId]) => {
-      if (!response.ok) {
-        // TODO: 異常系処理を書く
-      }
+        return responseAndCreatedFormId;
+      })
+    )
+    .then((errorWithResponseAndCreatedFormId) =>
+      map(errorWithResponseAndCreatedFormId, (responseAndCreatedFormId) =>
+        responseAndCreatedFormId.then(async ([response, createdFormId]) => {
+          if (!response.ok) {
+            // TODO: 異常系処理を書く
+          }
 
-      if (responsePeriod == undefined) {
-        // TODO: 回答可能期間を指定しなかったときの処理を書く
-      }
+          if (responsePeriod == undefined) {
+            // TODO: 回答可能期間を指定しなかったときの処理を書く
+          }
 
-      return await fetch(
-        `${apiServerUrl}/forms/${createdFormId}?start_at=${encodeURIComponent(
-          `${responsePeriod?.startAt}:00+09:00`
-        )}&end_at=${encodeURIComponent(
-          `${responsePeriod?.endAt}:00+09:00`
-        )}&visibility=${encodeURIComponent(visibility)}`,
-        {
-          method: 'PATCH',
-          headers: {
-            Accept: 'application/json',
-            Authorization: `Bearer ${token}`,
-          },
-          cache: 'no-cache',
-        }
-      );
-    });
+          return await fetch(
+            `${apiServerUrl}/forms/${createdFormId}?start_at=${encodeURIComponent(
+              `${responsePeriod?.startAt}:00+09:00`
+            )}&end_at=${encodeURIComponent(
+              `${responsePeriod?.endAt}:00+09:00`
+            )}&visibility=${encodeURIComponent(visibility)}`,
+            {
+              method: 'PATCH',
+              headers: {
+                Accept: 'application/json',
+                Authorization: `Bearer ${token}`,
+              },
+              cache: 'no-cache',
+            }
+          );
+        })
+      )
+    );
 };
