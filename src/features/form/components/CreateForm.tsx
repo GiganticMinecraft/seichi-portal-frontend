@@ -158,7 +158,7 @@ export const CreateFormComponent = ({ token }: Token) => {
 
 interface FormProps {
   register: UseFormRegister<IForm>;
-  control: Control<IForm, any>;
+  control: Control<IForm, IForm>;
   visibility: Visibility;
 }
 
@@ -233,7 +233,7 @@ interface Question {
 }
 
 interface QuestionProps {
-  control: Control<IForm, any>;
+  control: Control<IForm, IForm>;
   register: UseFormRegister<IForm>;
   questionIndex: number;
   removeQuestion: (index: number) => void;
@@ -370,7 +370,7 @@ const CreateQuestionComponent = ({ register, control }: FormProps) => {
     control,
     name: `questions`,
   });
-  const answerType = (questionIndex: number) =>
+  const useAnswerType = (questionIndex: number) =>
     useWatch({
       control,
       name: `questions.${questionIndex}.answerType`,
@@ -404,7 +404,7 @@ const CreateQuestionComponent = ({ register, control }: FormProps) => {
           register={register}
           questionIndex={index}
           removeQuestion={remove}
-          answerType={answerType}
+          answerType={useAnswerType}
         />
       ))}
     </>

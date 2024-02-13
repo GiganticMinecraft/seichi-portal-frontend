@@ -70,8 +70,8 @@ export const Forms = ({ forms }: Props) => {
 
 export const CreateFormButton = () => {
   return (
-    <Button variant="contained" startIcon={<Add />} href='/admin/forms/create'>
+    <Button variant="contained" startIcon={<Add />} href="/admin/forms/create">
       NEW
     </Button>
-  )
-}
+  );
+};

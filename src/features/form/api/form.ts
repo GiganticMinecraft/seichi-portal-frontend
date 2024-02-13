@@ -13,7 +13,7 @@ import type {
   FormQuestion,
   Visibility,
 } from '../types/formSchema';
-import type { Either} from 'fp-ts/lib/Either';
+import type { Either } from 'fp-ts/lib/Either';
 
 const apiServerUrl = 'http://localhost:9000';
 
