@@ -1,6 +1,6 @@
 'use server';
 
-import { left, map, right } from '@/generic/Types';
+import { left, right } from 'fp-ts/lib/Either';
 import {
   batchAnswersSchema,
   formSchema,
@@ -13,6 +13,7 @@ import type {
   FormQuestion,
   Visibility,
 } from '../types/formSchema';
+import type { Either} from 'fp-ts/lib/Either';
 
 const apiServerUrl = 'http://localhost:9000';
 
@@ -106,24 +107,39 @@ interface Questions {
   isRequired: boolean;
 }
 
+export type ErrorResponse =
+  | 'Unauhorization'
+  | 'Forbidden'
+  | 'InternalError'
+  | 'UnknownError';
+
+async function responseJsonOrErrorResponse<T>(
+  response: Response
+): Promise<Either<ErrorResponse, T>> {
+  if (response.ok) {
+    return right((await response.json()) as T);
+  } else if (response.status == 401) {
+    return left('Unauhorization');
+  } else if (response.status == 403) {
+    return left('Forbidden');
+  } else if (response.status == 500) {
+    return left('InternalError');
+  } else {
+    return left('UnknownError');
+  }
+}
+
 export const createForm = async (
   token: string,
   formTitle: string,
-  formDescription: string,
-  questions: Questions[],
-  responsePeriod: { startAt: string; endAt: string } | undefined,
-  visibility: Visibility
+  formDescription: string
 ) => {
   const titleAndDescription = JSON.stringify({
     title: formTitle,
     description: formDescription,
   });
 
-  type CreateFormResponse = {
-    id: number;
-  };
-
-  return await fetch(`${apiServerUrl}/forms`, {
+  const createFormResponse = await fetch(`${apiServerUrl}/forms`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -131,81 +147,83 @@ export const createForm = async (
     },
     body: titleAndDescription,
     cache: 'no-cache',
-  })
-    .then(async (response) => {
-      if (!response.ok) {
-        // TODO: 異常系処理を書く
-        return left(new Error(''));
-      }
+  });
 
-      return right((await response.json()) as CreateFormResponse);
-    })
-    .then((errorWithResponse) =>
-      map(errorWithResponse, (response) => response.id)
-    )
-    .then((errorWithCreatedFormId) =>
-      map(errorWithCreatedFormId, async (formId) => {
-        const body = JSON.stringify({
-          form_id: formId,
-          questions: questions.map((question) => {
-            return {
-              title: question.questionTitle,
-              description: question.questionDescription,
-              question_type: question.answerType,
-              choices: question.choices
-                .filter((choice) => choice.choice != '')
-                .map((choice) => choice.choice),
-              is_required: question.isRequired,
-            };
-          }),
-        });
+  type CreateFormResponse = {
+    id: number;
+  };
 
-        const responseAndCreatedFormId: [Response, number] = [
-          await fetch(`${apiServerUrl}/forms/questions`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              Authorization: `Bearer ${token}`,
-            },
-            body,
-            cache: 'no-cache',
-          }),
-          formId,
-        ];
+  return responseJsonOrErrorResponse<CreateFormResponse>(createFormResponse);
+};
 
-        return responseAndCreatedFormId;
-      })
-    )
-    .then((errorWithResponseAndCreatedFormId) =>
-      map(errorWithResponseAndCreatedFormId, (responseAndCreatedFormId) =>
-        responseAndCreatedFormId.then(async ([response, createdFormId]) => {
-          if (!response.ok) {
-            // TODO: 異常系処理を書く
-          }
+export const addQuestions = async (
+  token: string,
+  formId: number,
+  questions: Questions[]
+) => {
+  const body = JSON.stringify({
+    form_id: formId,
+    questions: questions.map((question) => {
+      return {
+        title: question.questionTitle,
+        description: question.questionDescription,
+        question_type: question.answerType,
+        choices: question.choices
+          .filter((choice) => choice.choice != '')
+          .map((choice) => choice.choice),
+        is_required: question.isRequired,
+      };
+    }),
+  });
 
-          const responsePeriodParameter =
-            responsePeriod != undefined
-              ? `start_at=${encodeURIComponent(
-                  `${responsePeriod?.startAt}:00+09:00`
-                )}&end_at=${encodeURIComponent(
-                  `${responsePeriod?.endAt}:00+09:00`
-                )}&`
-              : '';
+  const addQuestionsResponse = await fetch(`${apiServerUrl}/forms/questions`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body,
+    cache: 'no-cache',
+  });
 
-          return await fetch(
-            `${apiServerUrl}/forms/${createdFormId}?${responsePeriodParameter}visibility=${encodeURIComponent(
-              visibility
-            )}`,
-            {
-              method: 'PATCH',
-              headers: {
-                Accept: 'application/json',
-                Authorization: `Bearer ${token}`,
-              },
-              cache: 'no-cache',
-            }
-          );
-        })
-      )
-    );
+  type AddQuestionsResponse = {
+    id: number;
+  };
+
+  return responseJsonOrErrorResponse<AddQuestionsResponse>(
+    addQuestionsResponse
+  );
+};
+
+export const updateFormMetaData = async (
+  token: string,
+  form_id: number,
+  responsePeriod: { startAt: string; endAt: string } | undefined,
+  visibility?: Visibility
+) => {
+  const responsePeriodParameter =
+    responsePeriod != undefined
+      ? `start_at=${encodeURIComponent(
+          `${responsePeriod?.startAt}:00+09:00`
+        )}&end_at=${encodeURIComponent(`${responsePeriod?.endAt}:00+09:00`)}`
+      : '';
+
+  const visibilityParameter =
+    visibility != undefined
+      ? `visibility=${encodeURIComponent(visibility)}`
+      : '';
+
+  const updateFormMetaDataResponse = await fetch(
+    `${apiServerUrl}/forms/${form_id}?${responsePeriodParameter}&${visibilityParameter}`,
+    {
+      method: 'PATCH',
+      headers: {
+        Accept: 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      cache: 'no-cache',
+    }
+  );
+
+  return responseJsonOrErrorResponse(updateFormMetaDataResponse);
 };

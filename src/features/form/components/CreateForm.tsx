@@ -17,9 +17,12 @@ import Select from '@mui/material/Select';
 import Stack from '@mui/material/Stack';
 import { styled } from '@mui/material/styles';
 import TextField from '@mui/material/TextField';
+import { isLeft } from 'fp-ts/lib/Either';
 import * as React from 'react';
 import { useFieldArray, useForm, useWatch } from 'react-hook-form';
-import { createForm } from '../api/form';
+import { match } from 'ts-pattern';
+import { addQuestions, createForm, updateFormMetaData } from '../api/form';
+import type { ErrorResponse } from '../api/form';
 import type { Visibility } from '../types/formSchema';
 import type {
   Control,
@@ -81,15 +84,55 @@ export const CreateFormComponent = ({ token }: Token) => {
     name: 'visibility',
   });
 
+  const getErrorReason = (errorResponse: ErrorResponse) => {
+    return match(errorResponse)
+      .with('Unauhorization', () => '認証されていません')
+      .with('Forbidden', () => '権限が足りません')
+      .with('InternalError', () => 'サーバーエラーが発生しました')
+      .with('UnknownError', () => '不明なエラーが発生しました')
+      .exhaustive();
+  };
+
   const onSubmit = async (data: IForm) => {
-    await createForm(
+    const createFormResult = await createForm(
       token,
       data.formTitle,
-      data.formDescription,
-      data.questions,
-      data.responsePeriod,
-      data.visibility
+      data.formDescription
     );
+
+    if (isLeft(createFormResult)) {
+      alert(
+        `フォーム作成時にエラーが発生しました。
+         理由: ${getErrorReason(createFormResult.left)}`
+      );
+    } else {
+      const createdFormId = createFormResult.right.id;
+      const addQuestionResult = await addQuestions(
+        token,
+        createdFormId,
+        data.questions
+      );
+      if (isLeft(addQuestionResult)) {
+        alert(
+          `質問追加時にエラーが発生しました。
+           理由: ${getErrorReason(addQuestionResult.left)}`
+        );
+      } else {
+        const updateFormMetaResult = await updateFormMetaData(
+          token,
+          createdFormId,
+          data.responsePeriod,
+          data.visibility
+        );
+
+        if (isLeft(updateFormMetaResult)) {
+          alert(
+            `回答可能期間と公開設定を設定中にエラーが発生しました。
+             理由: ${getErrorReason(updateFormMetaResult.left)}`
+          );
+        }
+      }
+    }
   };
 
   return (
