@@ -17,18 +17,17 @@ import Select from '@mui/material/Select';
 import Stack from '@mui/material/Stack';
 import { styled } from '@mui/material/styles';
 import TextField from '@mui/material/TextField';
-import { isLeft } from 'fp-ts/lib/Either';
+import { isRight } from 'fp-ts/lib/Either';
 import * as React from 'react';
 import { useFieldArray, useForm, useWatch } from 'react-hook-form';
-import { match } from 'ts-pattern';
 import { addQuestions, createForm, updateFormMetaData } from '../api/form';
-import type { ErrorResponse } from '../api/form';
 import type { Visibility } from '../types/formSchema';
 import type {
   Control,
   UseFieldArrayAppend,
   UseFormRegister,
 } from 'react-hook-form';
+import { noticeError } from '@/app/error/NoticeError';
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -84,15 +83,6 @@ export const CreateFormComponent = ({ token }: Token) => {
     name: 'visibility',
   });
 
-  const getErrorReason = (errorResponse: ErrorResponse) => {
-    return match(errorResponse)
-      .with('Unauhorization', () => '認証されていません')
-      .with('Forbidden', () => '権限が足りません')
-      .with('InternalError', () => 'サーバーエラーが発生しました')
-      .with('UnknownError', () => '不明なエラーが発生しました')
-      .exhaustive();
-  };
-
   const onSubmit = async (data: IForm) => {
     const createFormResult = await createForm(
       token,
@@ -100,24 +90,19 @@ export const CreateFormComponent = ({ token }: Token) => {
       data.formDescription
     );
 
-    if (isLeft(createFormResult)) {
-      alert(
-        `フォーム作成時にエラーが発生しました。
-         理由: ${getErrorReason(createFormResult.left)}`
-      );
-    } else {
+    noticeError(createFormResult);
+
+    if (isRight(createFormResult)) {
       const createdFormId = createFormResult.right.id;
       const addQuestionResult = await addQuestions(
         token,
         createdFormId,
         data.questions
       );
-      if (isLeft(addQuestionResult)) {
-        alert(
-          `質問追加時にエラーが発生しました。
-           理由: ${getErrorReason(addQuestionResult.left)}`
-        );
-      } else {
+
+      noticeError(addQuestionResult);
+
+      if (isRight(addQuestionResult)) {
         const updateFormMetaResult = await updateFormMetaData(
           token,
           createdFormId,
@@ -125,12 +110,7 @@ export const CreateFormComponent = ({ token }: Token) => {
           data.visibility
         );
 
-        if (isLeft(updateFormMetaResult)) {
-          alert(
-            `回答可能期間と公開設定を設定中にエラーが発生しました。
-             理由: ${getErrorReason(updateFormMetaResult.left)}`
-          );
-        }
+        noticeError(updateFormMetaResult);
       }
     }
   };

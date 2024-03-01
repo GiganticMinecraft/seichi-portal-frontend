@@ -2,7 +2,6 @@
 
 import { left, right } from 'fp-ts/lib/Either';
 import {
-  batchAnswersSchema,
   formSchema,
   mimimumFormsSchema,
   questionsSchema,
@@ -82,7 +81,9 @@ export const postAnswers = async (
   return response.ok;
 };
 
-export const getAllAnswers = async (token: string): Promise<BatchAnswer[]> => {
+export const getAllAnswers = async (
+  token: string
+): Promise<Either<ErrorResponse, BatchAnswer[]>> => {
   const response = await fetch(`${apiServerUrl}/forms/answers`, {
     method: 'GET',
     headers: {
@@ -92,7 +93,7 @@ export const getAllAnswers = async (token: string): Promise<BatchAnswer[]> => {
     cache: 'no-cache',
   });
 
-  return batchAnswersSchema.parse(await response.json());
+  return responseJsonOrErrorResponse<BatchAnswer[]>(response);
 };
 
 interface Choice {

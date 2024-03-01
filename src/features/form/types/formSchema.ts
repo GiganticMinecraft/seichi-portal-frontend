@@ -63,6 +63,8 @@ export const batchAnswerSchema = z.object({
 
 export const batchAnswersSchema = z.array(batchAnswerSchema);
 
+export type BatchAnswersSchema = z.infer<typeof batchAnswersSchema>;
+
 export type BatchAnswer = z.infer<typeof batchAnswerSchema>;
 
 export type MinimumForm = z.infer<typeof mimimumFormSchema>;
