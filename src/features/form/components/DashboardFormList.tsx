@@ -55,7 +55,9 @@ export const Forms = ({ forms }: Props) => {
                     </Typography>
                   </CardContent>
                   <CardActions>
-                    <Button size="small">EDIT</Button>
+                    <Button size="small" href={`/admin/forms/edit/${form.id}`}>
+                      EDIT
+                    </Button>
                     <Button size="small">CLOSE</Button>
                   </CardActions>
                 </Card>
