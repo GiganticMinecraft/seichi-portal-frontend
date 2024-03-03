@@ -4,14 +4,12 @@ import NavBar from '@/components/NavBar';
 import { getAllAnswers } from '@/features/form/api/form';
 import { getCachedToken } from '@/features/user/api/mcToken';
 import styles from '../page.module.css';
-import { noticeError } from '../error/NoticeError';
 import { isRight } from 'fp-ts/lib/Either';
+import { redirect } from 'next/navigation';
 
 const Home = async () => {
   const token = (await getCachedToken()) ?? '';
   const answers = await getAllAnswers(token);
-
-  noticeError(answers);
 
   if (isRight(answers)) {
     return (
@@ -22,7 +20,7 @@ const Home = async () => {
       </main>
     );
   } else {
-    return <></>;
+    redirect('/forbidden');
   }
 };
 
