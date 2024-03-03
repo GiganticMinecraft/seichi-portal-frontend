@@ -1,15 +1,11 @@
 'use server';
 
 import { left, right } from 'fp-ts/lib/Either';
-import {
-  formSchema,
-  mimimumFormsSchema,
-  questionsSchema,
-} from '../types/formSchema';
 import type {
   BatchAnswer,
   Form,
   FormQuestion,
+  MinimumForm,
   Visibility,
 } from '../types/formSchema';
 import type { Either } from 'fp-ts/lib/Either';
@@ -26,10 +22,14 @@ export const getForms = async (token: string) => {
     cache: 'no-cache',
   });
 
-  return mimimumFormsSchema.parse(await response.json());
+  return responseJsonOrErrorResponse<MinimumForm[]>(response);
 };
 
-export const getForm = async (formId: number, token: string): Promise<Form> => {
+// TODO: 使われていないかもしれない
+export const getForm = async (
+  formId: number,
+  token: string
+): Promise<Either<ErrorResponse, Form>> => {
   const response = await fetch(`${apiServerUrl}/forms/${formId}`, {
     method: 'GET',
     headers: {
@@ -39,13 +39,13 @@ export const getForm = async (formId: number, token: string): Promise<Form> => {
     cache: 'no-cache',
   });
 
-  return formSchema.parse(await response.json());
+  return responseJsonOrErrorResponse<Form>(response);
 };
 
 export const getFormQuestions = async (
   formId: number,
   token: string
-): Promise<FormQuestion[]> => {
+): Promise<Either<ErrorResponse, FormQuestion[]>> => {
   const response = await fetch(`${apiServerUrl}/forms/${formId}/questions`, {
     method: 'GET',
     headers: {
@@ -55,7 +55,7 @@ export const getFormQuestions = async (
     cache: 'no-cache',
   });
 
-  return questionsSchema.parse(await response.json());
+  return responseJsonOrErrorResponse<FormQuestion[]>(response);
 };
 
 export const postAnswers = async (

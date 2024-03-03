@@ -1,7 +1,8 @@
-import { ErrorResponse } from '@/features/form/api/form';
-import { Either, isLeft } from 'fp-ts/lib/Either';
+import { isLeft } from 'fp-ts/lib/Either';
 import { redirect } from 'next/navigation';
 import { match } from 'ts-pattern';
+import type { ErrorResponse } from '@/features/form/api/form';
+import type { Either} from 'fp-ts/lib/Either';
 
 export function redirectOrDoNothing<T>(
   errorResponseOrT: Either<ErrorResponse, T>
