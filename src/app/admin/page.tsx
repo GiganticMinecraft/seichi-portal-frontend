@@ -5,7 +5,7 @@ import { getAllAnswers } from '@/features/form/api/form';
 import { getCachedToken } from '@/features/user/api/mcToken';
 import styles from '../page.module.css';
 import { isRight } from 'fp-ts/lib/Either';
-import { redirect } from 'next/navigation';
+import { redirectOrDoNothing } from '../error/RedirectByErrorResponse';
 
 const Home = async () => {
   const token = (await getCachedToken()) ?? '';
@@ -20,7 +20,8 @@ const Home = async () => {
       </main>
     );
   } else {
-    redirect('/forbidden');
+    redirectOrDoNothing(answers);
+    return <></>;
   }
 };
 

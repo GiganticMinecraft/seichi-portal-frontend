@@ -27,7 +27,6 @@ import type {
   UseFieldArrayAppend,
   UseFormRegister,
 } from 'react-hook-form';
-import { noticeError } from '@/app/error/NoticeError';
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -89,6 +88,7 @@ export const CreateFormComponent = ({ token }: Token) => {
       data.formTitle,
       data.formDescription
     );
+    // TODO: react-hook-formsを使用したエラー処理を実装する
 
     noticeError(createFormResult);
 
