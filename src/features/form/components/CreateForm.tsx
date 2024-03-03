@@ -17,7 +17,7 @@ import Select from '@mui/material/Select';
 import Stack from '@mui/material/Stack';
 import { styled } from '@mui/material/styles';
 import TextField from '@mui/material/TextField';
-import { isRight } from 'fp-ts/lib/Either';
+import { isLeft, isRight } from 'fp-ts/lib/Either';
 import * as React from 'react';
 import { useFieldArray, useForm, useWatch } from 'react-hook-form';
 import { addQuestions, createForm, updateFormMetaData } from '../api/form';
@@ -52,7 +52,13 @@ interface Token {
 }
 
 export const CreateFormComponent = ({ token }: Token) => {
-  const { register, handleSubmit, control } = useForm<IForm>({
+  const {
+    register,
+    handleSubmit,
+    control,
+    setError,
+    formState: { errors },
+  } = useForm<IForm>({
     defaultValues: {
       formTitle: '',
       formDescription: '',
@@ -88,9 +94,6 @@ export const CreateFormComponent = ({ token }: Token) => {
       data.formTitle,
       data.formDescription
     );
-    // TODO: react-hook-formsを使用したエラー処理を実装する
-
-    noticeError(createFormResult);
 
     if (isRight(createFormResult)) {
       const createdFormId = createFormResult.right.id;
@@ -100,8 +103,6 @@ export const CreateFormComponent = ({ token }: Token) => {
         data.questions
       );
 
-      noticeError(addQuestionResult);
-
       if (isRight(addQuestionResult)) {
         const updateFormMetaResult = await updateFormMetaData(
           token,
@@ -110,13 +111,29 @@ export const CreateFormComponent = ({ token }: Token) => {
           data.visibility
         );
 
-        noticeError(updateFormMetaResult);
+        if (isLeft(updateFormMetaResult)) {
+          setError('root', {
+            type: 'serverError',
+            message: 'フォームのメタデータの設定に失敗しました',
+          });
+        }
+      } else {
+        setError('root', {
+          type: 'serverError',
+          message: '質問の追加に失敗しました',
+        });
       }
+    } else {
+      setError('root', {
+        type: 'serverError',
+        message: 'フォームの作成に失敗しました',
+      });
     }
   };
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
+      {errors.root && <p>{errors.root.message}</p>}
       <FormGroup>
         <FormSettingsConponent
           register={register}
