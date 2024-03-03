@@ -1,6 +1,6 @@
 'use server';
 
-import { left, right } from 'fp-ts/lib/Either';
+import { responseJsonOrErrorResponse } from '@/features/api/responseOrErrorResponse';
 import type {
   BatchAnswer,
   Form,
@@ -8,6 +8,7 @@ import type {
   MinimumForm,
   Visibility,
 } from '../types/formSchema';
+import type { ErrorResponse } from '@/features/api/responseOrErrorResponse';
 import type { Either } from 'fp-ts/lib/Either';
 
 const apiServerUrl = 'http://localhost:9000';
@@ -106,28 +107,6 @@ interface Questions {
   answerType: string;
   choices: Choice[];
   isRequired: boolean;
-}
-
-export type ErrorResponse =
-  | 'Unauhorization'
-  | 'Forbidden'
-  | 'InternalError'
-  | 'UnknownError';
-
-async function responseJsonOrErrorResponse<T>(
-  response: Response
-): Promise<Either<ErrorResponse, T>> {
-  if (response.ok) {
-    return right((await response.json()) as T);
-  } else if (response.status == 401) {
-    return left('Unauhorization');
-  } else if (response.status == 403) {
-    return left('Forbidden');
-  } else if (response.status == 500) {
-    return left('InternalError');
-  } else {
-    return left('UnknownError');
-  }
 }
 
 export const createForm = async (
