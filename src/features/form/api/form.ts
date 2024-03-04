@@ -26,7 +26,6 @@ export const getForms = async (token: string) => {
   return responseJsonOrErrorResponse<MinimumForm[]>(response);
 };
 
-// TODO: 使われていないかもしれない
 export const getForm = async (
   formId: number,
   token: string

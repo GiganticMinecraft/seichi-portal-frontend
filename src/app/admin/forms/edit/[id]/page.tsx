@@ -1,4 +1,4 @@
-import { getForms } from '@/features/form/api/form';
+import { getForm } from '@/features/form/api/form';
 import { getCachedToken } from '@/features/user/api/mcToken';
 import { getUser } from '@/features/user/api/user';
 import { isRight } from 'fp-ts/lib/Either';
@@ -7,25 +7,27 @@ import { redirectOrDoNothing } from '@/app/error/RedirectByErrorResponse';
 import styles from '@/app/page.module.css';
 import NavBar from '@/components/NavBar';
 import DashboardMenu from '@/components/DashboardMenu';
+import { EditFormComponent } from '@/features/form/components/editForm';
 
-const Home = async () => {
+const Home = async ({ params }: { params: { id: number } }) => {
   const token = (await getCachedToken()) ?? '';
-  const forms = await getForms(token);
+  const form = await getForm(params.id, token);
   const user = await getUser(token);
 
   if (isRight(user) && user.right.role == 'STANDARD_USER') {
     redirect('/forbidden');
   }
 
-  if (isRight(forms)) {
+  if (isRight(form)) {
     return (
       <main className={styles['main']}>
         <NavBar />
         <DashboardMenu />
+        <EditFormComponent form={form.right} />
       </main>
     );
   } else {
-    redirectOrDoNothing(forms);
+    redirectOrDoNothing(form);
     return <></>;
   }
 };
