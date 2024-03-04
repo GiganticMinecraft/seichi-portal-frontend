@@ -1,13 +1,13 @@
-import { getForm } from '@/features/form/api/form';
-import { getCachedToken } from '@/features/user/api/mcToken';
-import { getUser } from '@/features/user/api/user';
 import { isRight } from 'fp-ts/lib/Either';
 import { redirect } from 'next/navigation';
 import { redirectOrDoNothing } from '@/app/error/RedirectByErrorResponse';
 import styles from '@/app/page.module.css';
-import NavBar from '@/components/NavBar';
 import DashboardMenu from '@/components/DashboardMenu';
+import NavBar from '@/components/NavBar';
+import { getForm } from '@/features/form/api/form';
 import { EditFormComponent } from '@/features/form/components/editForm';
+import { getCachedToken } from '@/features/user/api/mcToken';
+import { getUser } from '@/features/user/api/user';
 
 const Home = async ({ params }: { params: { id: number } }) => {
   const token = (await getCachedToken()) ?? '';

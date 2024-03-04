@@ -1,10 +1,12 @@
 'use client';
 
-import { Option, none, some } from 'fp-ts/lib/Option';
-import { UseFormRegister, useForm } from 'react-hook-form';
 import { Box, FormGroup, Select } from '@material-ui/core';
 import { Stack, TextField } from '@mui/material';
-import { Form } from '../types/formSchema';
+import { none, some } from 'fp-ts/lib/Option';
+import { useForm } from 'react-hook-form';
+import type { Form } from '../types/formSchema';
+import type { Option } from 'fp-ts/lib/Option';
+import type { UseFormRegister } from 'react-hook-form';
 
 interface IForm {
   form_id: Option<number>;
@@ -73,8 +75,8 @@ const FormMetaComponent = ({
   );
 };
 
-export const EditFormComponent = async ({ form }: { form: Form }) => {
-  const { register, handleSubmit, control } = useForm<IForm>({
+export const EditFormComponent = ({ form }: { form: Form }) => {
+  const { register } = useForm<IForm>({
     defaultValues: {
       form_id: some(form.id),
       form_title: none,
