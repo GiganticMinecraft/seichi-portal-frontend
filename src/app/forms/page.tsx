@@ -1,19 +1,20 @@
-import { isRight } from 'fp-ts/lib/Either';
+'use client';
+
 import { getForms } from '@/features/form/api/form';
 import FormList from '@/features/form/components/FormList';
-import { getCachedToken } from '@/features/user/api/mcToken';
-import { redirectOrDoNothing } from '../error/RedirectByErrorResponse';
+import { MinimumForm } from '@/features/form/types/formSchema';
+import { useEffect, useState } from 'react';
 
-const Home = async () => {
-  const token = (await getCachedToken()) ?? '';
-  const forms = await getForms(token);
+export default function Home() {
+  const [forms, setForms] = useState<MinimumForm[]>([]);
 
-  if (isRight(forms)) {
-    return <FormList forms={forms.right} />;
-  } else {
-    redirectOrDoNothing(forms);
-    return <></>;
-  }
-};
+  const fetchForms = async () => {
+    setForms(await getForms());
+  };
 
-export default Home;
+  useEffect(() => {
+    fetchForms();
+  }, []);
+
+  return <FormList forms={forms} />;
+}

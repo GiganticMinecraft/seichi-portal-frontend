@@ -1,5 +1,3 @@
-'use server';
-
 import { responseJsonOrErrorResponse } from '@/features/api/responseOrErrorResponse';
 import type {
   BatchAnswer,
@@ -13,18 +11,18 @@ import type { Either } from 'fp-ts/lib/Either';
 
 const apiServerUrl = 'http://localhost:9000';
 
-export const getForms = async (token: string) => {
-  const response = await fetch(`${apiServerUrl}/forms`, {
+export async function getForms() {
+  const response = await fetch('http://localhost:3000/api/forms', {
     method: 'GET',
     headers: {
       Accept: 'application/json',
-      Authorization: `Bearer ${token}`,
     },
-    cache: 'no-cache',
   });
 
-  return responseJsonOrErrorResponse<MinimumForm[]>(response);
-};
+  const forms = (await response.json()) as MinimumForm[];
+
+  return forms;
+}
 
 export const getForm = async (
   formId: number,
