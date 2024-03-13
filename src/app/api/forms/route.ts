@@ -1,15 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { redirectByResponse } from '../util/responseOrErrorResponse';
-
-//TODO: 環境変数を使いたい
-const apiServerUrl = 'http://localhost:9000';
+import { BACKEND_SERVER_URL } from '@/env';
 
 export async function GET(_: NextRequest) {
   //TODO: tokenを取ってこれるapi定義をする(redirectとかもそこでやってほしい)
   const token = 'debug_user';
-  console.log('get');
 
-  const response = await fetch(`${apiServerUrl}/forms`, {
+  const response = await fetch(`${BACKEND_SERVER_URL}/forms`, {
     method: 'GET',
     headers: {
       Accept: 'application/json',
