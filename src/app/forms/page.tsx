@@ -1,20 +1,24 @@
 'use client';
 
-import { getForms } from '@/features/form/api/form';
+import { redirect } from 'next/navigation';
+import useSWR from 'swr';
 import FormList from '@/features/form/components/FormList';
-import { MinimumForm } from '@/features/form/types/formSchema';
-import { useEffect, useState } from 'react';
+import type { MinimumForm } from '@/features/form/types/formSchema';
 
-export default function Home() {
-  const [forms, setForms] = useState<MinimumForm[]>([]);
+const Home = () => {
+  const fetcher = (url: string) => fetch(url).then((res) => res.json());
+  const { data: forms, isLoading } = useSWR<MinimumForm[]>(
+    'http://localhost:3000/api/forms',
+    fetcher
+  );
 
-  const fetchForms = async () => {
-    setForms(await getForms());
-  };
-
-  useEffect(() => {
-    fetchForms();
-  }, []);
+  if (!isLoading && !forms) {
+    redirect('/');
+  } else if (!forms) {
+    return null;
+  }
 
   return <FormList forms={forms} />;
-}
+};
+
+export default Home;

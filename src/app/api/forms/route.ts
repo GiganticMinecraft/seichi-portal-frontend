@@ -1,9 +1,10 @@
 'use server';
 
-import { NextRequest, NextResponse } from 'next/server';
-import { redirectByResponse } from '../util/responseOrErrorResponse';
+import { NextResponse } from 'next/server';
 import { BACKEND_SERVER_URL } from '@/env';
 import { getCachedToken } from '@/features/user/api/mcToken';
+import { redirectByResponse } from '../util/responseOrErrorResponse';
+import type { NextRequest } from 'next/server';
 
 export async function GET(_: NextRequest) {
   const token = await getCachedToken();
