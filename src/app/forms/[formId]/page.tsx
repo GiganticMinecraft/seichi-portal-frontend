@@ -1,19 +1,24 @@
-import { isRight } from 'fp-ts/lib/Either';
-import { redirectOrDoNothing } from '@/app/error/RedirectByErrorResponse';
-import { getFormQuestions } from '@/features/form/api/form';
+'use client';
+
 import AnswerForm from '@/features/form/components/AnswerForm';
-import { getCachedToken } from '@/features/user/api/mcToken';
+import { FormQuestion } from '@/features/form/types/formSchema';
+import useSWR from 'swr';
+import { redirect } from 'next/navigation';
 
-const Home = async ({ params }: { params: { formId: number } }) => {
-  const token = (await getCachedToken()) ?? '';
-  const questions = await getFormQuestions(params.formId, token);
+const Home = ({ params }: { params: { formId: number } }) => {
+  const fetcher = (url: string) => fetch(url).then((res) => res.json());
+  const { data: questions, isLoading } = useSWR<FormQuestion[]>(
+    `http://localhost:3000/api/questions?formId=${params.formId}`,
+    fetcher
+  );
 
-  if (isRight(questions)) {
-    return <AnswerForm questions={questions.right} formId={params.formId} />;
-  } else {
-    redirectOrDoNothing(questions);
-    return <></>;
+  if (!isLoading && !questions) {
+    redirect('/');
+  } else if (!questions) {
+    return null;
   }
+
+  return <AnswerForm questions={questions} formId={params.formId} />;
 };
 
 export default Home;
