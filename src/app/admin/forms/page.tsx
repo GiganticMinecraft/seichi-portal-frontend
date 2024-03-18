@@ -1,39 +1,42 @@
-import { isRight } from 'fp-ts/lib/Either';
+'use client';
+
 import { redirect } from 'next/navigation';
-import { redirectOrDoNothing } from '@/app/error/RedirectByErrorResponse';
 import DashboardMenu from '@/components/DashboardMenu';
-import NavBar from '@/components/NavBar';
-import { getForms } from '@/features/form/api/form';
 import {
   CreateFormButton,
   Forms,
 } from '@/features/form/components/DashboardFormList';
-import { getCachedToken } from '@/features/user/api/mcToken';
-import { getUser } from '@/features/user/api/user';
-import styles from '../../page.module.css';
+import useSWR from 'swr';
+import { MinimumForm } from '@/features/form/types/formSchema';
 
-const Home = async () => {
-  const token = (await getCachedToken()) ?? '';
-  const forms = await getForms(token);
-  const user = await getUser(token);
+const Home = () => {
+  //memo: 認証周りをどうするか考える(場合によっては認証周りをページ内にして、callbackできるようにしたい)
 
-  if (isRight(user) && user.right.role == 'STANDARD_USER') {
-    redirect('/forbidden');
+  // const token = (await getCachedToken()) ?? '';
+  const fetcher = (url: string) => fetch(url).then((res) => res.json());
+  const { data: forms, isLoading } = useSWR<MinimumForm[]>(
+    'http://localhost:3000/api/forms',
+    fetcher
+  );
+
+  if (!isLoading && !forms) {
+    redirect('/');
+  } else if (!forms) {
+    return null;
   }
+  // const user = await getUser(token);
 
-  if (isRight(forms)) {
-    return (
-      <main className={styles['main']}>
-        <NavBar />
-        <DashboardMenu />
-        <CreateFormButton />
-        <Forms forms={forms.right} />
-      </main>
-    );
-  } else {
-    redirectOrDoNothing(forms);
-    return <></>;
-  }
+  // if (isRight(user) && user.right.role == 'STANDARD_USER') {
+  //   redirect('/forbidden');
+  // }
+
+  return (
+    <>
+      <DashboardMenu />
+      <CreateFormButton />
+      <Forms forms={forms} />
+    </>
+  );
 };
 
 export default Home;
