@@ -1,35 +1,30 @@
-import { isRight } from 'fp-ts/lib/Either';
-import { redirect } from 'next/navigation';
+'use client';
+
 import DataTable from '@/components/Dashboard';
 import DashboardMenu from '@/components/DashboardMenu';
-import NavBar from '@/components/NavBar';
-import { getAllAnswers } from '@/features/form/api/form';
-import { getCachedToken } from '@/features/user/api/mcToken';
-import { getUser } from '@/features/user/api/user';
-import { redirectOrDoNothing } from '../error/RedirectByErrorResponse';
-import styles from '../page.module.css';
+import { BatchAnswer } from '@/features/form/types/formSchema';
+import useSWR from 'swr';
+import { redirect } from 'next/navigation';
 
-const Home = async () => {
-  const token = (await getCachedToken()) ?? '';
-  const answers = await getAllAnswers(token);
-  const user = await getUser(token);
+const Home = () => {
+  const fetcher = (url: string) => fetch(url).then((res) => res.json());
+  const { data: answers, isLoading } = useSWR<BatchAnswer[]>(
+    'http://localhost:3000/api/answers',
+    fetcher
+  );
 
-  if (isRight(user) && user.right.role == 'STANDARD_USER') {
-    redirect('/forbidden');
+  if (!isLoading && !answers) {
+    redirect('/');
+  } else if (!answers) {
+    return null;
   }
 
-  if (isRight(answers)) {
-    return (
-      <main className={styles['main']}>
-        <NavBar />
-        <DashboardMenu />
-        <DataTable answers={answers.right} />
-      </main>
-    );
-  } else {
-    redirectOrDoNothing(answers);
-    return <></>;
-  }
+  return (
+    <>
+      <DashboardMenu />
+      <DataTable answers={answers} />
+    </>
+  );
 };
 
 export default Home;
