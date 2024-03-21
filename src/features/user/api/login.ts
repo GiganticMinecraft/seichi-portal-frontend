@@ -103,17 +103,3 @@ export const acquireMinecraftProfile = async ({
 
   return result;
 };
-
-export const sendJsonToBackend = async ({
-  token,
-}: Awaited<ReturnType<typeof acquireMinecraftAccessToken>>) => {
-  const URL = 'http://localhost:9000/forms';
-
-  await fetch(URL, {
-    method: 'GET',
-    headers: {
-      Accept: 'application/json',
-      Authorization: `Bearer ${token}`,
-    },
-  });
-};

@@ -16,11 +16,13 @@ export const SigninButton = () => {
   const [_isPending, startTransition] = useTransition();
 
   const onClick = async () => {
-    await instance.initialize();
+    instance.loginRedirect();
+
     const token = await instance
       .acquireTokenSilent(loginRequest)
       .catch(async () => instance.acquireTokenPopup(loginRequest))
       .then((r) => r.accessToken);
+
     startTransition(async () => {
       const xblToken = await acquireXboxLiveToken(token);
       const xstsToken = await acquireXboxServiceSecurityToken(xblToken);

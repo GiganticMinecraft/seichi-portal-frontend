@@ -1,10 +1,14 @@
+'use client';
+
 import MenuIcon from '@mui/icons-material/Menu';
 import { Box, AppBar, Toolbar, IconButton, Typography } from '@mui/material';
 import { Link } from './Link';
-import { AuthenticatedTemplate } from '../features/user/components/AuthenticatedTemplate';
 import { SigninButton } from '../features/user/components/SigninButton';
 import { SignoutButton } from '../features/user/components/SignoutButton';
-import { UnauthenticatedTemplate } from '../features/user/components/UnauthenticatedTemplate';
+import {
+  AuthenticatedTemplate,
+  UnauthenticatedTemplate,
+} from '@azure/msal-react';
 
 const NavBar = () => {
   return (

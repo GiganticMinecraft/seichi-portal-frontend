@@ -11,9 +11,9 @@ export const middleware = async (request: NextRequest) => {
     return;
   }
 
-  if (!!(await getCachedToken(request.cookies))) {
-    return;
-  }
+  // if (!!(await getCachedToken(request.cookies))) {
+  //   return;
+  // }
 
-  return NextResponse.redirect(new URL('/', request.url));
+  // return NextResponse.redirect(new URL('/', request.url));
 };

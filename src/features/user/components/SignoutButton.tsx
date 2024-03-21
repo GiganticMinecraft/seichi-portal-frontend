@@ -10,7 +10,7 @@ export const SignoutButton = () => {
   const router = useRouter();
 
   const onClick = async () => {
-    await instance.logoutPopup();
+    instance.logoutRedirect();
     clearCachedToken();
     router.refresh();
   };

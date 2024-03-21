@@ -1,3 +1,5 @@
+'use client';
+
 import Menu from '@/components/Menu';
 
 const Home = () => {

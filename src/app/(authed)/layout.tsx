@@ -1,11 +1,11 @@
-import './globals.css';
+import '../globals.css';
 import { Inter } from 'next/font/google';
 import NavBar from '@/components/NavBar';
 import { AuthenticatedTemplate } from '@/features/user/components/AuthenticatedTemplate';
 import { MsalProvider } from '@/features/user/components/MsalProvider';
 import { NeedToSignin } from '@/features/user/components/NeedToSignin';
 import { UnauthenticatedTemplate } from '@/features/user/components/UnauthenticatedTemplate';
-import styles from './page.module.css';
+import styles from '../page.module.css';
 import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
 
