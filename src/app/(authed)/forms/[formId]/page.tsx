@@ -1,9 +1,9 @@
 'use client';
 
-import AnswerForm from '@/features/form/components/AnswerForm';
-import { FormQuestion } from '@/features/form/types/formSchema';
-import useSWR from 'swr';
 import { redirect } from 'next/navigation';
+import useSWR from 'swr';
+import AnswerForm from '@/features/form/components/AnswerForm';
+import type { FormQuestion } from '@/features/form/types/formSchema';
 
 const Home = ({ params }: { params: { formId: number } }) => {
   const fetcher = (url: string) => fetch(url).then((res) => res.json());

@@ -1,11 +1,11 @@
 import { isRight } from 'fp-ts/lib/Either';
 import { redirect } from 'next/navigation';
+import styles from '@/app/page.module.css';
 import DashboardMenu from '@/components/DashboardMenu';
 import NavBar from '@/components/NavBar';
 import { CreateFormComponent } from '@/features/form/components/CreateForm';
 import { getCachedToken } from '@/features/user/api/mcToken';
 import { getUser } from '@/features/user/api/user';
-import styles from '../../../page.module.css';
 
 const Home = async () => {
   const token = (await getCachedToken()) ?? '';

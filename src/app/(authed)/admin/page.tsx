@@ -1,10 +1,10 @@
 'use client';
 
+import { redirect } from 'next/navigation';
+import useSWR from 'swr';
 import DataTable from '@/components/Dashboard';
 import DashboardMenu from '@/components/DashboardMenu';
-import { BatchAnswer } from '@/features/form/types/formSchema';
-import useSWR from 'swr';
-import { redirect } from 'next/navigation';
+import type { BatchAnswer } from '@/features/form/types/formSchema';
 
 const Home = () => {
   const fetcher = (url: string) => fetch(url).then((res) => res.json());

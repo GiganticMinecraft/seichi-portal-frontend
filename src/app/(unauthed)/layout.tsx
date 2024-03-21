@@ -1,9 +1,9 @@
 import '../globals.css';
 import { Inter } from 'next/font/google';
+import { MsalProvider } from '@/features/user/components/MsalProvider';
 import styles from '../page.module.css';
 import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
-import { MsalProvider } from '@/features/user/components/MsalProvider';
 
 const inter = Inter({ subsets: ['latin'] });
 

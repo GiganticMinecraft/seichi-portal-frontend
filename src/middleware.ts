@@ -1,5 +1,4 @@
-import { NextResponse } from 'next/server';
-import { getCachedToken } from '@/features/user/api/mcToken';
+import { getCachedToken } from './features/user/api/mcToken';
 import type { NextRequest } from 'next/server';
 
 export const middleware = async (request: NextRequest) => {
@@ -11,9 +10,9 @@ export const middleware = async (request: NextRequest) => {
     return;
   }
 
-  // if (!!(await getCachedToken(request.cookies))) {
-  //   return;
-  // }
+  if (!!(await getCachedToken(request.cookies))) {
+    return;
+  }
 
-  // return NextResponse.redirect(new URL('/', request.url));
+  // return NextResponse.redirect(new URL('/login', request.url));
 };

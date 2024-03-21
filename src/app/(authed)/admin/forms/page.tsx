@@ -1,13 +1,13 @@
 'use client';
 
 import { redirect } from 'next/navigation';
+import useSWR from 'swr';
 import DashboardMenu from '@/components/DashboardMenu';
 import {
   CreateFormButton,
   Forms,
 } from '@/features/form/components/DashboardFormList';
-import useSWR from 'swr';
-import { MinimumForm } from '@/features/form/types/formSchema';
+import type { MinimumForm } from '@/features/form/types/formSchema';
 
 const Home = () => {
   //memo: 認証周りをどうするか考える(場合によっては認証周りをページ内にして、callbackできるようにしたい)
