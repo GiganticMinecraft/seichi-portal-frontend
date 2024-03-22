@@ -23,8 +23,6 @@ import {
 } from '@mui/material';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { getCachedToken } from '@/features/user/api/mcToken';
-import { postAnswers } from '../api/form';
 import type { FormQuestion } from '../types/formSchema';
 import type { NonEmptyArray } from '@/generic/Types';
 
@@ -92,8 +90,18 @@ const AnswerForm = ({ questions: questions, formId }: Props) => {
       }
     });
 
-    const token = (await getCachedToken()) ?? '';
-    if (await postAnswers(formId, formAnswers, token)) {
+    const postAnswerResponse = await fetch('/api/answers', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        form_id: Number(formId),
+        answers: formAnswers,
+      }),
+    });
+
+    if (postAnswerResponse.ok) {
       toggleIsSubmitted(true);
       reset();
       setSelectedValues({});

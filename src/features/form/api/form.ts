@@ -2,29 +2,6 @@ import { responseJsonOrErrorResponse } from '@/features/api/responseOrErrorRespo
 import type { Visibility } from '../types/formSchema';
 const apiServerUrl = 'http://localhost:9000';
 
-export const postAnswers = async (
-  form_id: number,
-  answers: { question_id: number; answer: string }[],
-  token: string
-): Promise<boolean> => {
-  const answersJson = JSON.stringify({
-    form_id: Number(form_id),
-    answers,
-  });
-
-  const response = await fetch(`${apiServerUrl}/forms/answers`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`,
-    },
-    body: answersJson,
-    cache: 'no-cache',
-  });
-
-  return response.ok;
-};
-
 interface Choice {
   choice: string;
 }
