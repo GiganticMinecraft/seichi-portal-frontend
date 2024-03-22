@@ -1,10 +1,10 @@
 'use client';
 
 import { redirect } from 'next/navigation';
+import useSWR from 'swr';
 import DashboardMenu from '@/components/DashboardMenu';
 import { EditFormComponent } from '@/features/form/components/editForm';
-import { Form } from '@/features/form/types/formSchema';
-import useSWR from 'swr';
+import type { Form } from '@/features/form/types/formSchema';
 
 const Home = ({ params }: { params: { id: number } }) => {
   const fetcher = (url: string) => fetch(url).then((res) => res.json());

@@ -1,9 +1,9 @@
 'use server';
 
-import { getCachedToken } from './features/user/api/mcToken';
 import { NextResponse, type NextRequest } from 'next/server';
-import { User } from './features/user/types/userSchema';
 import { BACKEND_SERVER_URL } from './env';
+import { getCachedToken } from './features/user/api/mcToken';
+import type { User } from './features/user/types/userSchema';
 
 export const middleware = async (request: NextRequest) => {
   if (request.method !== 'GET') {

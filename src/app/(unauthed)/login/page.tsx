@@ -65,7 +65,7 @@ const Home = () => {
           .catch((e) => console.log(e));
       }
     })().catch((e) => console.log(e));
-  }, [inProgress, accounts, isInitialized, instance, router]);
+  }, [inProgress, accounts, isInitialized, instance, router, callbackUrl]);
 
   return <></>;
 };

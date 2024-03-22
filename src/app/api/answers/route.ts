@@ -32,15 +32,13 @@ export async function POST(req: NextRequest) {
     return NextResponse.redirect('/');
   }
 
-  const body = await req.json();
-
   const response = await fetch(`${BACKEND_SERVER_URL}/forms/answers`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${token}`,
     },
-    body: JSON.stringify(body),
+    body: JSON.stringify(await req.json()),
     cache: 'no-cache',
   });
 
