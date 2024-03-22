@@ -1,60 +1,6 @@
 import { responseJsonOrErrorResponse } from '@/features/api/responseOrErrorResponse';
-import type {
-  BatchAnswer,
-  Form,
-  FormQuestion,
-  MinimumForm,
-  Visibility,
-} from '../types/formSchema';
-import type { ErrorResponse } from '@/features/api/responseOrErrorResponse';
-import type { Either } from 'fp-ts/lib/Either';
-
+import type { Visibility } from '../types/formSchema';
 const apiServerUrl = 'http://localhost:9000';
-
-export async function getForms() {
-  const response = await fetch('http://localhost:3000/api/forms', {
-    method: 'GET',
-    headers: {
-      Accept: 'application/json',
-    },
-  });
-
-  const forms = (await response.json()) as MinimumForm[];
-
-  return forms;
-}
-
-export const getForm = async (
-  formId: number,
-  token: string
-): Promise<Either<ErrorResponse, Form>> => {
-  const response = await fetch(`${apiServerUrl}/forms/${formId}`, {
-    method: 'GET',
-    headers: {
-      Accept: 'application/json',
-      Authorization: `Bearer ${token}`,
-    },
-    cache: 'no-cache',
-  });
-
-  return responseJsonOrErrorResponse<Form>(response);
-};
-
-export const getFormQuestions = async (
-  formId: number,
-  token: string
-): Promise<Either<ErrorResponse, FormQuestion[]>> => {
-  const response = await fetch(`${apiServerUrl}/forms/${formId}/questions`, {
-    method: 'GET',
-    headers: {
-      Accept: 'application/json',
-      Authorization: `Bearer ${token}`,
-    },
-    cache: 'no-cache',
-  });
-
-  return responseJsonOrErrorResponse<FormQuestion[]>(response);
-};
 
 export const postAnswers = async (
   form_id: number,
@@ -77,21 +23,6 @@ export const postAnswers = async (
   });
 
   return response.ok;
-};
-
-export const getAllAnswers = async (
-  token: string
-): Promise<Either<ErrorResponse, BatchAnswer[]>> => {
-  const response = await fetch(`${apiServerUrl}/forms/answers`, {
-    method: 'GET',
-    headers: {
-      Accept: 'application/json',
-      Authorization: `Bearer ${token}`,
-    },
-    cache: 'no-cache',
-  });
-
-  return responseJsonOrErrorResponse<BatchAnswer[]>(response);
 };
 
 interface Choice {
