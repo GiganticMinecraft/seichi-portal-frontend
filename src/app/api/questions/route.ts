@@ -34,3 +34,27 @@ export async function GET(req: NextRequest) {
 
   return NextResponse.json(await response.json());
 }
+
+export async function POST(req: NextRequest) {
+  const token = await getCachedToken();
+  if (!token) {
+    return NextResponse.redirect('/');
+  }
+
+  const addQuestionsResponse = await fetch(
+    `${BACKEND_SERVER_URL}/forms/questions`,
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(await req.json()),
+      cache: 'no-cache',
+    }
+  );
+
+  redirectByResponse(req, addQuestionsResponse);
+
+  return NextResponse.json(await addQuestionsResponse.json());
+}

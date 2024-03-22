@@ -17,10 +17,8 @@ import Select from '@mui/material/Select';
 import Stack from '@mui/material/Stack';
 import { styled } from '@mui/material/styles';
 import TextField from '@mui/material/TextField';
-import { isLeft, isRight } from 'fp-ts/lib/Either';
 import * as React from 'react';
 import { useFieldArray, useForm, useWatch } from 'react-hook-form';
-import { addQuestions, createForm, updateFormMetaData } from '../api/form';
 import type { Visibility } from '../types/formSchema';
 import type {
   Control,
@@ -47,11 +45,7 @@ interface IForm {
   visibility: Visibility;
 }
 
-interface Token {
-  token: string;
-}
-
-export const CreateFormComponent = ({ token }: Token) => {
+export const CreateFormComponent = () => {
   const {
     register,
     handleSubmit,
@@ -89,38 +83,73 @@ export const CreateFormComponent = ({ token }: Token) => {
   });
 
   const onSubmit = async (data: IForm) => {
-    const createFormResult = await createForm(
-      token,
-      data.formTitle,
-      data.formDescription
-    );
+    const createFormResponse = await fetch('/api/form', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        title: data.formTitle,
+        description: data.formDescription,
+      }),
+    });
 
-    if (isRight(createFormResult)) {
-      const createdFormId = createFormResult.right.id;
-      const addQuestionResult = await addQuestions(
-        token,
-        createdFormId,
-        data.questions
+    if (createFormResponse.ok) {
+      type CreateFormResponse = {
+        id: number;
+      };
+      const formId = ((await createFormResponse.json()) as CreateFormResponse)
+        .id;
+
+      const addQuestionsQuery = new URLSearchParams({
+        form_id: formId.toString(),
+        start_at: data.responsePeriod.startAt,
+        end_at: data.responsePeriod.endAt,
+        visibility: data.visibility,
+      }).toString();
+
+      const addQuestionsResponse = await fetch(
+        `/api/form?${addQuestionsQuery}`,
+        {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
       );
 
-      if (isRight(addQuestionResult)) {
-        const updateFormMetaResult = await updateFormMetaData(
-          token,
-          createdFormId,
-          data.responsePeriod,
-          data.visibility
-        );
+      if (addQuestionsResponse.ok) {
+        const addQuestionsResponse = await fetch('/api/questions', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            form_id: formId,
+            questions: data.questions.map((question) => {
+              return {
+                title: question.questionTitle,
+                description: question.questionDescription,
+                question_type: question.answerType,
+                choices: question.choices
+                  .filter((choice) => choice.choice != '')
+                  .map((choice) => choice.choice),
+                is_required: question.isRequired,
+              };
+            }),
+          }),
+        });
 
-        if (isLeft(updateFormMetaResult)) {
+        if (!addQuestionsResponse.ok) {
           setError('root', {
             type: 'serverError',
-            message: 'フォームのメタデータの設定に失敗しました',
+            message: '質問の追加に失敗しました',
           });
         }
       } else {
         setError('root', {
           type: 'serverError',
-          message: '質問の追加に失敗しました',
+          message: 'フォームのメタデータの設定に失敗しました',
         });
       }
     } else {
