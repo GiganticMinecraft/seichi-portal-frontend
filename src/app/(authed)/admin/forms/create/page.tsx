@@ -1,6 +1,8 @@
+'use client';
+
 import DashboardMenu from '@/components/DashboardMenu';
 import { CreateFormComponent } from '@/features/form/components/CreateForm';
-const Home = async () => {
+const Home = () => {
   return (
     <>
       <DashboardMenu />
