@@ -1,15 +1,15 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 
-export function redirectByResponse(response: Response) {
+export function redirectByResponse(reqest: NextRequest, response: Response) {
   if (response.ok) {
     return NextResponse.next();
   } else if (response.status == 401) {
-    return NextResponse.redirect('/login');
+    return NextResponse.redirect(`${reqest.nextUrl.origin}/login`);
   } else if (response.status == 403) {
-    return NextResponse.redirect('/forbidden');
+    return NextResponse.redirect(`${reqest.nextUrl.origin}/forbidden`);
   } else if (response.status == 500) {
-    return NextResponse.redirect('/internal-error');
+    return NextResponse.redirect(`${reqest.nextUrl.origin}/internal-error`);
   } else {
-    return NextResponse.redirect('/unknown-error');
+    return NextResponse.redirect(`${reqest.nextUrl.origin}/unknown-error`);
   }
 }

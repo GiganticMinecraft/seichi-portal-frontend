@@ -6,7 +6,7 @@ import { getCachedToken } from '@/features/user/api/mcToken';
 import { redirectByResponse } from '../util/responseOrErrorResponse';
 import type { NextRequest } from 'next/server';
 
-export async function GET(_: NextRequest) {
+export async function GET(req: NextRequest) {
   const token = await getCachedToken();
   if (!token) {
     return NextResponse.redirect('/');
@@ -21,7 +21,7 @@ export async function GET(_: NextRequest) {
     cache: 'no-cache',
   });
 
-  redirectByResponse(response);
+  redirectByResponse(req, response);
 
   return NextResponse.json(await response.json());
 }

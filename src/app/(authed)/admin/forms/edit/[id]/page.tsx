@@ -1,35 +1,30 @@
-import { isRight } from 'fp-ts/lib/Either';
+'use client';
+
 import { redirect } from 'next/navigation';
-import { redirectOrDoNothing } from '@/app/error/RedirectByErrorResponse';
-import styles from '@/app/page.module.css';
 import DashboardMenu from '@/components/DashboardMenu';
-import NavBar from '@/components/NavBar';
-import { getForm } from '@/features/form/api/form';
 import { EditFormComponent } from '@/features/form/components/editForm';
-import { getCachedToken } from '@/features/user/api/mcToken';
-import { getUser } from '@/features/user/api/user';
+import { Form } from '@/features/form/types/formSchema';
+import useSWR from 'swr';
 
-const Home = async ({ params }: { params: { id: number } }) => {
-  const token = (await getCachedToken()) ?? '';
-  const form = await getForm(params.id, token);
-  const user = await getUser(token);
+const Home = ({ params }: { params: { id: number } }) => {
+  const fetcher = (url: string) => fetch(url).then((res) => res.json());
+  const { data, isLoading } = useSWR<Form>(
+    `http://localhost:3000/api/form?formId=${params.id}`,
+    fetcher
+  );
 
-  if (isRight(user) && user.right.role == 'STANDARD_USER') {
-    redirect('/forbidden');
+  if (!isLoading && !data) {
+    redirect('/');
+  } else if (!data) {
+    return null;
   }
 
-  if (isRight(form)) {
-    return (
-      <main className={styles['main']}>
-        <NavBar />
-        <DashboardMenu />
-        <EditFormComponent form={form.right} />
-      </main>
-    );
-  } else {
-    redirectOrDoNothing(form);
-    return <></>;
-  }
+  return (
+    <>
+      <DashboardMenu />
+      <EditFormComponent form={data} />
+    </>
+  );
 };
 
 export default Home;

@@ -30,7 +30,7 @@ export async function GET(req: NextRequest) {
     }
   );
 
-  redirectByResponse(response);
+  redirectByResponse(req, response);
 
   return NextResponse.json(await response.json());
 }

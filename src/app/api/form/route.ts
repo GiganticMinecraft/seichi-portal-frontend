@@ -9,10 +9,13 @@ import type { NextRequest } from 'next/server';
 export async function GET(req: NextRequest) {
   const token = await getCachedToken();
   if (!token) {
-    return NextResponse.redirect('/');
+    return NextResponse.redirect(`${req.nextUrl.origin}/login`);
   }
 
-  const response = await fetch(`${BACKEND_SERVER_URL}/forms`, {
+  const searchParms = req.nextUrl.searchParams;
+  const formId = searchParms.get('formId');
+
+  const response = await fetch(`${BACKEND_SERVER_URL}/forms/${formId}`, {
     method: 'GET',
     headers: {
       Accept: 'application/json',
