@@ -2,7 +2,7 @@
 
 import { InteractionStatus } from '@azure/msal-browser';
 import { useMsal } from '@azure/msal-react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import {
   acquireMinecraftAccessToken,
@@ -17,6 +17,8 @@ const Home = () => {
   const { instance, inProgress, accounts } = useMsal();
   const [isInitialized, setState] = useState(false);
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const callbackUrl = searchParams.get('callbackUrl');
 
   useEffect(() => {
     (async () => {
@@ -45,12 +47,20 @@ const Home = () => {
 
             saveTokenToCache(mcAccessToken);
           });
-        router.push('/');
+
+        if (callbackUrl) {
+          router.push(callbackUrl);
+        } else {
+          router.push('/');
+        }
       } else if (isInitialized && inProgress === InteractionStatus.None) {
+        const callbackQuery = new URLSearchParams({
+          callbackUrl: callbackUrl ?? '/',
+        }).toString();
         instance
           .loginRedirect({
             ...loginRequest,
-            redirectStartPage: '/login',
+            redirectStartPage: `/login?${callbackQuery}`,
           })
           .catch((e) => console.log(e));
       }
