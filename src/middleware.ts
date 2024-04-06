@@ -10,7 +10,11 @@ export const middleware = async (request: NextRequest) => {
     return;
   }
   const pathName = request.nextUrl.pathname.toLowerCase();
-  if (pathName === '/' || pathName.includes('_next/static')) {
+  if (
+    pathName === '/' ||
+    pathName.startsWith('/login') ||
+    pathName.includes('_next/static')
+  ) {
     return;
   }
 
