@@ -1,9 +1,9 @@
 'use server';
 
 import { cookies } from 'next/headers';
+import { DEBUG_MODE } from '@/env';
 import type { acquireMinecraftAccessToken } from './login';
 import type { RequestCookies } from 'next/dist/compiled/@edge-runtime/cookies';
-import { DEBUG_MODE } from '@/env';
 
 const KEY = 'SEICHI_PORTAL__MC_TOKEN';
 
