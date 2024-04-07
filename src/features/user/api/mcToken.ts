@@ -3,6 +3,7 @@
 import { cookies } from 'next/headers';
 import type { acquireMinecraftAccessToken } from './login';
 import type { RequestCookies } from 'next/dist/compiled/@edge-runtime/cookies';
+import { DEBUG_MODE } from '@/env';
 
 const KEY = 'SEICHI_PORTAL__MC_TOKEN';
 
@@ -12,7 +13,11 @@ export const getCachedToken = (
   return new Promise((resolve, _reject) => {
     const cache = cookie ? cookie.get(KEY) : cookies().get(KEY);
 
-    resolve(cache?.value);
+    if (DEBUG_MODE && !cache) {
+      resolve('debug_user');
+    } else {
+      resolve(cache?.value);
+    }
   });
 };
 
