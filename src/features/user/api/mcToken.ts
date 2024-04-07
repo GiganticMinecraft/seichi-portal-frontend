@@ -13,7 +13,7 @@ export const getCachedToken = (
   return new Promise((resolve, _reject) => {
     const cache = cookie ? cookie.get(KEY) : cookies().get(KEY);
 
-    if (DEBUG_MODE && !cache) {
+    if (process.env.NODE_ENV == 'development' && DEBUG_MODE && !cache) {
       resolve('debug_user');
     } else {
       resolve(cache?.value);
