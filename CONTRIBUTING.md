@@ -22,7 +22,7 @@
 >
 > `NEXT_PUBLIC_MS_APP_CLIENT_ID` は Microsoft アカウントによる認証に必要な環境変数のため、 `DEBUG_MODE` が `true` のときは設定されていなくても問題ありません。
 
-## デバッグモードについて
+## デバッグモード
 
 環境変数から設定できるデバッグモードは、Microsoft アカウントの認証を必要とせずにログインが必要なページを開くことできるようになるモードです。
 
@@ -80,4 +80,24 @@ TODO: 後で書く
 
 ```bash
 yarn dev
+```
+
+## code formatter と lint
+
+### フォーマットと auto fix の実行
+
+```bash
+yarn pretty
+```
+
+### フォーマットのみ実行
+
+```bash
+yarn fmt:fix
+```
+
+### auto fix の実行
+
+```bash
+yarn fix:fix
 ```
