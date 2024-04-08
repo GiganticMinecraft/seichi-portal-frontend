@@ -1866,6 +1866,11 @@ foreground-child@^3.1.0:
     cross-spawn "^7.0.0"
     signal-exit "^4.0.1"
 
+fp-ts@^2.16.5:
+  version "2.16.5"
+  resolved "https://registry.yarnpkg.com/fp-ts/-/fp-ts-2.16.5.tgz#d79b97168aeafcf9612f18bbc017f513ecb20ac9"
+  integrity sha512-N8T8PwMSeTKKtkm9lkj/zSTAnPC/aJIIrQhnHxxkL0KLsRCNUPANksJOlMXxcKKCo7H1ORP3No9EMD+fP0tsdA==
+
 fs-minipass@^2.0.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/fs-minipass/-/fs-minipass-2.1.0.tgz#7f5036fdbf12c63c169190cbe4199c852271f9fb"
