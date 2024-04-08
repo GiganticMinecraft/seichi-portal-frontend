@@ -1,5 +1,25 @@
 # seichi-portal-frontendの開発について
 
+## 目次
+
+- [seichi-portal-frontendの開発について](#seichi-portal-frontendの開発について)
+  - [目次](#目次)
+  - [必要なツールやミドルウェア](#必要なツールやミドルウェア)
+  - [環境変数](#環境変数)
+  - [デバッグモード](#デバッグモード)
+  - [ディレクトリ構成](#ディレクトリ構成)
+    - [`src/app/(authed)`](#srcappauthed)
+    - [`src/app/(unauthed)`](#srcappunauthed)
+    - [`src/app/api`](#srcappapi)
+    - [`src/components`](#srccomponents)
+    - [`src/features/`](#srcfeatures)
+    - [`generic`](#generic)
+  - [開発環境の起動](#開発環境の起動)
+  - [code formatter と lint](#code-formatter-と-lint)
+    - [フォーマットと auto fix の実行](#フォーマットと-auto-fix-の実行)
+    - [フォーマットのみ実行](#フォーマットのみ実行)
+    - [auto fix の実行](#auto-fix-の実行)
+
 ## 必要なツールやミドルウェア
 
 - [TypeScript](https://www.typescriptlang.org/)
