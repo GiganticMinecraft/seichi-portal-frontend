@@ -30,10 +30,10 @@ const Home = () => {
 
   useEffect(() => {
     (async () => {
-      if (isInitialized && accounts.length > 0) {
+      if (isInitialized && accounts.length > 0 && accounts[0]) {
         const requestWithAccount: SilentRequest = {
-          ...loginRequest,
           account: accounts[0],
+          ...loginRequest,
         };
 
         await instance
