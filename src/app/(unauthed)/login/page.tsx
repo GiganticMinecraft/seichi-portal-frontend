@@ -4,11 +4,6 @@ import { InteractionStatus } from '@azure/msal-browser';
 import { useMsal } from '@azure/msal-react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import {
-  acquireMinecraftAccessToken,
-  acquireXboxLiveToken,
-  acquireXboxServiceSecurityToken,
-} from '@/features/user/api/login';
 import { saveTokenToCache } from '@/features/user/api/mcToken';
 import { loginRequest } from '@/features/user/const/authConfig';
 import type { SilentRequest } from '@azure/msal-browser';
@@ -41,9 +36,12 @@ const Home = () => {
           .then(async (r) => {
             const token = r.accessToken;
 
-            const xblToken = await acquireXboxLiveToken(token);
-            const xstsToken = await acquireXboxServiceSecurityToken(xblToken);
-            const mcAccessToken = await acquireMinecraftAccessToken(xstsToken);
+            const mcAccessToken = (await fetch(
+              'http://localhost:3000/api/minecraft-access-token',
+              {
+                body: JSON.stringify({ token }),
+              }
+            ).then((res) => res.json())) as { token: string; expires: number };
 
             saveTokenToCache(mcAccessToken);
           });

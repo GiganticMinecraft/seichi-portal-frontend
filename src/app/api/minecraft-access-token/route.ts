@@ -1,12 +1,33 @@
 'use server';
 
+import { NextResponse } from 'next/server';
 import {
-  xboxLiveServiceTokenResponseSchema,
   minecraftAccessTokenResponseSchema,
-  minecraftProfileResponseSchema,
-} from '../types/loginSchema';
+  xboxLiveServiceTokenResponseSchema,
+} from '@/features/user/types/loginSchema';
+import type { NextRequest } from 'next/server';
 
-export const acquireXboxLiveToken = async (token: string) => {
+export async function POST(req: NextRequest) {
+  const microsoftAccountToken = (await req.json()) as { token: string };
+
+  const xboxLiveTokenWithUserHash = await acquireXboxLiveTokenWithUserHash(
+    microsoftAccountToken.token
+  );
+  const xboxServiceSecurityToken =
+    await acquireXboxServiceSecurityTokenWithUserHash(
+      xboxLiveTokenWithUserHash
+    );
+  const minecraftAccessTokenResult = await acquireMinecraftAccessToken(
+    xboxServiceSecurityToken
+  );
+
+  return NextResponse.json({
+    token: minecraftAccessTokenResult.token,
+    expires: minecraftAccessTokenResult.expires,
+  });
+}
+
+const acquireXboxLiveTokenWithUserHash = async (token: string) => {
   const URL = 'https://user.auth.xboxlive.com/user/authenticate';
 
   const response = await fetch(URL, {
@@ -33,9 +54,9 @@ export const acquireXboxLiveToken = async (token: string) => {
   return { token: result.Token, userHash: result.DisplayClaims.xui[0].uhs };
 };
 
-export const acquireXboxServiceSecurityToken = async ({
+const acquireXboxServiceSecurityTokenWithUserHash = async ({
   token,
-}: Awaited<ReturnType<typeof acquireXboxLiveToken>>) => {
+}: Awaited<ReturnType<typeof acquireXboxLiveTokenWithUserHash>>) => {
   const URL = 'https://xsts.auth.xboxlive.com/xsts/authorize';
 
   const response = await fetch(URL, {
@@ -61,10 +82,10 @@ export const acquireXboxServiceSecurityToken = async ({
   return { token: result.Token, userHash: result.DisplayClaims.xui[0].uhs };
 };
 
-export const acquireMinecraftAccessToken = async ({
+const acquireMinecraftAccessToken = async ({
   token,
   userHash,
-}: Awaited<ReturnType<typeof acquireXboxServiceSecurityToken>>) => {
+}: Awaited<ReturnType<typeof acquireXboxServiceSecurityTokenWithUserHash>>) => {
   const URL =
     'https://api.minecraftservices.com/authentication/login_with_xbox';
 
@@ -84,22 +105,4 @@ export const acquireMinecraftAccessToken = async ({
   );
 
   return { token: result.access_token, expires: result.expires_in };
-};
-
-export const acquireMinecraftProfile = async ({
-  token,
-}: Awaited<ReturnType<typeof acquireMinecraftAccessToken>>) => {
-  const URL = 'https://api.minecraftservices.com/minecraft/profile';
-
-  const response = await fetch(URL, {
-    method: 'GET',
-    headers: {
-      Accept: 'application/json',
-      Authorization: `Bearer ${token}`,
-    },
-  });
-
-  const result = minecraftProfileResponseSchema.parse(await response.json());
-
-  return result;
 };

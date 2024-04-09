@@ -2,7 +2,6 @@
 
 import { cookies } from 'next/headers';
 import { DEBUG_MODE } from '@/env';
-import type { acquireMinecraftAccessToken } from './login';
 import type { RequestCookies } from 'next/dist/compiled/@edge-runtime/cookies';
 
 const KEY = 'SEICHI_PORTAL__MC_TOKEN';
@@ -21,14 +20,14 @@ export const getCachedToken = (
   });
 };
 
-export const saveTokenToCache = ({
-  token,
-  expires,
-}: Awaited<ReturnType<typeof acquireMinecraftAccessToken>>) => {
+export const saveTokenToCache = (tokenWithExpires: {
+  token: string;
+  expires: number;
+}) => {
   const store = cookies();
 
-  store.set(KEY, token, {
-    maxAge: expires,
+  store.set(KEY, tokenWithExpires.token, {
+    maxAge: tokenWithExpires.expires,
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
   });
