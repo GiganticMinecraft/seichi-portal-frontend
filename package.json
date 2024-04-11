@@ -11,7 +11,7 @@
     "fmt": "prettier --check --log-level=warn './**/*.{ts,tsx,css}'",
     "fmt:fix": "prettier --write --log-level=warn './**/*.{ts,tsx,css}'",
     "postinstall": "typesync || :",
-    "pretty": "yarn lint:fix && yarn fmt:fix"
+    "pretty": "yarn lint:fix && yarn fmt:fix && yarn build"
   },
   "dependencies": {
     "@azure/msal-browser": "^3.2.0",
