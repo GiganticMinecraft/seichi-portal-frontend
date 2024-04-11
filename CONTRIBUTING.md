@@ -16,7 +16,7 @@
     - [`generic`](#generic)
   - [開発環境の起動](#開発環境の起動)
   - [code formatter と lint](#code-formatter-と-lint)
-    - [フォーマットと auto fix の実行](#フォーマットと-auto-fix-の実行)
+    - [フォーマット、auto fix、ビルドチェックの実行](#フォーマットauto-fixビルドチェックの実行)
     - [フォーマットのみ実行](#フォーマットのみ実行)
     - [auto fix の実行](#auto-fix-の実行)
 
@@ -104,7 +104,7 @@ yarn dev
 
 ## code formatter と lint
 
-### フォーマットと auto fix の実行
+### フォーマット、auto fix、ビルドチェックの実行
 
 ```bash
 yarn pretty
