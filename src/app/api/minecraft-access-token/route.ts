@@ -4,7 +4,7 @@ import { NextResponse } from 'next/server';
 import {
   minecraftAccessTokenResponseSchema,
   xboxLiveServiceTokenResponseSchema,
-} from '@/features/user/types/loginSchema';
+} from '@/_schemas/loginSchema';
 import type { NextRequest } from 'next/server';
 
 export async function POST(req: NextRequest) {

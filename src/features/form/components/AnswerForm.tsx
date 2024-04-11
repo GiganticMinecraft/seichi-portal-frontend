@@ -23,7 +23,7 @@ import {
 } from '@mui/material';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import type { FormQuestion } from '../types/formSchema';
+import type { FormQuestion } from '../../../_schemas/formSchema';
 import type { NonEmptyArray } from '@/generic/Types';
 
 interface Props {

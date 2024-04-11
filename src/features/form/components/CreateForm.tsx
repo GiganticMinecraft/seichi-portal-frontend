@@ -19,7 +19,7 @@ import { styled } from '@mui/material/styles';
 import TextField from '@mui/material/TextField';
 import * as React from 'react';
 import { useFieldArray, useForm, useWatch } from 'react-hook-form';
-import type { Visibility } from '../types/formSchema';
+import type { Visibility } from '../../../_schemas/formSchema';
 import type {
   Control,
   UseFieldArrayAppend,

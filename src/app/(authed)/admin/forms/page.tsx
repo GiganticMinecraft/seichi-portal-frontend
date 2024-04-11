@@ -7,7 +7,7 @@ import {
   CreateFormButton,
   Forms,
 } from '@/features/form/components/DashboardFormList';
-import type { MinimumForm } from '@/features/form/types/formSchema';
+import type { MinimumForm } from '@/_schemas/formSchema';
 
 const Home = () => {
   const fetcher = (url: string) => fetch(url).then((res) => res.json());

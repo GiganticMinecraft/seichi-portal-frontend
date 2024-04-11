@@ -4,7 +4,7 @@ import { Box, FormGroup, Select } from '@material-ui/core';
 import { Stack, TextField } from '@mui/material';
 import { none, some } from 'fp-ts/lib/Option';
 import { useForm } from 'react-hook-form';
-import type { Form } from '../types/formSchema';
+import type { Form } from '../../../_schemas/formSchema';
 import type { Option } from 'fp-ts/lib/Option';
 import type { UseFormRegister } from 'react-hook-form';
 

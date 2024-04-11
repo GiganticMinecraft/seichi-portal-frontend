@@ -3,7 +3,7 @@
 import { redirect } from 'next/navigation';
 import useSWR from 'swr';
 import FormList from '@/features/form/components/FormList';
-import type { MinimumForm } from '@/features/form/types/formSchema';
+import type { MinimumForm } from '@/_schemas/formSchema';
 
 const Home = () => {
   const fetcher = (url: string) => fetch(url).then((res) => res.json());

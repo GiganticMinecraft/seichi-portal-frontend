@@ -11,8 +11,3 @@ export const minecraftAccessTokenResponseSchema = z.object({
   access_token: z.string(),
   expires_in: z.number().int(),
 });
-
-export const minecraftProfileResponseSchema = z.object({
-  id: z.string(),
-  name: z.string(),
-});
