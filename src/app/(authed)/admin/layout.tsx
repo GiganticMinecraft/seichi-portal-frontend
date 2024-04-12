@@ -1,6 +1,5 @@
 import '../../globals.css';
 import { Inter } from 'next/font/google';
-import NavBar from '@/components/NavBar';
 import { AuthenticatedTemplate } from '@/features/user/components/AuthenticatedTemplate';
 import { MsalProvider } from '@/features/user/components/MsalProvider';
 import { NeedToSignin } from '@/features/user/components/NeedToSignin';
@@ -8,6 +7,8 @@ import { UnauthenticatedTemplate } from '@/features/user/components/Unauthentica
 import styles from '../../page.module.css';
 import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
+import AdminNavigationBar from './_components/AdminNavigationBar';
+import DashboardMenu from './_components/DashboardMenu';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -22,7 +23,8 @@ const RootLayout = ({ children }: { children: ReactNode }) => {
       <body className={inter.className}>
         <main className={styles['main']}>
           <MsalProvider>
-            <NavBar />
+            <AdminNavigationBar />
+            <DashboardMenu />
             <AuthenticatedTemplate>{children}</AuthenticatedTemplate>
             <UnauthenticatedTemplate>
               <NeedToSignin />

@@ -3,8 +3,8 @@
 import { redirect } from 'next/navigation';
 import useSWR from 'swr';
 import DataTable from '@/components/Dashboard';
-import DashboardMenu from '@/components/DashboardMenu';
 import type { BatchAnswer } from '@/_schemas/formSchema';
+import DashboardMenu from './_components/DashboardMenu';
 
 const Home = () => {
   const fetcher = (url: string) => fetch(url).then((res) => res.json());

@@ -1,15 +1,25 @@
 'use client';
 
 import { Star } from '@mui/icons-material';
-import { styled, Grid, Typography, MenuList, MenuItem } from '@mui/material';
+import { styled, Typography, MenuList, MenuItem } from '@mui/material';
+import Drawer from '@mui/material/Drawer';
 
 const Demo = styled('div')(({ theme }) => ({
   backgroundColor: theme.palette.background.paper,
+  color: theme.palette.text.primary,
 }));
+
+const drawerWidth = 240;
 
 const DashboardMenu = () => {
   return (
-    <Grid item xs={12} md={6}>
+    <Drawer
+      variant="permanent"
+      sx={{
+        width: drawerWidth,
+        [`& .MuiDrawer-paper`]: { width: drawerWidth, boxSizing: 'border-box' },
+      }}
+    >
       <Typography sx={{ mt: 4, mb: 2 }} variant="h6" component="div">
         Menu
       </Typography>
@@ -25,7 +35,7 @@ const DashboardMenu = () => {
           })}
         </MenuList>
       </Demo>
-    </Grid>
+    </Drawer>
   );
 };
 

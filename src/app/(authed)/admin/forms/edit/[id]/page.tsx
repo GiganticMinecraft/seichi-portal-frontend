@@ -2,7 +2,6 @@
 
 import { redirect } from 'next/navigation';
 import useSWR from 'swr';
-import DashboardMenu from '@/components/DashboardMenu';
 import { EditFormComponent } from '@/features/form/components/editForm';
 import type { Form } from '@/_schemas/formSchema';
 
@@ -21,7 +20,6 @@ const Home = ({ params }: { params: { id: number } }) => {
 
   return (
     <>
-      <DashboardMenu />
       <EditFormComponent form={data} />
     </>
   );

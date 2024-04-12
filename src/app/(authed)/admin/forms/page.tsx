@@ -2,7 +2,6 @@
 
 import { redirect } from 'next/navigation';
 import useSWR from 'swr';
-import DashboardMenu from '@/components/DashboardMenu';
 import {
   CreateFormButton,
   Forms,
@@ -24,7 +23,6 @@ const Home = () => {
 
   return (
     <>
-      <DashboardMenu />
       <CreateFormButton />
       <Forms forms={forms} />
     </>
