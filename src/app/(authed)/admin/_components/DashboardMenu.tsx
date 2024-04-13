@@ -1,7 +1,13 @@
 'use client';
 
 import { Star } from '@mui/icons-material';
-import { styled, Typography, MenuList, MenuItem } from '@mui/material';
+import {
+  styled,
+  Typography,
+  MenuList,
+  MenuItem,
+  ListItemIcon,
+} from '@mui/material';
 import Drawer from '@mui/material/Drawer';
 
 const Demo = styled('div')(({ theme }) => ({
@@ -28,7 +34,9 @@ const DashboardMenu = () => {
           {['Dashboard', 'Forms', 'Announcements'].map((value) => {
             return (
               <MenuItem key={value}>
-                <Star />
+                <ListItemIcon>
+                  <Star />
+                </ListItemIcon>
                 {value}
               </MenuItem>
             );
