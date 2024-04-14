@@ -38,7 +38,7 @@ const DashboardMenu = () => {
       <MenuList>
         {['Dashboard', 'Forms', 'Announcements'].map((value) => {
           return (
-            <MenuItem key={value}>
+            <MenuItem key={value} sx={{ color: 'white' }}>
               <ListItemIcon
                 sx={{
                   color: 'rgba(255, 255, 255, 0.56)',
