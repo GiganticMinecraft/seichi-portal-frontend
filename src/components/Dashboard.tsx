@@ -34,23 +34,21 @@ const prepareRows = (answers: Answers) => {
 
 const DataTable = (answers: Answers) => {
   return (
-    <div style={{ height: 400, width: '100%' }}>
-      <DataGrid
-        rows={prepareRows(answers)}
-        columns={columns}
-        initialState={{
-          pagination: {
-            paginationModel: { page: 0, pageSize: 5 },
-          },
-        }}
-        sx={{
-          '& .MuiDataGrid-columnHeader, & .MuiDataGrid-cell': {
-            color: 'white',
-          },
-        }}
-        checkboxSelection
-      />
-    </div>
+    <DataGrid
+      rows={prepareRows(answers)}
+      columns={columns}
+      initialState={{
+        pagination: {
+          paginationModel: { page: 0, pageSize: 5 },
+        },
+      }}
+      sx={{
+        '& .MuiDataGrid-columnHeader, & .MuiDataGrid-cell': {
+          color: 'white',
+        },
+      }}
+      checkboxSelection
+    />
   );
 };
 

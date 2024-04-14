@@ -1,5 +1,6 @@
 'use client';
 
+import SearchIcon from '@mui/icons-material/Search';
 import {
   Typography,
   Box,
@@ -10,16 +11,21 @@ import {
   IconButton,
   InputBase,
 } from '@mui/material';
-import SearchIcon from '@mui/icons-material/Search';
 import Image from 'next/image';
 
 const SearchField = () => {
   return (
     <Paper
       component="form"
-      sx={{ p: '2px 4px', display: 'flex', alignItems: 'center', width: 400 }}
+      sx={{
+        p: '2px 4px',
+        display: 'flex',
+        alignItems: 'center',
+        width: 400,
+        background: 'rgba(255, 255, 255, 0.15)',
+      }}
     >
-      <IconButton sx={{ p: '10px' }} aria-label="search">
+      <IconButton sx={{ p: '10px', color: '#FFFFFF' }} aria-label="search">
         <SearchIcon />
       </IconButton>
       <InputBase
@@ -36,16 +42,23 @@ const NavBar = () => {
     <Box sx={{ flexGrow: 1 }}>
       <AppBar
         position="fixed"
-        sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        sx={{
+          zIndex: (theme) => theme.zIndex.drawer + 1,
+          backgroundColor: (theme) => theme.palette.secondary.main,
+        }}
       >
         <Toolbar>
           <Image
             src="/favicon.ico"
-            width={32}
-            height={32}
+            width={48}
+            height={48}
             alt={'seichi-portal logo'}
           />
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+          <Typography
+            variant="h6"
+            component="div"
+            sx={{ flexGrow: 1, paddingLeft: '10px' }}
+          >
             <Link href="/admin" color="#fff" sx={{ textDecoration: 'none' }}>
               Seichi Portal Admin
             </Link>

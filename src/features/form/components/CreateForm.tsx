@@ -2,7 +2,6 @@
 
 import Button from '@material-ui/core/Button';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
-import FormGroup from '@material-ui/core/FormGroup';
 import IconButton from '@material-ui/core/IconButton';
 import InputLabel from '@material-ui/core/InputLabel';
 import Add from '@mui/icons-material/Add';
@@ -161,24 +160,22 @@ export const CreateFormComponent = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
+    <Box component="form" onSubmit={handleSubmit(onSubmit)} alignItems="center">
       {errors.root && <p>{errors.root.message}</p>}
-      <FormGroup>
-        <FormSettingsConponent
-          register={register}
-          control={control}
-          visibility={visibility}
-        />
-        <CreateQuestionComponent
-          register={register}
-          control={control}
-          visibility={visibility}
-        />
-        <Button type="submit" variant="contained" endIcon={<SendIcon />}>
-          フォーム作成
-        </Button>
-      </FormGroup>
-    </form>
+      <FormSettingsConponent
+        register={register}
+        control={control}
+        visibility={visibility}
+      />
+      <CreateQuestionComponent
+        register={register}
+        control={control}
+        visibility={visibility}
+      />
+      <Button type="submit" variant="contained" endIcon={<SendIcon />}>
+        フォーム作成
+      </Button>
+    </Box>
   );
 };
 
