@@ -62,10 +62,10 @@ export const CreateFormComponent = () => {
           label="Webhook URL"
           type="url"
         />
-        {/* todo: default_answer_titleにhelper textをつける */}
         <TextField
           {...register('settings.default_answer_title')}
           label="デフォルトの回答タイトル"
+          helperText="回答が送信されたときに設定されるタイトルで、$[question_id]で指定の質問の回答をタイトルに埋め込むことができます。"
         />
         <Button type="submit" variant="contained" endIcon={<SendIcon />}>
           フォーム作成
