@@ -1,9 +1,8 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button, Container, MenuItem, Stack, TextField } from '@mui/material';
 import { useForm, useWatch } from 'react-hook-form';
-import { formSchema } from '@/_schemas/formSchema';
-import type { Form } from '@/_schemas/formSchema';
 import SendIcon from '@mui/icons-material/Send';
+import { Form, formSchema } from './_schema/createFormSchema';
 
 export const CreateFormComponent = () => {
   const {
@@ -12,7 +11,6 @@ export const CreateFormComponent = () => {
     register,
     formState: { errors },
   } = useForm<Form>({
-    // fixme: ここの型を_schemasのFormなのは適切ではなさそうなので、同ディレクトリにこのフォーム用のスキーマを定義する
     mode: 'onSubmit',
     reValidateMode: 'onBlur',
     resolver: zodResolver(formSchema),
