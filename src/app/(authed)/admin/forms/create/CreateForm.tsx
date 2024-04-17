@@ -15,11 +15,11 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
+import { useCallback, useEffect } from 'react';
 import { useFieldArray, useForm, useWatch } from 'react-hook-form';
 import { formSchema } from './_schema/createFormSchema';
 import type { Form } from './_schema/createFormSchema';
 import type { Control, UseFormRegister } from 'react-hook-form';
-import { useEffect } from 'react';
 
 const QuestionComponent = ({
   control,
@@ -47,11 +47,11 @@ const QuestionComponent = ({
     defaultValue: 'TEXT',
   });
 
-  const addChoice = () => {
+  const addChoice = useCallback(() => {
     if (useWatchQuestionType !== 'TEXT') {
       appendChoices({ choice: '' });
     }
-  };
+  }, [useWatchQuestionType, appendChoices]);
 
   const removeChoice = (index: number) => {
     if (choicesField.length > 1) {
@@ -65,7 +65,7 @@ const QuestionComponent = ({
     } else {
       addChoice();
     }
-  }, [useWatchQuestionType]);
+  }, [useWatchQuestionType, addChoice, removeChoices]);
 
   return (
     <Stack spacing={2}>
