@@ -17,12 +17,10 @@ export const formSchema = z.object({
   description: z.string(),
   questions: questionSchema.array(),
   settings: z.object({
-    response_period: z
-      .object({
-        start_at: z.string().datetime(),
-        end_at: z.string().datetime(),
-      })
-      .optional(),
+    response_period: z.object({
+      start_at: z.string().datetime().nullable(),
+      end_at: z.string().datetime().nullable(),
+    }),
     webhook_url: z.string().nullable(),
     default_answer_title: z.string().nullable(),
     visibility: z.enum(['PUBLIC', 'PRIVATE']),

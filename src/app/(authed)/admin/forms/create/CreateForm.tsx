@@ -3,6 +3,7 @@ import { Add } from '@mui/icons-material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import SendIcon from '@mui/icons-material/Send';
 import {
+  Alert,
   Button,
   Card,
   CardContent,
@@ -239,6 +240,9 @@ export const CreateFormComponent = () => {
                 </CardContent>
               ))}
             </Card>
+            {errors.root && (
+              <Alert severity="error">{errors.root.message}</Alert>
+            )}
             <Button type="submit" variant="contained" endIcon={<SendIcon />}>
               フォーム作成
             </Button>
