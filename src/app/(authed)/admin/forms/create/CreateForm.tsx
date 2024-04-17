@@ -110,7 +110,7 @@ const QuestionComponent = ({
       </Button>
       {choicesField.map((field, index) => {
         return (
-          <Stack direction="row">
+          <Stack direction="row" key={field.id}>
             <TextField
               {...register(`questions.${questionId}.choices.${index}.choice`)}
               key={field.id}
