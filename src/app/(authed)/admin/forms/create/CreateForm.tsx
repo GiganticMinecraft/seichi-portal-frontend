@@ -62,7 +62,9 @@ const QuestionComponent = ({
   useEffect(() => {
     if (useWatchQuestionType === 'TEXT') {
       removeChoices();
-    } else {
+    } else if (choicesField.length === 0) {
+      // NOTE: choicesField.lengthが0であることを確認しないと
+      // 単一選択 -> 複数選択 -> 単一選択のように変更した場合に選択肢の入力欄が増加してしまう
       addChoice();
     }
   }, [useWatchQuestionType, addChoice, removeChoices]);
