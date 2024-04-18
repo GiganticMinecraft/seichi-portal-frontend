@@ -1,14 +1,14 @@
 'use client';
 
 import { CssBaseline, ThemeProvider } from '@mui/material';
-import { CreateFormComponent } from './CreateForm';
+import FormCreateForm from './_components/FormCreateForm';
 import adminDashboardTheme from '../../theme/adminDashboardTheme';
 
 const Home = () => {
   return (
     <ThemeProvider theme={adminDashboardTheme}>
       <CssBaseline />
-      <CreateFormComponent />
+      <FormCreateForm />
     </ThemeProvider>
   );
 };
