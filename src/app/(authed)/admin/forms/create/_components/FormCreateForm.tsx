@@ -53,16 +53,7 @@ const FormCreateForm = () => {
       <Grid item xs={10}>
         <Container component="form" onSubmit={handleSubmit(onSubmit)}>
           <Stack spacing={2}>
-            <Card
-              sx={{
-                display: 'flex',
-                flexDirection: 'column',
-                background:
-                  'linear-gradient(180deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.05) 100%), #121212',
-                boxShadow:
-                  '0px 2px 1px -1px rgba(0, 0, 0, 0.2), 0px 1px 1px rgba(0, 0, 0, 0.14), 0px 1px 3px rgba(0, 0, 0, 0.12)',
-              }}
-            >
+            <Card>
               <CardContent>
                 <FormSettings control={control} register={register} />
               </CardContent>
@@ -87,17 +78,7 @@ const FormCreateForm = () => {
         </Container>
       </Grid>
       <Grid item xs={2}>
-        <Card
-          sx={{
-            position: 'fixed',
-            display: 'flex',
-            flexDirection: 'column',
-            background:
-              'linear-gradient(180deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.05) 100%), #121212',
-            boxShadow:
-              '0px 2px 1px -1px rgba(0, 0, 0, 0.2), 0px 1px 1px rgba(0, 0, 0, 0.14), 0px 1px 3px rgba(0, 0, 0, 0.12)',
-          }}
-        >
+        <Card>
           <CardContent>
             <Button
               type="button"
