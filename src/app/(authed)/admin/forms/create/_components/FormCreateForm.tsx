@@ -10,7 +10,7 @@ import {
   Grid,
   Stack,
 } from '@mui/material';
-import { useFieldArray, useForm } from 'react-hook-form';
+import { useFieldArray, useForm, useWatch } from 'react-hook-form';
 import FormSettings from './FormSettings';
 import QuestionComponent from './Question';
 import { formSchema } from '../_schema/createFormSchema';
@@ -33,6 +33,12 @@ const FormCreateForm = () => {
     name: 'questions',
   });
 
+  const visibility = useWatch({
+    control: control,
+    name: 'settings.visibility',
+    defaultValue: 'PUBLIC',
+  });
+
   const addQuestionButton = () => {
     append({
       title: '',
@@ -43,9 +49,17 @@ const FormCreateForm = () => {
     });
   };
 
-  const onSubmit = (data: Form) => {
-    // todo: データの送信処理を書く
-    console.log(data);
+  const onSubmit = async (data: Form) => {
+    const response = await fetch('http://localhost:3000/api/form', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+      cache: 'no-cache',
+    });
+
+    console.log(response.status);
   };
 
   return (
@@ -55,7 +69,11 @@ const FormCreateForm = () => {
           <Stack spacing={2}>
             <Card>
               <CardContent>
-                <FormSettings control={control} register={register} />
+                <FormSettings
+                  control={control}
+                  register={register}
+                  visibility={visibility}
+                />
               </CardContent>
               {fields.map((field, index) => (
                 <CardContent key={field.id}>
@@ -78,7 +96,11 @@ const FormCreateForm = () => {
         </Container>
       </Grid>
       <Grid item xs={2}>
-        <Card>
+        <Card
+          sx={{
+            position: 'fixed',
+          }}
+        >
           <CardContent>
             <Button
               type="button"

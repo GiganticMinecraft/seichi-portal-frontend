@@ -1,18 +1,12 @@
 import { MenuItem, Stack, TextField, Typography } from '@mui/material';
-import { useWatch } from 'react-hook-form';
-import type { Form } from '../_schema/createFormSchema';
+import type { Form, Visibility } from '../_schema/createFormSchema';
 import type { Control, UseFormRegister } from 'react-hook-form';
 
 const FormSettings = (props: {
   control: Control<Form>;
   register: UseFormRegister<Form>;
+  visibility: Visibility;
 }) => {
-  const visibility = useWatch({
-    control: props.control,
-    name: 'settings.visibility',
-    defaultValue: 'PUBLIC',
-  });
-
   return (
     <Stack spacing={2}>
       <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
@@ -43,7 +37,7 @@ const FormSettings = (props: {
       <TextField
         {...props.register('settings.visibility')}
         label="公開設定"
-        defaultValue={visibility}
+        defaultValue={props.visibility}
         select
         required
       >

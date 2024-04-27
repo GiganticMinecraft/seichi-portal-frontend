@@ -61,6 +61,10 @@ export const batchAnswerSchema = z.object({
   answers: z.array(answerSchema),
 });
 
+export const createFormResponseSchema = z.object({
+  id: z.number(),
+});
+
 export const batchAnswersSchema = z.array(batchAnswerSchema);
 
 export type BatchAnswersSchema = z.infer<typeof batchAnswersSchema>;

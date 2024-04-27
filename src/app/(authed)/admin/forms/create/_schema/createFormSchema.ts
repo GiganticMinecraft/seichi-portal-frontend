@@ -12,6 +12,8 @@ export const questionSchema = z.object({
   is_required: z.boolean(),
 });
 
+const visibility = z.enum(['PUBLIC', 'PRIVATE']);
+
 export const formSchema = z.object({
   title: z.string(),
   description: z.string(),
@@ -26,8 +28,10 @@ export const formSchema = z.object({
       .nullable(),
     webhook_url: z.string().nullable(),
     default_answer_title: z.string().nullable(),
-    visibility: z.enum(['PUBLIC', 'PRIVATE']),
+    visibility: visibility,
   }),
 });
 
 export type Form = z.infer<typeof formSchema>;
+
+export type Visibility = z.infer<typeof visibility>;
