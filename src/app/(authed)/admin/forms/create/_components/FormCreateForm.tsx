@@ -69,11 +69,7 @@ const FormCreateForm = () => {
           <Stack spacing={2}>
             <Card>
               <CardContent>
-                <FormSettings
-                  control={control}
-                  register={register}
-                  visibility={visibility}
-                />
+                <FormSettings register={register} visibility={visibility} />
               </CardContent>
               {fields.map((field, index) => (
                 <CardContent key={field.id}>
@@ -105,7 +101,7 @@ const FormCreateForm = () => {
             <Button
               type="button"
               aria-label="質問の追加"
-              onClick={addQuestionButton}
+              onClick={() => addQuestionButton()}
               endIcon={<Add />}
             >
               質問の追加

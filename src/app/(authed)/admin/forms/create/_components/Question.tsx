@@ -8,8 +8,8 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { useCallback, useEffect } from 'react';
-import { useFieldArray, useWatch } from 'react-hook-form';
+import { useCallback } from 'react';
+import { useController, useFieldArray, useWatch } from 'react-hook-form';
 import type { Form } from '../_schema/createFormSchema';
 import type { Control, UseFormRegister } from 'react-hook-form';
 
@@ -33,10 +33,14 @@ const QuestionComponent = ({
     name: `questions.${questionId}.choices`,
   });
 
+  const { field } = useController({
+    control,
+    name: `questions.${questionId}.question_type`,
+  });
+
   const useWatchQuestionType = useWatch({
     control,
     name: `questions.${questionId}.question_type`,
-    defaultValue: 'TEXT',
   });
 
   const addChoice = useCallback(() => {
@@ -50,16 +54,6 @@ const QuestionComponent = ({
       removeChoices(index);
     }
   };
-
-  useEffect(() => {
-    if (useWatchQuestionType === 'TEXT') {
-      removeChoices();
-    } else if (choicesField.length === 0) {
-      // NOTE: choicesField.lengthが0であることを確認しないと
-      // 単一選択 -> 複数選択 -> 単一選択のように変更した場合に選択肢の入力欄が増加してしまう
-      addChoice();
-    }
-  }, [useWatchQuestionType, addChoice, choicesField, removeChoices]);
 
   return (
     <Stack spacing={2}>
@@ -89,15 +83,30 @@ const QuestionComponent = ({
         required
         defaultValue="TEXT"
         helperText="質問の種類を選択してください。"
+        onChange={(event) => {
+          // NOTE: 単純に onChange 書くと useWatchQuestionType が動作しないので field.onChangeを呼び出す必要がある
+          // ref: https://github.com/orgs/react-hook-form/discussions/9144
+          field.onChange(event);
+
+          if (event.target.value === 'TEXT') {
+            removeChoices();
+          } else if (choicesField.length === 0) {
+            // NOTE: choicesField.lengthが0であることを確認しないと
+            // 単一選択 -> 複数選択 -> 単一選択のように変更した場合に選択肢の入力欄が増加してしまう
+            appendChoices({ choice: '' });
+          }
+        }}
       >
-        <MenuItem value="TEXT">テキスト</MenuItem>
+        <MenuItem onSelect={() => removeChoices()} value="TEXT">
+          テキスト
+        </MenuItem>
         <MenuItem value="SINGLE">単一選択</MenuItem>
         <MenuItem value="MULTIPLE">複数選択</MenuItem>
       </TextField>
       <Button
         variant="outlined"
         startIcon={<Add />}
-        onClick={addChoice}
+        onClick={() => addChoice()}
         disabled={useWatchQuestionType == 'TEXT'}
       >
         選択肢の追加

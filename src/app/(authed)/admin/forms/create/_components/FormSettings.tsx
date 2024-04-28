@@ -1,9 +1,8 @@
 import { MenuItem, Stack, TextField, Typography } from '@mui/material';
 import type { Form, Visibility } from '../_schema/createFormSchema';
-import type { Control, UseFormRegister } from 'react-hook-form';
+import type { UseFormRegister } from 'react-hook-form';
 
 const FormSettings = (props: {
-  control: Control<Form>;
   register: UseFormRegister<Form>;
   visibility: Visibility;
 }) => {
