@@ -50,7 +50,7 @@ const FormCreateForm = () => {
   };
 
   const onSubmit = async (data: Form) => {
-    const response = await fetch('http://localhost:3000/api/form', {
+    await fetch('http://localhost:3000/api/form', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -58,8 +58,6 @@ const FormCreateForm = () => {
       body: JSON.stringify(data),
       cache: 'no-cache',
     });
-
-    console.log(response.status);
   };
 
   return (
