@@ -65,10 +65,6 @@ export const createFormResponseSchema = z.object({
   id: z.number(),
 });
 
-export const batchAnswersSchema = z.array(batchAnswerSchema);
-
-export type BatchAnswersSchema = z.infer<typeof batchAnswersSchema>;
-
 export type BatchAnswer = z.infer<typeof batchAnswerSchema>;
 
 export type MinimumForm = z.infer<typeof mimimumFormSchema>;
@@ -76,5 +72,3 @@ export type MinimumForm = z.infer<typeof mimimumFormSchema>;
 export type Form = z.infer<typeof formSchema>;
 
 export type FormQuestion = z.infer<typeof questionSchema>;
-
-export type Visibility = z.infer<typeof visibility>;
