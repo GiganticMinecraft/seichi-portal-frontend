@@ -15,6 +15,7 @@ import FormSettings from './FormSettings';
 import QuestionComponent from './Question';
 import { formSchema } from '../_schema/createFormSchema';
 import type { Form } from '../_schema/createFormSchema';
+import { useState } from 'react';
 
 const FormCreateForm = () => {
   const {
@@ -49,8 +50,10 @@ const FormCreateForm = () => {
     });
   };
 
+  const [isSubmitted, setIsSubmitted] = useState(false);
+
   const onSubmit = async (data: Form) => {
-    await fetch('http://localhost:3000/api/form', {
+    const response = await fetch('http://localhost:3000/api/form', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -58,6 +61,10 @@ const FormCreateForm = () => {
       body: JSON.stringify(data),
       cache: 'no-cache',
     });
+
+    if (response.ok) {
+      setIsSubmitted(true);
+    }
   };
 
   return (
@@ -82,6 +89,9 @@ const FormCreateForm = () => {
             </Card>
             {errors.root && (
               <Alert severity="error">{errors.root.message}</Alert>
+            )}
+            {isSubmitted && (
+              <Alert severity="success">フォームを作成しました。</Alert>
             )}
             <Button type="submit" variant="contained" endIcon={<SendIcon />}>
               フォーム作成
