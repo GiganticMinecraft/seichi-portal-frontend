@@ -19,13 +19,11 @@ export const formSchema = z.object({
   description: z.string(),
   questions: questionSchema.array(),
   settings: z.object({
-    response_period: z
-      .object({
-        // 本当はここをdatetime型にしたいが、ここをdatetimeにすると入力側の処理が面倒になるので、とりあえずstring型にしておく
-        start_at: z.string(),
-        end_at: z.string(),
-      })
-      .nullable(),
+    response_period: z.object({
+      // 本当はここをdatetime型にしたいが、ここをdatetimeにすると入力側の処理が面倒になるので、とりあえずstring型にしておく
+      start_at: z.string().nullable(),
+      end_at: z.string().nullable(),
+    }),
     webhook_url: z.string().nullable(),
     default_answer_title: z.string().nullable(),
     visibility: visibility,
