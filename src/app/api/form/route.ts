@@ -5,6 +5,7 @@ import { createFormResponseSchema } from '@/_schemas/formSchema';
 import { formSchema } from '@/app/(authed)/admin/forms/create/_schema/createFormSchema';
 import { BACKEND_SERVER_URL } from '@/env';
 import { getCachedToken } from '@/features/user/api/mcToken';
+import { removeUndefinedOrNullRecords } from '@/generic/RecordExtra';
 import { redirectByResponse } from '../util/responseOrErrorResponse';
 import type { NextRequest } from 'next/server';
 
@@ -82,13 +83,7 @@ export async function POST(req: NextRequest) {
     webhook: form.settings.webhook_url,
   };
 
-  const cleanedQueryRecord = Object.fromEntries(
-    Object.entries(queryRecord).filter(
-      ([_key, value]) => value != null && value !== undefined
-    )
-  ) as {
-    [k: string]: string;
-  };
+  const cleanedQueryRecord = removeUndefinedOrNullRecords(queryRecord);
 
   const patchQuery = new URLSearchParams(cleanedQueryRecord).toString();
 
