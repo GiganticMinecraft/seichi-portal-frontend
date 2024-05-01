@@ -99,7 +99,31 @@ export async function POST(req: NextRequest) {
     }
   );
 
-  return NextResponse.json({}, { status: patchFormResponse.status });
+  if (!patchFormResponse.ok) {
+    return NextResponse.json({}, { status: patchFormResponse.status });
+  }
+
+  const addQuestionsResponse = await fetch(
+    `${req.nextUrl.origin}/api/questions`,
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        form_id: parsedCreateFormResponse.data.id,
+        questions: form.questions.map((question) => {
+          return {
+            ...question,
+            choices: question.choices.map((choice) => choice.choice),
+          };
+        }),
+      }),
+      cache: 'no-cache',
+    }
+  );
+
+  return NextResponse.json({}, { status: addQuestionsResponse.status });
 }
 
 export async function PATCH(req: NextRequest) {

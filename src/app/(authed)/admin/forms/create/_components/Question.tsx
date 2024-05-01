@@ -110,7 +110,6 @@ const QuestionComponent = ({
         control={
           <Checkbox {...register(`questions.${questionId}.is_required`)} />
         }
-        required
       />
       <Button
         variant="outlined"
