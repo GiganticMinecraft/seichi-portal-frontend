@@ -114,11 +114,19 @@ export async function PATCH(req: NextRequest) {
   if (!formId) {
     return NextResponse.json({}, { status: 400 });
   }
-  const patchQuery = new URLSearchParams({
-    start_at: `${searchParams.get('start_at')}:00+09:00` || '',
-    end_at: `${searchParams.get('end_at')}:00+09:00` || '',
-    visibility: searchParams.get('visibility') || '',
-  }).toString();
+
+  const start_at = searchParams.get('start_at');
+  const end_at = searchParams.get('end_at');
+
+  const patchQuery = new URLSearchParams(
+    removeUndefinedOrNullRecords({
+      start_at: start_at ? `${start_at}:00+09:00` : undefined,
+      end_at: end_at ? `${end_at}:00+09:00` : undefined,
+      visibility: searchParams.get('visibility'),
+      default_answer_title: searchParams.get('default_answer_title'),
+      webhook: searchParams.get('webhook_url'),
+    })
+  ).toString();
 
   const response = await fetch(
     `${BACKEND_SERVER_URL}/forms/${formId}?${patchQuery}`,
