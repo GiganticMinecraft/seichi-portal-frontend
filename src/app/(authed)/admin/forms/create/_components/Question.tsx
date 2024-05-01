@@ -2,12 +2,14 @@ import { Add } from '@mui/icons-material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import {
   Button,
+  FormControlLabel,
   IconButton,
   MenuItem,
   Stack,
   TextField,
   Typography,
 } from '@mui/material';
+import Checkbox from '@mui/material/Checkbox';
 import { useCallback } from 'react';
 import { useController, useFieldArray, useWatch } from 'react-hook-form';
 import type { Form } from '../_schema/createFormSchema';
@@ -103,6 +105,13 @@ const QuestionComponent = ({
         <MenuItem value="SINGLE">単一選択</MenuItem>
         <MenuItem value="MULTIPLE">複数選択</MenuItem>
       </TextField>
+      <FormControlLabel
+        label="この質問への回答を必須にする"
+        control={
+          <Checkbox {...register(`questions.${questionId}.is_required`)} />
+        }
+        required
+      />
       <Button
         variant="outlined"
         startIcon={<Add />}
