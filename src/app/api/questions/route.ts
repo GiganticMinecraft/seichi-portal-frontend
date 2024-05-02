@@ -3,6 +3,7 @@
 import { NextResponse } from 'next/server';
 import { BACKEND_SERVER_URL } from '@/env';
 import { getCachedToken } from '@/features/user/api/mcToken';
+import { createQuestionSchema } from '../_schemas/RequestSchemas';
 import { redirectByResponse } from '../util/responseOrErrorResponse';
 import type { NextRequest } from 'next/server';
 
@@ -41,6 +42,15 @@ export async function POST(req: NextRequest) {
     return NextResponse.redirect('/');
   }
 
+  const parsedCreateQuestion = createQuestionSchema.safeParse(await req.json());
+
+  if (!parsedCreateQuestion.success) {
+    return NextResponse.json(
+      { error: 'Invalid request body.' },
+      { status: 400 }
+    );
+  }
+
   const addQuestionsResponse = await fetch(
     `${BACKEND_SERVER_URL}/forms/questions`,
     {
@@ -49,7 +59,7 @@ export async function POST(req: NextRequest) {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify(await req.json()),
+      body: JSON.stringify(parsedCreateQuestion.data),
       cache: 'no-cache',
     }
   );

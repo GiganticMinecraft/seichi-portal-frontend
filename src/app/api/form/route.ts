@@ -1,11 +1,11 @@
 'use server';
 
 import { NextResponse } from 'next/server';
-import { createFormResponseSchema } from '@/_schemas/formSchema';
-import { formSchema } from '@/app/(authed)/admin/forms/create/_schema/createFormSchema';
 import { BACKEND_SERVER_URL } from '@/env';
 import { getCachedToken } from '@/features/user/api/mcToken';
 import { removeUndefinedOrNullRecords } from '@/generic/RecordExtra';
+import { createFormSchema } from '../_schemas/RequestSchemas';
+import { createFormResponseSchema } from '../_schemas/ResponseSchemas';
 import { redirectByResponse } from '../util/responseOrErrorResponse';
 import type { NextRequest } from 'next/server';
 
@@ -38,16 +38,14 @@ export async function POST(req: NextRequest) {
     return NextResponse.redirect('/');
   }
 
-  const parsed = formSchema.safeParse(await req.json());
+  const parsedCreateFormSchema = createFormSchema.safeParse(await req.json());
 
-  if (!parsed.success) {
+  if (!parsedCreateFormSchema.success) {
     return NextResponse.json(
-      { error: 'Invalid form values.' },
+      { error: 'Failed to parse from request body to create form schema.' },
       { status: 400 }
     );
   }
-
-  const form = parsed.data;
 
   const createFormResponse = await fetch(`${BACKEND_SERVER_URL}/forms`, {
     method: 'POST',
@@ -55,75 +53,33 @@ export async function POST(req: NextRequest) {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${token}`,
     },
-    body: JSON.stringify({
-      title: form.title,
-      description: form.description,
-    }),
+    body: JSON.stringify(parsedCreateFormSchema.data),
     cache: 'no-cache',
   });
 
-  if (!createFormResponse.ok) {
-    return NextResponse.json({}, { status: createFormResponse.status });
-  }
-
-  const parsedCreateFormResponse = createFormResponseSchema.safeParse(
-    await createFormResponse.json()
-  );
-
-  if (!parsedCreateFormResponse.success) {
-    return NextResponse.json({ error: 'Internal error.' }, { status: 500 });
-  }
-
-  const queryRecord = {
-    form_id: parsedCreateFormResponse.data.id,
-    visibility: form.settings.visibility,
-    start_at: form.settings.response_period?.start_at,
-    end_at: form.settings.response_period?.end_at,
-    default_answer_title: form.settings.default_answer_title,
-    webhook: form.settings.webhook_url,
-  };
-
-  const cleanedQueryRecord = removeUndefinedOrNullRecords(queryRecord);
-
-  const patchQuery = new URLSearchParams(cleanedQueryRecord).toString();
-
-  const patchFormResponse = await fetch(
-    `${req.nextUrl.origin}/api/form?${patchQuery}`,
-    {
-      method: 'PATCH',
-      headers: {
-        Accept: 'application/json',
-        Authorization: `Bearer ${token}`,
-      },
-      cache: 'no-cache',
+  if (createFormResponse.ok) {
+    const parsed = createFormResponseSchema.safeParse(
+      await createFormResponse.json()
+    );
+    if (parsed.success) {
+      return NextResponse.json(parsed.data, {
+        status: 201,
+      });
+    } else {
+      return NextResponse.json(
+        {
+          error:
+            'Failed to parse from request body to create form schema. Frontend schema is different from backend schema.',
+        },
+        { status: 500 }
+      );
     }
-  );
-
-  if (!patchFormResponse.ok) {
-    return NextResponse.json({}, { status: patchFormResponse.status });
+  } else {
+    return NextResponse.json(
+      { error: 'Failed to parse from request body to create form schema.' },
+      { status: 400 }
+    );
   }
-
-  const addQuestionsResponse = await fetch(
-    `${req.nextUrl.origin}/api/questions`,
-    {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        form_id: parsedCreateFormResponse.data.id,
-        questions: form.questions.map((question) => {
-          return {
-            ...question,
-            choices: question.choices.map((choice) => choice.choice),
-          };
-        }),
-      }),
-      cache: 'no-cache',
-    }
-  );
-
-  return NextResponse.json({}, { status: addQuestionsResponse.status });
 }
 
 export async function PATCH(req: NextRequest) {
