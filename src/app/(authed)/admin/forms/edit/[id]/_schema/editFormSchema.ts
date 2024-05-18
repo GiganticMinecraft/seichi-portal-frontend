@@ -1,4 +1,3 @@
-import { id } from 'fp-ts/lib/Refinement';
 import { z } from 'zod';
 
 const choiceSchema = z.object({

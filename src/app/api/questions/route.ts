@@ -3,10 +3,10 @@
 import { NextResponse } from 'next/server';
 import { BACKEND_SERVER_URL } from '@/env';
 import { getCachedToken } from '@/features/user/api/mcToken';
+import { removeUndefinedOrNullRecords } from '@/generic/RecordExtra';
 import { createQuestionSchema } from '../_schemas/RequestSchemas';
 import { redirectByResponse } from '../util/responseOrErrorResponse';
 import type { NextRequest } from 'next/server';
-import { removeUndefinedOrNullRecords } from '@/generic/RecordExtra';
 
 export async function GET(req: NextRequest) {
   const token = await getCachedToken();

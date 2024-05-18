@@ -12,11 +12,12 @@ import {
 } from '@mui/material';
 import { useState } from 'react';
 import { useFieldArray, useForm, useWatch } from 'react-hook-form';
-import { Form, formSchema } from '../_schema/editFormSchema';
-import { GetFormResponse } from '@/app/api/_schemas/ResponseSchemas';
+import { removeUndefinedOrNullRecords } from '@/generic/RecordExtra';
 import FormSettings from './FormSettings';
 import QuestionComponent from './Question';
-import { removeUndefinedOrNullRecords } from '@/generic/RecordExtra';
+import { formSchema } from '../_schema/editFormSchema';
+import type { Form } from '../_schema/editFormSchema';
+import type { GetFormResponse } from '@/app/api/_schemas/ResponseSchemas';
 
 const FormEditForm = (props: { form: GetFormResponse }) => {
   const {
