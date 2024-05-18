@@ -4,7 +4,10 @@ import { NextResponse } from 'next/server';
 import { BACKEND_SERVER_URL } from '@/env';
 import { getCachedToken } from '@/features/user/api/mcToken';
 import { removeUndefinedOrNullRecords } from '@/generic/RecordExtra';
-import { createQuestionSchema } from '../_schemas/RequestSchemas';
+import {
+  createQuestionSchema,
+  updateQuestionSchema,
+} from '../_schemas/RequestSchemas';
 import { redirectByResponse } from '../util/responseOrErrorResponse';
 import type { NextRequest } from 'next/server';
 
@@ -76,7 +79,7 @@ export async function PUT(req: NextRequest) {
     return NextResponse.redirect('/');
   }
 
-  const parsedUpdateQuestion = createQuestionSchema.safeParse(await req.json());
+  const parsedUpdateQuestion = updateQuestionSchema.safeParse(await req.json());
 
   if (!parsedUpdateQuestion.success) {
     return NextResponse.json(

@@ -17,7 +17,6 @@ export const createQuestionSchema = z.object({
   form_id: z.number(),
   questions: z
     .object({
-      id: z.number().nullable(),
       title: z.string(),
       description: z.string(),
       question_type: z.enum(['TEXT', 'SINGLE', 'MULTIPLE']),
@@ -44,6 +43,7 @@ export const updateQuestionSchema = z.object({
   form_id: z.number(),
   questions: z
     .object({
+      id: z.number().nullable(),
       title: z.string(),
       description: z.string(),
       question_type: z.enum(['TEXT', 'SINGLE', 'MULTIPLE']),
