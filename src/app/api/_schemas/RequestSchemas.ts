@@ -17,6 +17,7 @@ export const createQuestionSchema = z.object({
   form_id: z.number(),
   questions: z
     .object({
+      id: z.number().nullable(),
       title: z.string(),
       description: z.string(),
       question_type: z.enum(['TEXT', 'SINGLE', 'MULTIPLE']),
@@ -36,4 +37,18 @@ export const updateFormSchema = z.object({
   webhook: z.string().nullable(),
   visibility: z.enum(['PUBLIC', 'PRIVATE']),
   default_answer_title: z.string().nullable(),
+});
+
+// PUT /forms/questions
+export const updateQuestionSchema = z.object({
+  form_id: z.number(),
+  questions: z
+    .object({
+      title: z.string(),
+      description: z.string(),
+      question_type: z.enum(['TEXT', 'SINGLE', 'MULTIPLE']),
+      choices: z.string().array(),
+      is_required: z.boolean(),
+    })
+    .array(),
 });

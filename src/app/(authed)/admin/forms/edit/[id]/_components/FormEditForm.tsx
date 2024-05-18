@@ -12,14 +12,13 @@ import {
 } from '@mui/material';
 import { useState } from 'react';
 import { useFieldArray, useForm, useWatch } from 'react-hook-form';
-import { createFormResponseSchema } from '@/app/api/_schemas/ResponseSchemas';
-import { removeUndefinedOrNullRecords } from '@/generic/RecordExtra';
+import { Form, formSchema } from '../_schema/editFormSchema';
+import { GetFormResponse } from '@/app/api/_schemas/ResponseSchemas';
 import FormSettings from './FormSettings';
 import QuestionComponent from './Question';
-import { formSchema } from '../_schema/createFormSchema';
-import type { Form } from '../_schema/createFormSchema';
+import { removeUndefinedOrNullRecords } from '@/generic/RecordExtra';
 
-const FormCreateForm = () => {
+const FormEditForm = (props: { form: GetFormResponse }) => {
   const {
     control,
     handleSubmit,
@@ -30,6 +29,19 @@ const FormCreateForm = () => {
     mode: 'onSubmit',
     reValidateMode: 'onBlur',
     resolver: zodResolver(formSchema),
+    defaultValues: {
+      ...props.form,
+      questions: props.form.questions.map((question) => {
+        return {
+          ...question,
+          choices: question.choices.map((choice) => {
+            return {
+              choice: choice,
+            };
+          }),
+        };
+      }),
+    },
   });
 
   const { fields, append, remove } = useFieldArray({
@@ -45,6 +57,7 @@ const FormCreateForm = () => {
 
   const addQuestionButton = () => {
     append({
+      id: null,
       title: '',
       description: '',
       question_type: 'TEXT',
@@ -56,46 +69,18 @@ const FormCreateForm = () => {
   const [isSubmitted, setIsSubmitted] = useState(false);
 
   const onSubmit = async (data: Form) => {
-    const createFormResponse = await fetch('http://localhost:3000/api/form', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        title: data.title,
-        description: data.description,
-      }),
-      cache: 'no-cache',
-    });
-
-    const parsedCreateFormResponse = createFormResponseSchema.safeParse(
-      await createFormResponse.json()
-    );
-
-    if (!parsedCreateFormResponse.success) {
-      setError('root', {
-        type: 'manual',
-        message: 'フォームの作成に失敗しました。',
-      });
-
-      return;
-    }
-
-    const start_at = data.settings.response_period.start_at;
-    const end_at = data.settings.response_period.end_at;
-
     const setFormMetadataQuery = new URLSearchParams(
       removeUndefinedOrNullRecords({
-        form_id: parsedCreateFormResponse.data.id.toString(),
+        form_id: data.id.toString(),
         visibility: data.settings.visibility,
-        start_at: start_at ? `${start_at}:00+09:00` : undefined,
-        end_at: end_at ? `${end_at}:00+09:00` : undefined,
+        start_at: data.settings.response_period?.start_at,
+        end_at: data.settings.response_period?.end_at,
         default_answer_title: data.settings.default_answer_title,
         webhook: data.settings.webhook_url,
       })
     ).toString();
 
-    const setFormMetadataResponse = await fetch(
+    const setFormMetaResponse = await fetch(
       `http://localhost:3000/api/form?${setFormMetadataQuery}`,
       {
         method: 'PATCH',
@@ -106,40 +91,46 @@ const FormCreateForm = () => {
       }
     );
 
-    if (!setFormMetadataResponse.ok) {
+    if (!setFormMetaResponse.ok) {
       setError('root', {
         type: 'manual',
-        message: 'フォームのメタデータの設定に失敗しました。',
+        message: 'フォームのメタデータの更新に失敗しました。',
       });
-
-      return;
     }
 
-    const addQuestionResponse = await fetch(
-      'http://localhost:3000/api/questions',
+    const putQuestionsResponse = await fetch(
+      `http://localhost:3000/api/questions`,
       {
-        method: 'POST',
+        method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          form_id: parsedCreateFormResponse.data.id,
-          questions: data.questions.map((question) => ({
-            ...question,
-            choices: question.choices.map((choice) => choice.choice),
-          })),
+          form_id: data.id,
+          questions: data.questions.map((question) => {
+            return {
+              id: question.id,
+              title: question.title,
+              description: question.description,
+              question_type: question.question_type,
+              choices: question.choices.map((choice) => choice.choice),
+              is_required: question.is_required,
+            };
+          }),
         }),
         cache: 'no-cache',
       }
     );
 
-    if (addQuestionResponse.ok) {
-      setIsSubmitted(true);
-    } else {
+    if (!putQuestionsResponse.ok) {
       setError('root', {
         type: 'manual',
-        message: '質問の追加に失敗しました。',
+        message: 'フォームの質問の更新に失敗しました。',
       });
+    }
+
+    if (setFormMetaResponse.ok && putQuestionsResponse.ok) {
+      setIsSubmitted(true);
     }
   };
 
@@ -167,10 +158,10 @@ const FormCreateForm = () => {
               <Alert severity="error">{errors.root.message}</Alert>
             )}
             {isSubmitted && (
-              <Alert severity="success">フォームを作成しました。</Alert>
+              <Alert severity="success">フォームの編集に成功しました。</Alert>
             )}
             <Button type="submit" variant="contained" endIcon={<SendIcon />}>
-              フォーム作成
+              設定内容を保存
             </Button>
           </Stack>
         </Container>
@@ -197,4 +188,4 @@ const FormCreateForm = () => {
   );
 };
 
-export default FormCreateForm;
+export default FormEditForm;

@@ -1,5 +1,3 @@
-type StringRecord = { [k: string]: string };
-
 /**
  * ex:
  *  const record = {
@@ -17,10 +15,10 @@ type StringRecord = { [k: string]: string };
  */
 export function removeUndefinedOrNullRecords<T>(
   record: Record<string, T>
-): StringRecord {
+): Record<string, string> {
   return Object.fromEntries(
     Object.entries(record).filter(
       ([, value]) => value !== undefined && value !== null
     )
-  ) as StringRecord;
+  ) as { [k: string]: string };
 }

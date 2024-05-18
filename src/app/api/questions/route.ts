@@ -6,6 +6,7 @@ import { getCachedToken } from '@/features/user/api/mcToken';
 import { createQuestionSchema } from '../_schemas/RequestSchemas';
 import { redirectByResponse } from '../util/responseOrErrorResponse';
 import type { NextRequest } from 'next/server';
+import { removeUndefinedOrNullRecords } from '@/generic/RecordExtra';
 
 export async function GET(req: NextRequest) {
   const token = await getCachedToken();
@@ -67,4 +68,42 @@ export async function POST(req: NextRequest) {
   redirectByResponse(req, addQuestionsResponse);
 
   return NextResponse.json(await addQuestionsResponse.json());
+}
+
+export async function PUT(req: NextRequest) {
+  const token = await getCachedToken();
+  if (!token) {
+    return NextResponse.redirect('/');
+  }
+
+  const parsedUpdateQuestion = createQuestionSchema.safeParse(await req.json());
+
+  if (!parsedUpdateQuestion.success) {
+    return NextResponse.json(
+      { error: 'Invalid request body.' },
+      { status: 400 }
+    );
+  }
+
+  const updateQuestionsResponse = await fetch(
+    `${BACKEND_SERVER_URL}/forms/questions`,
+    {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        ...parsedUpdateQuestion.data,
+        questions: parsedUpdateQuestion.data.questions.map((question) =>
+          removeUndefinedOrNullRecords(question)
+        ),
+      }),
+      cache: 'no-cache',
+    }
+  );
+
+  redirectByResponse(req, updateQuestionsResponse);
+
+  return NextResponse.json(await updateQuestionsResponse.json());
 }

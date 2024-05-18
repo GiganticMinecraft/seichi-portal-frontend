@@ -1,28 +1,31 @@
+import { id } from 'fp-ts/lib/Refinement';
 import { z } from 'zod';
 
-/**
- * バックエンドサーバーからのレスポンススキーマの定義。
- */
-
-// GET /forms
-export const createFormResponseSchema = z.object({
-  id: z.number(),
+const choiceSchema = z.object({
+  choice: z.string(),
 });
 
-export type CreateFormResponse = z.infer<typeof createFormResponseSchema>;
+export const questionSchema = z.object({
+  title: z.string(),
+  description: z.string(),
+  question_type: z.enum(['TEXT', 'SINGLE', 'MULTIPLE']),
+  choices: choiceSchema.array(),
+  is_required: z.boolean(),
+});
 
-// GET /forms/:form_id
-export const getFormResponseSchema = z.object({
+const visibility = z.enum(['PUBLIC', 'PRIVATE']);
+
+export const formSchema = z.object({
   id: z.number(),
   title: z.string(),
   description: z.string(),
   questions: z
     .object({
-      id: z.number(),
+      id: z.number().nullable(),
       title: z.string(),
       description: z.string(),
       question_type: z.enum(['TEXT', 'SINGLE', 'MULTIPLE']),
-      choices: z.string().array(),
+      choices: z.object({ choice: z.string() }).array(),
       is_required: z.boolean(),
     })
     .array(),
@@ -43,4 +46,6 @@ export const getFormResponseSchema = z.object({
   }),
 });
 
-export type GetFormResponse = z.infer<typeof getFormResponseSchema>;
+export type Form = z.infer<typeof formSchema>;
+
+export type Visibility = z.infer<typeof visibility>;

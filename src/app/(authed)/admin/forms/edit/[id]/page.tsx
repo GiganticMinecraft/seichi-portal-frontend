@@ -2,12 +2,15 @@
 
 import { redirect } from 'next/navigation';
 import useSWR from 'swr';
-import { EditFormComponent } from '@/features/form/components/editForm';
-import type { Form } from '@/_schemas/formSchema';
+import { ThemeProvider } from '@emotion/react';
+import adminDashboardTheme from '../../../theme/adminDashboardTheme';
+import { CssBaseline } from '@mui/material';
+import FormEditForm from './_components/FormEditForm';
+import { GetFormResponse } from '@/app/api/_schemas/ResponseSchemas';
 
 const Home = ({ params }: { params: { id: number } }) => {
   const fetcher = (url: string) => fetch(url).then((res) => res.json());
-  const { data, isLoading } = useSWR<Form>(
+  const { data, isLoading } = useSWR<GetFormResponse>(
     `http://localhost:3000/api/form?formId=${params.id}`,
     fetcher
   );
@@ -19,9 +22,10 @@ const Home = ({ params }: { params: { id: number } }) => {
   }
 
   return (
-    <>
-      <EditFormComponent form={data} />
-    </>
+    <ThemeProvider theme={adminDashboardTheme}>
+      <CssBaseline />
+      <FormEditForm form={data} />
+    </ThemeProvider>
   );
 };
 
