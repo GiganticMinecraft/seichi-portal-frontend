@@ -8,7 +8,7 @@ import type { FormQuestion } from '@/_schemas/formSchema';
 const Home = ({ params }: { params: { formId: number } }) => {
   const fetcher = (url: string) => fetch(url).then((res) => res.json());
   const { data: questions, isLoading } = useSWR<FormQuestion[]>(
-    `http://localhost:3000/api/questions?formId=${params.formId}`,
+    `/api/questions?formId=${params.formId}`,
     fetcher
   );
 

@@ -96,7 +96,7 @@ const FormEditForm = (props: { form: GetFormResponse }) => {
     ).toString();
 
     const setFormMetaResponse = await fetch(
-      `http://localhost:3000/api/form?${setFormMetadataQuery}`,
+      `/api/form?${setFormMetadataQuery}`,
       {
         method: 'PATCH',
         headers: {
@@ -113,29 +113,26 @@ const FormEditForm = (props: { form: GetFormResponse }) => {
       });
     }
 
-    const putQuestionsResponse = await fetch(
-      `http://localhost:3000/api/questions`,
-      {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          form_id: data.id,
-          questions: data.questions.map((question) => {
-            return {
-              id: question.id,
-              title: question.title,
-              description: question.description,
-              question_type: question.question_type,
-              choices: question.choices.map((choice) => choice.choice),
-              is_required: question.is_required,
-            };
-          }),
+    const putQuestionsResponse = await fetch(`/api/questions`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        form_id: data.id,
+        questions: data.questions.map((question) => {
+          return {
+            id: question.id,
+            title: question.title,
+            description: question.description,
+            question_type: question.question_type,
+            choices: question.choices.map((choice) => choice.choice),
+            is_required: question.is_required,
+          };
         }),
-        cache: 'no-cache',
-      }
-    );
+      }),
+      cache: 'no-cache',
+    });
 
     if (!putQuestionsResponse.ok) {
       setError('root', {

@@ -11,7 +11,7 @@ import type { GetFormResponse } from '@/app/api/_schemas/ResponseSchemas';
 const Home = ({ params }: { params: { id: number } }) => {
   const fetcher = (url: string) => fetch(url).then((res) => res.json());
   const { data, isLoading } = useSWR<GetFormResponse>(
-    `http://localhost:3000/api/form?formId=${params.id}`,
+    `/api/form?formId=${params.id}`,
     fetcher
   );
 

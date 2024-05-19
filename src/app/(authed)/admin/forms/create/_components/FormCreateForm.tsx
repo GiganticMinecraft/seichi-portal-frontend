@@ -56,7 +56,7 @@ const FormCreateForm = () => {
   const [isSubmitted, setIsSubmitted] = useState(false);
 
   const onSubmit = async (data: Form) => {
-    const createFormResponse = await fetch('http://localhost:3000/api/form', {
+    const createFormResponse = await fetch('/api/form', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -96,7 +96,7 @@ const FormCreateForm = () => {
     ).toString();
 
     const setFormMetadataResponse = await fetch(
-      `http://localhost:3000/api/form?${setFormMetadataQuery}`,
+      `/api/form?${setFormMetadataQuery}`,
       {
         method: 'PATCH',
         headers: {
@@ -115,23 +115,20 @@ const FormCreateForm = () => {
       return;
     }
 
-    const addQuestionResponse = await fetch(
-      'http://localhost:3000/api/questions',
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          form_id: parsedCreateFormResponse.data.id,
-          questions: data.questions.map((question) => ({
-            ...question,
-            choices: question.choices.map((choice) => choice.choice),
-          })),
-        }),
-        cache: 'no-cache',
-      }
-    );
+    const addQuestionResponse = await fetch('/api/questions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        form_id: parsedCreateFormResponse.data.id,
+        questions: data.questions.map((question) => ({
+          ...question,
+          choices: question.choices.map((choice) => choice.choice),
+        })),
+      }),
+      cache: 'no-cache',
+    });
 
     if (addQuestionResponse.ok) {
       setIsSubmitted(true);

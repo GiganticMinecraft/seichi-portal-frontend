@@ -36,12 +36,9 @@ const Home = () => {
           .then(async (r) => {
             const token = r.accessToken;
 
-            const mcAccessToken = (await fetch(
-              'http://localhost:3000/api/minecraft-access-token',
-              {
-                body: JSON.stringify({ token }),
-              }
-            ).then((res) => res.json())) as { token: string; expires: number };
+            const mcAccessToken = (await fetch('/api/minecraft-access-token', {
+              body: JSON.stringify({ token }),
+            }).then((res) => res.json())) as { token: string; expires: number };
 
             saveTokenToCache(mcAccessToken);
           });
