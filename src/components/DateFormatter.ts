@@ -11,3 +11,9 @@ export const formatString = (date: string) => {
 
   return dayjs(new Date(date)).tz('Asia/Tokyo').format(formatString);
 };
+
+export const fromStringToJSTDateTime = (date: string) => {
+  const formatString = 'YYYY-MM-DDTHH:mm';
+
+  return dayjs(new Date(date)).tz('Asia/Tokyo').format(formatString);
+};

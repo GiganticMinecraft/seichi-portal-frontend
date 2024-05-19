@@ -12,6 +12,7 @@ import {
 } from '@mui/material';
 import { useState } from 'react';
 import { useFieldArray, useForm, useWatch } from 'react-hook-form';
+import { fromStringToJSTDateTime } from '@/components/DateFormatter';
 import { removeUndefinedOrNullRecords } from '@/generic/RecordExtra';
 import FormSettings from './FormSettings';
 import QuestionComponent from './Question';
@@ -20,6 +21,9 @@ import type { Form } from '../_schema/editFormSchema';
 import type { GetFormResponse } from '@/app/api/_schemas/ResponseSchemas';
 
 const FormEditForm = (props: { form: GetFormResponse }) => {
+  const start_at = props.form.settings.response_period?.start_at;
+  const end_at = props.form.settings.response_period?.end_at;
+
   const {
     control,
     handleSubmit,
@@ -42,6 +46,13 @@ const FormEditForm = (props: { form: GetFormResponse }) => {
           }),
         };
       }),
+      settings: {
+        ...props.form.settings,
+        response_period: {
+          start_at: start_at ? fromStringToJSTDateTime(start_at) : null,
+          end_at: end_at ? fromStringToJSTDateTime(end_at) : null,
+        },
+      },
     },
   });
 
@@ -70,12 +81,15 @@ const FormEditForm = (props: { form: GetFormResponse }) => {
   const [isSubmitted, setIsSubmitted] = useState(false);
 
   const onSubmit = async (data: Form) => {
+    const start_at = data.settings.response_period?.start_at;
+    const end_at = data.settings.response_period?.end_at;
+
     const setFormMetadataQuery = new URLSearchParams(
       removeUndefinedOrNullRecords({
         form_id: data.id.toString(),
         visibility: data.settings.visibility,
-        start_at: data.settings.response_period?.start_at,
-        end_at: data.settings.response_period?.end_at,
+        start_at: start_at ? `${start_at}:00+09:00` : undefined,
+        end_at: end_at ? `${end_at}:00+09:00` : undefined,
         default_answer_title: data.settings.default_answer_title,
         webhook: data.settings.webhook_url,
       })
