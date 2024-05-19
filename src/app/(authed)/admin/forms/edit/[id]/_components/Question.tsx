@@ -1,3 +1,5 @@
+'use client';
+
 import { Add } from '@mui/icons-material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import {

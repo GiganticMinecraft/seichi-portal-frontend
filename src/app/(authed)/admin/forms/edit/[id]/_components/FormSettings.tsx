@@ -1,3 +1,5 @@
+'use client';
+
 import { MenuItem, Stack, TextField, Typography } from '@mui/material';
 import type { Form, Visibility } from '../_schema/editFormSchema';
 import type { UseFormRegister } from 'react-hook-form';

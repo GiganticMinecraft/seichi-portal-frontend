@@ -1,3 +1,5 @@
+'use client';
+
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Add } from '@mui/icons-material';
 import SendIcon from '@mui/icons-material/Send';
