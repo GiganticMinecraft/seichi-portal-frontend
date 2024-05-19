@@ -17,6 +17,9 @@ const inter = Inter({ subsets: ['latin'] });
 const RootLayout = ({ children }: { children: ReactNode }) => {
   return (
     <html lang="ja">
+      <head>
+        <title>Seichi Portal Admin</title>
+      </head>
       <body className={inter.className}>
         <AppRouterCacheProvider>
           <ThemeProvider theme={adminDashboardTheme}>
