@@ -7,6 +7,7 @@ import {
   MenuItem,
   ListItemIcon,
   Divider,
+  Link,
 } from '@mui/material';
 import Drawer from '@mui/material/Drawer';
 
@@ -47,7 +48,13 @@ const DashboardMenu = () => {
               >
                 <Star />
               </ListItemIcon>
-              {value}
+              <Link
+                href={`/admin/${value.toLowerCase()}`}
+                color="#fff"
+                sx={{ textDecoration: 'none' }}
+              >
+                {value}
+              </Link>
             </MenuItem>
           );
         })}
