@@ -37,6 +37,7 @@ const Home = () => {
             const token = r.accessToken;
 
             const mcAccessToken = (await fetch('/api/minecraft-access-token', {
+              method: 'POST',
               body: JSON.stringify({ token }),
             }).then((res) => res.json())) as { token: string; expires: number };
 
