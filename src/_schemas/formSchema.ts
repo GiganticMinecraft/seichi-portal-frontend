@@ -9,25 +9,9 @@ export const questionSchema = z.object({
   is_required: z.boolean(),
 });
 
-export const questionsSchema = questionSchema.array();
-
-const metadataSchema = z.object({
-  created_at: z.string().datetime(),
-  update_at: z.string().datetime(),
-});
-
 const responsePeriodSchema = z.object({
   start_at: z.string().datetime().nullable(),
   end_at: z.string().datetime().nullable(),
-});
-
-export const visibility = z.enum(['PUBLIC', 'PRIVATE']);
-
-const settingsSchema = z.object({
-  response_period: responsePeriodSchema,
-  webhook_url: z.string().nullable(),
-  default_answer_title: z.string().nullable(),
-  visibility: visibility,
 });
 
 export const mimimumFormSchema = z.object({
@@ -35,17 +19,6 @@ export const mimimumFormSchema = z.object({
   title: z.string(),
   description: z.string().nullable(),
   response_period: responsePeriodSchema,
-});
-
-export const mimimumFormsSchema = z.array(mimimumFormSchema);
-
-export const formSchema = z.object({
-  id: z.number(),
-  title: z.string(),
-  description: z.string().nullable(),
-  questions: questionSchema.array(),
-  metadata: metadataSchema,
-  settings: settingsSchema,
 });
 
 export const answerSchema = z.object({
@@ -61,14 +34,8 @@ export const batchAnswerSchema = z.object({
   answers: z.array(answerSchema),
 });
 
-export const createFormResponseSchema = z.object({
-  id: z.number(),
-});
-
 export type BatchAnswer = z.infer<typeof batchAnswerSchema>;
 
 export type MinimumForm = z.infer<typeof mimimumFormSchema>;
-
-export type Form = z.infer<typeof formSchema>;
 
 export type FormQuestion = z.infer<typeof questionSchema>;
