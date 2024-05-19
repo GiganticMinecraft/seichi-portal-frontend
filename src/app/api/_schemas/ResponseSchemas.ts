@@ -44,3 +44,33 @@ export const getFormResponseSchema = z.object({
 });
 
 export type GetFormResponse = z.infer<typeof getFormResponseSchema>;
+
+// GET /forms/:formId/questions
+export const getQuestionsResponseSchema = z
+  .object({
+    id: z.number(),
+    title: z.string(),
+    description: z.string(),
+    question_type: z.enum(['TEXT', 'SINGLE', 'MULTIPLE']),
+    choices: z.string().array(),
+    is_required: z.boolean(),
+  })
+  .array();
+
+export type GetQuestionsResponse = z.infer<typeof getQuestionsResponseSchema>;
+
+// GET /forms/answers
+export const getAnswersResponseSchema = z.object({
+  uuid: z.string(),
+  timestamp: z.string().datetime(),
+  form_id: z.number(),
+  title: z.string(),
+  answers: z
+    .object({
+      question_id: z.number(),
+      answer: z.string(),
+    })
+    .array(),
+});
+
+export type GetAnswersResponse = z.infer<typeof getAnswersResponseSchema>;

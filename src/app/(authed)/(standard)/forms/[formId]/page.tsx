@@ -3,11 +3,11 @@
 import { redirect } from 'next/navigation';
 import useSWR from 'swr';
 import AnswerForm from '@/features/form/components/AnswerForm';
-import type { FormQuestion } from '@/_schemas/formSchema';
+import type { GetQuestionsResponse } from '@/app/api/_schemas/ResponseSchemas';
 
 const Home = ({ params }: { params: { formId: number } }) => {
   const fetcher = (url: string) => fetch(url).then((res) => res.json());
-  const { data: questions, isLoading } = useSWR<FormQuestion[]>(
+  const { data: questions, isLoading } = useSWR<GetQuestionsResponse>(
     `/api/questions?formId=${params.formId}`,
     fetcher
   );

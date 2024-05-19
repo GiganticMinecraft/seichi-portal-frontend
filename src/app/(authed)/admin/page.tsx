@@ -3,11 +3,11 @@
 import { redirect } from 'next/navigation';
 import useSWR from 'swr';
 import DataTable from '@/components/Dashboard';
-import type { BatchAnswer } from '@/_schemas/formSchema';
+import type { GetAnswersResponse } from '@/app/api/_schemas/ResponseSchemas';
 
 const Home = () => {
   const fetcher = (url: string) => fetch(url).then((res) => res.json());
-  const { data: answers, isLoading } = useSWR<BatchAnswer[]>(
+  const { data: answers, isLoading } = useSWR<GetAnswersResponse[]>(
     '/api/answers',
     fetcher
   );
