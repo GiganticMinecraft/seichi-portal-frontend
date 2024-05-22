@@ -4,7 +4,7 @@ import {
   AuthenticatedTemplate,
   UnauthenticatedTemplate,
 } from '@azure/msal-react';
-import { MsalProvider } from '@/features/user/components/MsalProvider';
+import { MsalProvider } from '@/app/_components/MsalProvider';
 import MainMenu from './_components/MainMenu';
 import { NeedToSignin } from './_components/NeedToSignin';
 

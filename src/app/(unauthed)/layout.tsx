@@ -1,7 +1,7 @@
 import '../globals.css';
 import { Inter } from 'next/font/google';
 import NavBar from '@/app/_components/NavBar';
-import { MsalProvider } from '@/features/user/components/MsalProvider';
+import { MsalProvider } from '../_components/MsalProvider';
 import styles from '../page.module.css';
 import type { Metadata } from 'next';
 import type { ReactNode } from 'react';

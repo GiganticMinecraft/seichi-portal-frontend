@@ -13,9 +13,9 @@ import {
   Typography,
   Link,
 } from '@mui/material';
+import { MsalProvider } from './MsalProvider';
 import { SigninButton } from './SigninButton';
 import { SignoutButton } from './SignoutButton';
-import { MsalProvider } from '@/features/user/components/MsalProvider';
 
 const NavBar = () => {
   return (
