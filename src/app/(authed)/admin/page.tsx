@@ -2,7 +2,7 @@
 
 import { redirect } from 'next/navigation';
 import useSWR from 'swr';
-import DataTable from '@/components/Dashboard';
+import DataTable from './_components/Dashboard';
 import type { GetAnswersResponse } from '@/app/api/_schemas/ResponseSchemas';
 
 const Home = () => {
