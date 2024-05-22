@@ -7,7 +7,7 @@ import CardContent from '@mui/material/CardContent';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import * as React from 'react';
-import { formatString } from '../../../generic/DateFormatter';
+import { formatString } from '../../../../../generic/DateFormatter';
 import type { MinimumForm } from '@/_schemas/formSchema';
 
 interface Props {

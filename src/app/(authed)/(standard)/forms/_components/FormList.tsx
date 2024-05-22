@@ -13,7 +13,7 @@ import {
   Link,
 } from '@mui/material';
 import { formatString } from '@/generic/DateFormatter';
-import type { MinimumForm } from '../../../_schemas/formSchema';
+import type { MinimumForm } from '../../../../../_schemas/formSchema';
 
 const formatResponsePeriod = (startAt: string | null, endAt: string | null) => {
   if (startAt != null && endAt != null) {

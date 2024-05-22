@@ -2,7 +2,7 @@
 
 import { redirect } from 'next/navigation';
 import useSWR from 'swr';
-import FormList from '@/features/form/components/FormList';
+import FormList from './_components/FormList';
 import type { MinimumForm } from '@/_schemas/formSchema';
 
 const Home = () => {

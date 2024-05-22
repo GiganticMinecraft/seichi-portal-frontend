@@ -2,7 +2,7 @@
 
 import { redirect } from 'next/navigation';
 import useSWR from 'swr';
-import AnswerForm from '@/features/form/components/AnswerForm';
+import AnswerForm from './AnswerForm';
 import type { GetQuestionsResponse } from '@/app/api/_schemas/ResponseSchemas';
 
 const Home = ({ params }: { params: { formId: number } }) => {

@@ -12,7 +12,7 @@ import {
 } from '@mui/material';
 import { redirect } from 'next/navigation';
 import useSWR from 'swr';
-import { Forms } from '@/features/form/components/DashboardFormList';
+import { Forms } from './_components/DashboardFormList';
 import type { MinimumForm } from '@/_schemas/formSchema';
 
 const Home = () => {
