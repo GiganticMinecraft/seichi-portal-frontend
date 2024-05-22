@@ -11,7 +11,7 @@ const Item = styled(Button)(({ theme }) => ({
   color: theme.palette.text.secondary,
 }));
 
-const Menu = () => {
+const MainMenu = () => {
   return (
     <Box sx={{ width: '100%' }}>
       <Stack spacing={2}>
@@ -35,4 +35,4 @@ const Menu = () => {
   );
 };
 
-export default Menu;
+export default MainMenu;

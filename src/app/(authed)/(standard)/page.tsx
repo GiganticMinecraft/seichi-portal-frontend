@@ -1,9 +1,9 @@
 'use client';
 
-import Menu from '@/components/Menu';
+import MainMenu from './_components/MainMenu';
 
 const Home = () => {
-  return <Menu />;
+  return <MainMenu />;
 };
 
 export default Home;
