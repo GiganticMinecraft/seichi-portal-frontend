@@ -5,8 +5,8 @@ import {
   UnauthenticatedTemplate,
 } from '@azure/msal-react';
 import { MsalProvider } from '@/features/user/components/MsalProvider';
-import { NeedToSignin } from '@/features/user/components/NeedToSignin';
 import MainMenu from './_components/MainMenu';
+import { NeedToSignin } from './_components/NeedToSignin';
 
 const Home = () => {
   return (
