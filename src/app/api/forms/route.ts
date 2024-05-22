@@ -2,7 +2,7 @@
 
 import { NextResponse } from 'next/server';
 import { BACKEND_SERVER_URL } from '@/env';
-import { getCachedToken } from '@/features/user/api/mcToken';
+import { getCachedToken } from '@/user-token/mcToken';
 import { redirectByResponse } from '../util/responseOrErrorResponse';
 import type { NextRequest } from 'next/server';
 

@@ -2,7 +2,7 @@
 
 import { useMsal } from '@azure/msal-react';
 import { useEffect } from 'react';
-import { clearCachedToken } from '@/features/user/api/mcToken';
+import { clearCachedToken } from '@/user-token/mcToken';
 
 const Home = () => {
   const { instance, accounts } = useMsal();

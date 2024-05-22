@@ -2,7 +2,7 @@
 
 import { NextResponse, type NextRequest } from 'next/server';
 import { BACKEND_SERVER_URL } from './env';
-import { getCachedToken } from './features/user/api/mcToken';
+import { getCachedToken } from './user-token/mcToken';
 import type { User } from './_schemas/userSchema';
 
 export const middleware = async (request: NextRequest) => {

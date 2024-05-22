@@ -2,8 +2,8 @@
 
 import { NextResponse } from 'next/server';
 import { BACKEND_SERVER_URL } from '@/env';
-import { getCachedToken } from '@/features/user/api/mcToken';
 import { removeUndefinedOrNullRecords } from '@/generic/RecordExtra';
+import { getCachedToken } from '@/user-token/mcToken';
 import { createFormSchema } from '../_schemas/RequestSchemas';
 import {
   createFormResponseSchema,
