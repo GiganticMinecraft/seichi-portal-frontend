@@ -1,5 +1,6 @@
 import '../globals.css';
 import { Inter } from 'next/font/google';
+import NavBar from '@/app/_components/NavBar';
 import { MsalProvider } from '@/features/user/components/MsalProvider';
 import styles from '../page.module.css';
 import type { Metadata } from 'next';
@@ -16,6 +17,7 @@ const RootLayout = ({ children }: { children: ReactNode }) => {
   return (
     <html lang="ja">
       <body className={inter.className}>
+        <NavBar />
         <main className={styles['main']}>
           <MsalProvider>{children}</MsalProvider>
         </main>

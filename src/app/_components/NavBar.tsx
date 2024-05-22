@@ -13,8 +13,8 @@ import {
   Typography,
   Link,
 } from '@mui/material';
-import { SigninButton } from '../features/user/components/SigninButton';
-import { SignoutButton } from '../features/user/components/SignoutButton';
+import { SigninButton } from '../../features/user/components/SigninButton';
+import { SignoutButton } from '../../features/user/components/SignoutButton';
 
 const NavBar = () => {
   return (

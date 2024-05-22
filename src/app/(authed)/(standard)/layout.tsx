@@ -1,6 +1,6 @@
 import '../../globals.css';
 import { Inter } from 'next/font/google';
-import NavBar from '@/components/NavBar';
+import NavBar from '@/app/_components/NavBar';
 import { AuthenticatedTemplate } from '@/features/user/components/AuthenticatedTemplate';
 import { MsalProvider } from '@/features/user/components/MsalProvider';
 import { NeedToSignin } from '@/features/user/components/NeedToSignin';
