@@ -35,12 +35,12 @@
 | ------------------------------- | ---------------------------------------------------------------------------------------------------------- |
 | NEXT_PUBLIC_MS_APP_CLIENT_ID    | Microsoft アカウントログイン用の CLIENT ID                                                                 |
 | NEXT_PUBLIC_MS_APP_REDIRECT_URL | ログイン後にリダイレクトされるデフォルトの URL                                                             |
-| BACKEND_SERVER_URL              | [seichi-portal-backend](https://github.com/GiganticMinecraft/seichi-portal-backend) にアクセスできるリンク |
-| DEBUG_MODE                      | デバッグモードを有効にします                                                                               |
+| NEXT_PUBLIC_BACKEND_SERVER_URL  | [seichi-portal-backend](https://github.com/GiganticMinecraft/seichi-portal-backend) にアクセスできるリンク |
+| NEXT_PUBLIC_DEBUG_MODE          | デバッグモードを有効にします                                                                               |
 
 > [!TIP]
 >
-> `NEXT_PUBLIC_MS_APP_CLIENT_ID` は Microsoft アカウントによる認証に必要な環境変数のため、 `DEBUG_MODE` が `true` のときは設定されていなくても問題ありません。
+> `NEXT_PUBLIC_MS_APP_CLIENT_ID` は Microsoft アカウントによる認証に必要な環境変数のため、 `NEXT_PUBLIC_DEBUG_MODE` が `true` のときは設定されていなくても問題ありません。
 
 ## デバッグモード
 
@@ -49,7 +49,7 @@
 > [!TIP]
 > デバッグモードは以下の条件がすべて満たされている必要があります
 >
-> - `DEBUG_MODE`(環境変数)が `true` に設定されていること
+> - `NEXT_PUBLIC_DEBUG_MODE`(環境変数)が `true` に設定されていること
 > - seichi-portal-backend がデバッグモードで起動されていること
 > - seichi-portal-frontend が開発モードで起動されていること(`yarn dev` コマンド)
 
