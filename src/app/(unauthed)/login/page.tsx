@@ -5,7 +5,6 @@ import { useMsal } from '@azure/msal-react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { saveTokenToCache } from '@/features/user/api/mcToken';
-import { loginRequest } from '@/features/user/const/authConfig';
 import type { SilentRequest } from '@azure/msal-browser';
 
 const Home = () => {
@@ -14,6 +13,10 @@ const Home = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get('callbackUrl');
+
+  const loginRequest = {
+    scopes: ['XboxLive.signin offline_access'],
+  };
 
   useEffect(() => {
     (async () => {
