@@ -14,7 +14,7 @@ import {
 } from '@mui/material';
 import { useState } from 'react';
 import { useFieldArray, useForm, useWatch } from 'react-hook-form';
-import { fromStringToJSTDateTime } from '@/components/DateFormatter';
+import { fromStringToJSTDateTime } from '@/generic/DateFormatter';
 import { removeUndefinedOrNullRecords } from '@/generic/RecordExtra';
 import FormSettings from './FormSettings';
 import QuestionComponent from './Question';
