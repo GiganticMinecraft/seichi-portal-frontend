@@ -10,9 +10,9 @@ import {
   Stack,
   Alert,
   AlertTitle,
+  Link,
 } from '@mui/material';
 import { formatString } from '@/components/DateFormatter';
-import { Link } from '@/components/Link';
 import type { MinimumForm } from '../../../_schemas/formSchema';
 
 const formatResponsePeriod = (startAt: string | null, endAt: string | null) => {
@@ -72,7 +72,11 @@ const FormList = ({ forms }: Props) => {
         ) : (
           forms.map((form) => {
             return (
-              <Link href={`/forms/${form.id}`} key={form.id}>
+              <Link
+                href={`/forms/${form.id}`}
+                key={form.id}
+                sx={{ textDecoration: 'none' }}
+              >
                 <Item>
                   <EachForm form={form} />
                 </Item>

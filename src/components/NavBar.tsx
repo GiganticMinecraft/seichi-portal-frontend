@@ -5,8 +5,14 @@ import {
   UnauthenticatedTemplate,
 } from '@azure/msal-react';
 import MenuIcon from '@mui/icons-material/Menu';
-import { Box, AppBar, Toolbar, IconButton, Typography } from '@mui/material';
-import { Link } from './Link';
+import {
+  Box,
+  AppBar,
+  Toolbar,
+  IconButton,
+  Typography,
+  Link,
+} from '@mui/material';
 import { SigninButton } from '../features/user/components/SigninButton';
 import { SignoutButton } from '../features/user/components/SignoutButton';
 
@@ -25,7 +31,7 @@ const NavBar = () => {
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            <Link href="/" color="#fff">
+            <Link href="/" color="#fff" sx={{ textDecoration: 'none' }}>
               Seichi Portal
             </Link>
           </Typography>
