@@ -1,10 +1,6 @@
 import '../../globals.css';
 import { Inter } from 'next/font/google';
 import NavBar from '@/app/_components/NavBar';
-import { AuthenticatedTemplate } from '@/features/user/components/AuthenticatedTemplate';
-import { MsalProvider } from '@/features/user/components/MsalProvider';
-import { NeedToSignin } from '@/features/user/components/NeedToSignin';
-import { UnauthenticatedTemplate } from '@/features/user/components/UnauthenticatedTemplate';
 import styles from '../../page.module.css';
 import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
@@ -21,13 +17,8 @@ const RootLayout = ({ children }: { children: ReactNode }) => {
     <html lang="ja">
       <body className={inter.className}>
         <main className={styles['main']}>
-          <MsalProvider>
-            <NavBar />
-            <AuthenticatedTemplate>{children}</AuthenticatedTemplate>
-            <UnauthenticatedTemplate>
-              <NeedToSignin />
-            </UnauthenticatedTemplate>
-          </MsalProvider>
+          <NavBar />
+          {children}
         </main>
       </body>
     </html>
