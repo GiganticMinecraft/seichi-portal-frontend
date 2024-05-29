@@ -4,6 +4,11 @@ import { z } from 'zod';
  * バックエンドサーバーからのレスポンススキーマの定義。
  */
 
+export const errorResponseSchema = z.object({
+  errorCode: z.string(),
+  reason: z.string(),
+});
+
 // GET /forms
 export const createFormResponseSchema = z.object({
   id: z.number(),

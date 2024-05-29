@@ -25,6 +25,7 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import type { FormQuestion } from '../../../../../../_schemas/formSchema';
 import type { NonEmptyArray } from '@/generic/Types';
+import { errorResponseSchema } from '@/app/api/_schemas/ResponseSchemas';
 
 interface Props {
   questions: FormQuestion[];
@@ -101,10 +102,19 @@ const AnswerForm = ({ questions: questions, formId }: Props) => {
       }),
     });
 
+    const safeParsedErrorResponse = errorResponseSchema.safeParse(
+      await postAnswerResponse.json()
+    );
+
     if (postAnswerResponse.ok) {
       toggleIsSubmitted(true);
       reset();
       setSelectedValues({});
+    } else if (
+      safeParsedErrorResponse.success &&
+      safeParsedErrorResponse.data.errorCode == 'FORM_ANSWER_OUT_OF_PERIOD'
+    ) {
+      alert('回答期間が終了しています');
     }
   };
 
