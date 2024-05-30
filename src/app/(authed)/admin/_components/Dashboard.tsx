@@ -1,9 +1,11 @@
 'use client';
 
+import type { GridEventListener, GridRowParams } from '@mui/x-data-grid';
 import { DataGrid, type GridColDef } from '@mui/x-data-grid';
 import * as React from 'react';
 import { formatString } from '@/generic/DateFormatter';
 import type { GetAnswersResponse } from '@/app/api/_schemas/ResponseSchemas';
+import { useRouter } from 'next/navigation';
 
 const columns: GridColDef[] = [
   { field: 'category', headerName: '種別', width: 200 },
@@ -25,6 +27,7 @@ const prepareRows = (
 ) => {
   return answerResponseWithFormTitle.map((answer, index) => {
     const row: Row = {
+      // TODO: ここのidをanswerIdにする
       id: index,
       category: answer.form_title,
       title: answer.title,
@@ -37,10 +40,19 @@ const prepareRows = (
 const DataTable = (props: {
   answerResponseWithFormTitle: AnswerResponseWithFormTitle[];
 }) => {
+  const router = useRouter();
+
+  const handleRowClick: GridEventListener<'rowClick'> = (
+    params: GridRowParams
+  ) => {
+    router.push(`/admin/answer/${params.id}`);
+  };
+
   return (
     <DataGrid
       rows={prepareRows(props.answerResponseWithFormTitle)}
       columns={columns}
+      onRowClick={handleRowClick}
       initialState={{
         pagination: {
           paginationModel: { page: 0, pageSize: 5 },
