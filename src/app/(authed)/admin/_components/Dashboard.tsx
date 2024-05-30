@@ -1,17 +1,15 @@
 'use client';
+
 import { DataGrid, type GridColDef } from '@mui/x-data-grid';
 import * as React from 'react';
-import type { BatchAnswer } from '@/_schemas/formSchema';
+import { formatString } from '@/generic/DateFormatter';
+import type { GetAnswersResponse } from '@/app/api/_schemas/ResponseSchemas';
 
 const columns: GridColDef[] = [
   { field: 'category', headerName: '種別', width: 200 },
   { field: 'title', headerName: 'タイトル', width: 200 },
-  { field: 'date', headerName: '日付', width: 130 },
+  { field: 'date', headerName: '日付', width: 200 },
 ];
-
-interface Answers {
-  answers: BatchAnswer[];
-}
 
 interface Row {
   id: number;
@@ -20,22 +18,28 @@ interface Row {
   date: string;
 }
 
-const prepareRows = (answers: Answers) => {
-  return answers.answers.map((answer, index) => {
+type AnswerResponseWithFormTitle = GetAnswersResponse & { form_title: string };
+
+const prepareRows = (
+  answerResponseWithFormTitle: AnswerResponseWithFormTitle[]
+) => {
+  return answerResponseWithFormTitle.map((answer, index) => {
     const row: Row = {
       id: index,
-      category: 'unknown category',
+      category: answer.form_title,
       title: answer.title,
-      date: answer.timestamp,
+      date: formatString(answer.timestamp),
     };
     return row;
   });
 };
 
-const DataTable = (answers: Answers) => {
+const DataTable = (props: {
+  answerResponseWithFormTitle: AnswerResponseWithFormTitle[];
+}) => {
   return (
     <DataGrid
-      rows={prepareRows(answers)}
+      rows={prepareRows(props.answerResponseWithFormTitle)}
       columns={columns}
       initialState={{
         pagination: {

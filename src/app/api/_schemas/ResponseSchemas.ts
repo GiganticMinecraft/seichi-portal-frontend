@@ -10,6 +10,21 @@ export const errorResponseSchema = z.object({
 });
 
 // GET /forms
+export const getFormsResponseSchema = z
+  .object({
+    id: z.number(),
+    title: z.string(),
+    description: z.string(),
+    response_period: z.object({
+      created_at: z.string().datetime(),
+      updated_at: z.string().datetime(),
+    }),
+  })
+  .array();
+
+export type GetFormsResponse = z.infer<typeof getFormsResponseSchema>;
+
+// POST /forms
 export const createFormResponseSchema = z.object({
   id: z.number(),
 });
