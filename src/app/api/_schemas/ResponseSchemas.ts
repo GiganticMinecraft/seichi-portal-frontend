@@ -81,6 +81,7 @@ export type GetQuestionsResponse = z.infer<typeof getQuestionsResponseSchema>;
 
 // GET /forms/answers
 export const getAnswersResponseSchema = z.object({
+  id: z.number(),
   uuid: z.string(),
   timestamp: z.string().datetime(),
   form_id: z.number(),
@@ -94,3 +95,20 @@ export const getAnswersResponseSchema = z.object({
 });
 
 export type GetAnswersResponse = z.infer<typeof getAnswersResponseSchema>;
+
+// GET /forms/answers/:answerId
+export const getAnswerResponseSchema = z.object({
+  id: z.number(),
+  uuid: z.string(),
+  timestamp: z.string().datetime(),
+  form_id: z.number(),
+  title: z.string(),
+  answers: z
+    .object({
+      question_id: z.number(),
+      answer: z.string(),
+    })
+    .array(),
+});
+
+export type GetAnswerResponse = z.infer<typeof getAnswerResponseSchema>;

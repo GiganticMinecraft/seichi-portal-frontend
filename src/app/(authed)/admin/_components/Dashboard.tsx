@@ -1,11 +1,15 @@
 'use client';
 
-import type { GridEventListener, GridRowParams } from '@mui/x-data-grid';
-import { DataGrid, type GridColDef } from '@mui/x-data-grid';
+import {
+  DataGrid,
+  type GridColDef,
+  type GridEventListener,
+  type GridRowParams,
+} from '@mui/x-data-grid';
+import { useRouter } from 'next/navigation';
 import * as React from 'react';
 import { formatString } from '@/generic/DateFormatter';
 import type { GetAnswersResponse } from '@/app/api/_schemas/ResponseSchemas';
-import { useRouter } from 'next/navigation';
 
 const columns: GridColDef[] = [
   { field: 'category', headerName: '種別', width: 200 },
@@ -25,10 +29,9 @@ type AnswerResponseWithFormTitle = GetAnswersResponse & { form_title: string };
 const prepareRows = (
   answerResponseWithFormTitle: AnswerResponseWithFormTitle[]
 ) => {
-  return answerResponseWithFormTitle.map((answer, index) => {
+  return answerResponseWithFormTitle.map((answer) => {
     const row: Row = {
-      // TODO: ここのidをanswerIdにする
-      id: index,
+      id: answer.id,
       category: answer.form_title,
       title: answer.title,
       date: formatString(answer.timestamp),
