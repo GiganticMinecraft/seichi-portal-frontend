@@ -82,7 +82,11 @@ export type GetQuestionsResponse = z.infer<typeof getQuestionsResponseSchema>;
 // GET /forms/answers
 export const getAnswersResponseSchema = z.object({
   id: z.number(),
-  uuid: z.string(),
+  user: z.object({
+    uuid: z.string(),
+    name: z.string(),
+    role: z.enum(['ADMINISTRATOR', 'STANDARD_USER']),
+  }),
   timestamp: z.string().datetime(),
   form_id: z.number(),
   title: z.string(),
@@ -99,7 +103,11 @@ export type GetAnswersResponse = z.infer<typeof getAnswersResponseSchema>;
 // GET /forms/answers/:answerId
 export const getAnswerResponseSchema = z.object({
   id: z.number(),
-  uuid: z.string(),
+  user: z.object({
+    uuid: z.string(),
+    name: z.string(),
+    role: z.enum(['ADMINISTRATOR', 'STANDARD_USER']),
+  }),
   timestamp: z.string().datetime(),
   form_id: z.number(),
   title: z.string(),

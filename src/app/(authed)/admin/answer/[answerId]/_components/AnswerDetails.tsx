@@ -17,10 +17,9 @@ const AnswerDetails = (props: {
       <Grid item xs={12}>
         {props.answers.title}
       </Grid>
-      {/* TODO: 回答者をユーザー名埋め込みに変える */}
       <Grid item xs={6}>
         <Typography sx={{ fontWeight: 'bold' }}>回答者</Typography>
-        {props.answers.uuid}
+        {props.answers.user.name}
       </Grid>
       <Grid item xs={6}>
         <Typography sx={{ fontWeight: 'bold' }}>回答日時</Typography>
