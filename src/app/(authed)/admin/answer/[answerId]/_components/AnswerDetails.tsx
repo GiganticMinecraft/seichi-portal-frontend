@@ -5,6 +5,7 @@ import Grid from '@mui/material/Grid';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import { useState } from 'react';
+import { useForm } from 'react-hook-form';
 import { formatString } from '@/generic/DateFormatter';
 import type {
   GetAnswerResponse,
@@ -15,6 +16,8 @@ const AnswerDetails = (props: {
   answers: GetAnswerResponse;
   questions: GetQuestionsResponse;
 }) => {
+  const { handleSubmit, register } = useForm<{ title: string }>();
+
   const [isEditing, setIsEditing] = useState(false);
 
   type AnswerWithQuestionInfo = {
@@ -39,22 +42,39 @@ const AnswerDetails = (props: {
     return answerWithQuestionInfo;
   });
 
+  const onSubmit = async (data: { title: string }) => {
+    await fetch(`/api/answers/${props.answers.id}`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        title: data.title,
+      }),
+    });
+
+    setIsEditing(false);
+  };
+
   return (
     <Grid container spacing={2}>
       <Grid item xs={10}>
         {isEditing ? (
-          <TextField defaultValue={props.answers.title} required />
+          <TextField
+            {...register('title')}
+            defaultValue={props.answers.title}
+            required
+          />
         ) : (
           <Typography variant="h4">{props.answers.title}</Typography>
         )}
       </Grid>
       <Grid item xs={2}>
         {isEditing ? (
-          // TODO: タイトル変更用 API ができたら実装する
           <Button
             variant="contained"
             startIcon={<Send />}
-            onClick={() => setIsEditing(false)}
+            onClick={handleSubmit(onSubmit)}
           >
             編集完了
           </Button>

@@ -52,3 +52,8 @@ export const updateQuestionSchema = z.object({
     })
     .array(),
 });
+
+// PATCH /forms/answers/:answer_id
+export const updateAnswerSchema = z.object({
+  title: z.string().nullable(),
+});
