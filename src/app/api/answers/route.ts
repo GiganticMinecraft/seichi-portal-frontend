@@ -42,5 +42,11 @@ export async function POST(req: NextRequest) {
     cache: 'no-cache',
   });
 
-  return NextResponse.json(await response.json(), { status: response.status });
+  if (response.ok) {
+    return NextResponse.json({ status: response.status });
+  } else {
+    return NextResponse.json(await response.json(), {
+      status: response.status,
+    });
+  }
 }
