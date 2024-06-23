@@ -112,7 +112,7 @@ const AnswerForm = ({ questions: questions, formId }: Props) => {
       setSelectedValues({});
     } else if (
       safeParsedErrorResponse.success &&
-      safeParsedErrorResponse.data.errorCode == 'FORM_ANSWER_OUT_OF_PERIOD'
+      safeParsedErrorResponse.data.errorCode == 'OUT_OF_PERIOD'
     ) {
       alert('回答期間が終了しています');
     }
