@@ -5,18 +5,25 @@ import type {
   GetAnswerResponse,
   GetQuestionsResponse,
 } from '@/app/api/_schemas/ResponseSchemas';
+import Button from '@mui/material/Button';
+import EditIcon from '@mui/icons-material/Edit';
+import { useState } from 'react';
+import TextField from '@mui/material/TextField';
+import { Send } from '@mui/icons-material';
 
 const AnswerDetails = (props: {
   answers: GetAnswerResponse;
   questions: GetQuestionsResponse;
 }) => {
+  const [isEditing, setIsEditing] = useState(false);
+
   type AnswerWithQuestionInfo = {
     questionTitle: string;
     answers: string[];
   };
 
   // NOTE: TypeScript の Set 型は順番を維持する
-  // ref: https://zenn.dev/notfounds/scraps/d8a0e4b99ddc38
+  //  ref: https://zenn.dev/notfounds/scraps/d8a0e4b99ddc38
   const answerWithQeustionInfo = Array.from(
     new Set(props.answers.answers.map((answer) => answer.question_id))
   ).map((questionId) => {
@@ -34,8 +41,32 @@ const AnswerDetails = (props: {
 
   return (
     <Grid container spacing={2}>
-      <Grid item xs={12}>
-        {props.answers.title}
+      <Grid item xs={10}>
+        {isEditing ? (
+          <TextField defaultValue={props.answers.title} required />
+        ) : (
+          <Typography variant="h4">{props.answers.title}</Typography>
+        )}
+      </Grid>
+      <Grid item xs={2}>
+        {isEditing ? (
+          // TODO: タイトル変更用 API ができたら実装する
+          <Button
+            variant="contained"
+            startIcon={<Send />}
+            onClick={() => setIsEditing(false)}
+          >
+            編集完了
+          </Button>
+        ) : (
+          <Button
+            variant="contained"
+            startIcon={<EditIcon />}
+            onClick={() => setIsEditing(true)}
+          >
+            タイトルを編集
+          </Button>
+        )}
       </Grid>
       <Grid item xs={6}>
         <Typography sx={{ fontWeight: 'bold' }}>回答者</Typography>
