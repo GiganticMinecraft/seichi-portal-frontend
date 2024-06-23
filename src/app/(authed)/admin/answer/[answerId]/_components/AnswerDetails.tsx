@@ -1,15 +1,15 @@
+import { Send } from '@mui/icons-material';
+import EditIcon from '@mui/icons-material/Edit';
+import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
+import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
+import { useState } from 'react';
 import { formatString } from '@/generic/DateFormatter';
 import type {
   GetAnswerResponse,
   GetQuestionsResponse,
 } from '@/app/api/_schemas/ResponseSchemas';
-import Button from '@mui/material/Button';
-import EditIcon from '@mui/icons-material/Edit';
-import { useState } from 'react';
-import TextField from '@mui/material/TextField';
-import { Send } from '@mui/icons-material';
 
 const AnswerDetails = (props: {
   answers: GetAnswerResponse;
