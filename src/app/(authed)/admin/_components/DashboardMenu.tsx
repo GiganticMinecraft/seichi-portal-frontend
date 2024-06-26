@@ -37,9 +37,22 @@ const DashboardMenu = () => {
         Menu
       </Typography>
       <MenuList>
-        {['Dashboard', 'Forms', 'Announcements'].map((value) => {
+        {[
+          {
+            label: 'Dashboard',
+            url: '/admin',
+          },
+          {
+            label: 'Forms',
+            url: '/admin/forms',
+          },
+          {
+            label: 'Announcements',
+            url: '/admin/announcements',
+          },
+        ].map((value, index) => {
           return (
-            <MenuItem key={value} sx={{ color: 'white' }}>
+            <MenuItem key={index} sx={{ color: 'white' }}>
               <ListItemIcon
                 sx={{
                   color: 'rgba(255, 255, 255, 0.56)',
@@ -49,11 +62,11 @@ const DashboardMenu = () => {
                 <Star />
               </ListItemIcon>
               <Link
-                href={`/admin/${value.toLowerCase()}`}
+                href={value.url}
                 color="#fff"
                 sx={{ textDecoration: 'none' }}
               >
-                {value}
+                {value.label}
               </Link>
             </MenuItem>
           );
