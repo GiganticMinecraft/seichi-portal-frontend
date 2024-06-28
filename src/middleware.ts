@@ -1,9 +1,9 @@
 'use server';
 
 import { NextResponse, type NextRequest } from 'next/server';
+import { getUsersResponseSchema } from './app/api/_schemas/ResponseSchemas';
 import { BACKEND_SERVER_URL } from './env';
 import { getCachedToken } from './user-token/mcToken';
-import type { User } from './_schemas/userSchema';
 
 export const middleware = async (request: NextRequest) => {
   if (request.method !== 'GET') {
@@ -13,7 +13,13 @@ export const middleware = async (request: NextRequest) => {
   if (
     pathName === '/' ||
     pathName.startsWith('/login') ||
-    pathName.includes('_next/static')
+    pathName.startsWith('/logout') ||
+    pathName.startsWith('/_next') ||
+    pathName.startsWith('/internal-error') ||
+    pathName.startsWith('/forbidden') ||
+    pathName.startsWith('/unknown-error') ||
+    pathName.startsWith('/badrequest') ||
+    pathName.startsWith('/api')
   ) {
     return;
   }
@@ -30,9 +36,13 @@ export const middleware = async (request: NextRequest) => {
       Authorization: `Bearer ${token}`,
     },
     cache: 'no-cache',
-  }).then(async (res) => (await res.json()) as User);
+  }).then(async (res) => getUsersResponseSchema.safeParse(await res.json()));
 
-  if (pathName.startsWith('/admin') && me.role !== 'ADMINISTRATOR') {
+  if (!me.success) {
+    return NextResponse.redirect(`${request.nextUrl.origin}/internal-error`);
+  }
+
+  if (pathName.startsWith('/admin') && me.data.role !== 'ADMINISTRATOR') {
     return NextResponse.redirect(`${request.nextUrl.origin}/forbidden`);
   }
 

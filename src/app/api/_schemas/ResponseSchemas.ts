@@ -120,3 +120,12 @@ export const getAnswerResponseSchema = z.object({
 });
 
 export type GetAnswerResponse = z.infer<typeof getAnswerResponseSchema>;
+
+// GET /users
+export const getUsersResponseSchema = z.object({
+  uuid: z.string(),
+  name: z.string(),
+  role: z.enum(['ADMINISTRATOR', 'STANDARD_USER']),
+});
+
+export type GetUsersResponse = z.infer<typeof getUsersResponseSchema>;

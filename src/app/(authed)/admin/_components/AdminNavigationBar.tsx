@@ -10,8 +10,11 @@ import {
   Paper,
   IconButton,
   InputBase,
+  Avatar,
 } from '@mui/material';
 import Image from 'next/image';
+import useSWR from 'swr';
+import type { GetUsersResponse } from '@/app/api/_schemas/ResponseSchemas';
 
 const SearchField = () => {
   return (
@@ -38,6 +41,9 @@ const SearchField = () => {
 };
 
 const NavBar = () => {
+  const fetcher = (url: string) => fetch(url).then((res) => res.json());
+  const { data } = useSWR<GetUsersResponse>('/api/users', fetcher);
+
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar
@@ -64,6 +70,11 @@ const NavBar = () => {
             </Link>
           </Typography>
           <SearchField />
+          <Avatar
+            alt="PlayerHead"
+            src={data ? `https://mc-heads.net/avatar/${data.uuid}` : ''}
+            sx={{ marginLeft: '20px' }}
+          />
         </Toolbar>
       </AppBar>
     </Box>
