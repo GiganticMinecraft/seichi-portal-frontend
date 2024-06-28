@@ -19,6 +19,7 @@ const AnswerDetails = (props: {
   const { handleSubmit, register } = useForm<{ title: string }>();
 
   const [isEditing, setIsEditing] = useState(false);
+  const [title, setTitle] = useState(props.answers.title);
 
   type AnswerWithQuestionInfo = {
     questionTitle: string;
@@ -43,7 +44,7 @@ const AnswerDetails = (props: {
   });
 
   const onSubmit = async (data: { title: string }) => {
-    await fetch(`/api/answers/${props.answers.id}`, {
+    const response = await fetch(`/api/answers/${props.answers.id}`, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
@@ -53,20 +54,19 @@ const AnswerDetails = (props: {
       }),
     });
 
-    setIsEditing(false);
+    if (response.ok) {
+      setIsEditing(false);
+      setTitle(data.title);
+    }
   };
 
   return (
     <Grid container spacing={2}>
       <Grid item xs={10}>
         {isEditing ? (
-          <TextField
-            {...register('title')}
-            defaultValue={props.answers.title}
-            required
-          />
+          <TextField {...register('title')} defaultValue={title} required />
         ) : (
-          <Typography variant="h4">{props.answers.title}</Typography>
+          <Typography variant="h4">{title}</Typography>
         )}
       </Grid>
       <Grid item xs={2}>
