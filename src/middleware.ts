@@ -9,17 +9,22 @@ export const middleware = async (request: NextRequest) => {
   if (request.method !== 'GET') {
     return;
   }
+
   const pathName = request.nextUrl.pathname.toLowerCase();
+  const ignorePaths = [
+    '/_next',
+    '/login',
+    '/logout',
+    '/internal-error',
+    '/forbidden',
+    '/unknown-error',
+    '/badrequest',
+    '/api',
+  ];
+
   if (
     pathName === '/' ||
-    pathName.startsWith('/login') ||
-    pathName.startsWith('/logout') ||
-    pathName.startsWith('/_next') ||
-    pathName.startsWith('/internal-error') ||
-    pathName.startsWith('/forbidden') ||
-    pathName.startsWith('/unknown-error') ||
-    pathName.startsWith('/badrequest') ||
-    pathName.startsWith('/api')
+    ignorePaths.some((path) => pathName.startsWith(path))
   ) {
     return;
   }
