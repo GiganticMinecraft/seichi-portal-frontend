@@ -6,6 +6,7 @@ import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { removeDuplicates } from '@/generic/ArrayExtra';
 import { formatString } from '@/generic/DateFormatter';
 import type {
   GetAnswerResponse,
@@ -26,10 +27,8 @@ const AnswerDetails = (props: {
     answers: string[];
   };
 
-  // NOTE: TypeScript の Set 型は順番を維持する
-  //  ref: https://zenn.dev/notfounds/scraps/d8a0e4b99ddc38
-  const answerWithQeustionInfo = Array.from(
-    new Set(props.answers.answers.map((answer) => answer.question_id))
+  const answerWithQeustionInfo = removeDuplicates(
+    props.answers.answers.map((answer) => answer.question_id)
   ).map((questionId) => {
     const answerWithQuestionInfo: AnswerWithQuestionInfo = {
       questionTitle:
