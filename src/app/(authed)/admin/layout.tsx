@@ -5,6 +5,7 @@ import { ThemeProvider } from '@emotion/react';
 import { CssBaseline } from '@mui/material';
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v13-appRouter';
 import { Inter } from 'next/font/google';
+import { SWRConfig } from 'swr';
 import { MsalProvider } from '@/app/_components/MsalProvider';
 import AdminNavigationBar from './_components/AdminNavigationBar';
 import DashboardMenu from './_components/DashboardMenu';
@@ -24,13 +25,19 @@ const RootLayout = ({ children }: { children: ReactNode }) => {
         <AppRouterCacheProvider>
           <ThemeProvider theme={adminDashboardTheme}>
             <CssBaseline />
-            <MsalProvider>
-              <AdminNavigationBar />
-              <main className={styles['main']}>
-                <DashboardMenu />
-                {children}
-              </main>
-            </MsalProvider>
+            <SWRConfig
+              value={{
+                fetcher: (url: string) => fetch(url).then((res) => res.json()),
+              }}
+            >
+              <MsalProvider>
+                <AdminNavigationBar />
+                <main className={styles['main']}>
+                  <DashboardMenu />
+                  {children}
+                </main>
+              </MsalProvider>
+            </SWRConfig>
           </ThemeProvider>
         </AppRouterCacheProvider>
       </body>
