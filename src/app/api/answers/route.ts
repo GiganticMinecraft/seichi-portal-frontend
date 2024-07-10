@@ -20,10 +20,6 @@ export async function GET(_: NextRequest) {
     cache: 'no-cache',
   });
 
-  if (!response.ok) {
-    console.error(await response.json());
-  }
-
   return NextResponse.json(await response.json(), { status: response.status });
 }
 
