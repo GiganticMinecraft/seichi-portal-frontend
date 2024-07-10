@@ -4,28 +4,38 @@ import { CssBaseline, ThemeProvider } from '@mui/material';
 import { redirect } from 'next/navigation';
 import useSWR from 'swr';
 import DataTable from './_components/Dashboard';
+import ErrorModal from './_components/ErrorModal';
 import adminDashboardTheme from './theme/adminDashboardTheme';
 import type {
+  ErrorResponse,
   GetAnswersResponse,
   GetFormsResponse,
 } from '@/app/api/_schemas/ResponseSchemas';
 
 const Home = () => {
-  const fetcher = (url: string) => fetch(url).then((res) => res.json());
-  const { data: answers, isLoading } = useSWR<GetAnswersResponse[]>(
-    '/api/answers',
-    fetcher
-  );
+  const {
+    data: answers,
+    isLoading,
+    error: answersError,
+  } = useSWR<GetAnswersResponse[], ErrorResponse>('/api/answers');
 
-  const { data: forms, isLoading: isLoadingForms } = useSWR<GetFormsResponse>(
-    '/api/forms',
-    fetcher
-  );
+  const {
+    data: forms,
+    isLoading: isLoadingForms,
+    error: formsError,
+  } = useSWR<GetFormsResponse, ErrorResponse>('/api/forms');
 
   if ((!isLoading && !answers) || (!isLoadingForms && !forms)) {
     redirect('/');
   } else if (!answers || !forms) {
     return null;
+  }
+
+  const isErrorOccurred =
+    answersError !== undefined || formsError !== undefined;
+
+  if (isErrorOccurred) {
+    return <ErrorModal isErrorOccurred={isErrorOccurred} />;
   }
 
   return (

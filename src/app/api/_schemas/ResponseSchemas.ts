@@ -9,6 +9,8 @@ export const errorResponseSchema = z.object({
   reason: z.string(),
 });
 
+export type ErrorResponse = z.infer<typeof errorResponseSchema>;
+
 // GET /forms
 export const getFormsResponseSchema = z
   .object({
