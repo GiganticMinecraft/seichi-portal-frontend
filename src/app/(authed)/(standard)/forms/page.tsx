@@ -6,11 +6,7 @@ import FormList from './_components/FormList';
 import type { MinimumForm } from '@/_schemas/formSchema';
 
 const Home = () => {
-  const fetcher = (url: string) => fetch(url).then((res) => res.json());
-  const { data: forms, isLoading } = useSWR<MinimumForm[]>(
-    '/api/forms',
-    fetcher
-  );
+  const { data: forms, isLoading } = useSWR<MinimumForm[]>('/api/forms');
 
   if (!isLoading && !forms) {
     redirect('/');

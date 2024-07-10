@@ -6,10 +6,8 @@ import AnswerForm from './_components/AnswerForm';
 import type { GetQuestionsResponse } from '@/app/api/_schemas/ResponseSchemas';
 
 const Home = ({ params }: { params: { formId: number } }) => {
-  const fetcher = (url: string) => fetch(url).then((res) => res.json());
   const { data: questions, isLoading } = useSWR<GetQuestionsResponse>(
-    `/api/questions?formId=${params.formId}`,
-    fetcher
+    `/api/questions?formId=${params.formId}`
   );
 
   if (!isLoading && !questions) {

@@ -11,15 +11,12 @@ import type {
 } from '@/app/api/_schemas/ResponseSchemas';
 
 const Home = ({ params }: { params: { answerId: string } }) => {
-  const fetcher = (url: string) => fetch(url).then((res) => res.json());
-
   const { data: answers, isLoading: isAnswersLoading } =
-    useSWR<GetAnswerResponse>(`/api/answers/${params.answerId}`, fetcher);
+    useSWR<GetAnswerResponse>(`/api/answers/${params.answerId}`);
 
   const { data: formQuestions, isLoading: isFormQuestionsLoading } =
     useSWR<GetQuestionsResponse>(
-      answers ? `/api/questions?formId=${answers.form_id}` : '',
-      fetcher
+      answers ? `/api/questions?formId=${answers.form_id}` : ''
     );
 
   if (!isAnswersLoading && !answers) {

@@ -41,8 +41,7 @@ const SearchField = () => {
 };
 
 const NavBar = () => {
-  const fetcher = (url: string) => fetch(url).then((res) => res.json());
-  const { data } = useSWR<GetUsersResponse>('/api/users', fetcher);
+  const { data } = useSWR<GetUsersResponse>('/api/users');
 
   return (
     <Box sx={{ flexGrow: 1 }}>

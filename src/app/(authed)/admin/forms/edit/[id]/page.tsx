@@ -9,10 +9,8 @@ import adminDashboardTheme from '../../../theme/adminDashboardTheme';
 import type { GetFormResponse } from '@/app/api/_schemas/ResponseSchemas';
 
 const Home = ({ params }: { params: { id: number } }) => {
-  const fetcher = (url: string) => fetch(url).then((res) => res.json());
   const { data, isLoading } = useSWR<GetFormResponse>(
-    `/api/form?formId=${params.id}`,
-    fetcher
+    `/api/form?formId=${params.id}`
   );
 
   if (!isLoading && !data) {
