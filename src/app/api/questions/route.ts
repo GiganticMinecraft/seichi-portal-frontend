@@ -35,9 +35,7 @@ export async function GET(req: NextRequest) {
     }
   );
 
-  redirectByResponse(req, response);
-
-  return NextResponse.json(await response.json());
+  return NextResponse.json(await response.json(), { status: response.status });
 }
 
 export async function POST(req: NextRequest) {
