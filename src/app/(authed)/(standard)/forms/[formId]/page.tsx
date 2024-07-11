@@ -3,10 +3,18 @@
 import { redirect } from 'next/navigation';
 import useSWR from 'swr';
 import AnswerForm from './_components/AnswerForm';
-import type { GetQuestionsResponse } from '@/app/api/_schemas/ResponseSchemas';
+import type {
+  ErrorResponse,
+  GetQuestionsResponse,
+} from '@/app/api/_schemas/ResponseSchemas';
+import ErrorModal from '@/app/_components/ErrorModal';
 
 const Home = ({ params }: { params: { formId: number } }) => {
-  const { data: questions, isLoading } = useSWR<GetQuestionsResponse>(
+  const {
+    data: questions,
+    isLoading,
+    error,
+  } = useSWR<GetQuestionsResponse, ErrorResponse>(
     `/api/questions?formId=${params.formId}`
   );
 
@@ -14,6 +22,12 @@ const Home = ({ params }: { params: { formId: number } }) => {
     redirect('/');
   } else if (!questions) {
     return null;
+  }
+
+  const isErrorOccurred = error !== undefined;
+
+  if (isErrorOccurred) {
+    return <ErrorModal isErrorOccurred={isErrorOccurred} />;
   }
 
   return <AnswerForm questions={questions} formId={params.formId} />;

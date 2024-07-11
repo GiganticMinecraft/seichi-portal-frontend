@@ -6,18 +6,23 @@ import useSWR from 'swr';
 import AnswerDetails from './_components/AnswerDetails';
 import adminDashboardTheme from '../../theme/adminDashboardTheme';
 import type {
+  ErrorResponse,
   GetAnswerResponse,
   GetQuestionsResponse,
 } from '@/app/api/_schemas/ResponseSchemas';
+import ErrorModal from '@/app/_components/ErrorModal';
 
 const Home = ({ params }: { params: { answerId: string } }) => {
   const { data: answers, isLoading: isAnswersLoading } =
     useSWR<GetAnswerResponse>(`/api/answers/${params.answerId}`);
 
-  const { data: formQuestions, isLoading: isFormQuestionsLoading } =
-    useSWR<GetQuestionsResponse>(
-      answers ? `/api/questions?formId=${answers.form_id}` : ''
-    );
+  const {
+    data: formQuestions,
+    isLoading: isFormQuestionsLoading,
+    error: questionsFetchError,
+  } = useSWR<GetQuestionsResponse, ErrorResponse>(
+    answers ? `/api/questions?formId=${answers.form_id}` : ''
+  );
 
   if (!isAnswersLoading && !answers) {
     redirect('/');
@@ -29,6 +34,12 @@ const Home = ({ params }: { params: { answerId: string } }) => {
     redirect('/');
   } else if (!formQuestions) {
     return null;
+  }
+
+  const isErrorOccurred = questionsFetchError !== undefined;
+
+  if (isErrorOccurred) {
+    return <ErrorModal isErrorOccurred={isErrorOccurred} />;
   }
 
   return (
