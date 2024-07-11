@@ -2,12 +2,12 @@
 
 import { redirect } from 'next/navigation';
 import useSWR from 'swr';
+import ErrorModal from '@/app/_components/ErrorModal';
 import AnswerForm from './_components/AnswerForm';
 import type {
   ErrorResponse,
   GetQuestionsResponse,
 } from '@/app/api/_schemas/ResponseSchemas';
-import ErrorModal from '@/app/_components/ErrorModal';
 
 const Home = ({ params }: { params: { formId: number } }) => {
   const {

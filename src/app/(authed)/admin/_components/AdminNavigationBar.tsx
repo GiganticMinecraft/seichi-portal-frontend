@@ -14,7 +14,11 @@ import {
 } from '@mui/material';
 import Image from 'next/image';
 import useSWR from 'swr';
-import type { GetUsersResponse } from '@/app/api/_schemas/ResponseSchemas';
+import ErrorModal from '@/app/_components/ErrorModal';
+import type {
+  ErrorResponse,
+  GetUsersResponse,
+} from '@/app/api/_schemas/ResponseSchemas';
 
 const SearchField = () => {
   return (
@@ -41,7 +45,12 @@ const SearchField = () => {
 };
 
 const NavBar = () => {
-  const { data } = useSWR<GetUsersResponse>('/api/users');
+  const { data, error } = useSWR<GetUsersResponse, ErrorResponse>('/api/users');
+
+  const isErrorOccurred = error !== undefined;
+  if (isErrorOccurred) {
+    return <ErrorModal isErrorOccurred={isErrorOccurred} />;
+  }
 
   return (
     <Box sx={{ flexGrow: 1 }}>

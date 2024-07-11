@@ -3,6 +3,7 @@
 import { CssBaseline, ThemeProvider } from '@mui/material';
 import { redirect } from 'next/navigation';
 import useSWR from 'swr';
+import ErrorModal from '@/app/_components/ErrorModal';
 import AnswerDetails from './_components/AnswerDetails';
 import adminDashboardTheme from '../../theme/adminDashboardTheme';
 import type {
@@ -10,11 +11,15 @@ import type {
   GetAnswerResponse,
   GetQuestionsResponse,
 } from '@/app/api/_schemas/ResponseSchemas';
-import ErrorModal from '@/app/_components/ErrorModal';
 
 const Home = ({ params }: { params: { answerId: string } }) => {
-  const { data: answers, isLoading: isAnswersLoading } =
-    useSWR<GetAnswerResponse>(`/api/answers/${params.answerId}`);
+  const {
+    data: answers,
+    isLoading: isAnswersLoading,
+    error: answersFetchError,
+  } = useSWR<GetAnswerResponse, ErrorResponse>(
+    `/api/answers/${params.answerId}`
+  );
 
   const {
     data: formQuestions,
@@ -36,7 +41,8 @@ const Home = ({ params }: { params: { answerId: string } }) => {
     return null;
   }
 
-  const isErrorOccurred = questionsFetchError !== undefined;
+  const isErrorOccurred =
+    questionsFetchError !== undefined || answersFetchError !== undefined;
 
   if (isErrorOccurred) {
     return <ErrorModal isErrorOccurred={isErrorOccurred} />;
