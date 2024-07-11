@@ -4,8 +4,8 @@ import { CssBaseline, ThemeProvider } from '@mui/material';
 import { redirect } from 'next/navigation';
 import useSWR from 'swr';
 import DataTable from './_components/Dashboard';
-import ErrorModal from './_components/ErrorModal';
 import adminDashboardTheme from './theme/adminDashboardTheme';
+import ErrorModal from '../../_components/ErrorModal';
 import type {
   ErrorResponse,
   GetAnswersResponse,
