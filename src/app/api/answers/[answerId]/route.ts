@@ -4,11 +4,10 @@ import { NextResponse } from 'next/server';
 import { BACKEND_SERVER_URL } from '@/env';
 import { getCachedToken } from '@/user-token/mcToken';
 import { updateAnswerSchema } from '../../_schemas/RequestSchemas';
-import { redirectByResponse } from '../../util/responseOrErrorResponse';
 import type { NextRequest } from 'next/server';
 
 export async function GET(
-  req: NextRequest,
+  _: NextRequest,
   { params }: { params: { answerId: string } }
 ) {
   const token = await getCachedToken();
@@ -28,9 +27,7 @@ export async function GET(
     }
   );
 
-  redirectByResponse(req, response);
-
-  return NextResponse.json(await response.json());
+  return NextResponse.json(await response.json(), { status: response.status });
 }
 
 export async function PATCH(

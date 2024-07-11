@@ -9,7 +9,6 @@ import {
   createFormResponseSchema,
   getFormResponseSchema,
 } from '../_schemas/ResponseSchemas';
-import { redirectByResponse } from '../util/responseOrErrorResponse';
 import type { NextRequest } from 'next/server';
 
 export async function GET(req: NextRequest) {
@@ -30,8 +29,6 @@ export async function GET(req: NextRequest) {
     cache: 'no-cache',
   });
 
-  redirectByResponse(req, response);
-
   const parsed = getFormResponseSchema.safeParse(await response.json());
 
   if (!parsed.success) {
@@ -42,7 +39,7 @@ export async function GET(req: NextRequest) {
     );
   }
 
-  return NextResponse.json(parsed.data);
+  return NextResponse.json(parsed.data, { status: response.status });
 }
 
 export async function POST(req: NextRequest) {
