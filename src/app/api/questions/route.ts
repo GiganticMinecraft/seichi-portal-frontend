@@ -8,7 +8,6 @@ import {
   createQuestionSchema,
   updateQuestionSchema,
 } from '../_schemas/RequestSchemas';
-import { redirectByResponse } from '../util/responseOrErrorResponse';
 import type { NextRequest } from 'next/server';
 
 export async function GET(req: NextRequest) {
@@ -66,9 +65,9 @@ export async function POST(req: NextRequest) {
     }
   );
 
-  redirectByResponse(req, addQuestionsResponse);
-
-  return NextResponse.json(await addQuestionsResponse.json());
+  return NextResponse.json(await addQuestionsResponse.json(), {
+    status: addQuestionsResponse.status,
+  });
 }
 
 export async function PUT(req: NextRequest) {
@@ -104,7 +103,7 @@ export async function PUT(req: NextRequest) {
     }
   );
 
-  redirectByResponse(req, updateQuestionsResponse);
-
-  return NextResponse.json(await updateQuestionsResponse.json());
+  return NextResponse.json(await updateQuestionsResponse.json(), {
+    status: updateQuestionsResponse.status,
+  });
 }
