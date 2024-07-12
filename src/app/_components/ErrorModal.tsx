@@ -5,9 +5,13 @@ import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
 import Typography from '@mui/material/Typography';
 import dayjs from 'dayjs';
+import { useEffect, useState } from 'react';
 
 const ErrorModal = (props: { isErrorOccurred: boolean }) => {
-  const now = dayjs().format();
+  const [timestamp, setTimestamp] = useState<string>();
+  useEffect(() => {
+    setTimestamp(dayjs().format());
+  }, []);
 
   return (
     <Modal open={props.isErrorOccurred}>
@@ -30,7 +34,7 @@ const ErrorModal = (props: { isErrorOccurred: boolean }) => {
           <Typography>
             連続して発生する場合は管理者に問い合わせてください。
           </Typography>
-          <Typography>timestamp: {now}</Typography>
+          <Typography>timestamp: {timestamp}</Typography>
         </Stack>
       </Box>
     </Modal>
