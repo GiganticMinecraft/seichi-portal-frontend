@@ -28,6 +28,7 @@
     "@mui/x-data-grid": "^6.12.1",
     "browserslist": "^4.23.0",
     "dayjs": "^1.11.9",
+    "fp-ts": "^2.16.5",
     "msal-react": "^0.1.0",
     "next": "13.5.6",
     "react": "18.2.0",
