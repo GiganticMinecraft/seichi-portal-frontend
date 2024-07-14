@@ -8,10 +8,10 @@ import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import * as React from 'react';
 import { formatString } from '../../../../../generic/DateFormatter';
-import type { MinimumForm } from '@/_schemas/formSchema';
+import type { GetFormsResponse } from '@/app/api/_schemas/ResponseSchemas';
 
 interface Props {
-  forms: MinimumForm[];
+  forms: GetFormsResponse;
 }
 
 const formatResponsePeriod = (startAt: string | null, endAt: string | null) => {

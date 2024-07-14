@@ -18,8 +18,8 @@ export const getFormsResponseSchema = z
     title: z.string(),
     description: z.string(),
     response_period: z.object({
-      created_at: z.string().datetime(),
-      updated_at: z.string().datetime(),
+      start_at: z.string().datetime(),
+      end_at: z.string().datetime(),
     }),
   })
   .array();

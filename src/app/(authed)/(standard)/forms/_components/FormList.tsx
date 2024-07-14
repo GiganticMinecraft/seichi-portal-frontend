@@ -13,7 +13,7 @@ import {
   Link,
 } from '@mui/material';
 import { formatString } from '@/generic/DateFormatter';
-import type { MinimumForm } from '../../../../../_schemas/formSchema';
+import type { GetFormsResponse } from '@/app/api/_schemas/ResponseSchemas';
 
 const formatResponsePeriod = (startAt: string | null, endAt: string | null) => {
   if (startAt != null && endAt != null) {
@@ -23,7 +23,17 @@ const formatResponsePeriod = (startAt: string | null, endAt: string | null) => {
   }
 };
 
-const EachForm = ({ form }: { form: MinimumForm }) => {
+type Form = {
+  id: number;
+  title: string;
+  description: string;
+  response_period: {
+    start_at: string;
+    end_at: string;
+  };
+};
+
+const EachForm = ({ form }: { form: Form }) => {
   return (
     <Box sx={{ minWidth: 275 }}>
       <Card variant="outlined">
@@ -57,7 +67,7 @@ const Item = styled(Paper)(({ theme }) => ({
 }));
 
 interface Props {
-  forms: MinimumForm[];
+  forms: GetFormsResponse;
 }
 
 const FormList = ({ forms }: Props) => {

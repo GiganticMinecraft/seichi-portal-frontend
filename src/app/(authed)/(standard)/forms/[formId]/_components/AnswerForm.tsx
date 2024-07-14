@@ -24,11 +24,20 @@ import {
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { errorResponseSchema } from '@/app/api/_schemas/ResponseSchemas';
-import type { FormQuestion } from '../../../../../../_schemas/formSchema';
+import type { GetQuestionsResponse } from '@/app/api/_schemas/ResponseSchemas';
 import type { NonEmptyArray } from '@/generic/Types';
 
+type Question = {
+  id: number;
+  title: string;
+  description: string;
+  question_type: 'TEXT' | 'SINGLE' | 'MULTIPLE';
+  choices: string[];
+  is_required: boolean;
+};
+
 interface Props {
-  questions: FormQuestion[];
+  questions: GetQuestionsResponse;
   formId: number;
 }
 
@@ -118,7 +127,7 @@ const AnswerForm = ({ questions: questions, formId }: Props) => {
     }
   };
 
-  const generateInputSpace = (question: FormQuestion) => {
+  const generateInputSpace = (question: Question) => {
     switch (question.question_type) {
       case 'TEXT':
         return (

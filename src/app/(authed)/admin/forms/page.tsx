@@ -14,13 +14,15 @@ import useSWR from 'swr';
 import ErrorModal from '@/app/_components/ErrorModal';
 import LoadingCircular from '@/app/_components/LoadingCircular';
 import { Forms } from './_components/DashboardFormList';
-import type { MinimumForm } from '@/_schemas/formSchema';
-import type { ErrorResponse } from '@/app/api/_schemas/ResponseSchemas';
+import type {
+  ErrorResponse,
+  GetFormsResponse,
+} from '@/app/api/_schemas/ResponseSchemas';
 import type { Either } from 'fp-ts/lib/Either';
 
 const Home = () => {
   const { data: forms, isLoading } =
-    useSWR<Either<ErrorResponse, MinimumForm[]>>('/api/forms');
+    useSWR<Either<ErrorResponse, GetFormsResponse>>('/api/forms');
 
   if (!forms) {
     return <LoadingCircular />;
