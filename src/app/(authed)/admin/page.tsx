@@ -1,8 +1,8 @@
 'use client';
 
 import { CssBaseline, ThemeProvider } from '@mui/material';
-import { redirect } from 'next/navigation';
 import useSWR from 'swr';
+import LoadingCircular from '@/app/_components/LoadingCircular';
 import DataTable from './_components/Dashboard';
 import adminDashboardTheme from './theme/adminDashboardTheme';
 import ErrorModal from '../../_components/ErrorModal';
@@ -20,13 +20,14 @@ const Home = () => {
   const { data: forms, isLoading: isLoadingForms } =
     useSWR<Either<ErrorResponse, GetFormsResponse>>('/api/forms');
 
-  if ((!isLoading && !answers) || (!isLoadingForms && !forms)) {
-    redirect('/');
-  } else if (!answers || !forms) {
-    return null;
-  }
-
-  if (answers._tag === 'Left' || forms._tag === 'Left') {
+  if (!answers || !forms) {
+    return <LoadingCircular />;
+  } else if (
+    (!isLoading && !answers) ||
+    (!isLoadingForms && !forms) ||
+    answers._tag === 'Left' ||
+    forms._tag === 'Left'
+  ) {
     return <ErrorModal />;
   }
 

@@ -1,8 +1,8 @@
 'use client';
 
-import { redirect } from 'next/navigation';
 import useSWR from 'swr';
 import ErrorModal from '@/app/_components/ErrorModal';
+import LoadingCircular from '@/app/_components/LoadingCircular';
 import AnswerForm from './_components/AnswerForm';
 import type {
   ErrorResponse,
@@ -15,13 +15,9 @@ const Home = ({ params }: { params: { formId: number } }) => {
     Either<ErrorResponse, GetQuestionsResponse>
   >(`/api/questions?formId=${params.formId}`);
 
-  if (!isLoading && !questions) {
-    redirect('/');
-  } else if (!questions) {
-    return null;
-  }
-
-  if (questions._tag == 'Left') {
+  if (!questions) {
+    return <LoadingCircular />;
+  } else if ((!isLoading && !questions) || questions._tag == 'Left') {
     return <ErrorModal />;
   }
 

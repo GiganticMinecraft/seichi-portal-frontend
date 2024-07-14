@@ -1,9 +1,9 @@
 'use client';
 
 import { CssBaseline, ThemeProvider } from '@mui/material';
-import { redirect } from 'next/navigation';
 import useSWR from 'swr';
 import ErrorModal from '@/app/_components/ErrorModal';
+import LoadingCircular from '@/app/_components/LoadingCircular';
 import AnswerDetails from './_components/AnswerDetails';
 import adminDashboardTheme from '../../theme/adminDashboardTheme';
 import type {
@@ -26,19 +26,14 @@ const Home = ({ params }: { params: { answerId: string } }) => {
       : ''
   );
 
-  if (!isAnswersLoading && !answers) {
-    redirect('/');
-  } else if (!answers) {
-    return null;
-  }
-
-  if (!isFormQuestionsLoading && !formQuestions) {
-    redirect('/');
-  } else if (!formQuestions) {
-    return null;
-  }
-
-  if (answers._tag === 'Left' || formQuestions._tag === 'Left') {
+  if (!answers || !formQuestions) {
+    return <LoadingCircular />;
+  } else if (
+    (!isAnswersLoading && !answers) ||
+    (!isFormQuestionsLoading && !formQuestions) ||
+    answers._tag === 'Left' ||
+    formQuestions._tag === 'Left'
+  ) {
     return <ErrorModal />;
   }
 

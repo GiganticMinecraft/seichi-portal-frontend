@@ -1,8 +1,8 @@
 'use client';
 
-import { redirect } from 'next/navigation';
 import useSWR from 'swr';
 import ErrorModal from '@/app/_components/ErrorModal';
+import LoadingCircular from '@/app/_components/LoadingCircular';
 import FormList from './_components/FormList';
 import type { MinimumForm } from '@/_schemas/formSchema';
 import type { ErrorResponse } from '@/app/api/_schemas/ResponseSchemas';
@@ -12,13 +12,9 @@ const Home = () => {
   const { data: forms, isLoading } =
     useSWR<Either<ErrorResponse, MinimumForm[]>>('/api/forms');
 
-  if (!isLoading && !forms) {
-    redirect('/');
-  } else if (!forms) {
-    return null;
-  }
-
-  if (forms._tag == 'Left') {
+  if (!forms) {
+    return <LoadingCircular />;
+  } else if ((!isLoading && !forms) || forms._tag == 'Left') {
     return <ErrorModal />;
   }
 
