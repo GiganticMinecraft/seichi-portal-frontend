@@ -27,7 +27,7 @@ const Home = ({ params }: { params: { formId: number } }) => {
   const isErrorOccurred = error !== undefined;
 
   if (isErrorOccurred) {
-    return <ErrorModal isErrorOccurred={isErrorOccurred} />;
+    return <ErrorModal />;
   }
 
   return <AnswerForm questions={questions} formId={params.formId} />;

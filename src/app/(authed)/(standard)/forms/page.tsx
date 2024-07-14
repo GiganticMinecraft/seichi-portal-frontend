@@ -23,7 +23,7 @@ const Home = () => {
   const isErrorOccurred = error !== undefined;
 
   if (isErrorOccurred) {
-    return <ErrorModal isErrorOccurred={isErrorOccurred} />;
+    return <ErrorModal />;
   }
 
   return <FormList forms={forms} />;

@@ -45,7 +45,7 @@ const Home = ({ params }: { params: { answerId: string } }) => {
     questionsFetchError !== undefined || answersFetchError !== undefined;
 
   if (isErrorOccurred) {
-    return <ErrorModal isErrorOccurred={isErrorOccurred} />;
+    return <ErrorModal />;
   }
 
   return (

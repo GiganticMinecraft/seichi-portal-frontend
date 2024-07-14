@@ -35,7 +35,7 @@ const Home = () => {
     answersError !== undefined || formsError !== undefined;
 
   if (isErrorOccurred) {
-    return <ErrorModal isErrorOccurred={isErrorOccurred} />;
+    return <ErrorModal />;
   }
 
   return (

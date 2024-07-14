@@ -7,14 +7,14 @@ import Typography from '@mui/material/Typography';
 import dayjs from 'dayjs';
 import { useEffect, useState } from 'react';
 
-const ErrorModal = (props: { isErrorOccurred: boolean }) => {
+const ErrorModal = () => {
   const [timestamp, setTimestamp] = useState<string>();
   useEffect(() => {
     setTimestamp(dayjs().format());
   }, []);
 
   return (
-    <Modal open={props.isErrorOccurred}>
+    <Modal open={true}>
       <Box
         sx={{
           p: 2,

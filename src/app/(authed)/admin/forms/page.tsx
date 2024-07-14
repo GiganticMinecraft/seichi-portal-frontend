@@ -16,13 +16,11 @@ import ErrorModal from '@/app/_components/ErrorModal';
 import { Forms } from './_components/DashboardFormList';
 import type { MinimumForm } from '@/_schemas/formSchema';
 import type { ErrorResponse } from '@/app/api/_schemas/ResponseSchemas';
+import type { Either } from 'fp-ts/lib/Either';
 
 const Home = () => {
-  const {
-    data: forms,
-    isLoading,
-    error,
-  } = useSWR<MinimumForm[], ErrorResponse>('/api/forms');
+  const { data: forms, isLoading } =
+    useSWR<Either<ErrorResponse, MinimumForm[]>>('/api/forms');
 
   if (!isLoading && !forms) {
     redirect('/');
@@ -30,9 +28,8 @@ const Home = () => {
     return null;
   }
 
-  const isErrorOccurred = error !== undefined;
-  if (isErrorOccurred) {
-    return <ErrorModal isErrorOccurred={isErrorOccurred} />;
+  if (forms._tag === 'Left') {
+    return <ErrorModal />;
   }
 
   return (
@@ -94,7 +91,7 @@ const Home = () => {
       </Grid>
       <Grid container spacing={2}>
         <Grid item>
-          <Forms forms={forms} />
+          <Forms forms={forms.right} />
         </Grid>
       </Grid>
     </Stack>
