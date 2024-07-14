@@ -32,7 +32,9 @@ export const middleware = async (request: NextRequest) => {
 
   const token = await getCachedToken();
   if (!token) {
-    return NextResponse.redirect(`${request.nextUrl.origin}/login`);
+    return NextResponse.redirect(
+      `${request.nextUrl.origin}/login?callbackUrl=${request.nextUrl.pathname}`
+    );
   }
 
   const me = await fetch(`${BACKEND_SERVER_URL}/users`, {
