@@ -33,8 +33,11 @@ export const saveTokenToCache = (tokenWithExpires: {
   });
 };
 
-export const clearCachedToken = () => {
-  const store = cookies();
+export const clearCachedToken = async (): Promise<void> => {
+  return new Promise((resolve, _reject) => {
+    const store = cookies();
 
-  store.delete(KEY);
+    store.delete(KEY);
+    resolve();
+  });
 };
