@@ -13,6 +13,7 @@ export const middleware = async (request: NextRequest) => {
   const pathName = request.nextUrl.pathname.toLowerCase();
   const ignorePaths = [
     '/_next',
+    '/favicon.ico',
     '/login',
     '/logout',
     '/internal-error',
