@@ -11,22 +11,19 @@ import type {
   GetAnswerResponse,
   GetQuestionsResponse,
 } from '@/app/api/_schemas/ResponseSchemas';
+import type { Either } from 'fp-ts/lib/Either';
 
 const Home = ({ params }: { params: { answerId: string } }) => {
-  const {
-    data: answers,
-    isLoading: isAnswersLoading,
-    error: answersFetchError,
-  } = useSWR<GetAnswerResponse, ErrorResponse>(
-    `/api/answers/${params.answerId}`
-  );
+  const { data: answers, isLoading: isAnswersLoading } = useSWR<
+    Either<ErrorResponse, GetAnswerResponse>
+  >(`/api/answers/${params.answerId}`);
 
-  const {
-    data: formQuestions,
-    isLoading: isFormQuestionsLoading,
-    error: questionsFetchError,
-  } = useSWR<GetQuestionsResponse, ErrorResponse>(
-    answers ? `/api/questions?formId=${answers.form_id}` : ''
+  const { data: formQuestions, isLoading: isFormQuestionsLoading } = useSWR<
+    Either<ErrorResponse, GetQuestionsResponse>
+  >(
+    answers && answers._tag === 'Right'
+      ? `/api/questions?formId=${answers.right.form_id}`
+      : ''
   );
 
   if (!isAnswersLoading && !answers) {
@@ -41,17 +38,14 @@ const Home = ({ params }: { params: { answerId: string } }) => {
     return null;
   }
 
-  const isErrorOccurred =
-    questionsFetchError !== undefined || answersFetchError !== undefined;
-
-  if (isErrorOccurred) {
+  if (answers._tag === 'Left' || formQuestions._tag === 'Left') {
     return <ErrorModal />;
   }
 
   return (
     <ThemeProvider theme={adminDashboardTheme}>
       <CssBaseline />
-      <AnswerDetails answers={answers} questions={formQuestions} />
+      <AnswerDetails answers={answers.right} questions={formQuestions.right} />
     </ThemeProvider>
   );
 };

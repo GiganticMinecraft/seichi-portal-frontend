@@ -19,6 +19,7 @@ import type {
   ErrorResponse,
   GetUsersResponse,
 } from '@/app/api/_schemas/ResponseSchemas';
+import type { Either } from 'fp-ts/lib/Either';
 
 const SearchField = () => {
   return (
@@ -45,10 +46,10 @@ const SearchField = () => {
 };
 
 const NavBar = () => {
-  const { data, error } = useSWR<GetUsersResponse, ErrorResponse>('/api/users');
+  const { data } =
+    useSWR<Either<ErrorResponse, GetUsersResponse>>('/api/users');
 
-  const isErrorOccurred = error !== undefined;
-  if (isErrorOccurred) {
+  if (data?._tag === 'Left') {
     return <ErrorModal />;
   }
 
@@ -80,7 +81,7 @@ const NavBar = () => {
           <SearchField />
           <Avatar
             alt="PlayerHead"
-            src={data ? `https://mc-heads.net/avatar/${data.uuid}` : ''}
+            src={data ? `https://mc-heads.net/avatar/${data.right.uuid}` : ''}
             sx={{ marginLeft: '20px' }}
           />
         </Toolbar>

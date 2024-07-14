@@ -11,9 +11,10 @@ import type {
   ErrorResponse,
   GetFormResponse,
 } from '@/app/api/_schemas/ResponseSchemas';
+import type { Either } from 'fp-ts/lib/Either';
 
 const Home = ({ params }: { params: { id: number } }) => {
-  const { data, isLoading, error } = useSWR<GetFormResponse, ErrorResponse>(
+  const { data, isLoading } = useSWR<Either<ErrorResponse, GetFormResponse>>(
     `/api/form?formId=${params.id}`
   );
 
@@ -23,15 +24,14 @@ const Home = ({ params }: { params: { id: number } }) => {
     return null;
   }
 
-  const isErrorOccurred = error !== undefined;
-  if (isErrorOccurred) {
+  if (data._tag === 'Left') {
     return <ErrorModal />;
   }
 
   return (
     <ThemeProvider theme={adminDashboardTheme}>
       <CssBaseline />
-      <FormEditForm form={data} />
+      <FormEditForm form={data.right} />
     </ThemeProvider>
   );
 };

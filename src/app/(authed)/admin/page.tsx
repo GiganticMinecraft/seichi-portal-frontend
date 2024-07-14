@@ -11,19 +11,14 @@ import type {
   GetAnswersResponse,
   GetFormsResponse,
 } from '@/app/api/_schemas/ResponseSchemas';
+import type { Either } from 'fp-ts/lib/Either';
 
 const Home = () => {
-  const {
-    data: answers,
-    isLoading,
-    error: answersError,
-  } = useSWR<GetAnswersResponse[], ErrorResponse>('/api/answers');
+  const { data: answers, isLoading } =
+    useSWR<Either<ErrorResponse, GetAnswersResponse[]>>('/api/answers');
 
-  const {
-    data: forms,
-    isLoading: isLoadingForms,
-    error: formsError,
-  } = useSWR<GetFormsResponse, ErrorResponse>('/api/forms');
+  const { data: forms, isLoading: isLoadingForms } =
+    useSWR<Either<ErrorResponse, GetFormsResponse>>('/api/forms');
 
   if ((!isLoading && !answers) || (!isLoadingForms && !forms)) {
     redirect('/');
@@ -31,10 +26,7 @@ const Home = () => {
     return null;
   }
 
-  const isErrorOccurred =
-    answersError !== undefined || formsError !== undefined;
-
-  if (isErrorOccurred) {
+  if (answers._tag === 'Left' || forms._tag === 'Left') {
     return <ErrorModal />;
   }
 
@@ -42,11 +34,11 @@ const Home = () => {
     <ThemeProvider theme={adminDashboardTheme}>
       <CssBaseline />
       <DataTable
-        answerResponseWithFormTitle={answers.map((answer) => {
+        answerResponseWithFormTitle={answers.right.map((answer) => {
           return {
             ...answer,
             form_title:
-              forms.find((form) => form.id === answer.form_id)?.title ??
+              forms.right.find((form) => form.id === answer.form_id)?.title ??
               'unknown form',
           };
         })}

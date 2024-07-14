@@ -8,15 +8,12 @@ import type {
   ErrorResponse,
   GetQuestionsResponse,
 } from '@/app/api/_schemas/ResponseSchemas';
+import type { Either } from 'fp-ts/lib/Either';
 
 const Home = ({ params }: { params: { formId: number } }) => {
-  const {
-    data: questions,
-    isLoading,
-    error,
-  } = useSWR<GetQuestionsResponse, ErrorResponse>(
-    `/api/questions?formId=${params.formId}`
-  );
+  const { data: questions, isLoading } = useSWR<
+    Either<ErrorResponse, GetQuestionsResponse>
+  >(`/api/questions?formId=${params.formId}`);
 
   if (!isLoading && !questions) {
     redirect('/');
@@ -24,13 +21,11 @@ const Home = ({ params }: { params: { formId: number } }) => {
     return null;
   }
 
-  const isErrorOccurred = error !== undefined;
-
-  if (isErrorOccurred) {
+  if (questions._tag == 'Left') {
     return <ErrorModal />;
   }
 
-  return <AnswerForm questions={questions} formId={params.formId} />;
+  return <AnswerForm questions={questions.right} formId={params.formId} />;
 };
 
 export default Home;
