@@ -1,12 +1,20 @@
 'use client';
 
-import { MenuItem, Stack, TextField, Typography } from '@mui/material';
+import {
+  Checkbox,
+  FormControlLabel,
+  MenuItem,
+  Stack,
+  TextField,
+  Typography,
+} from '@mui/material';
 import type { Form, Visibility } from '../_schema/createFormSchema';
 import type { UseFormRegister } from 'react-hook-form';
 
 const FormSettings = (props: {
   register: UseFormRegister<Form>;
   visibility: Visibility;
+  has_response_period: boolean;
 }) => {
   return (
     <Stack spacing={2}>
@@ -23,17 +31,25 @@ const FormSettings = (props: {
         label="フォームの説明"
         required
       />
+      <FormControlLabel
+        label="回答開始日と回答終了日を設定する"
+        control={
+          <Checkbox {...props.register('settings.has_response_period')} />
+        }
+      />
       <TextField
         {...props.register('settings.response_period.start_at')}
         label="回答開始日"
         type="datetime-local"
         helperText="回答開始日と回答終了日はどちらも指定する必要があります。"
+        disabled={!props.has_response_period}
       />
       <TextField
         {...props.register('settings.response_period.end_at')}
         label="回答終了日"
         type="datetime-local"
         helperText="回答開始日と回答終了日はどちらも指定する必要があります。"
+        disabled={!props.has_response_period}
       />
       <TextField
         {...props.register('settings.visibility')}

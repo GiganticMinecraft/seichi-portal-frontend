@@ -28,14 +28,16 @@ export const createQuestionSchema = z.object({
 
 // PATCH /forms/:form_id
 export const updateFormSchema = z.object({
-  form_id: z.number(),
-  title: z.string(),
-  description: z.string(),
-  start_at: z.string().nullable(),
-  end_at: z.string().nullable(),
-  webhook: z.string().nullable(),
-  visibility: z.enum(['PUBLIC', 'PRIVATE']),
+  title: z.string().nullable(),
+  description: z.string().nullable(),
+  has_response_period: z.boolean().nullable(),
+  response_period: z.object({
+    start_at: z.string().nullable(),
+    end_at: z.string().nullable(),
+  }),
+  webhook_url: z.string().nullable(),
   default_answer_title: z.string().nullable(),
+  visibility: z.enum(['PUBLIC', 'PRIVATE']),
 });
 
 // PUT /forms/questions

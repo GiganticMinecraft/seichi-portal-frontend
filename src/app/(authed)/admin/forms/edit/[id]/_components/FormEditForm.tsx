@@ -15,7 +15,6 @@ import {
 import { useState } from 'react';
 import { useFieldArray, useForm, useWatch } from 'react-hook-form';
 import { fromStringToJSTDateTime } from '@/generic/DateFormatter';
-import { removeUndefinedOrNullRecords } from '@/generic/RecordExtra';
 import FormSettings from './FormSettings';
 import QuestionComponent from './Question';
 import { formSchema } from '../_schema/editFormSchema';
@@ -50,6 +49,7 @@ const FormEditForm = (props: { form: GetFormResponse }) => {
       }),
       settings: {
         ...props.form.settings,
+        has_response_period: start_at && end_at ? true : false,
         response_period: {
           start_at: start_at ? fromStringToJSTDateTime(start_at) : null,
           end_at: end_at ? fromStringToJSTDateTime(end_at) : null,
@@ -69,6 +69,12 @@ const FormEditForm = (props: { form: GetFormResponse }) => {
     defaultValue: 'PUBLIC',
   });
 
+  const has_response_period = useWatch({
+    control: control,
+    name: 'settings.has_response_period',
+    defaultValue: start_at && end_at ? true : false,
+  });
+
   const addQuestionButton = () => {
     append({
       id: null,
@@ -86,27 +92,28 @@ const FormEditForm = (props: { form: GetFormResponse }) => {
     const start_at = data.settings.response_period?.start_at;
     const end_at = data.settings.response_period?.end_at;
 
-    const setFormMetadataQuery = new URLSearchParams(
-      removeUndefinedOrNullRecords({
-        form_id: data.id.toString(),
-        visibility: data.settings.visibility,
+    const body = {
+      title: data.title,
+      description: data.description,
+      has_response_period: data.settings.has_response_period,
+      response_period: {
         start_at: start_at ? `${start_at}:00+09:00` : undefined,
         end_at: end_at ? `${end_at}:00+09:00` : undefined,
-        default_answer_title: data.settings.default_answer_title,
-        webhook: data.settings.webhook_url,
-      })
-    ).toString();
+      },
+      webhook_url: data.settings.webhook_url,
+      default_answer_title: data.settings.default_answer_title,
+      visibility: data.settings.visibility,
+    };
 
-    const setFormMetaResponse = await fetch(
-      `/api/form?${setFormMetadataQuery}`,
-      {
-        method: 'PATCH',
-        headers: {
-          Accept: 'application/json',
-        },
-        cache: 'no-cache',
-      }
-    );
+    const setFormMetaResponse = await fetch(`/api/form?form_id=${data.id}`, {
+      method: 'PATCH',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(body),
+      cache: 'no-cache',
+    });
 
     if (!setFormMetaResponse.ok) {
       setError('root', {
@@ -155,7 +162,11 @@ const FormEditForm = (props: { form: GetFormResponse }) => {
           <Stack spacing={2}>
             <Card>
               <CardContent>
-                <FormSettings register={register} visibility={visibility} />
+                <FormSettings
+                  register={register}
+                  visibility={visibility}
+                  has_response_period={has_response_period}
+                />
               </CardContent>
               {fields.map((field, index) => (
                 <CardContent key={field.id}>

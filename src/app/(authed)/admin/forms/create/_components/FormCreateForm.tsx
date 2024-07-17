@@ -15,7 +15,6 @@ import {
 import { useState } from 'react';
 import { useFieldArray, useForm, useWatch } from 'react-hook-form';
 import { createFormResponseSchema } from '@/app/api/_schemas/ResponseSchemas';
-import { removeUndefinedOrNullRecords } from '@/generic/RecordExtra';
 import FormSettings from './FormSettings';
 import QuestionComponent from './Question';
 import { formSchema } from '../_schema/createFormSchema';
@@ -45,6 +44,12 @@ const FormCreateForm = () => {
     defaultValue: 'PUBLIC',
   });
 
+  const has_response_period = useWatch({
+    control: control,
+    name: 'settings.has_response_period',
+    defaultValue: false,
+  });
+
   const addQuestionButton = () => {
     append({
       title: '',
@@ -58,6 +63,8 @@ const FormCreateForm = () => {
   const [isSubmitted, setIsSubmitted] = useState(false);
 
   const onSubmit = async (data: Form) => {
+    console.log('onsubmit');
+
     const createFormResponse = await fetch('/api/form', {
       method: 'POST',
       headers: {
@@ -86,24 +93,28 @@ const FormCreateForm = () => {
     const start_at = data.settings.response_period.start_at;
     const end_at = data.settings.response_period.end_at;
 
-    const setFormMetadataQuery = new URLSearchParams(
-      removeUndefinedOrNullRecords({
-        form_id: parsedCreateFormResponse.data.id.toString(),
-        visibility: data.settings.visibility,
+    const body = {
+      title: data.title,
+      description: data.description,
+      has_response_period: data.settings.has_response_period,
+      response_period: {
         start_at: start_at ? `${start_at}:00+09:00` : undefined,
         end_at: end_at ? `${end_at}:00+09:00` : undefined,
-        default_answer_title: data.settings.default_answer_title,
-        webhook: data.settings.webhook_url,
-      })
-    ).toString();
+      },
+      webhook_url: data.settings.webhook_url,
+      default_answer_title: data.settings.default_answer_title,
+      visibility: data.settings.visibility,
+    };
 
     const setFormMetadataResponse = await fetch(
-      `/api/form?${setFormMetadataQuery}`,
+      `/api/form?form_id=${parsedCreateFormResponse.data.id}`,
       {
         method: 'PATCH',
         headers: {
           Accept: 'application/json',
+          'Content-Type': 'application/json',
         },
+        body: JSON.stringify(body),
         cache: 'no-cache',
       }
     );
@@ -149,7 +160,11 @@ const FormCreateForm = () => {
           <Stack spacing={2}>
             <Card>
               <CardContent>
-                <FormSettings register={register} visibility={visibility} />
+                <FormSettings
+                  register={register}
+                  visibility={visibility}
+                  has_response_period={has_response_period}
+                />
               </CardContent>
               {fields.map((field, index) => (
                 <CardContent key={field.id}>

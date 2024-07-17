@@ -2,9 +2,8 @@
 
 import { NextResponse } from 'next/server';
 import { BACKEND_SERVER_URL } from '@/env';
-import { removeUndefinedOrNullRecords } from '@/generic/RecordExtra';
 import { getCachedToken } from '@/user-token/mcToken';
-import { createFormSchema } from '../_schemas/RequestSchemas';
+import { createFormSchema, updateFormSchema } from '../_schemas/RequestSchemas';
 import {
   createFormResponseSchema,
   getFormResponseSchema,
@@ -105,27 +104,25 @@ export async function PATCH(req: NextRequest) {
     return NextResponse.json({}, { status: 400 });
   }
 
-  const patchQuery = new URLSearchParams(
-    removeUndefinedOrNullRecords({
-      start_at: searchParams.get('start_at'),
-      end_at: searchParams.get('end_at'),
-      visibility: searchParams.get('visibility'),
-      default_answer_title: searchParams.get('default_answer_title'),
-      webhook: searchParams.get('webhook_url'),
-    })
-  ).toString();
+  const parsedUpdateFormSchema = updateFormSchema.safeParse(await req.json());
 
-  const response = await fetch(
-    `${BACKEND_SERVER_URL}/forms/${formId}?${patchQuery}`,
-    {
-      method: 'PATCH',
-      headers: {
-        Accept: 'application/json',
-        Authorization: `Bearer ${token}`,
-      },
-      cache: 'no-cache',
-    }
-  );
+  if (!parsedUpdateFormSchema.success) {
+    return NextResponse.json(
+      { error: 'Failed to parse from request body to update form schema.' },
+      { status: 400 }
+    );
+  }
+
+  const response = await fetch(`${BACKEND_SERVER_URL}/forms/${formId}`, {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+      Accept: 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(parsedUpdateFormSchema.data),
+    cache: 'no-cache',
+  });
 
   return NextResponse.json(await response.json());
 }

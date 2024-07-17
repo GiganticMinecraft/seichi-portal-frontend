@@ -29,6 +29,7 @@ export const formSchema = z.object({
     })
     .array(),
   settings: z.object({
+    has_response_period: z.boolean(),
     response_period: z
       .object({
         start_at: z.string().nullable(),
