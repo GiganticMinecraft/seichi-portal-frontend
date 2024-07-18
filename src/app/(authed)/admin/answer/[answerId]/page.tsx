@@ -14,7 +14,7 @@ import type {
 } from '@/app/api/_schemas/ResponseSchemas';
 import type { Either } from 'fp-ts/lib/Either';
 
-const Home = ({ params }: { params: { answerId: string } }) => {
+const Home = ({ params }: { params: { answerId: number } }) => {
   const { data: answers, isLoading: isAnswersLoading } = useSWR<
     Either<ErrorResponse, GetAnswerResponse>
   >(`/api/answers/${params.answerId}`);
@@ -46,7 +46,10 @@ const Home = ({ params }: { params: { answerId: string } }) => {
           answers={answers.right}
           questions={formQuestions.right}
         />
-        <Comments comments={answers.right.comments} />
+        <Comments
+          comments={answers.right.comments}
+          answerId={params.answerId}
+        />
       </Stack>
     </ThemeProvider>
   );

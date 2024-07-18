@@ -1,10 +1,11 @@
 import SendIcon from '@mui/icons-material/Send';
-import { Chip, Divider, Grid, Typography } from '@mui/material';
+import { Chip, Container, Divider, Grid, Typography } from '@mui/material';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 import { formatString } from '@/generic/DateFormatter';
+import { useForm, UseFormHandleSubmit, UseFormRegister } from 'react-hook-form';
 
 type Comment = {
   timestamp: string;
@@ -22,7 +23,7 @@ const Comment = (props: { comment: Comment }) => {
       <Grid item xs={1}>
         <Avatar
           alt="PlayerHead"
-          src={`https://mc-heads.net/avatar/${props.comment.commented_by.uuid}`}
+          src={`https://mc-heads.net/avatar/${props.comment.commented_by.name}`}
         />
       </Grid>
       <Grid item xs={11}>
@@ -61,36 +62,72 @@ const Comment = (props: { comment: Comment }) => {
   );
 };
 
-const SendCommentForm = () => {
+const SendCommentForm = (props: {
+  answerId: number;
+  handleSubmit: UseFormHandleSubmit<SendCommentSchema, undefined>;
+  register: UseFormRegister<SendCommentSchema>;
+}) => {
+  const onSubmit = async (data: SendCommentSchema) => {
+    await fetch(`/api/answers/comments`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        answer_id: Number(data.answer_id),
+        content: data.content,
+      }),
+    });
+  };
+
   return (
-    <Grid container spacing={2}>
-      <Grid item xs={10}>
-        <TextField
-          label="コメントを入力してください"
-          sx={{ width: '100%' }}
-          required
-        />
+    <Container component="form" onSubmit={props.handleSubmit(onSubmit)}>
+      <Grid container spacing={2}>
+        <Grid item xs={10}>
+          <TextField
+            {...props.register('answer_id')}
+            value={props.answerId}
+            type="hidden"
+          />
+          <TextField
+            {...props.register('content')}
+            label="コメントを入力してください"
+            sx={{ width: '100%' }}
+            required
+          />
+        </Grid>
+        <Grid
+          item
+          xs={2}
+          sx={{
+            display: 'flex',
+            alignItems: 'flex-end',
+          }}
+        >
+          <Button variant="contained" endIcon={<SendIcon />} type="submit">
+            送信
+          </Button>
+        </Grid>
       </Grid>
-      <Grid
-        item
-        xs={2}
-        sx={{
-          display: 'flex',
-          alignItems: 'flex-end',
-        }}
-      >
-        <Button variant="contained" endIcon={<SendIcon />}>
-          送信
-        </Button>
-      </Grid>
-    </Grid>
+    </Container>
   );
 };
 
-const Comments = (props: { comments: Comment[] }) => {
+type SendCommentSchema = {
+  answer_id: number;
+  content: string;
+};
+
+const Comments = (props: { comments: Comment[]; answerId: number }) => {
+  const { handleSubmit, register } = useForm<SendCommentSchema>();
+
   return (
     <Stack spacing={2}>
-      <SendCommentForm />
+      <SendCommentForm
+        answerId={props.answerId}
+        handleSubmit={handleSubmit}
+        register={register}
+      />
       {props.comments.map((comment, index) => (
         <Comment comment={comment} key={index} />
       ))}

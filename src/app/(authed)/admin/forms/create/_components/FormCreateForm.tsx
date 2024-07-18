@@ -63,8 +63,6 @@ const FormCreateForm = () => {
   const [isSubmitted, setIsSubmitted] = useState(false);
 
   const onSubmit = async (data: Form) => {
-    console.log('onsubmit');
-
     const createFormResponse = await fetch('/api/form', {
       method: 'POST',
       headers: {
