@@ -38,7 +38,6 @@ const Comment = (props: { comment: Comment }) => {
           >
             {props.comment.commented_by.role === 'ADMINISTRATOR' ? (
               <Chip
-                // TODO: server-icon.png の使用許可がでたら画像を配置する
                 avatar={<Avatar src="/server-icon.png" />}
                 label="運営チーム"
                 color="success"
