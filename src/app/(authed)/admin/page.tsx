@@ -15,7 +15,7 @@ import type { Either } from 'fp-ts/lib/Either';
 
 const Home = () => {
   const { data: answers, isLoading } =
-    useSWR<Either<ErrorResponse, GetAnswersResponse[]>>('/api/answers');
+    useSWR<Either<ErrorResponse, GetAnswersResponse>>('/api/answers');
 
   const { data: forms, isLoading: isLoadingForms } =
     useSWR<Either<ErrorResponse, GetFormsResponse>>('/api/forms');

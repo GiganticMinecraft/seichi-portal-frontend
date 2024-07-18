@@ -9,7 +9,7 @@ import {
 import { useRouter } from 'next/navigation';
 import * as React from 'react';
 import { formatString } from '@/generic/DateFormatter';
-import type { GetAnswersResponse } from '@/app/api/_schemas/ResponseSchemas';
+import type { GetAnswerResponse } from '@/app/api/_schemas/ResponseSchemas';
 
 const columns: GridColDef[] = [
   { field: 'category', headerName: '種別', width: 200 },
@@ -24,7 +24,7 @@ interface Row {
   date: string;
 }
 
-type AnswerResponseWithFormTitle = GetAnswersResponse & { form_title: string };
+type AnswerResponseWithFormTitle = GetAnswerResponse & { form_title: string };
 
 const prepareRows = (
   answerResponseWithFormTitle: AnswerResponseWithFormTitle[]

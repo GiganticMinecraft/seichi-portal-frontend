@@ -82,23 +82,36 @@ export const getQuestionsResponseSchema = z
 export type GetQuestionsResponse = z.infer<typeof getQuestionsResponseSchema>;
 
 // GET /forms/answers
-export const getAnswersResponseSchema = z.object({
-  id: z.number(),
-  user: z.object({
-    uuid: z.string(),
-    name: z.string(),
-    role: z.enum(['ADMINISTRATOR', 'STANDARD_USER']),
-  }),
-  timestamp: z.string().datetime(),
-  form_id: z.number(),
-  title: z.string(),
-  answers: z
-    .object({
-      question_id: z.number(),
-      answer: z.string(),
-    })
-    .array(),
-});
+export const getAnswersResponseSchema = z
+  .object({
+    id: z.number(),
+    user: z.object({
+      uuid: z.string(),
+      name: z.string(),
+      role: z.enum(['ADMINISTRATOR', 'STANDARD_USER']),
+    }),
+    timestamp: z.string().datetime(),
+    form_id: z.number(),
+    title: z.string(),
+    answers: z
+      .object({
+        question_id: z.number(),
+        answer: z.string(),
+      })
+      .array(),
+    comments: z
+      .object({
+        content: z.string(),
+        timestamp: z.string().datetime(),
+        commented_by: z.object({
+          uuid: z.string(),
+          name: z.string(),
+          role: z.enum(['ADMINISTRATOR', 'STANDARD_USER']),
+        }),
+      })
+      .array(),
+  })
+  .array();
 
 export type GetAnswersResponse = z.infer<typeof getAnswersResponseSchema>;
 
@@ -117,6 +130,17 @@ export const getAnswerResponseSchema = z.object({
     .object({
       question_id: z.number(),
       answer: z.string(),
+    })
+    .array(),
+  comments: z
+    .object({
+      content: z.string(),
+      timestamp: z.string().datetime(),
+      commented_by: z.object({
+        uuid: z.string(),
+        name: z.string(),
+        role: z.enum(['ADMINISTRATOR', 'STANDARD_USER']),
+      }),
     })
     .array(),
 });

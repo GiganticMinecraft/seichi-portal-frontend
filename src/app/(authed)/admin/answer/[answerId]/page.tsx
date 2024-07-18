@@ -1,10 +1,11 @@
 'use client';
 
-import { CssBaseline, ThemeProvider } from '@mui/material';
+import { CssBaseline, Stack, ThemeProvider } from '@mui/material';
 import useSWR from 'swr';
 import ErrorModal from '@/app/_components/ErrorModal';
 import LoadingCircular from '@/app/_components/LoadingCircular';
 import AnswerDetails from './_components/AnswerDetails';
+import Comments from './_components/Comments';
 import adminDashboardTheme from '../../theme/adminDashboardTheme';
 import type {
   ErrorResponse,
@@ -40,7 +41,13 @@ const Home = ({ params }: { params: { answerId: string } }) => {
   return (
     <ThemeProvider theme={adminDashboardTheme}>
       <CssBaseline />
-      <AnswerDetails answers={answers.right} questions={formQuestions.right} />
+      <Stack spacing={2}>
+        <AnswerDetails
+          answers={answers.right}
+          questions={formQuestions.right}
+        />
+        <Comments comments={answers.right.comments} />
+      </Stack>
     </ThemeProvider>
   );
 };
