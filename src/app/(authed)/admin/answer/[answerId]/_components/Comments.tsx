@@ -4,8 +4,9 @@ import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
+import { useForm } from 'react-hook-form';
 import { formatString } from '@/generic/DateFormatter';
-import { useForm, UseFormHandleSubmit, UseFormRegister } from 'react-hook-form';
+import type { UseFormHandleSubmit, UseFormRegister } from 'react-hook-form';
 
 type Comment = {
   timestamp: string;
@@ -127,9 +128,12 @@ const Comments = (props: { comments: Comment[]; answerId: number }) => {
         handleSubmit={handleSubmit}
         register={register}
       />
-      {props.comments.toReversed().map((comment, index) => (
-        <Comment comment={comment} key={index} />
-      ))}
+      {props.comments
+        .slice()
+        .reverse()
+        .map((comment, index) => (
+          <Comment comment={comment} key={index} />
+        ))}
     </Stack>
   );
 };
