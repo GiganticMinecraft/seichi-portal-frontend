@@ -127,7 +127,7 @@ const Comments = (props: { comments: Comment[]; answerId: number }) => {
         handleSubmit={handleSubmit}
         register={register}
       />
-      {props.comments.map((comment, index) => (
+      {props.comments.toReversed().map((comment, index) => (
         <Comment comment={comment} key={index} />
       ))}
     </Stack>
