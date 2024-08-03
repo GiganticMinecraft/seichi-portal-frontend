@@ -1,5 +1,13 @@
+import DeleteIcon from '@mui/icons-material/Delete';
 import SendIcon from '@mui/icons-material/Send';
-import { Chip, Container, Divider, Grid, Typography } from '@mui/material';
+import {
+  Chip,
+  Container,
+  Divider,
+  Grid,
+  IconButton,
+  Typography,
+} from '@mui/material';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
@@ -9,6 +17,7 @@ import { formatString } from '@/generic/DateFormatter';
 import type { UseFormHandleSubmit, UseFormRegister } from 'react-hook-form';
 
 type Comment = {
+  comment_id: number;
   timestamp: string;
   content: string;
   commented_by: {
@@ -18,7 +27,20 @@ type Comment = {
   };
 };
 
-const Comment = (props: { comment: Comment }) => {
+const Comment = (props: {
+  comment: Comment;
+  handleSubmit: UseFormHandleSubmit<{ comment_id: number }, undefined>;
+  register: UseFormRegister<{ comment_id: number }>;
+}) => {
+  const onDelete = async (data: { comment_id: number }) => {
+    await fetch(`/api/answers/comments/${data.comment_id}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+  };
+
   return (
     <Grid container spacing={2}>
       <Grid item xs={1}>
@@ -27,7 +49,7 @@ const Comment = (props: { comment: Comment }) => {
           src={`https://mc-heads.net/avatar/${props.comment.commented_by.name}`}
         />
       </Grid>
-      <Grid item xs={11}>
+      <Grid item xs={10}>
         <Stack>
           <Stack
             direction="row"
@@ -51,8 +73,22 @@ const Comment = (props: { comment: Comment }) => {
           <Typography>{formatString(props.comment.timestamp)}</Typography>
         </Stack>
       </Grid>
+      <Grid item xs={1}>
+        <IconButton
+          onClick={props.handleSubmit(onDelete)}
+          color="primary"
+          aria-label="delete"
+        >
+          <DeleteIcon />
+        </IconButton>
+      </Grid>
       <Grid item xs={1} />
       <Grid item xs={11}>
+        <TextField
+          {...props.register('comment_id')}
+          value={props.comment.comment_id}
+          type="hidden"
+        />
         <Typography>{props.comment.content}</Typography>
       </Grid>
       <Grid item xs={12}>
@@ -120,6 +156,8 @@ type SendCommentSchema = {
 
 const Comments = (props: { comments: Comment[]; answerId: number }) => {
   const { handleSubmit, register } = useForm<SendCommentSchema>();
+  const { handleSubmit: handleDeleteSubmit, register: registerDelete } =
+    useForm<{ comment_id: number }>();
 
   return (
     <Stack spacing={2}>
@@ -132,7 +170,12 @@ const Comments = (props: { comments: Comment[]; answerId: number }) => {
         .slice()
         .reverse()
         .map((comment, index) => (
-          <Comment comment={comment} key={index} />
+          <Comment
+            key={index}
+            comment={comment}
+            handleSubmit={handleDeleteSubmit}
+            register={registerDelete}
+          />
         ))}
     </Stack>
   );

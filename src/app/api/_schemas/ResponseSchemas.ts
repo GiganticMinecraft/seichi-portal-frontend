@@ -101,6 +101,7 @@ export const getAnswersResponseSchema = z
       .array(),
     comments: z
       .object({
+        comment_id: z.number(),
         content: z.string(),
         timestamp: z.string().datetime(),
         commented_by: z.object({
@@ -134,6 +135,7 @@ export const getAnswerResponseSchema = z.object({
     .array(),
   comments: z
     .object({
+      comment_id: z.number(),
       content: z.string(),
       timestamp: z.string().datetime(),
       commented_by: z.object({
