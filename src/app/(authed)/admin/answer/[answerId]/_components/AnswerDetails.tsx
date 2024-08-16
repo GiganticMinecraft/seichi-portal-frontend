@@ -124,9 +124,13 @@ const AnswerDetails = (props: {
     <Stack spacing={2}>
       <AnswerTitleForm answers={props.answers} />
       <AnswerMeta answers={props.answers} />
-      {answerWithQeustionInfo.map((answer, index) => (
-        <Answers key={index} answers={answer} />
-      ))}
+      {answerWithQeustionInfo.length === 0 ? (
+        <Typography>回答がありません</Typography>
+      ) : (
+        answerWithQeustionInfo.map((answer, index) => (
+          <Answers key={index} answers={answer} />
+        ))
+      )}
     </Stack>
   );
 };
