@@ -1,7 +1,6 @@
 .main {
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
   padding: 6rem;
   min-height: 100vh;
 }

@@ -41,7 +41,13 @@ const Home = ({ params }: { params: { answerId: number } }) => {
   return (
     <ThemeProvider theme={adminDashboardTheme}>
       <CssBaseline />
-      <Stack spacing={2}>
+      <Stack
+        direction="column"
+        justifyContent="flex-start"
+        alignItems="space-between"
+        spacing={4}
+        sx={{ width: '100%' }}
+      >
         <AnswerDetails
           answers={answers.right}
           questions={formQuestions.right}
