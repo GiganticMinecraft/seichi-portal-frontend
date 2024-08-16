@@ -9,6 +9,7 @@ import Comments from './_components/Comments';
 import adminDashboardTheme from '../../theme/adminDashboardTheme';
 import type {
   ErrorResponse,
+  GetAnswerLabelsResponse,
   GetAnswerResponse,
   GetQuestionsResponse,
 } from '@/app/api/_schemas/ResponseSchemas';
@@ -27,13 +28,19 @@ const Home = ({ params }: { params: { answerId: number } }) => {
       : ''
   );
 
-  if (!answers || !formQuestions) {
+  const { data: labels, isLoading: isLabelsLoading } = useSWR<
+    Either<ErrorResponse, GetAnswerLabelsResponse>
+  >('/api/answers/labels');
+
+  if (!answers || !formQuestions || !labels) {
     return <LoadingCircular />;
   } else if (
     (!isAnswersLoading && !answers) ||
     (!isFormQuestionsLoading && !formQuestions) ||
+    (!isLabelsLoading && !labels) ||
     answers._tag === 'Left' ||
-    formQuestions._tag === 'Left'
+    formQuestions._tag === 'Left' ||
+    labels._tag === 'Left'
   ) {
     return <ErrorModal />;
   }
@@ -51,6 +58,7 @@ const Home = ({ params }: { params: { answerId: number } }) => {
         <AnswerDetails
           answers={answers.right}
           questions={formQuestions.right}
+          labels={labels.right}
         />
         <Comments
           comments={answers.right.comments}

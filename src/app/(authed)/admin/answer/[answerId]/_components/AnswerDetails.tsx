@@ -10,9 +10,13 @@ import { useForm } from 'react-hook-form';
 import { removeDuplicates } from '@/generic/ArrayExtra';
 import { formatString } from '@/generic/DateFormatter';
 import type {
+  GetAnswerLabelsResponse,
   GetAnswerResponse,
   GetQuestionsResponse,
 } from '@/app/api/_schemas/ResponseSchemas';
+import Autocomplete from '@mui/material/Autocomplete';
+import Chip from '@mui/material/Chip';
+import Box from '@mui/material/Box';
 
 const AnswerTitleForm = (props: { answers: GetAnswerResponse }) => {
   const { handleSubmit, register } = useForm<{ title: string }>();
@@ -70,7 +74,48 @@ const AnswerTitleForm = (props: { answers: GetAnswerResponse }) => {
   );
 };
 
-const AnswerMeta = (props: { answers: GetAnswerResponse }) => {
+const AnswerTags = (props: { labels: GetAnswerLabelsResponse }) => {
+  return (
+    <Autocomplete
+      multiple
+      id="label"
+      options={props.labels.map((label) => label.name)}
+      getOptionLabel={(option) => option}
+      defaultValue={[]}
+      renderTags={(value: readonly string[], getTagProps) =>
+        value.map((option: string, index: number) => (
+          <Chip
+            label={option}
+            sx={{ background: '#FFFFFF29' }}
+            {...getTagProps({ index })}
+            key={index}
+          />
+        ))
+      }
+      renderOption={(props, option) => {
+        return (
+          <Box component="span" {...props} style={{ color: 'black' }}>
+            {option}
+          </Box>
+        );
+      }}
+      renderInput={(params) => (
+        // @ts-expect-error (解決方法がよくわからないのでとりあえずignoreする)
+        // FIXME: あとで調べる
+        <TextField
+          {...params}
+          variant="standard"
+          sx={{ borderBottom: '1px solid #FFFFFF6B' }}
+        />
+      )}
+    />
+  );
+};
+
+const AnswerMeta = (props: {
+  answers: GetAnswerResponse;
+  labels: GetAnswerLabelsResponse;
+}) => {
   return (
     <Grid container spacing={2}>
       <Grid item xs={6}>
@@ -80,6 +125,10 @@ const AnswerMeta = (props: { answers: GetAnswerResponse }) => {
       <Grid item xs={6}>
         <Typography sx={{ fontWeight: 'bold' }}>回答日時</Typography>
         {formatString(props.answers.timestamp)}
+      </Grid>
+      <Grid item xs={6}>
+        <Typography sx={{ fontWeight: 'bold' }}>ラベル</Typography>
+        <AnswerTags labels={props.labels} />
       </Grid>
     </Grid>
   );
@@ -104,6 +153,7 @@ const Answers = (props: { answers: AnswerWithQuestionInfo }) => {
 const AnswerDetails = (props: {
   answers: GetAnswerResponse;
   questions: GetQuestionsResponse;
+  labels: GetAnswerLabelsResponse;
 }) => {
   const answerWithQeustionInfo = removeDuplicates(
     props.answers.answers.map((answer) => answer.question_id)
@@ -123,7 +173,7 @@ const AnswerDetails = (props: {
   return (
     <Stack spacing={2}>
       <AnswerTitleForm answers={props.answers} />
-      <AnswerMeta answers={props.answers} />
+      <AnswerMeta answers={props.answers} labels={props.labels} />
       {answerWithQeustionInfo.length === 0 ? (
         <Typography>回答がありません</Typography>
       ) : (

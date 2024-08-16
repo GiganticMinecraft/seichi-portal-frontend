@@ -116,6 +116,18 @@ export const getAnswersResponseSchema = z
 
 export type GetAnswersResponse = z.infer<typeof getAnswersResponseSchema>;
 
+// GET /forms/answers/labels
+export const getAnswerLabelsResponseSchema = z
+  .object({
+    id: z.number(),
+    name: z.string(),
+  })
+  .array();
+
+export type GetAnswerLabelsResponse = z.infer<
+  typeof getAnswerLabelsResponseSchema
+>;
+
 // GET /forms/answers/:answerId
 export const getAnswerResponseSchema = z.object({
   id: z.number(),
