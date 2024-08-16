@@ -16,7 +16,6 @@ import {
   Alert,
   AlertTitle,
   Stack,
-  Divider,
   Button,
   Typography,
   Link,
@@ -230,20 +229,19 @@ const AnswerForm = ({ questions: questions, formId }: Props) => {
 
   if (isSubmitted) {
     return (
-      <Box
-        sx={{ width: '100%' }}
-        display={'flex'}
-        alignItems={'center'}
-        flexDirection={'column'}
+      <Stack
+        spacing={2}
+        sx={{ width: '100%', justifyContent: 'center', alignItems: 'center' }}
       >
-        <Alert severity="success">
+        <Alert severity="success" sx={{ width: '20%' }}>
           <AlertTitle>Success</AlertTitle>
           回答を送信しました
         </Alert>
         <Stack
-          direction="row"
-          divider={<Divider orientation="vertical" flexItem />}
           spacing={2}
+          direction="row"
+          justifyContent="space-between"
+          alignItems="center"
         >
           <Button
             variant="contained"
@@ -258,7 +256,7 @@ const AnswerForm = ({ questions: questions, formId }: Props) => {
             </Button>
           </Link>
         </Stack>
-      </Box>
+      </Stack>
     );
   } else {
     return (
