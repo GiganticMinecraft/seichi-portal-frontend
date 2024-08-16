@@ -13,8 +13,15 @@ const Item = styled(Button)(({ theme }) => ({
 
 const MainMenu = () => {
   return (
-    <Box sx={{ width: '100%' }}>
-      <Stack spacing={2}>
+    <Box
+      sx={{
+        width: '100%',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+      }}
+    >
+      <Stack spacing={2} sx={{ width: '100%' }}>
         <Link href="/forms" sx={{ textDecoration: 'none' }}>
           <Item as={'div'}>
             <Typography variant="h5">フォーム一覧</Typography>
