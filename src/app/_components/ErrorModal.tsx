@@ -9,8 +9,10 @@ import { useEffect, useState } from 'react';
 
 const ErrorModal = () => {
   const [timestamp, setTimestamp] = useState<string>();
+  const [path, setPath] = useState<string>();
   useEffect(() => {
     setTimestamp(dayjs().format());
+    setPath(window.location.href);
   }, []);
 
   return (
@@ -35,6 +37,7 @@ const ErrorModal = () => {
             連続して発生する場合は管理者に問い合わせてください。
           </Typography>
           <Typography>timestamp: {timestamp}</Typography>
+          <Typography>current URL: {path}</Typography>
         </Stack>
       </Box>
     </Modal>
