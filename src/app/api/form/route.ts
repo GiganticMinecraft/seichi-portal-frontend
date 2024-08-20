@@ -43,7 +43,7 @@ export async function GET(req: NextRequest) {
   }
 
   return nextResponseFromResponseHeaders(
-    NextResponse.json(parsed.data, { status: 500 }),
+    NextResponse.json(parsed.data, { status: 200 }),
     response
   );
 }
