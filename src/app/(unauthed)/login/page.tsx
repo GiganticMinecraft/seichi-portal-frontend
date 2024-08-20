@@ -4,7 +4,6 @@ import { InteractionStatus } from '@azure/msal-browser';
 import { useMsal } from '@azure/msal-react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { saveTokenToCache } from '@/user-token/mcToken';
 import type { SilentRequest } from '@azure/msal-browser';
 
 const loginRequest = {
@@ -44,7 +43,12 @@ const Home = () => {
               body: JSON.stringify({ token }),
             }).then((res) => res.json())) as { token: string; expires: number };
 
-            saveTokenToCache(mcAccessToken);
+            await fetch('/api/session', {
+              method: 'POST',
+              headers: {
+                Authorization: `Bearer ${mcAccessToken.token}`,
+              },
+            });
           });
 
         if (callbackUrl) {

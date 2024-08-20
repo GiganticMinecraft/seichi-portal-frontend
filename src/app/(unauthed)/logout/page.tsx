@@ -3,7 +3,6 @@
 import { useMsal } from '@azure/msal-react';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
-import { clearCachedToken } from '@/user-token/mcToken';
 
 const Home = () => {
   const { instance, accounts } = useMsal();
@@ -13,10 +12,12 @@ const Home = () => {
     (async () => {
       if (accounts[0]) {
         await instance.initialize().catch((e) => console.log(e));
-        await clearCachedToken();
         await instance.logoutRedirect({
           account: instance.getAccountByHomeId(accounts[0].homeAccountId),
           postLogoutRedirectUri: '/',
+        });
+        await fetch('/api/session', {
+          method: 'DELETE',
         });
       } else {
         router.push('/');

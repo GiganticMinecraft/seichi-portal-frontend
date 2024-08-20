@@ -20,5 +20,13 @@ export async function GET(_: NextRequest) {
     cache: 'no-cache',
   });
 
-  return NextResponse.json(await response.json(), { status: response.status });
+  const nextResponse = NextResponse.json(await response.json(), {
+    status: response.status,
+  });
+
+  response.headers.forEach((value, key) => {
+    nextResponse.headers.set(key, value);
+  });
+
+  return nextResponse;
 }
