@@ -3,6 +3,7 @@
 import { NextResponse } from 'next/server';
 import { BACKEND_SERVER_URL } from '@/env';
 import { getCachedToken } from '@/user-token/mcToken';
+import { nextResponseFromResponseHeaders } from '../_generics/responseHeaders';
 import { createFormSchema, updateFormSchema } from '../_schemas/RequestSchemas';
 import {
   createFormResponseSchema,
@@ -32,13 +33,19 @@ export async function GET(req: NextRequest) {
 
   if (!parsed.success) {
     console.error('Failed to parse get form response schema.');
-    return NextResponse.json(
-      { error: 'Failed to parse get form response schema.' },
-      { status: 500 }
+    return nextResponseFromResponseHeaders(
+      NextResponse.json(
+        { error: 'Failed to parse get form response schema.' },
+        { status: 500 }
+      ),
+      response
     );
   }
 
-  return NextResponse.json(parsed.data, { status: response.status });
+  return nextResponseFromResponseHeaders(
+    NextResponse.json(parsed.data, { status: 500 }),
+    response
+  );
 }
 
 export async function POST(req: NextRequest) {
@@ -71,22 +78,31 @@ export async function POST(req: NextRequest) {
       await createFormResponse.json()
     );
     if (parsed.success) {
-      return NextResponse.json(parsed.data, {
-        status: 201,
-      });
+      return nextResponseFromResponseHeaders(
+        NextResponse.json(parsed.data, {
+          status: 201,
+        }),
+        createFormResponse
+      );
     } else {
-      return NextResponse.json(
-        {
-          error:
-            'Failed to parse from request body to create form schema. Frontend schema is different from backend schema.',
-        },
-        { status: 500 }
+      return nextResponseFromResponseHeaders(
+        NextResponse.json(
+          {
+            error:
+              'Failed to parse from request body to create form schema. Frontend schema is different from backend schema.',
+          },
+          { status: 500 }
+        ),
+        createFormResponse
       );
     }
   } else {
-    return NextResponse.json(
-      { error: 'Failed to parse from request body to create form schema.' },
-      { status: 400 }
+    return nextResponseFromResponseHeaders(
+      NextResponse.json(
+        { error: 'Failed to parse from request body to create form schema.' },
+        { status: 400 }
+      ),
+      createFormResponse
     );
   }
 }
@@ -124,5 +140,8 @@ export async function PATCH(req: NextRequest) {
     cache: 'no-cache',
   });
 
-  return NextResponse.json(await response.json());
+  return nextResponseFromResponseHeaders(
+    NextResponse.json(await response.json(), { status: response.status }),
+    response
+  );
 }

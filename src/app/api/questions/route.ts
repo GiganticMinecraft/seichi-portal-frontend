@@ -4,6 +4,7 @@ import { NextResponse } from 'next/server';
 import { BACKEND_SERVER_URL } from '@/env';
 import { removeUndefinedOrNullRecords } from '@/generic/RecordExtra';
 import { getCachedToken } from '@/user-token/mcToken';
+import { nextResponseFromResponseHeaders } from '../_generics/responseHeaders';
 import {
   createQuestionSchema,
   updateQuestionSchema,
@@ -34,7 +35,10 @@ export async function GET(req: NextRequest) {
     }
   );
 
-  return NextResponse.json(await response.json(), { status: response.status });
+  return nextResponseFromResponseHeaders(
+    NextResponse.json(await response.json(), { status: response.status }),
+    response
+  );
 }
 
 export async function POST(req: NextRequest) {
@@ -65,9 +69,12 @@ export async function POST(req: NextRequest) {
     }
   );
 
-  return NextResponse.json(await addQuestionsResponse.json(), {
-    status: addQuestionsResponse.status,
-  });
+  return nextResponseFromResponseHeaders(
+    NextResponse.json(await addQuestionsResponse.json(), {
+      status: addQuestionsResponse.status,
+    }),
+    addQuestionsResponse
+  );
 }
 
 export async function PUT(req: NextRequest) {
@@ -103,7 +110,10 @@ export async function PUT(req: NextRequest) {
     }
   );
 
-  return NextResponse.json(await updateQuestionsResponse.json(), {
-    status: updateQuestionsResponse.status,
-  });
+  return nextResponseFromResponseHeaders(
+    NextResponse.json(await updateQuestionsResponse.json(), {
+      status: updateQuestionsResponse.status,
+    }),
+    updateQuestionsResponse
+  );
 }

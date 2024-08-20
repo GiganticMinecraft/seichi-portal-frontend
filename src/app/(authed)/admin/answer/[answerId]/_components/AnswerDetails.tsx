@@ -1,6 +1,9 @@
 import { Send } from '@mui/icons-material';
 import EditIcon from '@mui/icons-material/Edit';
+import Autocomplete from '@mui/material/Autocomplete';
+import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
+import Chip from '@mui/material/Chip';
 import Grid from '@mui/material/Grid';
 import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
@@ -14,9 +17,6 @@ import type {
   GetAnswerResponse,
   GetQuestionsResponse,
 } from '@/app/api/_schemas/ResponseSchemas';
-import Autocomplete from '@mui/material/Autocomplete';
-import Chip from '@mui/material/Chip';
-import Box from '@mui/material/Box';
 
 const AnswerTitleForm = (props: { answers: GetAnswerResponse }) => {
   const { handleSubmit, register } = useForm<{ title: string }>();

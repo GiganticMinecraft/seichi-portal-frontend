@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { nextResponseFromResponseHeaders } from '@/app/api/_generics/responseHeaders';
 import { BACKEND_SERVER_URL } from '@/env';
 import { getCachedToken } from '@/user-token/mcToken';
 import type { NextRequest } from 'next/server';
@@ -24,13 +25,15 @@ export async function DELETE(
     }
   );
 
-  console.log(response.status);
-
   if (response.ok) {
-    return NextResponse.json({ status: response.status });
+    return nextResponseFromResponseHeaders(
+      NextResponse.json({ status: response.status }),
+      response
+    );
   } else {
-    return NextResponse.json(await response.json(), {
-      status: response.status,
-    });
+    return nextResponseFromResponseHeaders(
+      NextResponse.json(await response.json(), { status: response.status }),
+      response
+    );
   }
 }

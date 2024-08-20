@@ -3,6 +3,7 @@
 import { NextResponse } from 'next/server';
 import { BACKEND_SERVER_URL } from '@/env';
 import { getCachedToken } from '@/user-token/mcToken';
+import { nextResponseFromResponseHeaders } from '../../_generics/responseHeaders';
 import type { NextRequest } from 'next/server';
 
 export async function GET(_: NextRequest) {
@@ -20,5 +21,8 @@ export async function GET(_: NextRequest) {
     cache: 'no-cache',
   });
 
-  return NextResponse.json(await response.json(), { status: response.status });
+  return nextResponseFromResponseHeaders(
+    NextResponse.json(await response.json(), { status: response.status }),
+    response
+  );
 }

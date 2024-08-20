@@ -1,5 +1,7 @@
+import { NextResponse } from 'next/server';
 import { BACKEND_SERVER_URL } from '@/env';
-import { NextRequest, NextResponse } from 'next/server';
+import { nextResponseFromResponseHeaders } from '../_generics/responseHeaders';
+import type { NextRequest} from 'next/server';
 
 export async function POST(req: NextRequest) {
   const authorizationHeader = req.headers.get('Authorization');
@@ -17,16 +19,17 @@ export async function POST(req: NextRequest) {
   });
 
   if (response.ok) {
-    const nextResponse = NextResponse.json({ status: response.status });
-    response.headers.forEach((value, key) => {
-      nextResponse.headers.set(key, value);
-    });
-
-    return nextResponse;
+    return nextResponseFromResponseHeaders(
+      NextResponse.json({ status: response.status }),
+      response
+    );
   } else {
-    return NextResponse.json(await response.json(), {
-      status: response.status,
-    });
+    return nextResponseFromResponseHeaders(
+      NextResponse.json(await response.json(), {
+        status: response.status,
+      }),
+      response
+    );
   }
 }
 
@@ -46,15 +49,16 @@ export async function DELETE(req: NextRequest) {
   });
 
   if (response.ok) {
-    const nextResponse = NextResponse.json({ status: response.status });
-    response.headers.forEach((value, key) => {
-      nextResponse.headers.set(key, value);
-    });
-
-    return nextResponse;
+    return nextResponseFromResponseHeaders(
+      NextResponse.json({ status: response.status }),
+      response
+    );
   } else {
-    return NextResponse.json(await response.json(), {
-      status: response.status,
-    });
+    return nextResponseFromResponseHeaders(
+      NextResponse.json(await response.json(), {
+        status: response.status,
+      }),
+      response
+    );
   }
 }
