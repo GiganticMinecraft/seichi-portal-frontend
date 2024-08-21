@@ -48,6 +48,9 @@ const Home = () => {
               headers: {
                 Authorization: `Bearer ${mcAccessToken.token}`,
               },
+              body: JSON.stringify({
+                expires: mcAccessToken.expires,
+              }),
             });
           });
 

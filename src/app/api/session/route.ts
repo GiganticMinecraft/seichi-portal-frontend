@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { BACKEND_SERVER_URL } from '@/env';
 import { nextResponseFromResponseHeaders } from '../_generics/responseHeaders';
-import type { NextRequest} from 'next/server';
+import type { NextRequest } from 'next/server';
 
 export async function POST(req: NextRequest) {
   const authorizationHeader = req.headers.get('Authorization');
@@ -15,6 +15,7 @@ export async function POST(req: NextRequest) {
       'Content-Type': 'application/json',
       Authorization: authorizationHeader,
     },
+    body: JSON.stringify(await req.json()),
     cache: 'no-cache',
   });
 
