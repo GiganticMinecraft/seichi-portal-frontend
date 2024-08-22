@@ -1,4 +1,4 @@
-import { Send } from '@mui/icons-material';
+import { Label, Send } from '@mui/icons-material';
 import EditIcon from '@mui/icons-material/Edit';
 import Autocomplete from '@mui/material/Autocomplete';
 import Box from '@mui/material/Box';
@@ -129,6 +129,15 @@ const AnswerMeta = (props: {
       <Grid item xs={6}>
         <Typography sx={{ fontWeight: 'bold' }}>ラベル</Typography>
         <AnswerTags labels={props.labels} />
+      </Grid>
+      <Grid item xs={6}>
+        <Button
+          variant="contained"
+          href="/admin/labels/answers"
+          startIcon={<Label />}
+        >
+          ラベルの管理
+        </Button>
       </Grid>
     </Grid>
   );
