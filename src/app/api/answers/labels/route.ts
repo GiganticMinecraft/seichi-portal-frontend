@@ -26,3 +26,31 @@ export async function GET(_: NextRequest) {
     response
   );
 }
+
+export async function POST(req: NextRequest) {
+  const token = await getCachedToken();
+  if (!token) {
+    return NextResponse.redirect('/');
+  }
+
+  const response = await fetch(`${BACKEND_SERVER_URL}/forms/answers/labels`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(await req.json()),
+  });
+
+  if (response.ok) {
+    return nextResponseFromResponseHeaders(
+      NextResponse.json({ status: response.status }),
+      response
+    );
+  } else {
+    return nextResponseFromResponseHeaders(
+      NextResponse.json(await response.json(), { status: response.status }),
+      response
+    );
+  }
+}
