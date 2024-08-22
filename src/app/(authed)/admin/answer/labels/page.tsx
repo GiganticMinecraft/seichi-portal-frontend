@@ -1,6 +1,6 @@
 'use client';
 
-import { CssBaseline, ThemeProvider } from '@mui/material';
+import { CssBaseline, Stack, ThemeProvider } from '@mui/material';
 import adminDashboardTheme from '../../theme/adminDashboardTheme';
 import useSWR from 'swr';
 import { Either } from 'fp-ts/lib/Either';
@@ -11,6 +11,7 @@ import {
 import LoadingCircular from '@/app/_components/LoadingCircular';
 import ErrorModal from '@/app/_components/ErrorModal';
 import Labels from './_components/Labels';
+import CreateLabelField from './_components/CreateLabelField';
 
 const Home = () => {
   const { data, isLoading } = useSWR<
@@ -26,7 +27,10 @@ const Home = () => {
   return (
     <ThemeProvider theme={adminDashboardTheme}>
       <CssBaseline />
-      <Labels labels={data.right} />
+      <Stack spacing={2} sx={{ width: '100%' }}>
+        <CreateLabelField />
+        <Labels labels={data.right} />
+      </Stack>
     </ThemeProvider>
   );
 };
