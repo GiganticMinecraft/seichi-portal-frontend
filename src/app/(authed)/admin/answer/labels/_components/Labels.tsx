@@ -7,6 +7,7 @@ import {
   Stack,
   Divider,
   Alert,
+  Box,
 } from '@mui/material';
 import { useState } from 'react';
 
@@ -48,7 +49,7 @@ const Labels = (props: { labels: Label[] }) => {
         <Alert severity="error">ラベルの削除に失敗しました。</Alert>
       )}
       {props.labels.map((label, index) => (
-        <Stack>
+        <Box key={index}>
           <ListItem
             secondaryAction={
               <Stack direction="row" spacing={2}>
@@ -65,12 +66,11 @@ const Labels = (props: { labels: Label[] }) => {
                 </Button>
               </Stack>
             }
-            key={index}
           >
             <ListItemText sx={{ alignItems: 'center' }} primary={label.name} />
           </ListItem>
           <Divider />
-        </Stack>
+        </Box>
       ))}
     </List>
   );

@@ -15,7 +15,7 @@ export async function DELETE(
   const response = await fetch(
     `${BACKEND_SERVER_URL}/forms/answers/labels/${params.labelId}`,
     {
-      method: 'POST',
+      method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${token}`,
