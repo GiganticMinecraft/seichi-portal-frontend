@@ -12,7 +12,7 @@ export async function GET(_: NextRequest) {
     return NextResponse.redirect('/');
   }
 
-  const response = await fetch(`${BACKEND_SERVER_URL}/forms/answers/labels`, {
+  const response = await fetch(`${BACKEND_SERVER_URL}/forms/labels/answers`, {
     method: 'GET',
     headers: {
       Accept: 'application/json',
@@ -33,7 +33,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.redirect('/');
   }
 
-  const response = await fetch(`${BACKEND_SERVER_URL}/forms/answers/labels`, {
+  const response = await fetch(`${BACKEND_SERVER_URL}/forms/labels/answers`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

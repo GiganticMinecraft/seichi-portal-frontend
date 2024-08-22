@@ -14,7 +14,7 @@ export async function DELETE(
   }
 
   const response = await fetch(
-    `${BACKEND_SERVER_URL}/forms/answers/labels/${params.labelId}`,
+    `${BACKEND_SERVER_URL}/forms/labels/answers/${params.labelId}`,
     {
       method: 'DELETE',
       headers: {
@@ -47,7 +47,7 @@ export async function PATCH(
   }
 
   const response = await fetch(
-    `${BACKEND_SERVER_URL}/forms/answers/labels/${params.labelId}`,
+    `${BACKEND_SERVER_URL}/forms/labels/answers/${params.labelId}`,
     {
       method: 'PATCH',
       headers: {
