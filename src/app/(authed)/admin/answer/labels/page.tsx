@@ -16,7 +16,7 @@ import CreateLabelField from './_components/CreateLabelField';
 const Home = () => {
   const { data, isLoading } = useSWR<
     Either<ErrorResponse, GetAnswerLabelsResponse>
-  >('/api/answers/labels');
+  >('/api/answers/labels', { refreshInterval: 1000 });
 
   if (!data) {
     return <LoadingCircular />;
