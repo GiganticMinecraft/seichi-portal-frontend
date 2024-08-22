@@ -1,17 +1,17 @@
 'use client';
 
 import { CssBaseline, Stack, ThemeProvider } from '@mui/material';
-import adminDashboardTheme from '../../theme/adminDashboardTheme';
 import useSWR from 'swr';
-import { Either } from 'fp-ts/lib/Either';
-import {
+import ErrorModal from '@/app/_components/ErrorModal';
+import LoadingCircular from '@/app/_components/LoadingCircular';
+import CreateLabelField from './_components/CreateLabelField';
+import Labels from './_components/Labels';
+import adminDashboardTheme from '../../theme/adminDashboardTheme';
+import type {
   ErrorResponse,
   GetAnswerLabelsResponse,
 } from '@/app/api/_schemas/ResponseSchemas';
-import LoadingCircular from '@/app/_components/LoadingCircular';
-import ErrorModal from '@/app/_components/ErrorModal';
-import Labels from './_components/Labels';
-import CreateLabelField from './_components/CreateLabelField';
+import type { Either } from 'fp-ts/lib/Either';
 
 const Home = () => {
   const { data, isLoading } = useSWR<
