@@ -4,9 +4,9 @@ import { CssBaseline, Stack, ThemeProvider, Typography } from '@mui/material';
 import useSWR from 'swr';
 import ErrorModal from '@/app/_components/ErrorModal';
 import LoadingCircular from '@/app/_components/LoadingCircular';
-import CreateLabelField from './_components/CreateLabelField';
-import Labels from './_components/Labels';
 import adminDashboardTheme from '../../theme/adminDashboardTheme';
+import CreateLabelField from '../_components/CreateLabelField';
+import Labels from '../_components/Labels';
 import type {
   ErrorResponse,
   GetAnswerLabelsResponse,

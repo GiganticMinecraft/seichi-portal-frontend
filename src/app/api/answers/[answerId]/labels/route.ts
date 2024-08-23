@@ -1,10 +1,10 @@
 'use server';
 
 import { NextResponse } from 'next/server';
+import { nextResponseFromResponseHeaders } from '@/app/api/_generics/responseHeaders';
 import { BACKEND_SERVER_URL } from '@/env';
 import { getCachedToken } from '@/user-token/mcToken';
 import type { NextRequest } from 'next/server';
-import { nextResponseFromResponseHeaders } from '@/app/api/_generics/responseHeaders';
 
 export async function PUT(
   req: NextRequest,
