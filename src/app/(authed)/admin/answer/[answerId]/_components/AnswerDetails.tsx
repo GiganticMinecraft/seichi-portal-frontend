@@ -128,8 +128,8 @@ const AnswerLabels = (props: {
           sx={{ borderBottom: '1px solid #FFFFFF6B' }}
         />
       )}
-      onChange={(_event, value) => {
-        onChangeLabels(
+      onChange={async (_event, value) => {
+        await onChangeLabels(
           props.labelOptions.filter((label) => value.includes(label.name))
         );
       }}

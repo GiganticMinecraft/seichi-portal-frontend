@@ -111,6 +111,12 @@ export const getAnswersResponseSchema = z
         }),
       })
       .array(),
+    labels: z
+      .object({
+        id: z.number(),
+        name: z.string(),
+      })
+      .array(),
   })
   .array();
 
