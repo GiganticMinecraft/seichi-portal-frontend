@@ -12,7 +12,7 @@ import {
 } from '@mui/material';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import type { EditLabelSchema } from '../_schemas/labelSchemas';
+import type { EditLabelSchema } from '../../_schemas/labelSchemas';
 
 type Label = {
   id: number;
@@ -32,7 +32,7 @@ const Labels = (props: { labels: Label[] }) => {
   const { handleSubmit, register } = useForm<EditLabelSchema>();
 
   const onDeleteButtonClick = async (label: Label) => {
-    const response = await fetch(`/api/labels/answers/${label.id}`, {
+    const response = await fetch(`/api/answers/labels/${label.id}`, {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',

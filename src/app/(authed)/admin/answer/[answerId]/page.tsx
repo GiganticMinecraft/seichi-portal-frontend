@@ -30,7 +30,7 @@ const Home = ({ params }: { params: { answerId: number } }) => {
 
   const { data: labels, isLoading: isLabelsLoading } = useSWR<
     Either<ErrorResponse, GetAnswerLabelsResponse>
-  >('/api/answers/labels');
+  >('/api/labels/answers');
 
   if (!answers || !formQuestions || !labels) {
     return <LoadingCircular />;

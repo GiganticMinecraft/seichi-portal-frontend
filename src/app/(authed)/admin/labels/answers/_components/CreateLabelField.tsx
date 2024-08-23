@@ -1,7 +1,7 @@
 import { AddCircle } from '@mui/icons-material';
 import { Button, Container, Stack, TextField } from '@mui/material';
 import { useForm } from 'react-hook-form';
-import type { CreateLabelSchema } from '../_schemas/labelSchemas';
+import type { CreateLabelSchema } from '../../_schemas/labelSchemas';
 
 const CreateLabelField = () => {
   const { handleSubmit, register } = useForm<CreateLabelSchema>();
