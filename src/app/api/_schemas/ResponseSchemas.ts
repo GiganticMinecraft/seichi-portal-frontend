@@ -21,6 +21,12 @@ export const getFormsResponseSchema = z
       start_at: z.string().datetime(),
       end_at: z.string().datetime(),
     }),
+    labels: z
+      .object({
+        id: z.number(),
+        name: z.string(),
+      })
+      .array(),
   })
   .array();
 
@@ -63,6 +69,12 @@ export const getFormResponseSchema = z.object({
     created_at: z.string().datetime(),
     updated_at: z.string().datetime(),
   }),
+  labels: z
+    .object({
+      id: z.number(),
+      name: z.string(),
+    })
+    .array(),
 });
 
 export type GetFormResponse = z.infer<typeof getFormResponseSchema>;
