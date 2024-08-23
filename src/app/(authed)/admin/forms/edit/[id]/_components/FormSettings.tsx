@@ -17,7 +17,9 @@ const FormSettings = (props: {
   register: UseFormRegister<Form>;
   visibility: Visibility;
   has_response_period: boolean;
+  formId: number;
   labelOptions: GetFormLabelsResponse;
+  currentLabels: GetFormLabelsResponse;
 }) => (
   <Stack spacing={2}>
     <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
@@ -29,7 +31,11 @@ const FormSettings = (props: {
       label="フォームの説明"
       required
     />
-    <FormLabelField labelOptions={props.labelOptions} />
+    <FormLabelField
+      currentLabels={props.currentLabels}
+      formId={props.formId}
+      labelOptions={props.labelOptions}
+    />
     <FormControlLabel
       label="回答開始日と回答終了日を設定する"
       control={<Checkbox {...props.register('settings.has_response_period')} />}

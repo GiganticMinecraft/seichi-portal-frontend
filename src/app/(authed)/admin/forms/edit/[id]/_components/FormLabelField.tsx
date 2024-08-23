@@ -4,13 +4,30 @@ import Chip from '@mui/material/Chip';
 import TextField from '@mui/material/TextField';
 import type { GetFormLabelsResponse } from '@/app/api/_schemas/ResponseSchemas';
 
-const FormLabelField = (props: { labelOptions: GetFormLabelsResponse }) => {
+const FormLabelField = (props: {
+  formId: number;
+  labelOptions: GetFormLabelsResponse;
+  currentLabels: GetFormLabelsResponse;
+}) => {
+  const onChangeLabels = async (labels: GetFormLabelsResponse) => {
+    await fetch(`/api/forms/${props.formId}/labels`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        labels: labels.map((label) => label.id),
+      }),
+    });
+  };
+
   return (
     <Autocomplete
       multiple
       id="label"
       options={props.labelOptions.map((label) => label.name)}
       getOptionLabel={(option) => option}
+      defaultValue={props.currentLabels.map((label) => label.name)}
       renderTags={(value: readonly string[], getTagProps) =>
         value.map((option: string, index: number) => (
           <Chip
@@ -43,6 +60,11 @@ const FormLabelField = (props: { labelOptions: GetFormLabelsResponse }) => {
           sx={{ borderBottom: '1px solid #FFFFFF6B' }}
         />
       )}
+      onChange={async (_event, value) => {
+        await onChangeLabels(
+          props.labelOptions.filter((label) => value.includes(label.name))
+        );
+      }}
     />
   );
 };

@@ -172,7 +172,9 @@ const FormEditForm = (props: {
                   register={register}
                   visibility={visibility}
                   has_response_period={has_response_period}
+                  formId={props.form.id}
                   labelOptions={props.labelOptions}
+                  currentLabels={props.form.labels}
                 />
               </CardContent>
               {fields.map((field, index) => (
