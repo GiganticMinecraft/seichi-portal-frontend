@@ -157,6 +157,12 @@ export const getAnswerResponseSchema = z.object({
       }),
     })
     .array(),
+  labels: z
+    .object({
+      id: z.number(),
+      name: z.string(),
+    })
+    .array(),
 });
 
 export type GetAnswerResponse = z.infer<typeof getAnswerResponseSchema>;

@@ -74,14 +74,17 @@ const AnswerTitleForm = (props: { answers: GetAnswerResponse }) => {
   );
 };
 
-const AnswerTags = (props: { labels: GetAnswerLabelsResponse }) => {
+const AnswerTags = (props: {
+  labelOptions: GetAnswerLabelsResponse;
+  answers: GetAnswerResponse;
+}) => {
   return (
     <Autocomplete
       multiple
       id="label"
-      options={props.labels.map((label) => label.name)}
+      options={props.labelOptions.map((label) => label.name)}
       getOptionLabel={(option) => option}
-      defaultValue={[]}
+      defaultValue={props.answers.labels.map((label) => label.name)}
       renderTags={(value: readonly string[], getTagProps) =>
         value.map((option: string, index: number) => (
           <Chip
@@ -128,7 +131,7 @@ const AnswerMeta = (props: {
       </Grid>
       <Grid item xs={6}>
         <Typography sx={{ fontWeight: 'bold' }}>ラベル</Typography>
-        <AnswerTags labels={props.labels} />
+        <AnswerTags labelOptions={props.labels} answers={props.answers} />
       </Grid>
       <Grid item xs={6}>
         <Button
