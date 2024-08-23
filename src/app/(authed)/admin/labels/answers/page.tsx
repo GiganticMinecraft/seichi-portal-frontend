@@ -1,6 +1,6 @@
 'use client';
 
-import { CssBaseline, Stack, ThemeProvider } from '@mui/material';
+import { CssBaseline, Stack, ThemeProvider, Typography } from '@mui/material';
 import useSWR from 'swr';
 import ErrorModal from '@/app/_components/ErrorModal';
 import LoadingCircular from '@/app/_components/LoadingCircular';
@@ -28,6 +28,7 @@ const Home = () => {
     <ThemeProvider theme={adminDashboardTheme}>
       <CssBaseline />
       <Stack spacing={2} sx={{ width: '100%' }}>
+        <Typography variant="h4">回答設定用ラベル管理</Typography>
         <CreateLabelField />
         <Labels labels={data.right} />
       </Stack>
