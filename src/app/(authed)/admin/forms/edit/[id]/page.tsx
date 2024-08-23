@@ -9,25 +9,33 @@ import FormEditForm from './_components/FormEditForm';
 import adminDashboardTheme from '../../../theme/adminDashboardTheme';
 import type {
   ErrorResponse,
+  GetFormLabelsResponse,
   GetFormResponse,
 } from '@/app/api/_schemas/ResponseSchemas';
 import type { Either } from 'fp-ts/lib/Either';
 
 const Home = ({ params }: { params: { id: number } }) => {
-  const { data, isLoading } = useSWR<Either<ErrorResponse, GetFormResponse>>(
-    `/api/form?formId=${params.id}`
-  );
+  const { data: forms, isLoading: isLoadingForms } = useSWR<
+    Either<ErrorResponse, GetFormResponse>
+  >(`/api/form?formId=${params.id}`);
+  const { data: labels, isLoading: isLoadingLabels } =
+    useSWR<Either<ErrorResponse, GetFormLabelsResponse>>('/api/labels/forms');
 
-  if (!data) {
+  if (!forms || !labels) {
     return <LoadingCircular />;
-  } else if ((!isLoading && !data) || data._tag === 'Left') {
+  } else if (
+    (!isLoadingForms && !forms) ||
+    forms._tag === 'Left' ||
+    (!isLoadingLabels && !labels) ||
+    labels._tag === 'Left'
+  ) {
     return <ErrorModal />;
   }
 
   return (
     <ThemeProvider theme={adminDashboardTheme}>
       <CssBaseline />
-      <FormEditForm form={data.right} />
+      <FormEditForm form={forms.right} labelOptions={labels.right} />
     </ThemeProvider>
   );
 };

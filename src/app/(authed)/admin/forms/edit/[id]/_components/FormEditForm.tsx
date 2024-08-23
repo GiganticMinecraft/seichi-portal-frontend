@@ -19,9 +19,15 @@ import FormSettings from './FormSettings';
 import QuestionComponent from './Question';
 import { formSchema } from '../_schema/editFormSchema';
 import type { Form } from '../_schema/editFormSchema';
-import type { GetFormResponse } from '@/app/api/_schemas/ResponseSchemas';
+import type {
+  GetFormLabelsResponse,
+  GetFormResponse,
+} from '@/app/api/_schemas/ResponseSchemas';
 
-const FormEditForm = (props: { form: GetFormResponse }) => {
+const FormEditForm = (props: {
+  form: GetFormResponse;
+  labelOptions: GetFormLabelsResponse;
+}) => {
   const start_at = props.form.settings.response_period?.start_at;
   const end_at = props.form.settings.response_period?.end_at;
 
@@ -166,6 +172,7 @@ const FormEditForm = (props: { form: GetFormResponse }) => {
                   register={register}
                   visibility={visibility}
                   has_response_period={has_response_period}
+                  labelOptions={props.labelOptions}
                 />
               </CardContent>
               {fields.map((field, index) => (
