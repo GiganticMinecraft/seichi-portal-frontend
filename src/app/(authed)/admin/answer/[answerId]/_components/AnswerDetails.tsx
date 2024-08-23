@@ -74,10 +74,22 @@ const AnswerTitleForm = (props: { answers: GetAnswerResponse }) => {
   );
 };
 
-const AnswerTags = (props: {
+const AnswerLabels = (props: {
   labelOptions: GetAnswerLabelsResponse;
   answers: GetAnswerResponse;
 }) => {
+  const onChangeLabels = async (labels: GetAnswerLabelsResponse) => {
+    await fetch(`/api/answers/${props.answers.id}/labels`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        labels: labels.map((label) => label.id),
+      }),
+    });
+  };
+
   return (
     <Autocomplete
       multiple
@@ -97,7 +109,12 @@ const AnswerTags = (props: {
       }
       renderOption={(props, option) => {
         return (
-          <Box component="span" {...props} style={{ color: 'black' }}>
+          <Box
+            {...props}
+            key={option}
+            component="span"
+            style={{ color: 'black' }}
+          >
             {option}
           </Box>
         );
@@ -111,6 +128,11 @@ const AnswerTags = (props: {
           sx={{ borderBottom: '1px solid #FFFFFF6B' }}
         />
       )}
+      onChange={(_event, value) => {
+        onChangeLabels(
+          props.labelOptions.filter((label) => value.includes(label.name))
+        );
+      }}
     />
   );
 };
@@ -131,7 +153,7 @@ const AnswerMeta = (props: {
       </Grid>
       <Grid item xs={6}>
         <Typography sx={{ fontWeight: 'bold' }}>ラベル</Typography>
-        <AnswerTags labelOptions={props.labels} answers={props.answers} />
+        <AnswerLabels labelOptions={props.labels} answers={props.answers} />
       </Grid>
       <Grid item xs={6}>
         <Button
