@@ -9,17 +9,25 @@ import FormCreateButton from './_components/FormCreateButton';
 import FormTagFilter from './_components/FormTagFilter';
 import type {
   ErrorResponse,
+  GetFormLabelsResponse,
   GetFormsResponse,
 } from '@/app/api/_schemas/ResponseSchemas';
 import type { Either } from 'fp-ts/lib/Either';
 
 const Home = () => {
-  const { data: forms, isLoading } =
+  const { data: forms, isLoading: isLoadingForms } =
     useSWR<Either<ErrorResponse, GetFormsResponse>>('/api/forms');
+  const { data: labels, isLoading: isLoadingLabels } =
+    useSWR<Either<ErrorResponse, GetFormLabelsResponse>>('/api/labels/forms');
 
-  if (!forms) {
+  if (!forms || !labels) {
     return <LoadingCircular />;
-  } else if ((!isLoading && !forms) || forms._tag === 'Left') {
+  } else if (
+    (!isLoadingForms && !forms) ||
+    forms._tag === 'Left' ||
+    (!isLoadingLabels && !labels) ||
+    labels._tag === 'Left'
+  ) {
     return <ErrorModal />;
   }
 
@@ -33,7 +41,7 @@ const Home = () => {
           justifyContent="space-between"
         >
           <Grid item xs="auto">
-            <FormTagFilter />
+            <FormTagFilter labelOptions={labels.right} />
           </Grid>
           <Grid item xs={2}>
             <FormCreateButton />

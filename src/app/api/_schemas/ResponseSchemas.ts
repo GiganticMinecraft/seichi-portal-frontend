@@ -122,7 +122,7 @@ export const getAnswersResponseSchema = z
 
 export type GetAnswersResponse = z.infer<typeof getAnswersResponseSchema>;
 
-// GET /forms/answers/labels
+// GET /forms/labels/answers
 export const getAnswerLabelsResponseSchema = z
   .object({
     id: z.number(),
@@ -133,6 +133,16 @@ export const getAnswerLabelsResponseSchema = z
 export type GetAnswerLabelsResponse = z.infer<
   typeof getAnswerLabelsResponseSchema
 >;
+
+// GET /forms/labels/forms
+export const getFormLabelsResponseSchema = z
+  .object({
+    id: z.number(),
+    name: z.string(),
+  })
+  .array();
+
+export type GetFormLabelsResponse = z.infer<typeof getFormLabelsResponseSchema>;
 
 // GET /forms/answers/:answerId
 export const getAnswerResponseSchema = z.object({

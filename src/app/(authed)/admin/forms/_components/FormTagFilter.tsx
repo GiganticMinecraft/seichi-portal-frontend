@@ -1,16 +1,16 @@
+import { GetFormLabelsResponse } from '@/app/api/_schemas/ResponseSchemas';
 import Autocomplete from '@mui/material/Autocomplete';
 import Box from '@mui/material/Box';
 import Chip from '@mui/material/Chip';
 import TextField from '@mui/material/TextField';
 
-const FormTagFilter = () => {
+const FormTagFilter = (props: { labelOptions: GetFormLabelsResponse }) => {
   return (
     <Autocomplete
       multiple
-      id="filter-forms"
-      options={['Open', 'Closed']}
+      id="label"
+      options={props.labelOptions.map((label) => label.name)}
       getOptionLabel={(option) => option}
-      defaultValue={['Open']}
       renderTags={(value: readonly string[], getTagProps) =>
         value.map((option: string, index: number) => (
           <Chip
@@ -23,7 +23,12 @@ const FormTagFilter = () => {
       }
       renderOption={(props, option) => {
         return (
-          <Box component="span" {...props} style={{ color: 'black' }}>
+          <Box
+            {...props}
+            key={option}
+            component="span"
+            style={{ color: 'black' }}
+          >
             {option}
           </Box>
         );
@@ -36,7 +41,6 @@ const FormTagFilter = () => {
           variant="standard"
           label="Filter"
           sx={{ borderBottom: '1px solid #FFFFFF6B' }}
-          InputLabelProps={{ style: { color: '#FFFFFF80' } }}
         />
       )}
     />
