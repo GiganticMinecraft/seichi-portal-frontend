@@ -1,10 +1,10 @@
-import { GetFormLabelsResponse } from '@/app/api/_schemas/ResponseSchemas';
 import Autocomplete from '@mui/material/Autocomplete';
 import Box from '@mui/material/Box';
 import Chip from '@mui/material/Chip';
 import TextField from '@mui/material/TextField';
+import type { GetFormLabelsResponse } from '@/app/api/_schemas/ResponseSchemas';
 
-const FormTagFilter = (props: { labelOptions: GetFormLabelsResponse }) => {
+const FormLabelFilter = (props: { labelOptions: GetFormLabelsResponse }) => {
   return (
     <Autocomplete
       multiple
@@ -47,4 +47,4 @@ const FormTagFilter = (props: { labelOptions: GetFormLabelsResponse }) => {
   );
 };
 
-export default FormTagFilter;
+export default FormLabelFilter;

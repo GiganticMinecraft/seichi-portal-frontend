@@ -6,7 +6,7 @@ import ErrorModal from '@/app/_components/ErrorModal';
 import LoadingCircular from '@/app/_components/LoadingCircular';
 import { Forms } from './_components/DashboardFormList';
 import FormCreateButton from './_components/FormCreateButton';
-import FormTagFilter from './_components/FormTagFilter';
+import FormLabelFilter from './_components/FormLabelFilter';
 import type {
   ErrorResponse,
   GetFormLabelsResponse,
@@ -41,7 +41,7 @@ const Home = () => {
           justifyContent="space-between"
         >
           <Grid item xs="auto">
-            <FormTagFilter labelOptions={labels.right} />
+            <FormLabelFilter labelOptions={labels.right} />
           </Grid>
           <Grid item xs={2}>
             <FormCreateButton />
