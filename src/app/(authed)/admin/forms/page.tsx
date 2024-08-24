@@ -1,6 +1,7 @@
 'use client';
 
 import { Grid } from '@mui/material';
+import { useEffect, useState } from 'react';
 import useSWR from 'swr';
 import ErrorModal from '@/app/_components/ErrorModal';
 import LoadingCircular from '@/app/_components/LoadingCircular';
@@ -19,6 +20,22 @@ const Home = () => {
     useSWR<Either<ErrorResponse, GetFormsResponse>>('/api/forms');
   const { data: labels, isLoading: isLoadingLabels } =
     useSWR<Either<ErrorResponse, GetFormLabelsResponse>>('/api/labels/forms');
+  const [labelFilter, setLabelFilter] = useState<GetFormLabelsResponse>([]);
+  const [filteredForms, setFilteredForms] = useState<GetFormsResponse>([]);
+
+  useEffect(() => {
+    if (forms?._tag === 'Right' && labelFilter.length === 0) {
+      setFilteredForms(forms.right);
+    } else if (forms?._tag === 'Right' && labelFilter.length !== 0) {
+      setFilteredForms(
+        forms.right.filter((form) =>
+          labelFilter.every((label) =>
+            form.labels.map((label) => label.id).includes(label.id)
+          )
+        )
+      );
+    }
+  }, [labelFilter, forms]);
 
   if (!forms || !labels) {
     return <LoadingCircular />;
@@ -41,7 +58,10 @@ const Home = () => {
           justifyContent="space-between"
         >
           <Grid item xs="auto">
-            <FormLabelFilter labelOptions={labels.right} />
+            <FormLabelFilter
+              labelOptions={labels.right}
+              setLabelFilter={setLabelFilter}
+            />
           </Grid>
           <Grid item xs={2}>
             <FormCreateButton />
@@ -49,7 +69,7 @@ const Home = () => {
         </Grid>
       </Grid>
       <Grid item>
-        <Forms forms={forms.right} />
+        <Forms forms={filteredForms} />
       </Grid>
     </Grid>
   );

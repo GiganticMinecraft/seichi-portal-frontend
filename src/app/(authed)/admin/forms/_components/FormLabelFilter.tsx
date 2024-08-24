@@ -3,8 +3,12 @@ import Box from '@mui/material/Box';
 import Chip from '@mui/material/Chip';
 import TextField from '@mui/material/TextField';
 import type { GetFormLabelsResponse } from '@/app/api/_schemas/ResponseSchemas';
+import type { Dispatch, SetStateAction } from 'react';
 
-const FormLabelFilter = (props: { labelOptions: GetFormLabelsResponse }) => {
+const FormLabelFilter = (props: {
+  labelOptions: GetFormLabelsResponse;
+  setLabelFilter: Dispatch<SetStateAction<GetFormLabelsResponse>>;
+}) => {
   return (
     <Autocomplete
       multiple
@@ -43,6 +47,11 @@ const FormLabelFilter = (props: { labelOptions: GetFormLabelsResponse }) => {
           sx={{ borderBottom: '1px solid #FFFFFF6B' }}
         />
       )}
+      onChange={(_event, value) => {
+        props.setLabelFilter(
+          props.labelOptions.filter((label) => value.includes(label.name))
+        );
+      }}
     />
   );
 };
