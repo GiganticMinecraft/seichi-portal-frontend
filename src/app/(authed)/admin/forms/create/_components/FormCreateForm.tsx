@@ -19,8 +19,9 @@ import FormSettings from './FormSettings';
 import QuestionComponent from './Question';
 import { formSchema } from '../_schema/createFormSchema';
 import type { Form } from '../_schema/createFormSchema';
+import type { GetFormLabelsResponse } from '@/app/api/_schemas/ResponseSchemas';
 
-const FormCreateForm = () => {
+const FormCreateForm = (props: { labelOptions: GetFormLabelsResponse }) => {
   const {
     control,
     handleSubmit,
@@ -61,6 +62,8 @@ const FormCreateForm = () => {
   };
 
   const [isSubmitted, setIsSubmitted] = useState(false);
+
+  const [labels, setLabels] = useState<GetFormLabelsResponse>([]);
 
   const onSubmit = async (data: Form) => {
     const createFormResponse = await fetch('/api/form', {
@@ -142,7 +145,26 @@ const FormCreateForm = () => {
     });
 
     if (addQuestionResponse.ok) {
-      setIsSubmitted(true);
+      const putLabelsResponse = await fetch(
+        `/api/forms/${parsedCreateFormResponse.data.id}/labels`,
+        {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            labels: labels.map((label) => label.id),
+          }),
+        }
+      );
+      if (putLabelsResponse.ok) {
+        setIsSubmitted(true);
+      } else {
+        setError('root', {
+          type: 'manual',
+          message: 'ラベルの設定に失敗しました。',
+        });
+      }
     } else {
       setError('root', {
         type: 'manual',
@@ -162,6 +184,8 @@ const FormCreateForm = () => {
                   register={register}
                   visibility={visibility}
                   has_response_period={has_response_period}
+                  labelOptions={props.labelOptions}
+                  setLabels={setLabels}
                 />
               </CardContent>
               {fields.map((field, index) => (

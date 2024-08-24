@@ -8,13 +8,18 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
+import FormLabelField from './FormLabelField';
 import type { Form, Visibility } from '../_schema/createFormSchema';
+import type { GetFormLabelsResponse } from '@/app/api/_schemas/ResponseSchemas';
+import type { Dispatch, SetStateAction } from 'react';
 import type { UseFormRegister } from 'react-hook-form';
 
 const FormSettings = (props: {
   register: UseFormRegister<Form>;
   visibility: Visibility;
   has_response_period: boolean;
+  labelOptions: GetFormLabelsResponse;
+  setLabels: Dispatch<SetStateAction<GetFormLabelsResponse>>;
 }) => {
   return (
     <Stack spacing={2}>
@@ -30,6 +35,10 @@ const FormSettings = (props: {
         {...props.register('description')}
         label="フォームの説明"
         required
+      />
+      <FormLabelField
+        labelOptions={props.labelOptions}
+        setLabels={props.setLabels}
       />
       <FormControlLabel
         label="回答開始日と回答終了日を設定する"
