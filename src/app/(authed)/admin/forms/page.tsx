@@ -1,6 +1,6 @@
 'use client';
 
-import { Grid } from '@mui/material';
+import { Grid, Stack } from '@mui/material';
 import { useEffect, useState } from 'react';
 import useSWR from 'swr';
 import ErrorModal from '@/app/_components/ErrorModal';
@@ -8,6 +8,7 @@ import LoadingCircular from '@/app/_components/LoadingCircular';
 import { Forms } from './_components/DashboardFormList';
 import FormCreateButton from './_components/FormCreateButton';
 import FormLabelFilter from './_components/FormLabelFilter';
+import ToManageFormLabelButton from './_components/ToManageFormLabelButton';
 import type {
   ErrorResponse,
   GetFormLabelsResponse,
@@ -58,10 +59,13 @@ const Home = () => {
           justifyContent="space-between"
         >
           <Grid item xs="auto">
-            <FormLabelFilter
-              labelOptions={labels.right}
-              setLabelFilter={setLabelFilter}
-            />
+            <Stack direction="row">
+              <FormLabelFilter
+                labelOptions={labels.right}
+                setLabelFilter={setLabelFilter}
+              />
+              <ToManageFormLabelButton />
+            </Stack>
           </Grid>
           <Grid item xs={2}>
             <FormCreateButton />
