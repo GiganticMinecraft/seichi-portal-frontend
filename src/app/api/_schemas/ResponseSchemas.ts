@@ -63,6 +63,7 @@ export const getFormResponseSchema = z.object({
       .nullable(),
     webhook_url: z.string().nullable(),
     visibility: z.enum(['PUBLIC', 'PRIVATE']),
+    answer_visibility: z.enum(['PUBLIC', 'PRIVATE']),
     default_answer_title: z.string().nullable(),
   }),
   metadata: z.object({

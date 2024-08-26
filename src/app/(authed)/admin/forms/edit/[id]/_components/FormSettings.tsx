@@ -16,6 +16,7 @@ import type { UseFormRegister } from 'react-hook-form';
 const FormSettings = (props: {
   register: UseFormRegister<Form>;
   visibility: Visibility;
+  answerVisibility: Visibility;
   has_response_period: boolean;
   formId: number;
   labelOptions: GetFormLabelsResponse;
@@ -68,7 +69,7 @@ const FormSettings = (props: {
     <TextField
       {...props.register('settings.answer_visibility')}
       label="回答の公開設定"
-      defaultValue={props.visibility}
+      defaultValue={props.answerVisibility}
       helperText="この設定を公開にすると、すべての回答が一般ユーザーから確認できるようになります。"
       select
       required

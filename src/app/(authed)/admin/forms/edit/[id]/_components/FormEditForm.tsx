@@ -72,7 +72,11 @@ const FormEditForm = (props: {
   const visibility = useWatch({
     control: control,
     name: 'settings.visibility',
-    defaultValue: 'PUBLIC',
+  });
+
+  const answerVisibility = useWatch({
+    control: control,
+    name: 'settings.answer_visibility',
   });
 
   const has_response_period = useWatch({
@@ -172,6 +176,7 @@ const FormEditForm = (props: {
                 <FormSettings
                   register={register}
                   visibility={visibility}
+                  answerVisibility={answerVisibility}
                   has_response_period={has_response_period}
                   formId={props.form.id}
                   labelOptions={props.labelOptions}
