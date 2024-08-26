@@ -15,17 +15,17 @@ import type {
 import type { Either } from 'fp-ts/lib/Either';
 
 const Home = ({ params }: { params: { id: number } }) => {
-  const { data: forms, isLoading: isLoadingForms } = useSWR<
+  const { data: form, isLoading: isLoadingForms } = useSWR<
     Either<ErrorResponse, GetFormResponse>
   >(`/api/form?formId=${params.id}`);
   const { data: labels, isLoading: isLoadingLabels } =
     useSWR<Either<ErrorResponse, GetFormLabelsResponse>>('/api/labels/forms');
 
-  if (!forms || !labels) {
+  if (!form || !labels) {
     return <LoadingCircular />;
   } else if (
-    (!isLoadingForms && !forms) ||
-    forms._tag === 'Left' ||
+    (!isLoadingForms && !form) ||
+    form._tag === 'Left' ||
     (!isLoadingLabels && !labels) ||
     labels._tag === 'Left'
   ) {
@@ -35,7 +35,7 @@ const Home = ({ params }: { params: { id: number } }) => {
   return (
     <ThemeProvider theme={adminDashboardTheme}>
       <CssBaseline />
-      <FormEditForm form={forms.right} labelOptions={labels.right} />
+      <FormEditForm form={form.right} labelOptions={labels.right} />
     </ThemeProvider>
   );
 };
