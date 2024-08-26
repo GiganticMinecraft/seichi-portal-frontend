@@ -39,6 +39,7 @@ export const formSchema = z.object({
     webhook_url: z.string().nullable(),
     visibility: z.enum(['PUBLIC', 'PRIVATE']),
     default_answer_title: z.string().nullable(),
+    answer_visibility: z.enum(['PUBLIC', 'PRIVATE']),
   }),
   metadata: z.object({
     created_at: z.string().datetime(),

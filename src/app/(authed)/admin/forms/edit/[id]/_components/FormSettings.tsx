@@ -66,6 +66,17 @@ const FormSettings = (props: {
       <MenuItem value="PRIVATE">非公開</MenuItem>
     </TextField>
     <TextField
+      {...props.register('settings.answer_visibility')}
+      label="回答の公開設定"
+      defaultValue={props.visibility}
+      helperText="この設定を公開にすると、すべての回答が一般ユーザーから確認できるようになります。"
+      select
+      required
+    >
+      <MenuItem value="PUBLIC">公開</MenuItem>
+      <MenuItem value="PRIVATE">非公開</MenuItem>
+    </TextField>
+    <TextField
       {...props.register('settings.webhook_url')}
       label="Webhook URL"
       type="url"

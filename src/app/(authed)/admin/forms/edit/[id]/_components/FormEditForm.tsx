@@ -109,6 +109,7 @@ const FormEditForm = (props: {
       webhook_url: data.settings.webhook_url,
       default_answer_title: data.settings.default_answer_title,
       visibility: data.settings.visibility,
+      answer_visibility: data.settings.answer_visibility,
     };
 
     const setFormMetaResponse = await fetch(`/api/form?form_id=${data.id}`, {
