@@ -56,8 +56,9 @@ const FormSettings = (props: {
     />
     <TextField
       {...props.register('settings.visibility')}
-      label="公開設定"
+      label="フォーム公開設定"
       defaultValue={props.visibility}
+      helperText="この設定を公開にすると、一般ユーザーがこのフォームに回答できるようになります。"
       select
       required
     >
