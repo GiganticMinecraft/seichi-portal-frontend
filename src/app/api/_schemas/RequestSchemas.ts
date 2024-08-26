@@ -38,6 +38,7 @@ export const updateFormSchema = z.object({
   webhook_url: z.string().nullable(),
   default_answer_title: z.string().nullable(),
   visibility: z.enum(['PUBLIC', 'PRIVATE']),
+  answer_visibility: z.enum(['PUBLIC', 'PRIVATE']),
 });
 
 // PUT /forms/questions

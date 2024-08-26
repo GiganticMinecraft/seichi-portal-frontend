@@ -105,6 +105,7 @@ const FormCreateForm = (props: { labelOptions: GetFormLabelsResponse }) => {
       webhook_url: data.settings.webhook_url,
       default_answer_title: data.settings.default_answer_title,
       visibility: data.settings.visibility,
+      answer_visibility: data.settings.answer_visibility,
     };
 
     const setFormMetadataResponse = await fetch(

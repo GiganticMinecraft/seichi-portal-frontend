@@ -28,6 +28,7 @@ export const formSchema = z.object({
     webhook_url: z.string().nullable(),
     default_answer_title: z.string().nullable(),
     visibility: visibility,
+    answer_visibility: visibility,
   }),
 });
 
