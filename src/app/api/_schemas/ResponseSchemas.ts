@@ -135,6 +135,49 @@ export const getAnswersResponseSchema = z
 
 export type GetAnswersResponse = z.infer<typeof getAnswersResponseSchema>;
 
+// GET /forms/:formId/answers
+export const getFormAnswersResponseSchema = z
+  .object({
+    id: z.number(),
+    user: z.object({
+      uuid: z.string(),
+      name: z.string(),
+      role: z.enum(['ADMINISTRATOR', 'STANDARD_USER']),
+    }),
+    timestamp: z.string().datetime(),
+    form_id: z.number(),
+    title: z.string(),
+    answers: z
+      .object({
+        question_id: z.number(),
+        answer: z.string(),
+      })
+      .array(),
+    comments: z
+      .object({
+        comment_id: z.number(),
+        content: z.string(),
+        timestamp: z.string().datetime(),
+        commented_by: z.object({
+          uuid: z.string(),
+          name: z.string(),
+          role: z.enum(['ADMINISTRATOR', 'STANDARD_USER']),
+        }),
+      })
+      .array(),
+    labels: z
+      .object({
+        id: z.number(),
+        name: z.string(),
+      })
+      .array(),
+  })
+  .array();
+
+export type GetFormAnswersResponse = z.infer<
+  typeof getFormAnswersResponseSchema
+>;
+
 // GET /forms/labels/answers
 export const getAnswerLabelsResponseSchema = z
   .object({
