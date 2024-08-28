@@ -1,6 +1,7 @@
 'use client';
 
 import { DataGrid } from '@mui/x-data-grid';
+import { useRouter } from 'next/navigation';
 import { formatString } from '@/generic/DateFormatter';
 import type { GetFormAnswersResponse } from '@/app/api/_schemas/ResponseSchemas';
 import type {
@@ -8,7 +9,6 @@ import type {
   GridEventListener,
   GridRowParams,
 } from '@mui/x-data-grid';
-import { useRouter } from 'next/navigation';
 
 const AnswerList = (props: {
   formTitle: string;

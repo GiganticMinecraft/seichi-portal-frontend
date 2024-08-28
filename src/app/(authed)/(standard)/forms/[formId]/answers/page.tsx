@@ -1,5 +1,6 @@
 'use client';
 
+import { Box } from '@mui/material';
 import useSWR from 'swr';
 import ErrorModal from '@/app/_components/ErrorModal';
 import LoadingCircular from '@/app/_components/LoadingCircular';
@@ -30,13 +31,15 @@ const Home = ({ params }: { params: { formId: number } }) => {
   }
 
   return (
-    <AnswerList
-      formTitle={
-        forms.right.find((form) => form.id === answers.right[0]?.form_id)
-          ?.title ?? 'unknown form'
-      }
-      answers={answers.right}
-    />
+    <Box sx={{ width: '100%', justifyContent: 'center', alignItems: 'center' }}>
+      <AnswerList
+        formTitle={
+          forms.right.find((form) => form.id === answers.right[0]?.form_id)
+            ?.title ?? 'unknown form'
+        }
+        answers={answers.right}
+      />
+    </Box>
   );
 };
 
