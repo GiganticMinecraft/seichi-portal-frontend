@@ -1,3 +1,5 @@
+'use client';
+
 import { DataGrid } from '@mui/x-data-grid';
 import { formatString } from '@/generic/DateFormatter';
 import type { GetFormAnswersResponse } from '@/app/api/_schemas/ResponseSchemas';
