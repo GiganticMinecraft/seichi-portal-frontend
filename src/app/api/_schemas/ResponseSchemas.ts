@@ -27,6 +27,7 @@ export const getFormsResponseSchema = z
         name: z.string(),
       })
       .array(),
+    answer_visibility: z.enum(['PUBLIC', 'PRIVATE']),
   })
   .array();
 

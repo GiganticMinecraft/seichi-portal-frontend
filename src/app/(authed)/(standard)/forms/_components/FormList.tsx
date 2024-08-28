@@ -11,6 +11,8 @@ import {
   Alert,
   AlertTitle,
   Link,
+  CardActions,
+  Button,
 } from '@mui/material';
 import { formatString } from '@/generic/DateFormatter';
 import type { GetFormsResponse } from '@/app/api/_schemas/ResponseSchemas';
@@ -31,6 +33,7 @@ type Form = {
     start_at: string;
     end_at: string;
   };
+  answer_visibility: 'PUBLIC' | 'PRIVATE';
 };
 
 const EachForm = ({ form }: { form: Form }) => {
@@ -53,6 +56,13 @@ const EachForm = ({ form }: { form: Form }) => {
             </Typography>
           )}
         </CardContent>
+        {form.answer_visibility === 'PUBLIC' ? (
+          <CardActions>
+            <Button size="small" href={`/forms/${form.id}/answers/`}>
+              回答一覧
+            </Button>
+          </CardActions>
+        ) : null}
       </Card>
     </Box>
   );
