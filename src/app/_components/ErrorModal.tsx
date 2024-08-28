@@ -21,7 +21,7 @@ const ErrorModal = () => {
         sx={{
           p: 2,
           borderRadius: 2,
-          bgcolor: 'background.default',
+          bgcolor: 'secondary',
           display: 'grid',
           gridTemplateColumns: { md: '1fr 1fr' },
           gap: 2,
