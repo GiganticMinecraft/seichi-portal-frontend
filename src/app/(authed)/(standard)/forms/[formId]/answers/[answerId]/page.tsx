@@ -1,6 +1,7 @@
 'use client';
 
 import { Stack, Typography } from '@mui/material';
+import { redirect } from 'next/navigation';
 import useSWR from 'swr';
 import ErrorModal from '@/app/_components/ErrorModal';
 import LoadingCircular from '@/app/_components/LoadingCircular';
@@ -27,11 +28,16 @@ const Home = ({ params }: { params: { formId: number; answerId: number } }) => {
       : ''
   );
 
-  if (!answer || !formQuestions) {
+  if (
+    answer?._tag === 'Left' &&
+    answer.left.errorCode === 'DO_NOT_HAVE_PERMISSION_TO_GET_ANSWER'
+  ) {
+    return redirect('/forbidden');
+  } else if (!answer || !formQuestions) {
     return <LoadingCircular />;
   } else if (
     (!isLoadingAnswers && !answer) ||
-    answer._tag == 'Left' ||
+    answer._tag === 'Left' ||
     (!isLoadingFormQuestions && !formQuestions) ||
     formQuestions._tag === 'Left'
   ) {
