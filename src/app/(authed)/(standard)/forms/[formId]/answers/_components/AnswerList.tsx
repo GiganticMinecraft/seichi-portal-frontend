@@ -3,12 +3,25 @@
 import { DataGrid } from '@mui/x-data-grid';
 import { formatString } from '@/generic/DateFormatter';
 import type { GetFormAnswersResponse } from '@/app/api/_schemas/ResponseSchemas';
-import type { GridColDef } from '@mui/x-data-grid';
+import type {
+  GridColDef,
+  GridEventListener,
+  GridRowParams,
+} from '@mui/x-data-grid';
+import { useRouter } from 'next/navigation';
 
 const AnswerList = (props: {
   formTitle: string;
   answers: GetFormAnswersResponse;
 }) => {
+  const router = useRouter();
+
+  const handleRowClick: GridEventListener<'rowClick'> = (
+    params: GridRowParams
+  ) => {
+    router.push(`/forms/${props.answers[0]?.form_id}/answers/${params.id}`);
+  };
+
   const columns: GridColDef[] = [
     { field: 'formName', headerName: 'フォーム名', width: 200 },
     { field: 'title', headerName: 'タイトル', width: 200 },
@@ -24,6 +37,7 @@ const AnswerList = (props: {
         date: formatString(answer.timestamp),
       }))}
       columns={columns}
+      onRowClick={handleRowClick}
       initialState={{
         pagination: {
           paginationModel: { page: 0, pageSize: 5 },
