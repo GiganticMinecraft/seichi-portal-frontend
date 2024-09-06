@@ -183,16 +183,19 @@ const FormEditForm = (props: {
                   currentLabels={props.form.labels}
                 />
               </CardContent>
-              {fields.map((field, index) => (
-                <CardContent key={field.id}>
-                  <QuestionComponent
-                    control={control}
-                    register={register}
-                    removeQuestion={remove}
-                    questionId={index}
-                  />
-                </CardContent>
-              ))}
+              {fields.map(
+                (field, index) =>
+                  props.form.questions[index] && (
+                    <CardContent key={field.id}>
+                      <QuestionComponent
+                        control={control}
+                        register={register}
+                        removeQuestion={remove}
+                        question={props.form.questions[index]}
+                      />
+                    </CardContent>
+                  )
+              )}
             </Card>
             {errors.root && (
               <Alert severity="error">{errors.root.message}</Alert>

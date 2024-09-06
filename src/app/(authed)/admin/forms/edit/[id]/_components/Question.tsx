@@ -17,16 +17,25 @@ import { useController, useFieldArray, useWatch } from 'react-hook-form';
 import type { Form } from '../_schema/editFormSchema';
 import type { Control, UseFormRegister } from 'react-hook-form';
 
+interface Question {
+  id: number;
+  title: string;
+  description: string;
+  question_type: 'TEXT' | 'SINGLE' | 'MULTIPLE';
+  choices: string[];
+  is_required: boolean;
+}
+
 const QuestionComponent = ({
   control,
   register,
   removeQuestion,
-  questionId,
+  question,
 }: {
   control: Control<Form>;
   register: UseFormRegister<Form>;
   removeQuestion: (index: number) => void;
-  questionId: number;
+  question: Question;
 }) => {
   const {
     fields: choicesField,
@@ -34,17 +43,17 @@ const QuestionComponent = ({
     remove: removeChoices,
   } = useFieldArray({
     control: control,
-    name: `questions.${questionId}.choices`,
+    name: `questions.${question.id}.choices`,
   });
 
   const { field } = useController({
     control,
-    name: `questions.${questionId}.question_type`,
+    name: `questions.${question.id}.question_type`,
   });
 
   const useWatchQuestionType = useWatch({
     control,
-    name: `questions.${questionId}.question_type`,
+    name: `questions.${question.id}.question_type`,
   });
 
   const addChoice = useCallback(() => {
@@ -61,36 +70,34 @@ const QuestionComponent = ({
 
   return (
     <Stack spacing={2}>
-      <TextField
-        {...register(`questions.${questionId}.id`)}
-        type="hidden"
-        defaultValue={1}
-      />
+      <TextField {...register(`questions.${question.id}.id`)} type="hidden" />
       <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
-        質問{questionId + 1} (question_id: {questionId})
+        質問{question.id + 1} (question_id: {question.id})
       </Typography>
       <Button
         variant="outlined"
         startIcon={<DeleteIcon />}
-        onClick={() => removeQuestion(questionId)}
+        onClick={() => removeQuestion(question.id)}
       >
         質問の削除
       </Button>
       <TextField
-        {...register(`questions.${questionId}.title`)}
+        {...register(`questions.${question.id}.title`)}
         label="質問タイトル"
+        defaultValue={question.title}
         required
       />
       <TextField
-        {...register(`questions.${questionId}.description`)}
+        {...register(`questions.${question.id}.description`)}
         label="質問の説明"
+        defaultValue={question.description}
       />
       <TextField
-        {...register(`questions.${questionId}.question_type`)}
+        {...register(`questions.${question.id}.question_type`)}
         label="質問の種類"
         select
         required
-        defaultValue="TEXT"
+        defaultValue={question.question_type}
         helperText="質問の種類を選択してください。"
         onChange={(event) => {
           // NOTE: 単純に onChange 書くと useWatchQuestionType が動作しないので field.onChange を呼び出す必要がある
@@ -115,7 +122,7 @@ const QuestionComponent = ({
       <FormControlLabel
         label="この質問への回答を必須にする"
         control={
-          <Checkbox {...register(`questions.${questionId}.is_required`)} />
+          <Checkbox {...register(`questions.${question.id}.is_required`)} />
         }
       />
       <Button
@@ -130,9 +137,10 @@ const QuestionComponent = ({
         return (
           <Stack direction="row" key={field.id}>
             <TextField
-              {...register(`questions.${questionId}.choices.${index}.choice`)}
+              {...register(`questions.${question.id}.choices.${index}.choice`)}
               key={field.id}
               label={`選択肢${index + 1}`}
+              defaultValue={field.choice}
               required
             />
             <IconButton size="small" onClick={() => removeChoice(index)}>
