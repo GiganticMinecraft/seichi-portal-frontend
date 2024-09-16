@@ -129,7 +129,6 @@ const FormEditForm = (props: {
         form_id: data.id,
         questions: data.questions.map((question) => {
           return {
-            // FIXME: ここで question_id には 新しく作成された質問だけが null になるべきだが、全ての質問が null になってしまう
             id: props.form.questions.find(
               (beforeQuestion) => beforeQuestion.id == question.id
             )
