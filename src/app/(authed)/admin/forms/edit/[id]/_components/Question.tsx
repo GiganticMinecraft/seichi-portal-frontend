@@ -18,7 +18,7 @@ import type { Form } from '../_schema/editFormSchema';
 import type { Control, UseFormRegister } from 'react-hook-form';
 
 interface Question {
-  id: number;
+  id: number | null;
   title: string;
   description: string;
   question_type: 'TEXT' | 'SINGLE' | 'MULTIPLE';
@@ -31,11 +31,13 @@ const QuestionComponent = ({
   register,
   removeQuestion,
   question,
+  index,
 }: {
   control: Control<Form>;
   register: UseFormRegister<Form>;
   removeQuestion: (index: number) => void;
   question: Question;
+  index: number;
 }) => {
   const {
     fields: choicesField,
@@ -43,17 +45,17 @@ const QuestionComponent = ({
     remove: removeChoices,
   } = useFieldArray({
     control: control,
-    name: `questions.${question.id}.choices`,
+    name: `questions.${index}.choices`,
   });
 
   const { field } = useController({
     control,
-    name: `questions.${question.id}.question_type`,
+    name: `questions.${index}.question_type`,
   });
 
   const useWatchQuestionType = useWatch({
     control,
-    name: `questions.${question.id}.question_type`,
+    name: `questions.${index}.question_type`,
   });
 
   const addChoice = useCallback(() => {
@@ -70,34 +72,37 @@ const QuestionComponent = ({
 
   return (
     <Stack spacing={2}>
-      <TextField {...register(`questions.${question.id}.id`)} type="hidden" />
+      <TextField
+        {...register(`questions.${index}.id` as const)}
+        type="hidden"
+      />
       <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
-        質問{question.id + 1} (question_id: {question.id})
+        質問{index + 1} (question_id: {question.id})
       </Typography>
       <Button
         variant="outlined"
         startIcon={<DeleteIcon />}
-        onClick={() => removeQuestion(question.id)}
+        onClick={() => removeQuestion(index)}
       >
         質問の削除
       </Button>
       <TextField
-        {...register(`questions.${question.id}.title`)}
+        {...register(`questions.${index}.title` as const)}
         label="質問タイトル"
-        defaultValue={question.title}
+        defaultValue={question ? question.title : ''}
         required
       />
       <TextField
-        {...register(`questions.${question.id}.description`)}
+        {...register(`questions.${index}.description` as const)}
         label="質問の説明"
-        defaultValue={question.description}
+        defaultValue={question ? question.description : ''}
       />
       <TextField
-        {...register(`questions.${question.id}.question_type`)}
+        {...register(`questions.${index}.question_type` as const)}
         label="質問の種類"
         select
         required
-        defaultValue={question.question_type}
+        defaultValue={question ? question.question_type : 'TEXT'}
         helperText="質問の種類を選択してください。"
         onChange={(event) => {
           // NOTE: 単純に onChange 書くと useWatchQuestionType が動作しないので field.onChange を呼び出す必要がある
@@ -122,7 +127,7 @@ const QuestionComponent = ({
       <FormControlLabel
         label="この質問への回答を必須にする"
         control={
-          <Checkbox {...register(`questions.${question.id}.is_required`)} />
+          <Checkbox {...register(`questions.${index}.is_required` as const)} />
         }
       />
       <Button
@@ -133,17 +138,22 @@ const QuestionComponent = ({
       >
         選択肢の追加
       </Button>
-      {choicesField.map((field, index) => {
+      {choicesField.map((field, choiceFieldIndex) => {
         return (
           <Stack direction="row" key={field.id}>
             <TextField
-              {...register(`questions.${question.id}.choices.${index}.choice`)}
+              {...register(
+                `questions.${index}.choices.${choiceFieldIndex}.choice` as const
+              )}
               key={field.id}
-              label={`選択肢${index + 1}`}
+              label={`選択肢${choiceFieldIndex + 1}`}
               defaultValue={field.choice}
               required
             />
-            <IconButton size="small" onClick={() => removeChoice(index)}>
+            <IconButton
+              size="small"
+              onClick={() => removeChoice(choiceFieldIndex)}
+            >
               <DeleteIcon fontSize="small" />
             </IconButton>
           </Stack>

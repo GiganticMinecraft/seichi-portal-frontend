@@ -1,6 +1,5 @@
 'use client';
 
-import { zodResolver } from '@hookform/resolvers/zod';
 import { Add } from '@mui/icons-material';
 import SendIcon from '@mui/icons-material/Send';
 import {
@@ -17,7 +16,6 @@ import { useFieldArray, useForm, useWatch } from 'react-hook-form';
 import { fromStringToJSTDateTime } from '@/generic/DateFormatter';
 import FormSettings from './FormSettings';
 import QuestionComponent from './Question';
-import { formSchema } from '../_schema/editFormSchema';
 import type { Form } from '../_schema/editFormSchema';
 import type {
   GetFormLabelsResponse,
@@ -40,7 +38,6 @@ const FormEditForm = (props: {
   } = useForm<Form>({
     mode: 'onSubmit',
     reValidateMode: 'onBlur',
-    resolver: zodResolver(formSchema),
     defaultValues: {
       ...props.form,
       questions: props.form.questions.map((question) => {
@@ -65,7 +62,8 @@ const FormEditForm = (props: {
   });
 
   const { fields, append, remove } = useFieldArray({
-    control,
+    control: control,
+    keyName: 'reacthookform-id',
     name: 'questions',
   });
 
@@ -79,22 +77,11 @@ const FormEditForm = (props: {
     name: 'settings.answer_visibility',
   });
 
-  const has_response_period = useWatch({
+  const hasResponsePeriod = useWatch({
     control: control,
     name: 'settings.has_response_period',
     defaultValue: start_at && end_at ? true : false,
   });
-
-  const addQuestionButton = () => {
-    append({
-      id: null,
-      title: '',
-      description: '',
-      question_type: 'TEXT',
-      choices: [],
-      is_required: false,
-    });
-  };
 
   const [isSubmitted, setIsSubmitted] = useState(false);
 
@@ -142,7 +129,12 @@ const FormEditForm = (props: {
         form_id: data.id,
         questions: data.questions.map((question) => {
           return {
-            id: question.id,
+            // FIXME: ここで question_id には 新しく作成された質問だけが null になるべきだが、全ての質問が null になってしまう
+            id: props.form.questions.find(
+              (beforeQuestion) => beforeQuestion.id == question.id
+            )
+              ? question.id
+              : null,
             title: question.title,
             description: question.description,
             question_type: question.question_type,
@@ -177,25 +169,30 @@ const FormEditForm = (props: {
                   register={register}
                   visibility={visibility}
                   answerVisibility={answerVisibility}
-                  has_response_period={has_response_period}
+                  has_response_period={hasResponsePeriod}
                   formId={props.form.id}
                   labelOptions={props.labelOptions}
                   currentLabels={props.form.labels}
                 />
               </CardContent>
-              {fields.map(
-                (field, index) =>
-                  props.form.questions[index] && (
-                    <CardContent key={field.id}>
-                      <QuestionComponent
-                        control={control}
-                        register={register}
-                        removeQuestion={remove}
-                        question={props.form.questions[index]}
-                      />
-                    </CardContent>
-                  )
-              )}
+              {fields.map((field, index) => (
+                <CardContent key={field['reacthookform-id']}>
+                  <QuestionComponent
+                    control={control}
+                    register={register}
+                    removeQuestion={remove}
+                    question={{
+                      id: field.id,
+                      title: field.title,
+                      description: field.description,
+                      question_type: field.question_type,
+                      is_required: field.is_required,
+                      choices: field.choices.map((choice) => choice.choice),
+                    }}
+                    index={index}
+                  />
+                </CardContent>
+              ))}
             </Card>
             {errors.root && (
               <Alert severity="error">{errors.root.message}</Alert>
@@ -219,7 +216,16 @@ const FormEditForm = (props: {
             <Button
               type="button"
               aria-label="質問の追加"
-              onClick={() => addQuestionButton()}
+              onClick={() => {
+                append({
+                  id: null,
+                  title: '',
+                  description: '',
+                  question_type: 'TEXT',
+                  choices: [],
+                  is_required: false,
+                });
+              }}
               endIcon={<Add />}
             >
               質問の追加
