@@ -50,6 +50,10 @@ const DashboardMenu = () => {
             label: 'Announcements',
             url: '/admin/announcements',
           },
+          {
+            label: 'Users',
+            url: '/admin/users',
+          },
         ].map((value, index) => {
           return (
             <MenuItem key={index} sx={{ color: 'white' }}>
