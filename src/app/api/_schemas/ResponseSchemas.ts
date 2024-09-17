@@ -248,3 +248,14 @@ export const getUsersResponseSchema = z.object({
 });
 
 export type GetUsersResponse = z.infer<typeof getUsersResponseSchema>;
+
+// GET /user/list
+export const getUserListResponseSchema = z
+  .object({
+    id: z.string(),
+    name: z.string(),
+    role: z.enum(['ADMINISTRATOR', 'STANDARD_USER']),
+  })
+  .array();
+
+export type GetUserListResponse = z.infer<typeof getUserListResponseSchema>;

@@ -60,3 +60,8 @@ export const updateQuestionSchema = z.object({
 export const updateAnswerSchema = z.object({
   title: z.string().nullable(),
 });
+
+// PATCH /users/:uuid
+export const updateUserSchema = z.object({
+  role: z.enum(['STANDARD_USER', 'ADMINISTRATOR']),
+});
