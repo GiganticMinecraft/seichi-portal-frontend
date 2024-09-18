@@ -4,7 +4,7 @@ import { NextResponse } from 'next/server';
 import { BACKEND_SERVER_URL } from '@/env';
 import { getCachedToken } from '@/user-token/mcToken';
 import { nextResponseFromResponseHeaders } from '../_generics/responseHeaders';
-import { createFormSchema, updateFormSchema } from '../_schemas/RequestSchemas';
+import { createFormSchema } from '../_schemas/RequestSchemas';
 import {
   createFormResponseSchema,
   getFormResponseSchema,
@@ -120,15 +120,6 @@ export async function PATCH(req: NextRequest) {
     return NextResponse.json({}, { status: 400 });
   }
 
-  const parsedUpdateFormSchema = updateFormSchema.safeParse(await req.json());
-
-  if (!parsedUpdateFormSchema.success) {
-    return NextResponse.json(
-      { error: 'Failed to parse from request body to update form schema.' },
-      { status: 400 }
-    );
-  }
-
   const response = await fetch(`${BACKEND_SERVER_URL}/forms/${formId}`, {
     method: 'PATCH',
     headers: {
@@ -136,7 +127,7 @@ export async function PATCH(req: NextRequest) {
       Accept: 'application/json',
       Authorization: `Bearer ${token}`,
     },
-    body: JSON.stringify(parsedUpdateFormSchema.data),
+    body: JSON.stringify(await req.json()),
     cache: 'no-cache',
   });
 

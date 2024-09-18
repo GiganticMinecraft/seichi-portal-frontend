@@ -1,6 +1,5 @@
 'use client';
 
-import { zodResolver } from '@hookform/resolvers/zod';
 import { Add } from '@mui/icons-material';
 import SendIcon from '@mui/icons-material/Send';
 import {
@@ -17,7 +16,6 @@ import { useFieldArray, useForm, useWatch } from 'react-hook-form';
 import { createFormResponseSchema } from '@/app/api/_schemas/ResponseSchemas';
 import FormSettings from './FormSettings';
 import QuestionComponent from './Question';
-import { formSchema } from '../_schema/createFormSchema';
 import type { Form } from '../_schema/createFormSchema';
 import type { GetFormLabelsResponse } from '@/app/api/_schemas/ResponseSchemas';
 
@@ -30,8 +28,6 @@ const FormCreateForm = (props: { labelOptions: GetFormLabelsResponse }) => {
     formState: { errors },
   } = useForm<Form>({
     mode: 'onSubmit',
-    reValidateMode: 'onBlur',
-    resolver: zodResolver(formSchema),
   });
 
   const { fields, append, remove } = useFieldArray({
