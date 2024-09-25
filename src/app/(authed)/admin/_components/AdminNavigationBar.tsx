@@ -13,8 +13,10 @@ import {
   Avatar,
 } from '@mui/material';
 import Image from 'next/image';
+import { useState } from 'react';
 import useSWR from 'swr';
 import ErrorModal from '@/app/_components/ErrorModal';
+import SearchResult from './SearchResult';
 import type {
   ErrorResponse,
   GetUsersResponse,
@@ -22,6 +24,9 @@ import type {
 import type { Either } from 'fp-ts/lib/Either';
 
 const SearchField = () => {
+  const [openSearchResultModal, setOpenSearchResultModal] = useState(false);
+  const [searchValue, setSearchValue] = useState<string>('');
+
   return (
     <Paper
       component="form"
@@ -33,14 +38,32 @@ const SearchField = () => {
         background: 'rgba(255, 255, 255, 0.15)',
       }}
     >
-      <IconButton sx={{ p: '10px', color: '#FFFFFF' }} aria-label="search">
+      <IconButton
+        sx={{ p: '10px', color: '#FFFFFF' }}
+        aria-label="search"
+        onClick={() => setOpenSearchResultModal(true)}
+      >
         <SearchIcon />
       </IconButton>
       <InputBase
         sx={{ ml: 1, flex: 1 }}
         placeholder="Search..."
         inputProps={{ 'aria-label': 'search...' }}
+        onChange={(event) => setSearchValue(event.target.value)}
+        onKeyDown={(event) => {
+          if (event.key === 'Enter') {
+            event.preventDefault();
+            setOpenSearchResultModal(true);
+          }
+        }}
       />
+      {openSearchResultModal && (
+        <SearchResult
+          searchContent={searchValue}
+          openState={openSearchResultModal}
+          onClose={() => setOpenSearchResultModal(false)}
+        />
+      )}
     </Paper>
   );
 };

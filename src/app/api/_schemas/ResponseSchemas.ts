@@ -259,3 +259,53 @@ export const getUserListResponseSchema = z
   .array();
 
 export type GetUserListResponse = z.infer<typeof getUserListResponseSchema>;
+
+// GET /search
+export const searchResponseSchema = z.object({
+  forms: z
+    .object({
+      id: z.number(),
+      title: z.string(),
+      description: z.string(),
+      response_period: z.object({
+        start_at: z.string().datetime(),
+        end_at: z.string().datetime(),
+      }),
+      labels: z
+        .object({
+          id: z.number(),
+          name: z.string(),
+        })
+        .array(),
+      answer_visibility: z.enum(['PUBLIC', 'PRIVATE']),
+    })
+    .array(),
+  users: z
+    .object({
+      id: z.string(),
+      name: z.string(),
+      role: z.enum(['ADMINISTRATOR', 'STANDARD_USER']),
+    })
+    .array(),
+  answers: z
+    .object({
+      answer_id: z.number(),
+      question_id: z.number(),
+      answer: z.string(),
+    })
+    .array(),
+  label_for_forms: z
+    .object({
+      id: z.number(),
+      name: z.string(),
+    })
+    .array(),
+  label_for_answers: z
+    .object({
+      id: z.number(),
+      name: z.string(),
+    })
+    .array(),
+});
+
+export type SearchResponse = z.infer<typeof searchResponseSchema>;
