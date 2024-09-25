@@ -306,6 +306,18 @@ export const searchResponseSchema = z.object({
       name: z.string(),
     })
     .array(),
+  comments: z
+    .object({
+      answer_id: z.number(),
+      id: z.number(),
+      content: z.string(),
+      commented_by: z.object({
+        id: z.string(),
+        name: z.string(),
+        role: z.enum(['ADMINISTRATOR', 'STANDARD_USER']),
+      }),
+    })
+    .array(),
 });
 
 export type SearchResponse = z.infer<typeof searchResponseSchema>;

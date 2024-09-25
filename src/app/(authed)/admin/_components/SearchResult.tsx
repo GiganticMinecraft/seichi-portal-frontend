@@ -90,6 +90,11 @@ const SearchResult = (props: {
           url: `/admin/labels/answers`,
         };
       }),
+      data.right.comments.map((comment) => ({
+        category: 'コメント',
+        title: comment.content,
+        url: `/admin/answer/${comment.answer_id}`,
+      })),
     ]
       .flat()
       .map((row, index) => ({ ...row, id: index }));
