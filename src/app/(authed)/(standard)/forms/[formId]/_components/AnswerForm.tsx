@@ -110,15 +110,19 @@ const AnswerForm = ({ questions: questions, formId }: Props) => {
       }),
     });
 
-    const safeParsedErrorResponse = errorResponseSchema.safeParse(
-      await postAnswerResponse.json()
-    );
-
     if (postAnswerResponse.ok) {
       toggleIsSubmitted(true);
       reset();
       setSelectedValues({});
-    } else if (
+
+      return;
+    }
+
+    const safeParsedErrorResponse = errorResponseSchema.safeParse(
+      await postAnswerResponse.json()
+    );
+
+    if (
       safeParsedErrorResponse.success &&
       safeParsedErrorResponse.data.errorCode == 'OUT_OF_PERIOD'
     ) {
