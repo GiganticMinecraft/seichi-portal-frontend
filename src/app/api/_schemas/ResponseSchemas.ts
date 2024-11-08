@@ -240,6 +240,22 @@ export const getAnswerResponseSchema = z.object({
 
 export type GetAnswerResponse = z.infer<typeof getAnswerResponseSchema>;
 
+// GET /forms/answers/:answerId/messages
+export const getMessagesResponseSchema = z
+  .object({
+    id: z.string(),
+    body: z.string().uuid(),
+    sender: z.object({
+      uuid: z.string(),
+      name: z.string(),
+      role: z.enum(['ADMINISTRATOR', 'STANDARD_USER']),
+    }),
+    timestamp: z.string().datetime(),
+  })
+  .array();
+
+export type GetMessagesResponse = z.infer<typeof getMessagesResponseSchema>;
+
 // GET /users
 export const getUsersResponseSchema = z.object({
   uuid: z.string(),
