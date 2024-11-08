@@ -71,12 +71,27 @@ const Message = (props: {
   };
 
   const deleteMessage = async () => {
-    await fetch(`/api/answers/${props.answerId}/messages/${props.message.id}`, {
-      method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
+    const response = await fetch(
+      `/api/answers/${props.answerId}/messages/${props.message.id}`,
+      {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }
+    );
+
+    if (!response.ok) {
+      const parseResult = errorResponseSchema.safeParse(await response.json());
+
+      if (parseResult.success && parseResult.data.errorCode === 'FORBIDDEN') {
+        setOperationResultMessage('このメッセージを削除する権限がありません。');
+      } else {
+        setOperationResultMessage(
+          '不明なエラーが発生しました。もう一度お試しください。'
+        );
+      }
+    }
   };
 
   return (
@@ -175,7 +190,9 @@ const Message = (props: {
         <Box sx={{ width: '100%' }}>
           <Grid item xs={1}></Grid>
           <Grid xs={11}>
-            <Typography sx={{ fontSize: '12px', marginTop: '10px' }}>
+            <Typography
+              sx={{ color: '#FF2D2D', fontSize: '12px', marginTop: '10px' }}
+            >
               {operationResultMessage}
             </Typography>
           </Grid>
