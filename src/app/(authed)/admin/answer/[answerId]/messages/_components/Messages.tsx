@@ -14,12 +14,12 @@ import {
 } from '@mui/material';
 import { left, right } from 'fp-ts/lib/Either';
 import { useState } from 'react';
+import Markdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 import { errorResponseSchema } from '@/app/api/_schemas/ResponseSchemas';
 import { formatString } from '@/generic/DateFormatter';
 import type { ErrorResponse } from '@/app/api/_schemas/ResponseSchemas';
 import type { Either } from 'fp-ts/lib/Either';
-import Markdown from 'react-markdown';
-import remarkGfm from 'remark-gfm';
 
 type Message = {
   id: string;
