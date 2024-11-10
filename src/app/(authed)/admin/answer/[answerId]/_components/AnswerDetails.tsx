@@ -1,4 +1,4 @@
-import { Label, Send } from '@mui/icons-material';
+import { Label, Message, Send } from '@mui/icons-material';
 import EditIcon from '@mui/icons-material/Edit';
 import Autocomplete from '@mui/material/Autocomplete';
 import Box from '@mui/material/Box';
@@ -156,13 +156,22 @@ const AnswerMeta = (props: {
         <AnswerLabels labelOptions={props.labels} answers={props.answers} />
       </Grid>
       <Grid item xs={6}>
-        <Button
-          variant="contained"
-          href="/admin/labels/answers"
-          startIcon={<Label />}
-        >
-          ラベルの管理
-        </Button>
+        <Stack spacing={2} direction="row">
+          <Button
+            variant="contained"
+            href="/admin/labels/answers"
+            startIcon={<Label />}
+          >
+            ラベルの管理
+          </Button>
+          <Button
+            variant="contained"
+            href={`/admin/answer/${props.answers.id}/messages`}
+            startIcon={<Message />}
+          >
+            回答者にメッセージを送信
+          </Button>
+        </Stack>
       </Grid>
     </Grid>
   );
