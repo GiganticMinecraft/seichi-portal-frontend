@@ -95,6 +95,30 @@ body {
     rgb(var(--background-start-rgb));
 }
 
+code {
+  background-color: #343434;
+  padding: 0.1em 0.3em;
+}
+
+div:has(> blockquote) {
+  border-left: 0.3em solid #343434;
+  margin: 10px auto;
+  padding: 15px;
+  border-radius: 5px;
+}
+
+blockquote p::before {
+  content: '\201C';
+}
+
+blockquote p::after {
+  content: '\201D';
+}
+
+blockquote + p {
+  text-align: right;
+}
+
 @media (prefers-color-scheme: dark) {
   html {
     color-scheme: dark;

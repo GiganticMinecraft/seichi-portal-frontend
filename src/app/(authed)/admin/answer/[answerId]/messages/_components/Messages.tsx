@@ -18,6 +18,8 @@ import { errorResponseSchema } from '@/app/api/_schemas/ResponseSchemas';
 import { formatString } from '@/generic/DateFormatter';
 import type { ErrorResponse } from '@/app/api/_schemas/ResponseSchemas';
 import type { Either } from 'fp-ts/lib/Either';
+import Markdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 
 type Message = {
   id: string;
@@ -181,9 +183,11 @@ const Message = (props: {
             }}
           />
         ) : (
-          <Typography sx={{ whiteSpace: 'pre-wrap' }}>
-            {props.message.body}
-          </Typography>
+          <Box sx={{ whiteSpace: 'pre-wrap' }}>
+            <Markdown remarkPlugins={[remarkGfm]}>
+              {props.message.body}
+            </Markdown>
+          </Box>
         )}
       </Grid>
       {operationResultMessage === undefined ? null : (
