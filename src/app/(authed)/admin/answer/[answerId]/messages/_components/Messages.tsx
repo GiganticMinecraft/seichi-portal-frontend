@@ -150,6 +150,7 @@ const Message = (props: {
           <TextField
             defaultValue={props.message.body}
             helperText="編集を確定するには Enter キー、キャンセルするには Esc キーを入力してください。"
+            multiline
             onChange={(event) => setEdittingMessage(event.target.value)}
             onKeyDown={async (event) => {
               if (
