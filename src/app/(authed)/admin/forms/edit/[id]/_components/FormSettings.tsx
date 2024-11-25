@@ -31,6 +31,7 @@ const FormSettings = (props: {
       {...props.register('description')}
       label="フォームの説明"
       required
+      multiline
     />
     <FormLabelField
       currentLabels={props.currentLabels}
