@@ -25,6 +25,8 @@ import { useForm } from 'react-hook-form';
 import { errorResponseSchema } from '@/app/api/_schemas/ResponseSchemas';
 import type { GetQuestionsResponse } from '@/app/api/_schemas/ResponseSchemas';
 import type { NonEmptyArray } from '@/generic/Types';
+import Markdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 
 type Question = {
   id: number;
@@ -291,9 +293,11 @@ const AnswerForm = ({ questions: questions, formId }: Props) => {
                       ) : null}
                     </Typography>
                     {question.description && (
-                      <Typography color="text.secondary" marginBottom={1.5}>
-                        {question.description}
-                      </Typography>
+                      <Box sx={{ whiteSpace: 'pre-wrap' }}>
+                        <Markdown remarkPlugins={[remarkGfm]}>
+                          {question.description}
+                        </Markdown>
+                      </Box>
                     )}
                     <Box width={'70%'}>{generateInputSpace(question)}</Box>
                   </Box>
