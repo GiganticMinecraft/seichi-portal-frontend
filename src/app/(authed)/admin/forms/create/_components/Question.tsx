@@ -80,6 +80,7 @@ const QuestionComponent = ({
         {...register(`questions.${questionId}.description`)}
         label="質問の説明"
         multiline
+        helperText="Markdown に対応しています。"
       />
       <TextField
         {...register(`questions.${questionId}.question_type`)}

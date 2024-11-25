@@ -97,6 +97,7 @@ const QuestionComponent = ({
         label="質問の説明"
         defaultValue={question ? question.description : ''}
         multiline
+        helperText="Markdown に対応しています。"
       />
       <TextField
         {...register(`questions.${index}.question_type` as const)}
