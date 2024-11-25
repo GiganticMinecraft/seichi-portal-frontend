@@ -96,6 +96,7 @@ const QuestionComponent = ({
         {...register(`questions.${index}.description` as const)}
         label="質問の説明"
         defaultValue={question ? question.description : ''}
+        multiline
       />
       <TextField
         {...register(`questions.${index}.question_type` as const)}

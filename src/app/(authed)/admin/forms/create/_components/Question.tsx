@@ -79,6 +79,7 @@ const QuestionComponent = ({
       <TextField
         {...register(`questions.${questionId}.description`)}
         label="質問の説明"
+        multiline
       />
       <TextField
         {...register(`questions.${questionId}.question_type`)}
