@@ -57,7 +57,7 @@ jobs:
         run: yarn build
       - name: Delete cache
         run: rm -rf .next/cache
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: output
           path: .next
@@ -74,7 +74,7 @@ jobs:
       - build
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4
         with:
           name: output
           path: .next
