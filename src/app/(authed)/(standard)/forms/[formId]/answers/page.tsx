@@ -17,7 +17,7 @@ const Home = ({ params }: { params: { formId: number } }) => {
     Either<ErrorResponse, GetFormAnswersResponse>
   >(`/api/forms/${params.formId}/answers`);
   const { data: forms, isLoading: isLoadingForms } =
-    useSWR<Either<ErrorResponse, GetFormsResponse>>('/api/forms/public');
+    useSWR<Either<ErrorResponse, GetFormsResponse>>('/api/forms');
 
   if (!answers || !forms) {
     return <LoadingCircular />;
