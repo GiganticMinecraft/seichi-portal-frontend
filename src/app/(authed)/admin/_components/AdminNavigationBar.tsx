@@ -21,6 +21,7 @@ import type {
   ErrorResponse,
   GetUsersResponse,
 } from '@/app/api/_schemas/ResponseSchemas';
+import NotificationsIcon from '@mui/icons-material/Notifications';
 import type { Either } from 'fp-ts/lib/Either';
 
 const SearchField = () => {
@@ -102,6 +103,9 @@ const NavBar = () => {
             </Link>
           </Typography>
           <SearchField />
+          <IconButton color="primary" sx={{ marginLeft: '20px' }}>
+            <NotificationsIcon />
+          </IconButton>
           <Avatar
             alt="PlayerHead"
             src={data ? `https://mc-heads.net/avatar/${data.right.uuid}` : ''}
