@@ -5,7 +5,26 @@ import { getUsersResponseSchema } from './app/api/_schemas/ResponseSchemas';
 import { BACKEND_SERVER_URL } from './env';
 import { getCachedToken } from './user-token/mcToken';
 
+const proxy = async (request: NextRequest) => {
+  const token = await getCachedToken();
+  if (!token) {
+    return NextResponse.redirect('/');
+  }
+
+  const nextResponse = NextResponse.rewrite(
+    `${BACKEND_SERVER_URL}${request.nextUrl.pathname.replace('/api/proxy', '')}`
+  );
+
+  nextResponse.headers.set('Authorization', `Bearer ${token}`);
+
+  return nextResponse;
+};
+
 export const middleware = async (request: NextRequest) => {
+  if (request.nextUrl.pathname.startsWith('/api/proxy')) {
+    return proxy(request);
+  }
+
   if (request.method !== 'GET') {
     return;
   }
@@ -20,7 +39,6 @@ export const middleware = async (request: NextRequest) => {
     '/forbidden',
     '/unknown-error',
     '/badrequest',
-    '/api',
   ];
 
   if (
