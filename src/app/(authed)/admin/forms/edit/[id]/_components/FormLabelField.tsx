@@ -10,7 +10,7 @@ const FormLabelField = (props: {
   currentLabels: GetFormLabelsResponse;
 }) => {
   const onChangeLabels = async (labels: GetFormLabelsResponse) => {
-    await fetch(`/api/forms/${props.formId}/labels`, {
+    await fetch(`/api/proxy/forms/${props.formId}/labels`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',

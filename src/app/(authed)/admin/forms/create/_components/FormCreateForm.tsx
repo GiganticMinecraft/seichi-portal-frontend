@@ -62,7 +62,7 @@ const FormCreateForm = (props: { labelOptions: GetFormLabelsResponse }) => {
   const [labels, setLabels] = useState<GetFormLabelsResponse>([]);
 
   const onSubmit = async (data: Form) => {
-    const createFormResponse = await fetch('/api/form', {
+    const createFormResponse = await fetch('/api/proxy/forms', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -105,7 +105,7 @@ const FormCreateForm = (props: { labelOptions: GetFormLabelsResponse }) => {
     };
 
     const setFormMetadataResponse = await fetch(
-      `/api/form?form_id=${parsedCreateFormResponse.data.id}`,
+      `/api/proxy/forms/${parsedCreateFormResponse.data.id}`,
       {
         method: 'PATCH',
         headers: {
@@ -126,7 +126,7 @@ const FormCreateForm = (props: { labelOptions: GetFormLabelsResponse }) => {
       return;
     }
 
-    const addQuestionResponse = await fetch('/api/questions', {
+    const addQuestionResponse = await fetch('/api/proxy/forms/questions', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -143,7 +143,7 @@ const FormCreateForm = (props: { labelOptions: GetFormLabelsResponse }) => {
 
     if (addQuestionResponse.ok) {
       const putLabelsResponse = await fetch(
-        `/api/forms/${parsedCreateFormResponse.data.id}/labels`,
+        `/api/proxy/forms/${parsedCreateFormResponse.data.id}/labels`,
         {
           method: 'PUT',
           headers: {

@@ -15,7 +15,7 @@ import type { Either } from 'fp-ts/lib/Either';
 const Home = () => {
   const { data, isLoading } = useSWR<
     Either<ErrorResponse, GetUserListResponse>
-  >('/api/users/list', { refreshInterval: 1000 });
+  >('/api/proxy/users/list', { refreshInterval: 1000 });
 
   if (!data) {
     return <LoadingCircular />;

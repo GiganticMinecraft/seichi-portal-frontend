@@ -78,7 +78,7 @@ const SendCommentForm = (props: {
   register: UseFormRegister<SendCommentSchema>;
 }) => {
   const onSubmit = async (data: SendCommentSchema) => {
-    await fetch(`/api/answers/comments`, {
+    await fetch(`/api/proxy/forms/answers/comment`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

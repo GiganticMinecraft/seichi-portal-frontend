@@ -43,7 +43,7 @@ const Home = () => {
               body: JSON.stringify({ token }),
             }).then((res) => res.json())) as { token: string; expires: number };
 
-            await fetch('/api/session', {
+            await fetch('/api/proxy/session', {
               method: 'POST',
               headers: {
                 Authorization: `Bearer ${mcAccessToken.token}`,

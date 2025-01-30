@@ -32,7 +32,7 @@ const Labels = (props: { labels: Label[] }) => {
   const { handleSubmit, register } = useForm<EditLabelSchema>();
 
   const onDeleteButtonClick = async (label: Label) => {
-    const response = await fetch(`/api/labels/forms/${label.id}`, {
+    const response = await fetch(`/api/proxy/forms/labels/forms/${label.id}`, {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',
@@ -47,7 +47,7 @@ const Labels = (props: { labels: Label[] }) => {
   };
 
   const onEdit = async (data: EditLabelSchema) => {
-    const response = await fetch(`/api/labels/forms/${data.id}`, {
+    const response = await fetch(`/api/proxy/forms/labels/forms/${data.id}`, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',

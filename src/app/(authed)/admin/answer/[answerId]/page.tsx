@@ -18,19 +18,19 @@ import type { Either } from 'fp-ts/lib/Either';
 const Home = ({ params }: { params: { answerId: number } }) => {
   const { data: answers, isLoading: isAnswersLoading } = useSWR<
     Either<ErrorResponse, GetAnswerResponse>
-  >(`/api/answers/${params.answerId}`, { refreshInterval: 1000 });
+  >(`/api/proxy/forms/answers/${params.answerId}`, { refreshInterval: 1000 });
 
   const { data: formQuestions, isLoading: isFormQuestionsLoading } = useSWR<
     Either<ErrorResponse, GetQuestionsResponse>
   >(
     answers && answers._tag === 'Right'
-      ? `/api/questions?formId=${answers.right.form_id}`
+      ? `/api/proxy/forms/${answers.right.form_id}/questions`
       : ''
   );
 
   const { data: labels, isLoading: isLabelsLoading } = useSWR<
     Either<ErrorResponse, GetAnswerLabelsResponse>
-  >('/api/labels/answers');
+  >('/api/proxy/forms/labels/answers');
 
   if (!answers || !formQuestions || !labels) {
     return <LoadingCircular />;

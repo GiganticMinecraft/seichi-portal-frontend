@@ -16,7 +16,7 @@ import type { Either } from 'fp-ts/lib/Either';
 const Home = () => {
   const { data, isLoading } = useSWR<
     Either<ErrorResponse, GetAnswerLabelsResponse>
-  >('/api/labels/answers', { refreshInterval: 1000 });
+  >('/api/proxy/forms/labels/answers', { refreshInterval: 1000 });
 
   if (!data) {
     return <LoadingCircular />;

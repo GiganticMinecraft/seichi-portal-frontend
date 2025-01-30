@@ -18,9 +18,10 @@ import type { Either } from 'fp-ts/lib/Either';
 
 const Home = () => {
   const { data: forms, isLoading: isLoadingForms } =
-    useSWR<Either<ErrorResponse, GetFormsResponse>>('/api/forms');
-  const { data: labels, isLoading: isLoadingLabels } =
-    useSWR<Either<ErrorResponse, GetFormLabelsResponse>>('/api/labels/forms');
+    useSWR<Either<ErrorResponse, GetFormsResponse>>('/api/proxy/forms');
+  const { data: labels, isLoading: isLoadingLabels } = useSWR<
+    Either<ErrorResponse, GetFormLabelsResponse>
+  >('/api/proxy/forms/labels/forms');
   const [labelFilter, setLabelFilter] = useState<GetFormLabelsResponse>([]);
   const [filteredForms, setFilteredForms] = useState<GetFormsResponse>([]);
 

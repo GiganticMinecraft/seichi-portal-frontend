@@ -13,8 +13,9 @@ import type {
 import type { Either } from 'fp-ts/lib/Either';
 
 const Home = () => {
-  const { data: labels, isLoading: isLoadingLabels } =
-    useSWR<Either<ErrorResponse, GetFormLabelsResponse>>('/api/labels/forms');
+  const { data: labels, isLoading: isLoadingLabels } = useSWR<
+    Either<ErrorResponse, GetFormLabelsResponse>
+  >('/api/proxy/forms/labels/forms');
 
   if (!labels) {
     return <LoadingCircular />;

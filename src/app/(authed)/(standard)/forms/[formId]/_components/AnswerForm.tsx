@@ -101,7 +101,7 @@ const AnswerForm = ({ questions: questions, formId }: Props) => {
       }
     });
 
-    const postAnswerResponse = await fetch('/api/answers', {
+    const postAnswerResponse = await fetch('/api/proxy/answers', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

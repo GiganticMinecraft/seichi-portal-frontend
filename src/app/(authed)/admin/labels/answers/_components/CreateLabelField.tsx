@@ -7,7 +7,7 @@ const CreateLabelField = () => {
   const { handleSubmit, register } = useForm<CreateLabelSchema>();
 
   const onSubmit = async (data: CreateLabelSchema) => {
-    await fetch('/api/labels/answers', {
+    await fetch('/api/proxy/forms/labels/answers', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

@@ -14,11 +14,12 @@ import type {
 import type { Either } from 'fp-ts/lib/Either';
 
 const Home = () => {
-  const { data: answers, isLoading } =
-    useSWR<Either<ErrorResponse, GetAnswersResponse>>('/api/answers');
+  const { data: answers, isLoading } = useSWR<
+    Either<ErrorResponse, GetAnswersResponse>
+  >('/api/proxy/forms/answers');
 
   const { data: forms, isLoading: isLoadingForms } =
-    useSWR<Either<ErrorResponse, GetFormsResponse>>('/api/forms');
+    useSWR<Either<ErrorResponse, GetFormsResponse>>('/api/proxy/forms');
 
   if (!answers || !forms) {
     return <LoadingCircular />;

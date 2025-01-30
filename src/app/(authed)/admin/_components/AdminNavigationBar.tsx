@@ -1,5 +1,6 @@
 'use client';
 
+import NotificationsIcon from '@mui/icons-material/Notifications';
 import SearchIcon from '@mui/icons-material/Search';
 import {
   Typography,
@@ -21,7 +22,6 @@ import type {
   ErrorResponse,
   GetUsersResponse,
 } from '@/app/api/_schemas/ResponseSchemas';
-import NotificationsIcon from '@mui/icons-material/Notifications';
 import type { Either } from 'fp-ts/lib/Either';
 
 const SearchField = () => {
@@ -71,7 +71,7 @@ const SearchField = () => {
 
 const NavBar = () => {
   const { data } =
-    useSWR<Either<ErrorResponse, GetUsersResponse>>('/api/users');
+    useSWR<Either<ErrorResponse, GetUsersResponse>>('/api/proxy/users');
 
   if (data?._tag === 'Left') {
     return <ErrorModal />;

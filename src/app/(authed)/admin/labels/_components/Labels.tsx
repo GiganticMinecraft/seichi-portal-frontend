@@ -32,12 +32,15 @@ const Labels = (props: { labels: Label[] }) => {
   const { handleSubmit, register } = useForm<EditLabelSchema>();
 
   const onDeleteButtonClick = async (label: Label) => {
-    const response = await fetch(`/api/labels/answers/${label.id}`, {
-      method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
+    const response = await fetch(
+      `/api/proxy/forms/labels/answers/${label.id}`,
+      {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }
+    );
 
     if (response.ok) {
       setDeleteState(State.Success);
@@ -47,7 +50,7 @@ const Labels = (props: { labels: Label[] }) => {
   };
 
   const onEdit = async (data: EditLabelSchema) => {
-    const response = await fetch(`/api/labels/answers/${data.id}`, {
+    const response = await fetch(`/api/proxy/forms/labels/answers/${data.id}`, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',

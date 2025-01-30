@@ -25,15 +25,18 @@ const AnswerTitleForm = (props: { answers: GetAnswerResponse }) => {
   const [title, setTitle] = useState(props.answers.title);
 
   const onSubmit = async (data: { title: string }) => {
-    const response = await fetch(`/api/answers/${props.answers.id}`, {
-      method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        title: data.title,
-      }),
-    });
+    const response = await fetch(
+      `/api/proxy/forms/answers/${props.answers.id}`,
+      {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          title: data.title,
+        }),
+      }
+    );
 
     if (response.ok) {
       setIsEditing(false);
@@ -79,7 +82,7 @@ const AnswerLabels = (props: {
   answers: GetAnswerResponse;
 }) => {
   const onChangeLabels = async (labels: GetAnswerLabelsResponse) => {
-    await fetch(`/api/answers/${props.answers.id}/labels`, {
+    await fetch(`/api/proxy/forms/answers/${props.answers.id}/labels`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',

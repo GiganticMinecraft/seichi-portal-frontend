@@ -16,7 +16,7 @@ const Home = () => {
           account: instance.getAccountByHomeId(accounts[0].homeAccountId),
           postLogoutRedirectUri: '/',
         });
-        await fetch('/api/session', {
+        await fetch('/api/proxy/session', {
           method: 'DELETE',
         });
       } else {

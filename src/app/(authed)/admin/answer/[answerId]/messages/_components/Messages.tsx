@@ -49,7 +49,7 @@ const Message = (props: {
     body: string
   ): Promise<Either<ErrorResponse, boolean>> => {
     const response = await fetch(
-      `/api/answers/${props.answerId}/messages/${props.message.id}`,
+      `/api/proxy/forms/answers/${props.answerId}/messages/${props.message.id}`,
       {
         method: 'PATCH',
         headers: {
@@ -74,7 +74,7 @@ const Message = (props: {
 
   const deleteMessage = async () => {
     const response = await fetch(
-      `/api/answers/${props.answerId}/messages/${props.message.id}`,
+      `/api/proxy/forms/answers/${props.answerId}/messages/${props.message.id}`,
       {
         method: 'DELETE',
         headers: {

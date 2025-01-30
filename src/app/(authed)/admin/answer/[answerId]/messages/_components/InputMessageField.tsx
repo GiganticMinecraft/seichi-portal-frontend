@@ -18,13 +18,16 @@ const InputMessageField = (props: { answer_id: number }) => {
       return;
     }
 
-    const response = await fetch(`/api/answers/${props.answer_id}/messages`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(data),
-    });
+    const response = await fetch(
+      `/api/proxy/forms/answers/${props.answer_id}/messages`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      }
+    );
 
     if (response.ok) {
       reset({ body: '' });

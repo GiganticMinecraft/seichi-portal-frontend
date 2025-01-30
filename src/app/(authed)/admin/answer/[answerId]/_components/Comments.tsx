@@ -33,7 +33,7 @@ const Comment = (props: {
   register: UseFormRegister<{ comment_id: number }>;
 }) => {
   const onDelete = async (data: { comment_id: number }) => {
-    await fetch(`/api/answers/comments/${data.comment_id}`, {
+    await fetch(`/api/proxy/forms/answers/comment/${data.comment_id}`, {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',
@@ -104,7 +104,7 @@ const SendCommentForm = (props: {
   register: UseFormRegister<SendCommentSchema>;
 }) => {
   const onSubmit = async (data: SendCommentSchema) => {
-    await fetch(`/api/answers/comments`, {
+    await fetch(`/api/proxy/forms/answers/comment`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

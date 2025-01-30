@@ -33,7 +33,7 @@ const UserList = (props: { users: GetUserListResponse }) => {
             <Select
               defaultValue={user.role}
               onChange={async (event) => {
-                await fetch(`/api/users/${user.id}`, {
+                await fetch(`/api/proxy/forms/users/${user.id}`, {
                   method: 'PATCH',
                   headers: {
                     'Content-Type': 'application/json',

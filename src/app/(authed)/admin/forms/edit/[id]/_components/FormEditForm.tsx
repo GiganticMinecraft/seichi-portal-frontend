@@ -103,7 +103,7 @@ const FormEditForm = (props: {
       answer_visibility: data.settings.answer_visibility,
     };
 
-    const setFormMetaResponse = await fetch(`/api/form?form_id=${data.id}`, {
+    const setFormMetaResponse = await fetch(`/api/proxy/forms/${data.id}`, {
       method: 'PATCH',
       headers: {
         Accept: 'application/json',
@@ -120,7 +120,7 @@ const FormEditForm = (props: {
       });
     }
 
-    const putQuestionsResponse = await fetch(`/api/questions`, {
+    const putQuestionsResponse = await fetch(`/api/proxy/forms/questions`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',

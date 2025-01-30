@@ -15,9 +15,9 @@ import type { Either } from 'fp-ts/lib/Either';
 const Home = ({ params }: { params: { formId: number } }) => {
   const { data: answers, isLoading: isLoadingAnswers } = useSWR<
     Either<ErrorResponse, GetFormAnswersResponse>
-  >(`/api/forms/${params.formId}/answers`);
+  >(`/api/proxy/forms/${params.formId}/answers`);
   const { data: forms, isLoading: isLoadingForms } =
-    useSWR<Either<ErrorResponse, GetFormsResponse>>('/api/forms');
+    useSWR<Either<ErrorResponse, GetFormsResponse>>('/api/proxy/forms');
 
   if (!answers || !forms) {
     return <LoadingCircular />;

@@ -24,7 +24,7 @@ const SearchResult = (props: {
 }) => {
   const router = useRouter();
   const { data, isLoading } = useSWR<Either<ErrorResponse, SearchResponse>>(
-    encodeURI(`/api/search?query=${props.searchContent}`)
+    encodeURI(`/api/proxy/search?query=${props.searchContent}`)
   );
 
   if (!data) {
