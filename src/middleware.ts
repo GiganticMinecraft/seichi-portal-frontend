@@ -47,6 +47,7 @@ export const middleware = async (request: NextRequest) => {
   const me = await fetchUser(token);
 
   if (!me.success) {
+    console.error('Failed to parse user!');
     return NextResponse.redirect(`${request.nextUrl.origin}/internal-error`);
   }
 
