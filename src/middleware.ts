@@ -74,3 +74,7 @@ export const middleware = async (request: NextRequest) => {
 
   return;
 };
+
+export const config = {
+  matcher: ['/api/:path*', '/admin/:path*', '/forms/:path*'],
+};
