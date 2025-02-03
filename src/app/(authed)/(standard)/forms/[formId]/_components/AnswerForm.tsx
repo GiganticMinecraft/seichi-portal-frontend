@@ -101,13 +101,13 @@ const AnswerForm = ({ questions: questions, formId }: Props) => {
       }
     });
 
-    const postAnswerResponse = await fetch('/api/proxy/answers', {
+    const postAnswerResponse = await fetch('/api/proxy/forms/answers', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        form_id: Number(formId),
+        form_id: formId,
         answers: formAnswers,
       }),
     });
