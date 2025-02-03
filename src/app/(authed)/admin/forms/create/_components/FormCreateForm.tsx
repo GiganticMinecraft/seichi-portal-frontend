@@ -99,7 +99,10 @@ const FormCreateForm = (props: { labelOptions: GetFormLabelsResponse }) => {
         end_at: end_at ? `${end_at}:00+09:00` : undefined,
       },
       webhook_url: data.settings.webhook_url,
-      default_answer_title: data.settings.default_answer_title,
+      default_answer_title:
+        data.settings.default_answer_title === ''
+          ? null
+          : data.settings.default_answer_title,
       visibility: data.settings.visibility,
       answer_visibility: data.settings.answer_visibility,
     };
@@ -135,6 +138,7 @@ const FormCreateForm = (props: { labelOptions: GetFormLabelsResponse }) => {
         form_id: parsedCreateFormResponse.data.id,
         questions: data.questions.map((question) => ({
           ...question,
+          form_id: parsedCreateFormResponse.data.id,
           choices: question.choices.map((choice) => choice.choice),
         })),
       }),

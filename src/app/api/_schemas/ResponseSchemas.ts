@@ -35,7 +35,7 @@ export type GetFormsResponse = z.infer<typeof getFormsResponseSchema>;
 
 // POST /forms
 export const createFormResponseSchema = z.object({
-  id: z.number(),
+  id: z.string().uuid(),
 });
 
 export type CreateFormResponse = z.infer<typeof createFormResponseSchema>;
