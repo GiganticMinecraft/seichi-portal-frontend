@@ -5,8 +5,8 @@ import {
   minecraftAccessTokenResponseSchema,
   xboxLiveServiceTokenResponseSchema,
 } from '@/_schemas/loginSchema';
-import type { NextRequest } from 'next/server';
 import { BACKEND_SERVER_URL } from '@/env';
+import type { NextRequest } from 'next/server';
 
 export async function POST(req: NextRequest) {
   const microsoftAccountToken = (await req.json()) as { token: string };

@@ -5,7 +5,7 @@ import { getUsersResponseSchema } from './app/api/_schemas/ResponseSchemas';
 import { BACKEND_SERVER_URL } from './env';
 import { getCachedToken } from './user-token/mcToken';
 
-const proxy = async (request: NextRequest, token: string) => {
+const proxy = (request: NextRequest, token: string) => {
   const nextResponse = NextResponse.rewrite(
     `${BACKEND_SERVER_URL}${request.nextUrl.pathname.replace('/api/proxy', '')}`
   );
