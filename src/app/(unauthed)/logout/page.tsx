@@ -1,29 +1,30 @@
 'use client';
 
+import { InteractionStatus } from '@azure/msal-browser';
 import { useMsal } from '@azure/msal-react';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 
 const Home = () => {
-  const { instance, accounts } = useMsal();
+  const { instance, accounts, inProgress } = useMsal();
   const router = useRouter();
 
   useEffect(() => {
     (async () => {
-      if (accounts[0]) {
+      if (accounts[0] && inProgress === InteractionStatus.None) {
         await instance.initialize().catch((e) => console.log(e));
+        await fetch('/api/proxy/session', {
+          method: 'DELETE',
+        });
         await instance.logoutRedirect({
           account: instance.getAccountByHomeId(accounts[0].homeAccountId),
           postLogoutRedirectUri: '/',
-        });
-        await fetch('/api/proxy/session', {
-          method: 'DELETE',
         });
       } else {
         router.push('/');
       }
     })().catch((e) => console.log(e));
-  }, [accounts, instance, router]);
+  }, [accounts, instance, router, inProgress]);
 
   return <></>;
 };
