@@ -135,6 +135,7 @@ const FormEditForm = (props: {
               ? question.id
               : null,
             title: question.title,
+            form_id: data.id,
             description: question.description,
             question_type: question.question_type,
             choices: question.choices.map((choice) => choice.choice),
