@@ -91,7 +91,7 @@ const FormSettings = (props: {
       <TextField
         {...props.register('settings.default_answer_title')}
         label="デフォルトの回答タイトル"
-        helperText="回答が送信されたときに設定されるタイトルで、$[question_id]で指定の質問の回答をタイトルに埋め込むことができます。"
+        helperText="回答が送信されたときに設定されるタイトルで、$question_idで指定の質問の回答をタイトルに埋め込むことができます。"
       />
     </Stack>
   );
