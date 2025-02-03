@@ -38,19 +38,12 @@ const Home = () => {
           .then(async (r) => {
             const token = r.accessToken;
 
-            const mcAccessToken = (await fetch('/api/minecraft-access-token', {
-              method: 'POST',
-              body: JSON.stringify({ token }),
-            }).then((res) => res.json())) as { token: string; expires: number };
-
-            await fetch('/api/proxy/session', {
+            await fetch('/api/minecraft-access-token', {
               method: 'POST',
               headers: {
-                Authorization: `Bearer ${mcAccessToken.token}`,
+                'Content-Type': 'application/json',
               },
-              body: JSON.stringify({
-                expires: mcAccessToken.expires,
-              }),
+              body: JSON.stringify({ token }),
             });
           });
 

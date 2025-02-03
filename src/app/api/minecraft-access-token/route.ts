@@ -6,6 +6,7 @@ import {
   xboxLiveServiceTokenResponseSchema,
 } from '@/_schemas/loginSchema';
 import type { NextRequest } from 'next/server';
+import { BACKEND_SERVER_URL } from '@/env';
 
 export async function POST(req: NextRequest) {
   const microsoftAccountToken = (await req.json()) as { token: string };
@@ -21,10 +22,18 @@ export async function POST(req: NextRequest) {
     xboxServiceSecurityToken
   );
 
-  return NextResponse.json({
-    token: minecraftAccessTokenResult.token,
-    expires: minecraftAccessTokenResult.expires,
-  });
+  const sessionResult = await createSession(minecraftAccessTokenResult);
+  const nextResponse = NextResponse.json({});
+
+  const setCookieHeader = sessionResult.headers.get('Set-Cookie');
+
+  if (setCookieHeader === null) {
+    return NextResponse.redirect(`${req.nextUrl.origin}/internal-error`);
+  } else {
+    nextResponse.headers.set('Set-Cookie', setCookieHeader);
+  }
+
+  return nextResponse;
 }
 
 const acquireXboxLiveTokenWithUserHash = async (token: string) => {
@@ -105,4 +114,21 @@ const acquireMinecraftAccessToken = async ({
   );
 
   return { token: result.access_token, expires: result.expires_in };
+};
+
+const createSession = async ({
+  token,
+  expires,
+}: Awaited<ReturnType<typeof acquireMinecraftAccessToken>>) => {
+  return await fetch(`${BACKEND_SERVER_URL}/session`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({
+      expires: expires,
+    }),
+    cache: 'no-cache',
+  });
 };
