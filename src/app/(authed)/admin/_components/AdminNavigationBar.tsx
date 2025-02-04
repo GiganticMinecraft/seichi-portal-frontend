@@ -1,5 +1,6 @@
 'use client';
 
+import { NotificationsNone } from '@mui/icons-material';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import SearchIcon from '@mui/icons-material/Search';
 import {
@@ -18,6 +19,7 @@ import {
 import Image from 'next/image';
 import { useState } from 'react';
 import useSWR from 'swr';
+import { match } from 'ts-pattern';
 import ErrorModal from '@/app/_components/ErrorModal';
 import SearchResult from './SearchResult';
 import type {
@@ -26,8 +28,6 @@ import type {
   GetUsersResponse,
 } from '@/app/api/_schemas/ResponseSchemas';
 import type { Either } from 'fp-ts/lib/Either';
-import { NotificationsNone } from '@mui/icons-material';
-import { match } from 'ts-pattern';
 
 const SearchField = () => {
   const [openSearchResultModal, setOpenSearchResultModal] = useState(false);
