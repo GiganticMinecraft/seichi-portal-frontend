@@ -337,3 +337,15 @@ export const searchResponseSchema = z.object({
 });
 
 export type SearchResponse = z.infer<typeof searchResponseSchema>;
+
+// GET /notifications
+export const getNotificationResponseSchema = z.object({
+  id: z.string().uuid(),
+  source_type: z.enum(['MESSAGE']),
+  source_id: z.string().uuid(),
+  is_read: z.boolean(),
+});
+
+export type GetNotificationResponse = z.infer<
+  typeof getNotificationResponseSchema
+>;
