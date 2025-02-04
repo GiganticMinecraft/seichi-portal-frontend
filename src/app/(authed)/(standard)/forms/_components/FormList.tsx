@@ -56,13 +56,11 @@ const EachForm = ({ form }: { form: Form }) => {
             </Typography>
           )}
         </CardContent>
-        {form.answer_visibility === 'PUBLIC' ? (
-          <CardActions>
-            <Button size="small" href={`/forms/${form.id}/answers/`}>
-              回答一覧
-            </Button>
-          </CardActions>
-        ) : null}
+        <CardActions>
+          <Button size="small" href={`/forms/${form.id}/answers/`}>
+            回答一覧
+          </Button>
+        </CardActions>
       </Card>
     </Box>
   );
