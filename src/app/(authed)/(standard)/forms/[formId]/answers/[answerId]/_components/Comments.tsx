@@ -73,7 +73,7 @@ const Comment = (props: {
 };
 
 const SendCommentForm = (props: {
-  answerId: number;
+  answerId: string;
   handleSubmit: UseFormHandleSubmit<SendCommentSchema, undefined>;
   register: UseFormRegister<SendCommentSchema>;
 }) => {
@@ -84,7 +84,7 @@ const SendCommentForm = (props: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        answer_id: Number(data.answer_id),
+        answer_id: data.answer_id,
         content: data.content,
       }),
     });
@@ -137,11 +137,11 @@ const SendCommentForm = (props: {
 };
 
 type SendCommentSchema = {
-  answer_id: number;
+  answer_id: string;
   content: string;
 };
 
-const Comments = (props: { comments: Comment[]; answerId: number }) => {
+const Comments = (props: { comments: Comment[]; answerId: string }) => {
   const { handleSubmit, register } = useForm<SendCommentSchema>();
   const { handleSubmit: handleDeleteSubmit, register: registerDelete } =
     useForm<{ comment_id: number }>();

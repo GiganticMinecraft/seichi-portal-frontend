@@ -26,7 +26,7 @@ const formatResponsePeriod = (startAt: string | null, endAt: string | null) => {
 };
 
 type Form = {
-  id: number;
+  id: string;
   title: string;
   description: string;
   response_period: {

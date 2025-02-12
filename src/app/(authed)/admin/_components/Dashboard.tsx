@@ -18,7 +18,7 @@ const columns: GridColDef[] = [
 ];
 
 interface Row {
-  id: number;
+  id: string;
   category: string;
   title: string;
   date: string;

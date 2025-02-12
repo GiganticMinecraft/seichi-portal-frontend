@@ -98,14 +98,14 @@ export type GetQuestionsResponse = z.infer<typeof getQuestionsResponseSchema>;
 // GET /forms/answers
 export const getAnswersResponseSchema = z
   .object({
-    id: z.number(),
+    id: z.string().uuid(),
     user: z.object({
       uuid: z.string(),
       name: z.string(),
       role: z.enum(['ADMINISTRATOR', 'STANDARD_USER']),
     }),
     timestamp: z.string().datetime(),
-    form_id: z.number(),
+    form_id: z.string().uuid(),
     title: z.string(),
     answers: z
       .object({
@@ -139,14 +139,14 @@ export type GetAnswersResponse = z.infer<typeof getAnswersResponseSchema>;
 // GET /forms/:formId/answers
 export const getFormAnswersResponseSchema = z
   .object({
-    id: z.number(),
+    id: z.string().uuid(),
     user: z.object({
       uuid: z.string(),
       name: z.string(),
       role: z.enum(['ADMINISTRATOR', 'STANDARD_USER']),
     }),
     timestamp: z.string().datetime(),
-    form_id: z.number(),
+    form_id: z.string().uuid(),
     title: z.string(),
     answers: z
       .object({
@@ -203,14 +203,14 @@ export type GetFormLabelsResponse = z.infer<typeof getFormLabelsResponseSchema>;
 
 // GET /forms/answers/:answerId
 export const getAnswerResponseSchema = z.object({
-  id: z.number(),
+  id: z.string().uuid(),
   user: z.object({
     uuid: z.string(),
     name: z.string(),
     role: z.enum(['ADMINISTRATOR', 'STANDARD_USER']),
   }),
   timestamp: z.string().datetime(),
-  form_id: z.number(),
+  form_id: z.string().uuid(),
   title: z.string(),
   answers: z
     .object({

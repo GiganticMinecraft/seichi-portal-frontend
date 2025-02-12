@@ -14,7 +14,7 @@ export type CreateFormSchema = z.infer<typeof createFormSchema>;
 
 // POST /forms/questions
 export const createQuestionSchema = z.object({
-  form_id: z.number(),
+  form_id: z.string().uuid(),
   questions: z
     .object({
       title: z.string(),
@@ -43,7 +43,7 @@ export const updateFormSchema = z.object({
 
 // PUT /forms/questions
 export const updateQuestionSchema = z.object({
-  form_id: z.number(),
+  form_id: z.string().uuid(),
   questions: z
     .object({
       id: z.number().nullable(),
