@@ -14,7 +14,7 @@ export type ErrorResponse = z.infer<typeof errorResponseSchema>;
 // GET /forms
 export const getFormsResponseSchema = z
   .object({
-    id: z.number(),
+    id: z.string().uuid(),
     title: z.string(),
     description: z.string(),
     response_period: z.object({

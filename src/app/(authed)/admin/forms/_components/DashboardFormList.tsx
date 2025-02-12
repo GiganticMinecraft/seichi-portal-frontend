@@ -23,6 +23,20 @@ const formatResponsePeriod = (startAt: string | null, endAt: string | null) => {
 };
 
 export const Forms = ({ forms }: Props) => {
+  const deleteForm = async (formId: string) => {
+    if (confirm('本当に削除しますか？')) {
+      const response = await fetch(`/api/proxy/forms/${formId}`, {
+        method: 'DELETE',
+      });
+
+      if (response.ok) {
+        alert('削除しました');
+      } else {
+        alert('削除に失敗しました');
+      }
+    }
+  };
+
   return (
     <Grid container spacing={2}>
       {forms.map((form, index) => {
@@ -49,7 +63,9 @@ export const Forms = ({ forms }: Props) => {
                 <Button size="small" href={`/admin/forms/edit/${form.id}`}>
                   EDIT
                 </Button>
-                <Button size="small">CLOSE</Button>
+                <Button size="small" onClick={() => deleteForm(form.id)}>
+                  DELETE
+                </Button>
               </CardActions>
             </Card>
           </Grid>
