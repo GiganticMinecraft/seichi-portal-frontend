@@ -1,7 +1,5 @@
 'use client';
 
-import { NotificationsNone } from '@mui/icons-material';
-import NotificationsIcon from '@mui/icons-material/Notifications';
 import SearchIcon from '@mui/icons-material/Search';
 import {
   Typography,
@@ -13,18 +11,14 @@ import {
   IconButton,
   InputBase,
   Avatar,
-  Menu,
-  MenuItem,
 } from '@mui/material';
 import Image from 'next/image';
 import { useState } from 'react';
 import useSWR from 'swr';
-import { match } from 'ts-pattern';
 import ErrorModal from '@/app/_components/ErrorModal';
 import SearchResult from './SearchResult';
 import type {
   ErrorResponse,
-  GetNotificationResponse,
   GetUsersResponse,
 } from '@/app/api/_schemas/ResponseSchemas';
 import type { Either } from 'fp-ts/lib/Either';
@@ -77,12 +71,8 @@ const SearchField = () => {
 const NavBar = () => {
   const { data } =
     useSWR<Either<ErrorResponse, GetUsersResponse>>('/api/proxy/users');
-  const { data: notifications } = useSWR<
-    Either<ErrorResponse, GetNotificationResponse[]>
-  >('/api/proxy/notifications');
-  const [anchorEl, setAnchorEl] = useState<undefined | HTMLElement>(undefined);
 
-  if (data?._tag === 'Left' || notifications?._tag === 'Left') {
+  if (data?._tag === 'Left') {
     return <ErrorModal />;
   }
 
@@ -112,41 +102,6 @@ const NavBar = () => {
             </Link>
           </Typography>
           <SearchField />
-          <IconButton
-            color="primary"
-            sx={{ marginLeft: '20px' }}
-            onClick={(event: React.MouseEvent<HTMLElement>) =>
-              setAnchorEl(event.currentTarget)
-            }
-          >
-            {notifications?.right.length !== undefined &&
-            notifications?.right.length > 0 ? (
-              <NotificationsIcon />
-            ) : (
-              <NotificationsNone />
-            )}
-          </IconButton>
-          <Menu
-            anchorEl={anchorEl}
-            open={anchorEl !== undefined}
-            onClose={() => setAnchorEl(undefined)}
-          >
-            {notifications?.right.map((notification) => (
-              <MenuItem key={notification.id}>
-                {match(notification.source_type)
-                  .with('MESSAGE', () => (
-                    <Link
-                      // TODO: どこにリンクを飛ばす？？？
-                      // ここで降ってくる source_id は message_id なのでリンクとしては不正
-                      href={`/admin/answer/${notification.source_id}/messages`}
-                    >
-                      <Typography>メッセージを受け取りました</Typography>
-                    </Link>
-                  ))
-                  .exhaustive()}
-              </MenuItem>
-            ))}
-          </Menu>
           <Avatar
             alt="PlayerHead"
             src={data ? `https://mc-heads.net/avatar/${data.right.uuid}` : ''}
