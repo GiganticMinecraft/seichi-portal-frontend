@@ -1,14 +1,15 @@
 'use server';
 
+import { NextResponse } from 'next/server';
 import {
   BACKEND_SERVER_URL,
   DISCORD_CLIENT_ID,
   DISCORD_CLIENT_SECRET,
   DISCORD_REDIRECT_URI,
 } from '@/env';
-import { NextRequest, NextResponse } from 'next/server';
-import { discordTokenSchema } from '../_schemas/External';
 import { getCachedToken } from '@/user-token/mcToken';
+import { discordTokenSchema } from '../_schemas/External';
+import type { NextRequest } from 'next/server';
 
 const OAUTH_QUERY = new URLSearchParams({
   client_id: DISCORD_CLIENT_ID,

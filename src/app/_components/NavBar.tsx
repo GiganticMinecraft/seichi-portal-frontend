@@ -16,16 +16,16 @@ import {
   Menu,
   MenuItem,
 } from '@mui/material';
+import { useState } from 'react';
+import useSWR from 'swr';
 import { MsalProvider } from './MsalProvider';
 import { SigninButton } from './SigninButton';
 import { SignoutButton } from './SignoutButton';
-import useSWR from 'swr';
-import { Either } from 'fp-ts/lib/Either';
-import {
+import type {
   ErrorResponse,
   GetUsersResponse,
 } from '../api/_schemas/ResponseSchemas';
-import { useState } from 'react';
+import type { Either } from 'fp-ts/lib/Either';
 
 const NavBar = () => {
   const { data } =
