@@ -1,6 +1,4 @@
-import { UpdateNotificationSettingsSchema } from '@/app/api/_schemas/RequestSchemas';
-import { GetNotificationSettingsResponse } from '@/app/api/_schemas/ResponseSchemas';
-import Checkbox from '@mui/material/Checkbox';
+import SaveAltIcon from '@mui/icons-material/SaveAlt';
 import {
   Button,
   Container,
@@ -9,8 +7,10 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
+import Checkbox from '@mui/material/Checkbox';
 import { useForm } from 'react-hook-form';
-import SaveAltIcon from '@mui/icons-material/SaveAlt';
+import type { UpdateNotificationSettingsSchema } from '@/app/api/_schemas/RequestSchemas';
+import type { GetNotificationSettingsResponse } from '@/app/api/_schemas/ResponseSchemas';
 
 const DiscordNotificationSettings = (props: {
   currentSettings: GetNotificationSettingsResponse;

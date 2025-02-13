@@ -4,6 +4,7 @@ import { Box, Stack } from '@mui/material';
 import useSWR from 'swr';
 import ErrorModal from '@/app/_components/ErrorModal';
 import LoadingCircular from '@/app/_components/LoadingCircular';
+import DiscordNotificationSettings from './_components/DiscordNotificationSettings';
 import LinkDiscordButton from './_components/LinkDiscordButton';
 import UnlinkDiscordButton from './_components/UnlinkDiscordButton';
 import UserInformation from './_components/UserInformation';
@@ -13,7 +14,6 @@ import type {
   GetUsersResponse,
 } from '@/app/api/_schemas/ResponseSchemas';
 import type { Either } from 'fp-ts/lib/Either';
-import DiscordNotificationSettings from './_components/DiscordNotificationSettings';
 
 const Home = ({ params }: { params: { userId: string } }) => {
   const { data, isLoading } = useSWR<Either<ErrorResponse, GetUsersResponse>>(
