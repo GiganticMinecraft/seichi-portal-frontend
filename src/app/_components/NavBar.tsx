@@ -15,7 +15,6 @@ import {
   Avatar,
   Menu,
   MenuItem,
-  ListItemIcon,
   ListItemText,
 } from '@mui/material';
 import { useState } from 'react';
@@ -28,7 +27,6 @@ import type {
   GetUsersResponse,
 } from '../api/_schemas/ResponseSchemas';
 import type { Either } from 'fp-ts/lib/Either';
-import PersonIcon from '@mui/icons-material/Person';
 
 const NavBar = () => {
   const { data } = useSWR<Either<ErrorResponse, GetUsersResponse>>(

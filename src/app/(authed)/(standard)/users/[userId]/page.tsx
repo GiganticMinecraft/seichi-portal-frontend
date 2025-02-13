@@ -1,17 +1,17 @@
 'use client';
 
+import { Box, Stack } from '@mui/material';
+import useSWR from 'swr';
 import ErrorModal from '@/app/_components/ErrorModal';
 import LoadingCircular from '@/app/_components/LoadingCircular';
-import {
+import LinkDiscordButton from './_components/LinkDiscordButton';
+import UnlinkDiscordButton from './_components/UnlinkDiscordButton';
+import UserInformation from './_components/UserInformation';
+import type {
   ErrorResponse,
   GetUsersResponse,
 } from '@/app/api/_schemas/ResponseSchemas';
-import { Box, Stack } from '@mui/material';
-import { Either } from 'fp-ts/lib/Either';
-import useSWR from 'swr';
-import UserInformation from './_components/UserInformation';
-import UnlinkDiscordButton from './_components/UnlinkDiscordButton';
-import LinkDiscordButton from './_components/LinkDiscordButton';
+import type { Either } from 'fp-ts/lib/Either';
 
 const Home = ({ params }: { params: { userId: string } }) => {
   const { data, isLoading } = useSWR<Either<ErrorResponse, GetUsersResponse>>(
