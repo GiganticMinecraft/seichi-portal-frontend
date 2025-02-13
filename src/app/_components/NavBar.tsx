@@ -28,8 +28,9 @@ import type {
 import type { Either } from 'fp-ts/lib/Either';
 
 const NavBar = () => {
-  const { data } =
-    useSWR<Either<ErrorResponse, GetUsersResponse>>('/api/proxy/users');
+  const { data } = useSWR<Either<ErrorResponse, GetUsersResponse>>(
+    '/api/proxy/users/me'
+  );
   const [anchorEl, setAnchorEl] = useState<undefined | HTMLElement>(undefined);
 
   return (

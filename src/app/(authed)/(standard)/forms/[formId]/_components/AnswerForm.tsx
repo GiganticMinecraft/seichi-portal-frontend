@@ -39,7 +39,7 @@ type Question = {
 
 interface Props {
   questions: GetQuestionsResponse;
-  formId: number;
+  formId: string;
 }
 
 interface IFormInput {

@@ -19,7 +19,7 @@ const proxy = (request: NextRequest, token: string) => {
 };
 
 const fetchUser = async (token: string) => {
-  return await fetch(`${BACKEND_SERVER_URL}/users`, {
+  return await fetch(`${BACKEND_SERVER_URL}/users/me`, {
     method: 'GET',
     headers: {
       Accept: 'application/json',

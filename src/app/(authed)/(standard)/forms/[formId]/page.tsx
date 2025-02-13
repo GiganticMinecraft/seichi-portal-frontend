@@ -10,7 +10,7 @@ import type {
 } from '@/app/api/_schemas/ResponseSchemas';
 import type { Either } from 'fp-ts/lib/Either';
 
-const Home = ({ params }: { params: { formId: number } }) => {
+const Home = ({ params }: { params: { formId: string } }) => {
   const { data: questions, isLoading } = useSWR<
     Either<ErrorResponse, GetQuestionsResponse>
   >(`/api/proxy/forms/${params.formId}/questions`);

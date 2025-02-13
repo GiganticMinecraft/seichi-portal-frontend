@@ -69,8 +69,9 @@ const SearchField = () => {
 };
 
 const NavBar = () => {
-  const { data } =
-    useSWR<Either<ErrorResponse, GetUsersResponse>>('/api/proxy/users');
+  const { data } = useSWR<Either<ErrorResponse, GetUsersResponse>>(
+    '/api/proxy/users/me'
+  );
 
   if (data?._tag === 'Left') {
     return <ErrorModal />;

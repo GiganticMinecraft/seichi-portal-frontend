@@ -256,11 +256,13 @@ export const getMessagesResponseSchema = z
 
 export type GetMessagesResponse = z.infer<typeof getMessagesResponseSchema>;
 
-// GET /users
+// GET /users/{uuid}
 export const getUsersResponseSchema = z.object({
   uuid: z.string(),
   name: z.string(),
   role: z.enum(['ADMINISTRATOR', 'STANDARD_USER']),
+  discord_user_id: z.string().nullable(),
+  discord_username: z.string().nullable(),
 });
 
 export type GetUsersResponse = z.infer<typeof getUsersResponseSchema>;
