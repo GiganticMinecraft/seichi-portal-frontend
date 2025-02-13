@@ -9,18 +9,32 @@ import UnlinkDiscordButton from './_components/UnlinkDiscordButton';
 import UserInformation from './_components/UserInformation';
 import type {
   ErrorResponse,
+  GetNotificationSettingsResponse,
   GetUsersResponse,
 } from '@/app/api/_schemas/ResponseSchemas';
 import type { Either } from 'fp-ts/lib/Either';
+import DiscordNotificationSettings from './_components/DiscordNotificationSettings';
 
 const Home = ({ params }: { params: { userId: string } }) => {
   const { data, isLoading } = useSWR<Either<ErrorResponse, GetUsersResponse>>(
     `/api/proxy/users/${params.userId}`
   );
 
-  if (!data) {
+  const {
+    data: notificationSettings,
+    isLoading: isNotificationSettingsLoading,
+  } = useSWR<Either<ErrorResponse, GetNotificationSettingsResponse>>(
+    `/api/proxy/notifications/settings/${params.userId}`
+  );
+
+  if (!data || !notificationSettings) {
     return <LoadingCircular />;
-  } else if ((!isLoading && !data) || data._tag == 'Left') {
+  } else if (
+    (!isLoading && !data) ||
+    data._tag == 'Left' ||
+    (!isNotificationSettingsLoading && !notificationSettings) ||
+    notificationSettings._tag == 'Left'
+  ) {
     return <ErrorModal />;
   }
 
@@ -36,7 +50,13 @@ const Home = ({ params }: { params: { userId: string } }) => {
       <Stack spacing={2}>
         <UserInformation user={data.right} />
         {data.right.discord_user_id ? (
-          <UnlinkDiscordButton />
+          <Stack>
+            <UnlinkDiscordButton />
+            <DiscordNotificationSettings
+              userId={params.userId}
+              currentSettings={notificationSettings.right}
+            />
+          </Stack>
         ) : (
           <LinkDiscordButton />
         )}

@@ -65,3 +65,12 @@ export const updateAnswerSchema = z.object({
 export const updateUserSchema = z.object({
   role: z.enum(['STANDARD_USER', 'ADMINISTRATOR']),
 });
+
+export const updateNotificationSettingsSchema = z.object({
+  recipient_id: z.string().uuid(),
+  is_send_message_notification: z.boolean(),
+});
+
+export type UpdateNotificationSettingsSchema = z.infer<
+  typeof updateNotificationSettingsSchema
+>;

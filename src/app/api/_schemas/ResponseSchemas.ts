@@ -351,3 +351,12 @@ export const getNotificationResponseSchema = z.object({
 export type GetNotificationResponse = z.infer<
   typeof getNotificationResponseSchema
 >;
+
+// GET /notifications/settings/{uuid}
+export const getNotificationSettingsResponseSchema = z.object({
+  is_send_message_notification: z.boolean(),
+});
+
+export type GetNotificationSettingsResponse = z.infer<
+  typeof getNotificationSettingsResponseSchema
+>;
