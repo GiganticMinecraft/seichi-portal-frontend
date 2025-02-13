@@ -5,6 +5,7 @@ const UnlinkDiscordButton = () => {
     await fetch('/api/proxy/link-discord', {
       method: 'DELETE',
     });
+    location.reload();
   };
 
   return (
