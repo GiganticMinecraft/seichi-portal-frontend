@@ -82,7 +82,7 @@ const NavBar = () => {
                         color="inherit"
                         sx={{ textDecoration: 'none' }}
                       >
-                        <ListItemText>ユーザー情報</ListItemText>
+                        <ListItemText>ユーザー情報・設定変更</ListItemText>
                       </Link>
                     </MenuItem>
                   </Menu>
