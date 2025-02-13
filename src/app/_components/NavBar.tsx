@@ -15,6 +15,8 @@ import {
   Avatar,
   Menu,
   MenuItem,
+  ListItemIcon,
+  ListItemText,
 } from '@mui/material';
 import { useState } from 'react';
 import useSWR from 'swr';
@@ -26,6 +28,7 @@ import type {
   GetUsersResponse,
 } from '../api/_schemas/ResponseSchemas';
 import type { Either } from 'fp-ts/lib/Either';
+import PersonIcon from '@mui/icons-material/Person';
 
 const NavBar = () => {
   const { data } = useSWR<Either<ErrorResponse, GetUsersResponse>>(
@@ -54,26 +57,39 @@ const NavBar = () => {
             </Typography>
             <AuthenticatedTemplate>
               {data?._tag === 'Right' ? (
-                <Avatar
-                  alt="PlayerHead"
-                  src={
-                    data ? `https://mc-heads.net/avatar/${data.right.uuid}` : ''
-                  }
-                  sx={{ marginLeft: '20px' }}
-                  onClick={(event: React.MouseEvent<HTMLElement>) =>
-                    setAnchorEl(event.currentTarget)
-                  }
-                />
+                <Box>
+                  <Avatar
+                    alt="PlayerHead"
+                    src={
+                      data
+                        ? `https://mc-heads.net/avatar/${data.right.uuid}`
+                        : ''
+                    }
+                    sx={{ marginLeft: '20px' }}
+                    onClick={(event: React.MouseEvent<HTMLElement>) =>
+                      setAnchorEl(event.currentTarget)
+                    }
+                  />
+                  <Menu
+                    anchorEl={anchorEl}
+                    open={anchorEl !== undefined}
+                    onClose={() => setAnchorEl(undefined)}
+                  >
+                    <MenuItem>
+                      <SignoutButton />
+                    </MenuItem>
+                    <MenuItem>
+                      <Link
+                        href={`/users/${data.right.uuid}`}
+                        color="inherit"
+                        sx={{ textDecoration: 'none' }}
+                      >
+                        <ListItemText>ユーザー情報</ListItemText>
+                      </Link>
+                    </MenuItem>
+                  </Menu>
+                </Box>
               ) : null}
-              <Menu
-                anchorEl={anchorEl}
-                open={anchorEl !== undefined}
-                onClose={() => setAnchorEl(undefined)}
-              >
-                <MenuItem>
-                  <SignoutButton />
-                </MenuItem>
-              </Menu>
             </AuthenticatedTemplate>
             <UnauthenticatedTemplate>
               <SigninButton />
