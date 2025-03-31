@@ -22,10 +22,18 @@
 
 ## 必要なツールやミドルウェア
 
-- [TypeScript](https://www.typescriptlang.org/)
-- [Yarn](https://yarnpkg.com/)
-- [Next.js](https://nextjs.org/)
-- [MUI](https://mui.com/)
+seichi-portal-frontend の開発に必要なツールは以下の通りです:
+
+- Node.js v22.14.0
+- pnpm v10.7.0
+
+これらのツールは [mise](https://github.com/jdx/mise) というツールを使用することでインストールすることができます。プロジェクトのルートディレクトリ上で以下のコマンドを実行してください。
+
+```bash
+mise install
+```
+
+何らかの理由で mise が使用できない場合は個別でインストールすることもできますが、必ずバージョンを合わせるようにしてください。
 
 ## 環境変数
 
@@ -51,7 +59,7 @@
 >
 > - `NEXT_PUBLIC_DEBUG_MODE`(環境変数)が `true` に設定されていること
 > - seichi-portal-backend がデバッグモードで起動されていること
-> - seichi-portal-frontend が開発モードで起動されていること(`yarn dev` コマンド)
+> - seichi-portal-frontend が開発モードで起動されていること(`pnpm run dev` コマンド)
 
 ## ディレクトリ構成
 
@@ -99,7 +107,7 @@ TODO: 後で書く
 環境変数の設定と seichi-portal-backend を起動した後、以下のコマンドを実行してください
 
 ```bash
-yarn dev
+pnpm run  dev
 ```
 
 ## code formatter と lint
@@ -107,17 +115,17 @@ yarn dev
 ### フォーマット、auto fix、ビルドチェックの実行
 
 ```bash
-yarn pretty
+pnpm run pretty
 ```
 
 ### フォーマットのみ実行
 
 ```bash
-yarn fmt:fix
+pnpm run fmt:fix
 ```
 
 ### auto fix の実行
 
 ```bash
-yarn fix:fix
+pnpm run fmt:fix
 ```
