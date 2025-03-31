@@ -2,6 +2,7 @@
   "name": "seichi-portal-frontend",
   "version": "0.1.0",
   "private": true,
+  "packageManager": "pnpm@10.7.0",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -59,9 +60,5 @@
     "prettier": "^3.0.1",
     "typescript": "5.1.6",
     "typesync": "^0.11.1"
-  },
-  "volta": {
-    "node": "22.13.1",
-    "yarn": "1.22.19"
   }
 }
