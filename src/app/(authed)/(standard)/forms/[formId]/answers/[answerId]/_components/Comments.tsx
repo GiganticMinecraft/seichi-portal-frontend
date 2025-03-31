@@ -19,9 +19,14 @@ type Comment = {
   };
 };
 
+type SendCommentSchema = {
+  answer_id: string;
+  content: string;
+};
+
 const Comment = (props: {
   comment: Comment;
-  handleSubmit: UseFormHandleSubmit<{ comment_id: number }, undefined>;
+  handleSubmit: UseFormHandleSubmit<{ comment_id: number }>;
   register: UseFormRegister<{ comment_id: number }>;
 }) => {
   return (
@@ -74,7 +79,7 @@ const Comment = (props: {
 
 const SendCommentForm = (props: {
   answerId: string;
-  handleSubmit: UseFormHandleSubmit<SendCommentSchema, undefined>;
+  handleSubmit: UseFormHandleSubmit<SendCommentSchema>;
   register: UseFormRegister<SendCommentSchema>;
 }) => {
   const onSubmit = async (data: SendCommentSchema) => {
@@ -134,11 +139,6 @@ const SendCommentForm = (props: {
       </Grid>
     </Container>
   );
-};
-
-type SendCommentSchema = {
-  answer_id: string;
-  content: string;
 };
 
 const Comments = (props: { comments: Comment[]; answerId: string }) => {

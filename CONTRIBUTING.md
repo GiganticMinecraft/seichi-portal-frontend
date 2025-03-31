@@ -107,7 +107,7 @@ TODO: 後で書く
 環境変数の設定と seichi-portal-backend を起動した後、以下のコマンドを実行してください
 
 ```bash
-pnpm run  dev
+pnpm run dev
 ```
 
 ## code formatter と lint
