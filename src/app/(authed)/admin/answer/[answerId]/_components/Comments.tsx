@@ -29,7 +29,7 @@ type Comment = {
 
 const Comment = (props: {
   comment: Comment;
-  handleSubmit: UseFormHandleSubmit<{ comment_id: number }, undefined>;
+  handleSubmit: UseFormHandleSubmit<{ comment_id: number }>;
   register: UseFormRegister<{ comment_id: number }>;
 }) => {
   const onDelete = async (data: { comment_id: number }) => {
@@ -100,7 +100,7 @@ const Comment = (props: {
 
 const SendCommentForm = (props: {
   answerId: number;
-  handleSubmit: UseFormHandleSubmit<SendCommentSchema, undefined>;
+  handleSubmit: UseFormHandleSubmit<SendCommentSchema>;
   register: UseFormRegister<SendCommentSchema>;
 }) => {
   const onSubmit = async (data: SendCommentSchema) => {
