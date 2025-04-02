@@ -40,7 +40,7 @@ importers:
         version: 6.4.10(@emotion/react@11.14.0(@types/react@18.2.19)(react@18.2.0))(@emotion/styled@11.14.0(@emotion/react@11.14.0(@types/react@18.2.19)(react@18.2.0))(@types/react@18.2.19)(react@18.2.0))(@types/react@18.2.19)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       '@mui/material-nextjs':
         specifier: ^5.15.11
-        version: 5.16.14(@emotion/cache@11.14.0)(@mui/material@6.4.10(@emotion/react@11.14.0(@types/react@18.2.19)(react@18.2.0))(@emotion/styled@11.14.0(@emotion/react@11.14.0(@types/react@18.2.19)(react@18.2.0))(@types/react@18.2.19)(react@18.2.0))(@types/react@18.2.19)(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(@types/react@18.2.19)(next@13.5.9(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(react@18.2.0)
+        version: 5.16.14(@emotion/cache@11.14.0)(@mui/material@6.4.10(@emotion/react@11.14.0(@types/react@18.2.19)(react@18.2.0))(@emotion/styled@11.14.0(@emotion/react@11.14.0(@types/react@18.2.19)(react@18.2.0))(@types/react@18.2.19)(react@18.2.0))(@types/react@18.2.19)(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(@types/react@18.2.19)(next@13.5.11(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(react@18.2.0)
       '@mui/x-data-grid':
         specifier: ^6.12.1
         version: 6.20.4(@mui/material@6.4.10(@emotion/react@11.14.0(@types/react@18.2.19)(react@18.2.0))(@emotion/styled@11.14.0(@emotion/react@11.14.0(@types/react@18.2.19)(react@18.2.0))(@types/react@18.2.19)(react@18.2.0))(@types/react@18.2.19)(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(@mui/system@6.4.10(@emotion/react@11.14.0(@types/react@18.2.19)(react@18.2.0))(@emotion/styled@11.14.0(@emotion/react@11.14.0(@types/react@18.2.19)(react@18.2.0))(@types/react@18.2.19)(react@18.2.0))(@types/react@18.2.19)(react@18.2.0))(@types/react@18.2.19)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
@@ -57,8 +57,8 @@ importers:
         specifier: ^0.1.0
         version: 0.1.0(msal@1.4.18)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       next:
-        specifier: 13.5.9
-        version: 13.5.9(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+        specifier: 13.5.11
+        version: 13.5.11(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       react:
         specifier: 18.2.0
         version: 18.2.0
@@ -112,8 +112,8 @@ importers:
         specifier: 8.46.0
         version: 8.46.0
       eslint-config-next:
-        specifier: 13.5.6
-        version: 13.5.6(eslint@8.46.0)(typescript@5.1.6)
+        specifier: 13.5.11
+        version: 13.5.11(eslint@8.46.0)(typescript@5.1.6)
       eslint-config-prettier:
         specifier: ^9.0.0
         version: 9.1.0(eslint@8.46.0)
@@ -506,11 +506,11 @@ packages:
   '@napi-rs/wasm-runtime@0.2.7':
     resolution: {integrity: sha512-5yximcFK5FNompXfJFoWanu5l8v1hNGqNHh9du1xETp9HWk/B/PzvchX55WYOPaIeNglG8++68AAiauBAtbnzw==}
 
-  '@next/env@13.5.9':
-    resolution: {integrity: sha512-h9+DconfsLkhHIw950Som5t5DC0kZReRRVhT4XO2DLo5vBK3PQK6CbFr8unxjHwvIcRdDvb8rosKleLdirfShQ==}
+  '@next/env@13.5.11':
+    resolution: {integrity: sha512-fbb2C7HChgM7CemdCY+y3N1n8pcTKdqtQLbC7/EQtPdLvlMUT9JX/dBYl8MMZAtYG4uVMyPFHXckb68q/NRwqg==}
 
-  '@next/eslint-plugin-next@13.5.6':
-    resolution: {integrity: sha512-ng7pU/DDsxPgT6ZPvuprxrkeew3XaRf4LAT4FabaEO/hAbvVx4P7wqnqdbTdDn1kgTvsI4tpIgT4Awn/m0bGbg==}
+  '@next/eslint-plugin-next@13.5.11':
+    resolution: {integrity: sha512-0qjDhes9UTSxirt/dYzrv20hs8SUhcIOvlEioj5+XucVrBHihnAk6Om7Vzk+VZ2nRE7tcShm/6lH1xSkJ3XMpg==}
 
   '@next/swc-darwin-arm64@13.5.9':
     resolution: {integrity: sha512-pVyd8/1y1l5atQRvOaLOvfbmRwefxLhqQOzYo/M7FQ5eaRwA1+wuCn7t39VwEgDd7Aw1+AIWwd+MURXUeXhwDw==}
@@ -1226,8 +1226,8 @@ packages:
     resolution: {integrity: sha512-/veY75JbMK4j1yjvuUxuVsiS/hr/4iHs9FTT6cgTexxdE0Ly/glccBAkloH/DofkjRbZU3bnoj38mOmhkZ0lHw==}
     engines: {node: '>=12'}
 
-  eslint-config-next@13.5.6:
-    resolution: {integrity: sha512-o8pQsUHTo9aHqJ2YiZDym5gQAMRf7O2HndHo/JZeY7TDD+W4hk6Ma8Vw54RHiBeb7OWWO5dPirQB+Is/aVQ7Kg==}
+  eslint-config-next@13.5.11:
+    resolution: {integrity: sha512-jImZvfc4htMMsiW3nCY/UOxXrI4DbEI4JrdWOEfSNkMipi4j3ZukUhvv4TGQnP6d6lvPTh6uHisQbMl3Ozga1w==}
     peerDependencies:
       eslint: ^7.23.0 || ^8.0.0
       typescript: '>=3.3.1'
@@ -2147,8 +2147,8 @@ packages:
     resolution: {integrity: sha512-myRT3DiWPHqho5PrJaIRyaMv2kgYf0mUVgBNOYMuCH5Ki1yEiQaf/ZJuQ62nvpc44wL5WDbTX7yGJi1Neevw8w==}
     engines: {node: '>= 0.6'}
 
-  next@13.5.9:
-    resolution: {integrity: sha512-h4ciD/Uxf1PwsiX0DQePCS5rMoyU5a7rQ3/Pg6HBLwpa/SefgNj1QqKSZsWluBrYyqdtEyqKrjeOszgqZlyzFQ==}
+  next@13.5.11:
+    resolution: {integrity: sha512-WUPJ6WbAX9tdC86kGTu92qkrRdgRqVrY++nwM+shmWQwmyxt4zhZfR59moXSI4N8GDYCBY3lIAqhzjDd4rTC8Q==}
     engines: {node: '>=16.14.0'}
     hasBin: true
     peerDependencies:
@@ -3154,11 +3154,11 @@ snapshots:
     optionalDependencies:
       '@types/react': 18.2.19
 
-  '@mui/material-nextjs@5.16.14(@emotion/cache@11.14.0)(@mui/material@6.4.10(@emotion/react@11.14.0(@types/react@18.2.19)(react@18.2.0))(@emotion/styled@11.14.0(@emotion/react@11.14.0(@types/react@18.2.19)(react@18.2.0))(@types/react@18.2.19)(react@18.2.0))(@types/react@18.2.19)(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(@types/react@18.2.19)(next@13.5.9(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(react@18.2.0)':
+  '@mui/material-nextjs@5.16.14(@emotion/cache@11.14.0)(@mui/material@6.4.10(@emotion/react@11.14.0(@types/react@18.2.19)(react@18.2.0))(@emotion/styled@11.14.0(@emotion/react@11.14.0(@types/react@18.2.19)(react@18.2.0))(@types/react@18.2.19)(react@18.2.0))(@types/react@18.2.19)(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(@types/react@18.2.19)(next@13.5.11(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(react@18.2.0)':
     dependencies:
       '@babel/runtime': 7.27.0
       '@mui/material': 6.4.10(@emotion/react@11.14.0(@types/react@18.2.19)(react@18.2.0))(@emotion/styled@11.14.0(@emotion/react@11.14.0(@types/react@18.2.19)(react@18.2.0))(@types/react@18.2.19)(react@18.2.0))(@types/react@18.2.19)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
-      next: 13.5.9(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+      next: 13.5.11(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       react: 18.2.0
     optionalDependencies:
       '@emotion/cache': 11.14.0
@@ -3272,9 +3272,9 @@ snapshots:
       '@tybys/wasm-util': 0.9.0
     optional: true
 
-  '@next/env@13.5.9': {}
+  '@next/env@13.5.11': {}
 
-  '@next/eslint-plugin-next@13.5.6':
+  '@next/eslint-plugin-next@13.5.11':
     dependencies:
       glob: 7.1.7
 
@@ -4044,9 +4044,9 @@ snapshots:
 
   escape-string-regexp@5.0.0: {}
 
-  eslint-config-next@13.5.6(eslint@8.46.0)(typescript@5.1.6):
+  eslint-config-next@13.5.11(eslint@8.46.0)(typescript@5.1.6):
     dependencies:
-      '@next/eslint-plugin-next': 13.5.6
+      '@next/eslint-plugin-next': 13.5.11
       '@rushstack/eslint-patch': 1.11.0
       '@typescript-eslint/parser': 6.21.0(eslint@8.46.0)(typescript@5.1.6)
       eslint: 8.46.0
@@ -5323,9 +5323,9 @@ snapshots:
 
   negotiator@0.6.4: {}
 
-  next@13.5.9(react-dom@18.2.0(react@18.2.0))(react@18.2.0):
+  next@13.5.11(react-dom@18.2.0(react@18.2.0))(react@18.2.0):
     dependencies:
-      '@next/env': 13.5.9
+      '@next/env': 13.5.11
       '@swc/helpers': 0.5.2
       busboy: 1.6.0
       caniuse-lite: 1.0.30001707
