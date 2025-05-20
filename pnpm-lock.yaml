@@ -82,7 +82,7 @@ importers:
         version: 5.7.1
       zod:
         specifier: ^3.22.3
-        version: 3.25.3
+        version: 3.25.7
     devDependencies:
       '@tsconfig/strictest':
         specifier: ^2.0.1
@@ -2759,8 +2759,8 @@ packages:
     resolution: {integrity: sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==}
     engines: {node: '>=10'}
 
-  zod@3.25.3:
-    resolution: {integrity: sha512-VGZqnyYNrl8JpEJRZaFPqeVNIuqgXNu4cXZ5cOb6zEUO1OxKbRnWB4UdDIXMmiERWncs0yDQukssHov8JUxykQ==}
+  zod@3.25.7:
+    resolution: {integrity: sha512-YGdT1cVRmKkOg6Sq7vY7IkxdphySKnXhaUmFI4r4FcuFVNgpCb9tZfNwXbT6BPjD5oz0nubFsoo9pIqKrDcCvg==}
 
   zwitch@2.0.4:
     resolution: {integrity: sha512-bXE4cR/kVZhKZX/RjPEflHaKVhUVl85noU3v6b8apfQEc1x4A+zBxjZ4lN8LqGd6WZ3dl98pY4o717VFmoPp+A==}
@@ -6023,6 +6023,6 @@ snapshots:
 
   yocto-queue@0.1.0: {}
 
-  zod@3.25.3: {}
+  zod@3.25.7: {}
 
   zwitch@2.0.4: {}
