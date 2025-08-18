@@ -52,7 +52,7 @@ importers:
         version: 1.11.13
       fp-ts:
         specifier: ^2.16.8
-        version: 2.16.10
+        version: 2.16.11
       msal-react:
         specifier: ^0.1.0
         version: 0.1.0(msal@1.4.18)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -1417,8 +1417,8 @@ packages:
     resolution: {integrity: sha512-gIXjKqtFuWEgzFRJA9WCQeSJLZDjgJUOMCMzxtvFq/37KojM1BFGufqsCy0r4qSQmYLsZYMeyRqzIWOMup03sw==}
     engines: {node: '>=14'}
 
-  fp-ts@2.16.10:
-    resolution: {integrity: sha512-vuROzbNVfCmUkZSUbnWSltR1sbheyQbTzug7LB/46fEa1c0EucLeBaCEUE0gF3ZGUGBt9lVUiziGOhhj6K1ORA==}
+  fp-ts@2.16.11:
+    resolution: {integrity: sha512-LaI+KaX2NFkfn1ZGHoKCmcfv7yrZsC3b8NtWsTVQeHkq4F27vI5igUuO53sxqDEa2gNQMHFPmpojDw/1zmUK7w==}
 
   fs-minipass@3.0.3:
     resolution: {integrity: sha512-XUBA9XClHbnJWSfBzjkm6RvPsyg3sryZt06BEQoXcF7EK/xpGaQYJgQKDJSUH5SGZ76Y7pFx1QBnXz09rU5Fbw==}
@@ -4256,7 +4256,7 @@ snapshots:
       cross-spawn: 7.0.6
       signal-exit: 4.1.0
 
-  fp-ts@2.16.10: {}
+  fp-ts@2.16.11: {}
 
   fs-minipass@3.0.3:
     dependencies:
