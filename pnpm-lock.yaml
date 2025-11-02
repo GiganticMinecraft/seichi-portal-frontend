@@ -79,7 +79,7 @@ importers:
         version: 2.3.6(react@18.3.1)
       ts-pattern:
         specifier: ^5.6.2
-        version: 5.8.0
+        version: 5.9.0
       zod:
         specifier: ^3.22.3
         version: 3.25.76
@@ -2619,8 +2619,8 @@ packages:
     peerDependencies:
       typescript: '>=4.2.0'
 
-  ts-pattern@5.8.0:
-    resolution: {integrity: sha512-kIjN2qmWiHnhgr5DAkAafF9fwb0T5OhMVSWrm8XEdTFnX6+wfXwYOFjeF86UZ54vduqiR7BfqScFmXSzSaH8oA==}
+  ts-pattern@5.9.0:
+    resolution: {integrity: sha512-6s5V71mX8qBUmlgbrfL33xDUwO0fq48rxAu2LBE11WBeGdpCPOsXksQbZJHvHwhrd3QjUusd3mAOM5Gg0mFBLg==}
 
   tsconfig-paths@3.15.0:
     resolution: {integrity: sha512-2Ac2RgzDe/cn48GvOe3M+o82pEFewD3UPbyoUHHdKasHwJKjds4fLXWf/Ux5kATBKN20oaFGu+jbElp1pos0mg==}
@@ -5833,7 +5833,7 @@ snapshots:
     dependencies:
       typescript: 5.9.3
 
-  ts-pattern@5.8.0: {}
+  ts-pattern@5.9.0: {}
 
   tsconfig-paths@3.15.0:
     dependencies:
