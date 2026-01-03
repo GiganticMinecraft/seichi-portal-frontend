@@ -43,7 +43,7 @@
   },
   "devDependencies": {
     "@tsconfig/strictest": "^2.0.1",
-    "@types/eslint": "8.56.12",
+    "@types/eslint": "9.6.1",
     "@types/eslint-config-prettier": "^6.11.1",
     "@types/node": "18.19.130",
     "@types/react": "18.3.27",
