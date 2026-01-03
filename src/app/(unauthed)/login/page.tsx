@@ -3,14 +3,14 @@
 import { InteractionStatus } from '@azure/msal-browser';
 import { useMsal } from '@azure/msal-react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense } from 'react';
 import type { SilentRequest } from '@azure/msal-browser';
 
 const loginRequest = {
   scopes: ['XboxLive.signin offline_access'],
 };
 
-const Home = () => {
+const LoginContent = () => {
   const { instance, inProgress, accounts } = useMsal();
   const [isInitialized, setState] = useState(false);
   const router = useRouter();
@@ -67,6 +67,16 @@ const Home = () => {
   }, [inProgress, accounts, isInitialized, instance, router, callbackUrl]);
 
   return <></>;
+};
+
+const Home = () => {
+  return (
+    // useSearchParams は Suspense で囲われている必要がある
+    // https://nextjs.org/docs/messages/missing-suspense-with-csr-bailout
+    <Suspense fallback={<></>}>
+      <LoginContent />
+    </Suspense>
+  );
 };
 
 export default Home;
