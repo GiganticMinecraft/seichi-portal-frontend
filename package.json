@@ -12,7 +12,7 @@
     "fmt": "prettier --check --log-level=warn './**/*.{ts,tsx,css}'",
     "fmt:fix": "prettier --write --log-level=warn './**/*.{ts,tsx,css}'",
     "postinstall": "typesync || :",
-    "pretty": "yarn lint:fix && yarn fmt:fix && yarn build"
+    "pretty": "pnpm lint:fix && pnpm fmt:fix && pnpm build"
   },
   "dependencies": {
     "@azure/msal-browser": "^3.2.0",
@@ -22,11 +22,10 @@
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
     "@hookform/resolvers": "^3.3.4",
-    "@material-ui/core": "^4.12.4",
-    "@mui/icons-material": "^5.14.3",
-    "@mui/material": "^6.4.4",
-    "@mui/material-nextjs": "^5.15.11",
-    "@mui/x-data-grid": "^6.12.1",
+    "@mui/icons-material": "^7.3.7",
+    "@mui/material": "^7.3.7",
+    "@mui/material-nextjs": "^7.3.7",
+    "@mui/x-data-grid": "^7.29.12",
     "browserslist": "^4.23.0",
     "dayjs": "^1.11.9",
     "fp-ts": "^2.16.8",
