@@ -32,7 +32,7 @@ const fetchUser = async (token: string) => {
 // - `/api/proxy` に対するリクエストはすべて seichi-portal-backend に転送すること
 // - `/admin` に対するリクエストを行ったものは `ADMINISTRATOR` であることを保証すること
 export const middleware = async (request: NextRequest) => {
-  const token = await getCachedToken();
+  const token = await getCachedToken(request.cookies);
   if (!token) {
     return NextResponse.redirect(
       `${request.nextUrl.origin}/login?callbackUrl=${request.nextUrl.pathname}`
