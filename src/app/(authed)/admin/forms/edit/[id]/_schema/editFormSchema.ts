@@ -12,7 +12,7 @@ export const questionSchema = z.object({
   is_required: z.boolean(),
 });
 
-const visibility = z.enum(['PUBLIC', 'PRIVATE']);
+const _visibility = z.enum(['PUBLIC', 'PRIVATE']);
 
 export const formSchema = z.object({
   id: z.number(),
@@ -49,4 +49,4 @@ export const formSchema = z.object({
 
 export type Form = z.infer<typeof formSchema>;
 
-export type Visibility = z.infer<typeof visibility>;
+export type Visibility = z.infer<typeof _visibility>;

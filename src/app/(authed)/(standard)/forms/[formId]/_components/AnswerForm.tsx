@@ -144,7 +144,7 @@ const AnswerForm = ({ questions: questions, formId }: Props) => {
             fullWidth
           />
         );
-      case 'SINGLE':
+      case 'SINGLE': {
         // TODO: 選択をリセットできるようにする
         // TODO: 何も選択されなかったとき、APIに送られる値は空文字になるが許容されるか？undefinedやnullでなくてよい？
         const questionId = question.id.toString();
@@ -161,7 +161,7 @@ const AnswerForm = ({ questions: questions, formId }: Props) => {
               });
             }}
             renderValue={() =>
-              !!selectedValues[questionId] ? (
+              selectedValues[questionId] ? (
                 <p>{selectedValues[questionId]}</p>
               ) : (
                 <p>（未選択）</p>
@@ -182,6 +182,7 @@ const AnswerForm = ({ questions: questions, formId }: Props) => {
             })}
           </Select>
         );
+      }
       case 'MULTIPLE':
         return (
           <>
