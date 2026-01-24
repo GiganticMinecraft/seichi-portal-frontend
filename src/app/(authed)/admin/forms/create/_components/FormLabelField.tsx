@@ -40,12 +40,12 @@ const FormLabelField = (props: {
       renderInput={(params) => (
         // @ts-expect-error (解決方法がよくわからないのでとりあえずignoreする)
         // FIXME: あとで調べる
-        (<TextField
+        <TextField
           {...params}
           variant="standard"
           label="フォームラベル設定"
           sx={{ borderBottom: '1px solid #FFFFFF6B' }}
-        />)
+        />
       )}
       onChange={(_event, value) => {
         props.setLabels(

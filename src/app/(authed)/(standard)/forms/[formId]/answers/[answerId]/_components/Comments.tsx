@@ -129,7 +129,8 @@ const SendCommentForm = (props: {
             display: 'flex',
             alignItems: 'flex-end',
           }}
-          size={2}>
+          size={2}
+        >
           <Button variant="contained" endIcon={<SendIcon />} type="submit">
             送信
           </Button>
