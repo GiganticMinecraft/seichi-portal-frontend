@@ -1,6 +1,7 @@
 'use client';
 
 import { Box, Stack } from '@mui/material';
+import { use } from 'react';
 import useSWR from 'swr';
 import ErrorModal from '@/app/_components/ErrorModal';
 import LoadingCircular from '@/app/_components/LoadingCircular';
@@ -15,16 +16,17 @@ import type {
 } from '@/app/api/_schemas/ResponseSchemas';
 import type { Either } from 'fp-ts/lib/Either';
 
-const Home = ({ params }: { params: { userId: string } }) => {
+const Home = ({ params }: { params: Promise<{ userId: string }> }) => {
+  const { userId } = use(params);
   const { data, isLoading } = useSWR<Either<ErrorResponse, GetUsersResponse>>(
-    `/api/proxy/users/${params.userId}`
+    `/api/proxy/users/${userId}`
   );
 
   const {
     data: notificationSettings,
     isLoading: isNotificationSettingsLoading,
   } = useSWR<Either<ErrorResponse, GetNotificationSettingsResponse>>(
-    `/api/proxy/notifications/settings/${params.userId}`
+    `/api/proxy/notifications/settings/${userId}`
   );
 
   if (!data || !notificationSettings) {
@@ -53,7 +55,7 @@ const Home = ({ params }: { params: { userId: string } }) => {
           <Stack>
             <UnlinkDiscordButton />
             <DiscordNotificationSettings
-              userId={params.userId}
+              userId={userId}
               currentSettings={notificationSettings.right}
             />
           </Stack>
