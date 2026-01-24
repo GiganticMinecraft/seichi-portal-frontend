@@ -62,10 +62,7 @@ const Home = ({ params }: { params: Promise<{ answerId: number }> }) => {
           questions={formQuestions.right}
           labels={labels.right}
         />
-        <Comments
-          comments={answers.right.comments}
-          answerId={answerId}
-        />
+        <Comments comments={answers.right.comments} answerId={answerId} />
       </Stack>
     </ThemeProvider>
   );
