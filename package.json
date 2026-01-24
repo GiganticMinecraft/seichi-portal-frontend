@@ -15,9 +15,8 @@
     "pretty": "pnpm lint:fix && pnpm fmt:fix && pnpm build"
   },
   "dependencies": {
-    "@azure/msal-browser": "^3.2.0",
-    "@azure/msal-node": "^2.6.4",
-    "@azure/msal-react": "^2.0.3",
+    "@azure/msal-browser": "^4.28.1",
+    "@azure/msal-react": "^3.0.0",
     "@emotion/cache": "^11.11.0",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
@@ -29,7 +28,6 @@
     "browserslist": "^4.23.0",
     "dayjs": "^1.11.9",
     "fp-ts": "^2.16.8",
-    "msal-react": "^0.1.0",
     "next": "14.2.35",
     "react": "18.3.1",
     "react-dom": "18.3.1",
