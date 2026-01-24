@@ -1,6 +1,7 @@
 'use client';
 
 import { Box } from '@mui/material';
+import { use } from 'react';
 import useSWR from 'swr';
 import ErrorModal from '@/app/_components/ErrorModal';
 import LoadingCircular from '@/app/_components/LoadingCircular';
@@ -12,10 +13,11 @@ import type {
 } from '@/app/api/_schemas/ResponseSchemas';
 import type { Either } from 'fp-ts/lib/Either';
 
-const Home = ({ params }: { params: { formId: number } }) => {
+const Home = ({ params }: { params: Promise<{ formId: number }> }) => {
+  const { formId } = use(params);
   const { data: answers, isLoading: isLoadingAnswers } = useSWR<
     Either<ErrorResponse, GetFormAnswersResponse>
-  >(`/api/proxy/forms/${params.formId}/answers`);
+  >(`/api/proxy/forms/${formId}/answers`);
   const { data: forms, isLoading: isLoadingForms } =
     useSWR<Either<ErrorResponse, GetFormsResponse>>('/api/proxy/forms');
 

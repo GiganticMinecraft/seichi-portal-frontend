@@ -1,6 +1,7 @@
 'use client';
 
 import { CssBaseline, Stack, ThemeProvider } from '@mui/material';
+import { use } from 'react';
 import useSWR from 'swr';
 import ErrorModal from '@/app/_components/ErrorModal';
 import LoadingCircular from '@/app/_components/LoadingCircular';
@@ -15,10 +16,11 @@ import type {
 } from '@/app/api/_schemas/ResponseSchemas';
 import type { Either } from 'fp-ts/lib/Either';
 
-const Home = ({ params }: { params: { answerId: number } }) => {
+const Home = ({ params }: { params: Promise<{ answerId: number }> }) => {
+  const { answerId } = use(params);
   const { data: answers, isLoading: isAnswersLoading } = useSWR<
     Either<ErrorResponse, GetAnswerResponse>
-  >(`/api/proxy/forms/answers/${params.answerId}`, { refreshInterval: 1000 });
+  >(`/api/proxy/forms/answers/${answerId}`, { refreshInterval: 1000 });
 
   const { data: formQuestions, isLoading: isFormQuestionsLoading } = useSWR<
     Either<ErrorResponse, GetQuestionsResponse>
@@ -60,10 +62,7 @@ const Home = ({ params }: { params: { answerId: number } }) => {
           questions={formQuestions.right}
           labels={labels.right}
         />
-        <Comments
-          comments={answers.right.comments}
-          answerId={params.answerId}
-        />
+        <Comments comments={answers.right.comments} answerId={answerId} />
       </Stack>
     </ThemeProvider>
   );

@@ -1,6 +1,7 @@
 'use client';
 
 import { Container, Stack } from '@mui/material';
+import { use } from 'react';
 import useSWR from 'swr';
 import ErrorModal from '@/app/_components/ErrorModal';
 import LoadingCircular from '@/app/_components/LoadingCircular';
@@ -12,10 +13,11 @@ import type {
 } from '@/app/api/_schemas/ResponseSchemas';
 import type { Either } from 'fp-ts/lib/Either';
 
-const Home = ({ params }: { params: { answerId: number } }) => {
+const Home = ({ params }: { params: Promise<{ answerId: number }> }) => {
+  const { answerId } = use(params);
   const { data: messages, isLoading: isMessagesLoading } = useSWR<
     Either<ErrorResponse, GetMessagesResponse>
-  >(`/api/proxy/forms/answers/${params.answerId}/messages`, {
+  >(`/api/proxy/forms/answers/${answerId}/messages`, {
     refreshInterval: 1000,
   });
 
@@ -56,9 +58,9 @@ const Home = ({ params }: { params: { answerId: number } }) => {
           px: { xs: 2, sm: 3 },
         }}
       >
-        <Messages messages={messages.right} answerId={params.answerId} />
+        <Messages messages={messages.right} answerId={answerId} />
       </Container>
-      <InputMessageField answer_id={params.answerId} />
+      <InputMessageField answer_id={answerId} />
     </Stack>
   );
 };

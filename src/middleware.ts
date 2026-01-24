@@ -1,5 +1,3 @@
-'use server';
-
 import { NextResponse, type NextRequest } from 'next/server';
 import { getUsersResponseSchema } from './app/api/_schemas/ResponseSchemas';
 import { BACKEND_SERVER_URL } from './env';

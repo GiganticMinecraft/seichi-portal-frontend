@@ -3,7 +3,7 @@
 import '../../globals.css';
 import { ThemeProvider } from '@emotion/react';
 import { CssBaseline } from '@mui/material';
-import { AppRouterCacheProvider } from '@mui/material-nextjs/v14-appRouter';
+import { AppRouterCacheProvider } from '@mui/material-nextjs/v15-appRouter';
 import { Inter } from 'next/font/google';
 import { SWRConfig } from 'swr';
 import { MsalProvider } from '@/app/_components/MsalProvider';
