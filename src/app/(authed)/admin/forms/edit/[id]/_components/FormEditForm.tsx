@@ -160,7 +160,7 @@ const FormEditForm = (props: {
 
   return (
     <Grid container spacing={2}>
-      <Grid item xs={10}>
+      <Grid size={10}>
         <Container component="form" onSubmit={handleSubmit(onSubmit)}>
           <Stack spacing={2}>
             <Card>
@@ -206,7 +206,7 @@ const FormEditForm = (props: {
           </Stack>
         </Container>
       </Grid>
-      <Grid item xs={2}>
+      <Grid size={2}>
         <Card
           sx={{
             position: 'fixed',

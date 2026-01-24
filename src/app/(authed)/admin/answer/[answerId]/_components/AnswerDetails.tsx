@@ -125,11 +125,11 @@ const AnswerLabels = (props: {
       renderInput={(params) => (
         // @ts-expect-error (解決方法がよくわからないのでとりあえずignoreする)
         // FIXME: あとで調べる
-        <TextField
+        (<TextField
           {...params}
           variant="standard"
           sx={{ borderBottom: '1px solid #FFFFFF6B' }}
-        />
+        />)
       )}
       onChange={async (_event, value) => {
         await onChangeLabels(
@@ -146,19 +146,19 @@ const AnswerMeta = (props: {
 }) => {
   return (
     <Grid container spacing={2}>
-      <Grid item xs={6}>
+      <Grid size={6}>
         <Typography sx={{ fontWeight: 'bold' }}>回答者</Typography>
         {props.answers.user.name}
       </Grid>
-      <Grid item xs={6}>
+      <Grid size={6}>
         <Typography sx={{ fontWeight: 'bold' }}>回答日時</Typography>
         {formatString(props.answers.timestamp)}
       </Grid>
-      <Grid item xs={6}>
+      <Grid size={6}>
         <Typography sx={{ fontWeight: 'bold' }}>ラベル</Typography>
         <AnswerLabels labelOptions={props.labels} answers={props.answers} />
       </Grid>
-      <Grid item xs={6}>
+      <Grid size={6}>
         <Stack spacing={2} direction="row">
           <Button
             variant="contained"

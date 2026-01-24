@@ -40,7 +40,7 @@ const InputMessageField = (props: { answer_id: number }) => {
   return (
     <Container component="form" onSubmit={handleSubmit(onSubmit)}>
       <Grid container>
-        <Grid item xs={11}>
+        <Grid size={11}>
           <TextField
             {...register('body')}
             label="メッセージを入力してください"
@@ -72,13 +72,13 @@ const InputMessageField = (props: { answer_id: number }) => {
             required
           />
         </Grid>
-        <Grid item xs={1} container alignItems="center" justifyContent="center">
+        <Grid container alignItems="center" justifyContent="center" size={1}>
           <Button variant="contained" endIcon={<SendIcon />} type="submit">
             送信
           </Button>
         </Grid>
         {sendFailedMessage && (
-          <Grid item xs={12}>
+          <Grid size={12}>
             <Typography sx={{ fontSize: '12px', marginTop: '10px' }}>
               {sendFailedMessage}
             </Typography>

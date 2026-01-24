@@ -41,7 +41,7 @@ export const Forms = ({ forms }: Props) => {
     <Grid container spacing={2}>
       {forms.map((form, index) => {
         return (
-          <Grid item key={index}>
+          <Grid key={index}>
             <Card
               sx={{
                 width: 320,

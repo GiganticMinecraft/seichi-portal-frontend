@@ -98,13 +98,13 @@ const Message = (props: {
 
   return (
     <Grid container spacing={2}>
-      <Grid item xs={1}>
+      <Grid size={1}>
         <Avatar
           alt="PlayerHead"
           src={`https://mc-heads.net/avatar/${props.message.sender.name}`}
         />
       </Grid>
-      <Grid item xs={9}>
+      <Grid size={9}>
         <Stack>
           <Stack
             direction="row"
@@ -126,7 +126,7 @@ const Message = (props: {
           <Typography>{formatString(props.message.timestamp)}</Typography>
         </Stack>
       </Grid>
-      <Grid item xs={2}>
+      <Grid size={2}>
         <IconButton
           color="primary"
           onClick={(event: React.MouseEvent<HTMLElement>) =>
@@ -144,8 +144,8 @@ const Message = (props: {
         <MenuItem onClick={() => props.handleEdit()}>編集</MenuItem>
         <MenuItem onClick={deleteMessage}>削除</MenuItem>
       </Menu>
-      <Grid item xs={1}></Grid>
-      <Grid item xs={11}>
+      <Grid size={1}></Grid>
+      <Grid size={11}>
         {props.edittingMessageId === props.message.id ? (
           <TextField
             defaultValue={props.message.body}
@@ -193,8 +193,8 @@ const Message = (props: {
       </Grid>
       {operationResultMessage === undefined ? null : (
         <Box sx={{ width: '100%' }}>
-          <Grid item xs={1}></Grid>
-          <Grid xs={11}>
+          <Grid size={1}></Grid>
+          <Grid size={11}>
             <Typography
               sx={{ color: '#FF2D2D', fontSize: '12px', marginTop: '10px' }}
             >

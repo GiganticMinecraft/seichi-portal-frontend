@@ -31,13 +31,13 @@ const Comment = (props: {
 }) => {
   return (
     <Grid container spacing={2}>
-      <Grid item xs={1}>
+      <Grid size={1}>
         <Avatar
           alt="PlayerHead"
           src={`https://mc-heads.net/avatar/${props.comment.commented_by.name}`}
         />
       </Grid>
-      <Grid item xs={11}>
+      <Grid size={11}>
         <Stack>
           <Stack
             direction="row"
@@ -61,8 +61,8 @@ const Comment = (props: {
           <Typography>{formatString(props.comment.timestamp)}</Typography>
         </Stack>
       </Grid>
-      <Grid item xs={1} />
-      <Grid item xs={11}>
+      <Grid size={1} />
+      <Grid size={11}>
         <TextField
           {...props.register('comment_id')}
           value={props.comment.comment_id}
@@ -70,7 +70,7 @@ const Comment = (props: {
         />
         <Typography>{props.comment.content}</Typography>
       </Grid>
-      <Grid item xs={12}>
+      <Grid size={12}>
         <Divider />
       </Grid>
     </Grid>
@@ -98,7 +98,7 @@ const SendCommentForm = (props: {
   return (
     <Container component="form" onSubmit={props.handleSubmit(onSubmit)}>
       <Grid container spacing={2}>
-        <Grid item xs={10}>
+        <Grid size={10}>
           <TextField
             {...props.register('answer_id')}
             value={props.answerId}
@@ -125,13 +125,11 @@ const SendCommentForm = (props: {
           />
         </Grid>
         <Grid
-          item
-          xs={2}
           sx={{
             display: 'flex',
             alignItems: 'flex-end',
           }}
-        >
+          size={2}>
           <Button variant="contained" endIcon={<SendIcon />} type="submit">
             送信
           </Button>

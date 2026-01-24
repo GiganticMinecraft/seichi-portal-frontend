@@ -52,14 +52,14 @@ const Home = () => {
 
   return (
     <Grid container direction="column" justifyContent="flex-start" spacing={4}>
-      <Grid item>
+      <Grid>
         <Grid
           container
           spacing={2}
           direction="row"
           justifyContent="space-between"
         >
-          <Grid item xs="auto">
+          <Grid size="auto">
             <Stack direction="row">
               <FormLabelFilter
                 labelOptions={labels.right}
@@ -68,12 +68,12 @@ const Home = () => {
               <ToManageFormLabelButton />
             </Stack>
           </Grid>
-          <Grid item xs={2}>
+          <Grid size={2}>
             <FormCreateButton />
           </Grid>
         </Grid>
       </Grid>
-      <Grid item>
+      <Grid>
         <Forms forms={filteredForms} />
       </Grid>
     </Grid>
