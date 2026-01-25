@@ -4,7 +4,8 @@
       "WebSearch",
       "Bash(pnpm install:*)",
       "Bash(pnpm build:*)",
-      "Bash(pnpm lint:*)"
+      "Bash(pnpm lint:*)",
+      "WebFetch(domain:zod.dev)"
     ]
   }
 }

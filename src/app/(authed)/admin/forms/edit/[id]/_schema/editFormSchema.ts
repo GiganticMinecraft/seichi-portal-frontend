@@ -42,8 +42,8 @@ export const formSchema = z.object({
     answer_visibility: z.enum(['PUBLIC', 'PRIVATE']),
   }),
   metadata: z.object({
-    created_at: z.string().datetime(),
-    updated_at: z.string().datetime(),
+    created_at: z.iso.datetime(),
+    updated_at: z.iso.datetime(),
   }),
 });
 
