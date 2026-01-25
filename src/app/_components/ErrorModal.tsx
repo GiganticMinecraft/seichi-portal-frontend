@@ -5,15 +5,13 @@ import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
 import Typography from '@mui/material/Typography';
 import dayjs from 'dayjs';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 const ErrorModal = () => {
-  const [timestamp, setTimestamp] = useState<string>();
-  const [path, setPath] = useState<string>();
-  useEffect(() => {
-    setTimestamp(dayjs().format());
-    setPath(window.location.href);
-  }, []);
+  const [timestamp] = useState(() => dayjs().format());
+  const [path] = useState(() =>
+    typeof window !== 'undefined' ? window.location.href : ''
+  );
 
   return (
     <Modal open={true}>
