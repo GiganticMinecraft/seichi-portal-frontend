@@ -1,7 +1,7 @@
 'use client';
 
 import { Grid, Stack } from '@mui/material';
-import { useEffect, useState } from 'react';
+import { useMemo, useState } from 'react';
 import useSWR from 'swr';
 import ErrorModal from '@/app/_components/ErrorModal';
 import LoadingCircular from '@/app/_components/LoadingCircular';
@@ -23,20 +23,15 @@ const Home = () => {
     Either<ErrorResponse, GetFormLabelsResponse>
   >('/api/proxy/forms/labels/forms');
   const [labelFilter, setLabelFilter] = useState<GetFormLabelsResponse>([]);
-  const [filteredForms, setFilteredForms] = useState<GetFormsResponse>([]);
 
-  useEffect(() => {
-    if (forms?._tag === 'Right' && labelFilter.length === 0) {
-      setFilteredForms(forms.right);
-    } else if (forms?._tag === 'Right' && labelFilter.length !== 0) {
-      setFilteredForms(
-        forms.right.filter((form) =>
-          labelFilter.every((label) =>
-            form.labels.map((label) => label.id).includes(label.id)
-          )
-        )
-      );
-    }
+  const filteredForms = useMemo(() => {
+    if (forms?._tag !== 'Right') return [];
+    if (labelFilter.length === 0) return forms.right;
+    return forms.right.filter((form) =>
+      labelFilter.every((label) =>
+        form.labels.map((l) => l.id).includes(label.id)
+      )
+    );
   }, [labelFilter, forms]);
 
   if (!forms || !labels) {

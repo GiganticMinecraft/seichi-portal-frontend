@@ -4,20 +4,16 @@ import {
   AuthenticatedTemplate,
   UnauthenticatedTemplate,
 } from '@azure/msal-react';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { MsalProvider } from '@/app/_components/MsalProvider';
 import { DEBUG_MODE } from '@/env';
 import MainMenu from './_components/MainMenu';
 import { NeedToSignin } from './_components/NeedToSignin';
 
 const Home = () => {
-  const [isDebugMode, setDebugMode] = useState(false);
-
-  useEffect(() => {
-    if (process.env.NODE_ENV == 'development' && DEBUG_MODE) {
-      setDebugMode(true);
-    }
-  }, []);
+  const [isDebugMode] = useState(
+    () => process.env.NODE_ENV === 'development' && DEBUG_MODE
+  );
 
   if (isDebugMode) {
     return <MainMenu />;
