@@ -3,7 +3,7 @@ import { getUsersResponseSchema } from './app/api/_schemas/ResponseSchemas';
 import { BACKEND_SERVER_URL } from './env';
 import { getCachedToken } from './user-token/mcToken';
 
-const proxy = (request: NextRequest, token: string) => {
+const proxyToBackend = (request: NextRequest, token: string) => {
   const nextResponse = NextResponse.rewrite(
     `${BACKEND_SERVER_URL}${request.nextUrl.pathname.replace(
       '/api/proxy',
@@ -31,7 +31,7 @@ const fetchUser = async (token: string) => {
 // - ミドルウェアを経由する処理はすべてログイン済みであることを保証すること(トークンが取得できる)
 // - `/api/proxy` に対するリクエストはすべて seichi-portal-backend に転送すること
 // - `/admin` に対するリクエストを行ったものは `ADMINISTRATOR` であることを保証すること
-export const middleware = async (request: NextRequest) => {
+export const proxy = async (request: NextRequest) => {
   const token = await getCachedToken(request.cookies);
   if (!token) {
     return NextResponse.redirect(
@@ -40,7 +40,7 @@ export const middleware = async (request: NextRequest) => {
   }
 
   if (request.nextUrl.pathname.startsWith('/api/proxy')) {
-    return proxy(request, token);
+    return proxyToBackend(request, token);
   }
 
   const pathName = request.nextUrl.pathname.toLowerCase();
