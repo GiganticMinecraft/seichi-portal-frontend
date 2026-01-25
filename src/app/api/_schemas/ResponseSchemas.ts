@@ -18,8 +18,8 @@ export const getFormsResponseSchema = z
     title: z.string(),
     description: z.string(),
     response_period: z.object({
-      start_at: z.string().datetime(),
-      end_at: z.string().datetime(),
+      start_at: z.iso.datetime(),
+      end_at: z.iso.datetime(),
     }),
     labels: z
       .object({
@@ -68,8 +68,8 @@ export const getFormResponseSchema = z.object({
     default_answer_title: z.string().nullable(),
   }),
   metadata: z.object({
-    created_at: z.string().datetime(),
-    updated_at: z.string().datetime(),
+    created_at: z.iso.datetime(),
+    updated_at: z.iso.datetime(),
   }),
   labels: z
     .object({
@@ -104,7 +104,7 @@ export const getAnswersResponseSchema = z
       name: z.string(),
       role: z.enum(['ADMINISTRATOR', 'STANDARD_USER']),
     }),
-    timestamp: z.string().datetime(),
+    timestamp: z.iso.datetime(),
     form_id: z.string().uuid(),
     title: z.string(),
     answers: z
@@ -117,7 +117,7 @@ export const getAnswersResponseSchema = z
       .object({
         comment_id: z.number(),
         content: z.string(),
-        timestamp: z.string().datetime(),
+        timestamp: z.iso.datetime(),
         commented_by: z.object({
           uuid: z.string(),
           name: z.string(),
@@ -145,7 +145,7 @@ export const getFormAnswersResponseSchema = z
       name: z.string(),
       role: z.enum(['ADMINISTRATOR', 'STANDARD_USER']),
     }),
-    timestamp: z.string().datetime(),
+    timestamp: z.iso.datetime(),
     form_id: z.string().uuid(),
     title: z.string(),
     answers: z
@@ -158,7 +158,7 @@ export const getFormAnswersResponseSchema = z
       .object({
         comment_id: z.number(),
         content: z.string(),
-        timestamp: z.string().datetime(),
+        timestamp: z.iso.datetime(),
         commented_by: z.object({
           uuid: z.string(),
           name: z.string(),
@@ -209,7 +209,7 @@ export const getAnswerResponseSchema = z.object({
     name: z.string(),
     role: z.enum(['ADMINISTRATOR', 'STANDARD_USER']),
   }),
-  timestamp: z.string().datetime(),
+  timestamp: z.iso.datetime(),
   form_id: z.string().uuid(),
   title: z.string(),
   answers: z
@@ -222,7 +222,7 @@ export const getAnswerResponseSchema = z.object({
     .object({
       comment_id: z.number(),
       content: z.string(),
-      timestamp: z.string().datetime(),
+      timestamp: z.iso.datetime(),
       commented_by: z.object({
         uuid: z.string(),
         name: z.string(),
@@ -250,7 +250,7 @@ export const getMessagesResponseSchema = z
       name: z.string(),
       role: z.enum(['ADMINISTRATOR', 'STANDARD_USER']),
     }),
-    timestamp: z.string().datetime(),
+    timestamp: z.iso.datetime(),
   })
   .array();
 
@@ -286,8 +286,8 @@ export const searchResponseSchema = z.object({
       title: z.string(),
       description: z.string(),
       response_period: z.object({
-        start_at: z.string().datetime(),
-        end_at: z.string().datetime(),
+        start_at: z.iso.datetime(),
+        end_at: z.iso.datetime(),
       }),
       labels: z
         .object({

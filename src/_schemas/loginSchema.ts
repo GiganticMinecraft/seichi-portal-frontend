@@ -3,7 +3,9 @@ import { z } from 'zod';
 export const xboxLiveServiceTokenResponseSchema = z.object({
   Token: z.string(),
   DisplayClaims: z.object({
-    xui: z.array(z.object({ uhs: z.string() })).nonempty(),
+    xui: z
+      .tuple([z.object({ uhs: z.string() })])
+      .rest(z.object({ uhs: z.string() })),
   }),
 });
 
