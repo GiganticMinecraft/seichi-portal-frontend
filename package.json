@@ -15,8 +15,8 @@
     "pretty": "pnpm lint:fix && pnpm fmt:fix && pnpm build"
   },
   "dependencies": {
-    "@azure/msal-browser": "^4.28.1",
-    "@azure/msal-react": "^3.0.0",
+    "@azure/msal-browser": "^5.0.0",
+    "@azure/msal-react": "^5.0.0",
     "@emotion/cache": "^11.11.0",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
