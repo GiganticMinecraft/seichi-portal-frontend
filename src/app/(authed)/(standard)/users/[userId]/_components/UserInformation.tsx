@@ -7,7 +7,7 @@ const UserInformation = (props: { user: GetUsersResponse }) => {
       <Grid size={2}>Minecraft ユーザー名: </Grid>
       <Grid size={2}>{props.user.name}</Grid>
       <Grid size={2}>Minecraft UUID: </Grid>
-      <Grid size={6}>{props.user.uuid}</Grid>
+      <Grid size={6}>{props.user.id}</Grid>
       <Grid size={2}>Discord ユーザー名: </Grid>
       <Grid size={2}>
         {!props.user.discord_username ? '未設定' : props.user.discord_username}

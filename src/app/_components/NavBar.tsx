@@ -60,7 +60,7 @@ const NavBar = () => {
                     alt="PlayerHead"
                     src={
                       data
-                        ? `https://mc-heads.net/avatar/${data.right.uuid}`
+                        ? `https://mc-heads.net/avatar/${data.right.id}`
                         : ''
                     }
                     sx={{ marginLeft: '20px' }}
@@ -78,7 +78,7 @@ const NavBar = () => {
                     </MenuItem>
                     <MenuItem>
                       <Link
-                        href={`/users/${data.right.uuid}`}
+                        href={`/users/${data.right.id}`}
                         color="inherit"
                         sx={{ textDecoration: 'none' }}
                       >
