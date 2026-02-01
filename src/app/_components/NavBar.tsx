@@ -59,9 +59,7 @@ const NavBar = () => {
                   <Avatar
                     alt="PlayerHead"
                     src={
-                      data
-                        ? `https://mc-heads.net/avatar/${data.right.id}`
-                        : ''
+                      data ? `https://mc-heads.net/avatar/${data.right.id}` : ''
                     }
                     sx={{ marginLeft: '20px' }}
                     onClick={(event: React.MouseEvent<HTMLElement>) =>
