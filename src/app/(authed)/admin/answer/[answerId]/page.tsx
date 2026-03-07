@@ -9,6 +9,7 @@ import AnswerDetails from './_components/AnswerDetails';
 import Comments from './_components/Comments';
 import adminDashboardTheme from '../../theme/adminDashboardTheme';
 import type {
+  AnswerCommentType,
   GetAnswerLabelsResponse,
   GetAnswerResponse,
   GetQuestionsResponse,
@@ -63,8 +64,7 @@ const Home = ({ params }: { params: Promise<{ answerId: number }> }) => {
           questions={formQuestions}
           labels={labels}
         />
-        {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-        <Comments comments={answers.comments as any} answerId={answerId} />
+        <Comments comments={answers.comments as AnswerCommentType[]} answerId={answerId} />
       </Stack>
     </ThemeProvider>
   );

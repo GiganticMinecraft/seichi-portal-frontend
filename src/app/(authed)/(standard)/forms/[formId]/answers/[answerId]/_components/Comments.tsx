@@ -6,18 +6,10 @@ import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 import { useForm } from 'react-hook-form';
 import { formatString } from '@/generic/DateFormatter';
+import type { AnswerCommentType } from '@/lib/api-types';
 import type { UseFormHandleSubmit, UseFormRegister } from 'react-hook-form';
 
-type Comment = {
-  comment_id: number;
-  timestamp: string;
-  content: string;
-  commented_by: {
-    uuid: string;
-    name: string;
-    role: 'ADMINISTRATOR' | 'STANDARD_USER';
-  };
-};
+type Comment = AnswerCommentType;
 
 type SendCommentSchema = {
   answer_id: string;

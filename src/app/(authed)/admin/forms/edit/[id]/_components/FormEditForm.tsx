@@ -12,8 +12,12 @@ import {
   Stack,
 } from '@mui/material';
 import { useState } from 'react';
+import { z } from 'zod';
 import { useFieldArray, useForm, useWatch } from 'react-hook-form';
 import { fromStringToJSTDateTime } from '@/generic/DateFormatter';
+
+const questionTypeSchema = z.enum(['TEXT', 'SINGLE', 'MULTIPLE']);
+const formVisibilitySchema = z.enum(['PUBLIC', 'PRIVATE']);
 import FormSettings from './FormSettings';
 import QuestionComponent from './Question';
 import type { Form } from '../_schema/editFormSchema';
@@ -45,7 +49,10 @@ const FormEditForm = (props: {
           id: question.id ?? null,
           title: question.title,
           description: question.description ?? '',
-          question_type: question.question_type as 'TEXT' | 'SINGLE' | 'MULTIPLE',
+          question_type: (() => {
+            const result = questionTypeSchema.safeParse(question.question_type);
+            return result.success ? result.data : 'TEXT';
+          })(),
           is_required: question.is_required,
           choices: question.choices.map((choice) => {
             return {
@@ -61,7 +68,10 @@ const FormEditForm = (props: {
           end_at: end_at ? fromStringToJSTDateTime(end_at) : null,
         },
         webhook_url: props.form.settings.webhook_url ?? null,
-        visibility: props.form.settings.visibility as 'PUBLIC' | 'PRIVATE',
+        visibility: (() => {
+          const result = formVisibilitySchema.safeParse(props.form.settings.visibility);
+          return result.success ? result.data : 'PUBLIC';
+        })(),
         default_answer_title: props.form.settings.answer_settings.default_answer_title ?? null,
         answer_visibility: props.form.settings.answer_settings.visibility,
       },

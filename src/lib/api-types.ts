@@ -7,6 +7,17 @@ export const errorResponseSchema = z.object({
 });
 
 export type ErrorResponse = z.infer<typeof errorResponseSchema>;
+
+// AnswerComment の生成スキーマに comment_id が欠落しているため、拡張型を定義する
+export type AnswerCommentType = z.infer<typeof schemas.AnswerComment> & {
+  comment_id: number;
+};
+
+// CrossSearchResult の各フィールドは z.unknown() のため、実際の型を定義する
+export const searchFormItemSchema = z.object({ title: z.string(), id: z.string() });
+export const searchAnswerItemSchema = z.object({ answer: z.string(), answer_id: z.string() });
+export const searchUserItemSchema = z.object({ name: z.string() });
+export const searchLabelItemSchema = z.object({ name: z.string() });
 export type GetQuestionsResponse = z.infer<
   typeof schemas.QuestionResponseSchema
 >[];

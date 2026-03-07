@@ -6,6 +6,12 @@ import { DataGrid } from '@mui/x-data-grid';
 import { useRouter } from 'next/navigation';
 import useSWR from 'swr';
 import ErrorModal from '@/app/_components/ErrorModal';
+import {
+  searchAnswerItemSchema,
+  searchFormItemSchema,
+  searchLabelItemSchema,
+  searchUserItemSchema,
+} from '@/lib/api-types';
 import type { SearchResponse } from '@/lib/api-types';
 import type {
   GridColDef,
@@ -50,40 +56,35 @@ const SearchResult = (props: {
     assert(data);
 
     return [
-      (data.forms as { title: string; id: string }[]).map((form) => {
-        return {
-          category: 'フォーム',
-          title: form.title,
-          url: `/admin/forms/edit/${form.id}`,
-        };
+      data.forms.flatMap((form) => {
+        const result = searchFormItemSchema.safeParse(form);
+        return result.success
+          ? [{ category: 'フォーム' as const, title: result.data.title, url: `/admin/forms/edit/${result.data.id}` }]
+          : [];
       }),
-      (data.answers as { answer: string; answer_id: string }[]).map((answer) => {
-        return {
-          category: '回答',
-          title: answer.answer,
-          url: `/admin/answer/${answer.answer_id}`,
-        };
+      data.answers.flatMap((answer) => {
+        const result = searchAnswerItemSchema.safeParse(answer);
+        return result.success
+          ? [{ category: '回答' as const, title: result.data.answer, url: `/admin/answer/${result.data.answer_id}` }]
+          : [];
       }),
-      (data.users as { name: string }[]).map((user) => {
-        return {
-          category: 'ユーザー',
-          title: user.name,
-          url: `/admin/users/`,
-        };
+      data.users.flatMap((user) => {
+        const result = searchUserItemSchema.safeParse(user);
+        return result.success
+          ? [{ category: 'ユーザー' as const, title: result.data.name, url: `/admin/users/` }]
+          : [];
       }),
-      (data.label_for_forms as { name: string }[]).map((label) => {
-        return {
-          category: 'フォーム用ラベル',
-          title: label.name,
-          url: `/admin/labels/forms`,
-        };
+      data.label_for_forms.flatMap((label) => {
+        const result = searchLabelItemSchema.safeParse(label);
+        return result.success
+          ? [{ category: 'フォーム用ラベル' as const, title: result.data.name, url: `/admin/labels/forms` }]
+          : [];
       }),
-      (data.label_for_answers as { name: string }[]).map((label) => {
-        return {
-          category: '回答用ラベル',
-          title: label.name,
-          url: `/admin/labels/answers`,
-        };
+      data.label_for_answers.flatMap((label) => {
+        const result = searchLabelItemSchema.safeParse(label);
+        return result.success
+          ? [{ category: '回答用ラベル' as const, title: result.data.name, url: `/admin/labels/answers` }]
+          : [];
       }),
       data.comments.map((comment) => ({
         category: 'コメント',

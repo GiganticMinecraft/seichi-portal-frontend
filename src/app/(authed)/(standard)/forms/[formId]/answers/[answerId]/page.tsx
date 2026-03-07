@@ -9,6 +9,7 @@ import AnswerDetails from './_components/AnswerDetails';
 import AnswerMeta from './_components/AnswerMeta';
 import Comments from './_components/Comments';
 import type {
+  AnswerCommentType,
   GetAnswerResponse,
   GetQuestionsResponse,
 } from '@/lib/api-types';
@@ -55,8 +56,7 @@ const Home = ({
       <Typography variant="h4">{answer.title}</Typography>
       <AnswerMeta answer={answer} />
       <AnswerDetails answer={answer} questions={formQuestions} />
-      {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-      <Comments comments={answer.comments as any} answerId={answer.id} />
+      <Comments comments={answer.comments as AnswerCommentType[]} answerId={answer.id} />
     </Stack>
   );
 };
