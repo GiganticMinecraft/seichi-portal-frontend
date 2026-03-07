@@ -12,7 +12,7 @@ import { useForm } from 'react-hook-form';
 import type {
   GetNotificationSettingsResponse,
   UpdateNotificationSettingsSchema,
-} from '@/lib/api-schema-types';
+} from '@/lib/api-types';
 
 const DiscordNotificationSettings = (props: {
   currentSettings: GetNotificationSettingsResponse;

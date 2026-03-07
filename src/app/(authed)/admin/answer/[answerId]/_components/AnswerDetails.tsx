@@ -16,7 +16,7 @@ import type {
   GetAnswerLabelsResponse,
   GetAnswerResponse,
   GetQuestionsResponse,
-} from '@/lib/api-schema-types';
+} from '@/lib/api-types';
 
 const AnswerTitleForm = (props: { answers: GetAnswerResponse }) => {
   const { handleSubmit, register } = useForm<{ title: string }>();

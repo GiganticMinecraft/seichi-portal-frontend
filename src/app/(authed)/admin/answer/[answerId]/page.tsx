@@ -12,7 +12,7 @@ import type {
   GetAnswerLabelsResponse,
   GetAnswerResponse,
   GetQuestionsResponse,
-} from '@/lib/api-schema-types';
+} from '@/lib/api-types';
 
 const Home = ({ params }: { params: Promise<{ answerId: number }> }) => {
   const { answerId } = use(params);
@@ -63,7 +63,8 @@ const Home = ({ params }: { params: Promise<{ answerId: number }> }) => {
           questions={formQuestions}
           labels={labels}
         />
-        <Comments comments={answers.comments} answerId={answerId} />
+        {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+        <Comments comments={answers.comments as any} answerId={answerId} />
       </Stack>
     </ThemeProvider>
   );

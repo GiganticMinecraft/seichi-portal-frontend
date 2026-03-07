@@ -1,5 +1,5 @@
 import Grid from '@mui/material/Grid';
-import type { GetUsersResponse } from '@/lib/api-schema-types';
+import type { GetUsersResponse } from '@/lib/api-types';
 
 const UserInformation = (props: { user: GetUsersResponse }) => {
   return (
@@ -7,14 +7,14 @@ const UserInformation = (props: { user: GetUsersResponse }) => {
       <Grid size={2}>Minecraft ユーザー名: </Grid>
       <Grid size={2}>{props.user.name}</Grid>
       <Grid size={2}>Minecraft UUID: </Grid>
-      <Grid size={6}>{props.user.id}</Grid>
+      <Grid size={6}>{props.user.uuid}</Grid>
       <Grid size={2}>Discord ユーザー名: </Grid>
       <Grid size={2}>
-        {!props.user.discord_username ? '未設定' : props.user.discord_username}
+        {!props.user['discord_username'] ? '未設定' : String(props.user['discord_username'])}
       </Grid>
       <Grid size={2}>Discord ID: </Grid>
       <Grid size={6}>
-        {!props.user.discord_user_id ? '未設定' : props.user.discord_user_id}
+        {!props.user['discord_user_id'] ? '未設定' : String(props.user['discord_user_id'])}
       </Grid>
     </Grid>
   );

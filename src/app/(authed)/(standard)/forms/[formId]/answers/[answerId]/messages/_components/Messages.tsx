@@ -15,7 +15,7 @@ import {
 import { useState } from 'react';
 import Markdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-import { errorResponseSchema } from '@/lib/api-schema-types';
+import { errorResponseSchema } from '@/lib/api-types';
 import { formatString } from '@/generic/DateFormatter';
 
 type Message = {
@@ -24,7 +24,7 @@ type Message = {
   sender: {
     uuid: string;
     name: string;
-    role: 'ADMINISTRATOR' | 'STANDARD_USER';
+    role: string;
   };
   timestamp: string;
 };

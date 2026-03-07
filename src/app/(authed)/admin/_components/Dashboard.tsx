@@ -9,7 +9,7 @@ import {
 import { useRouter } from 'next/navigation';
 import * as React from 'react';
 import { formatString } from '@/generic/DateFormatter';
-import type { GetAnswerResponse } from '@/lib/api-schema-types';
+import type { GetAnswerResponse } from '@/lib/api-types';
 
 const columns: GridColDef[] = [
   { field: 'category', headerName: '種別', width: 200 },
@@ -33,7 +33,7 @@ const prepareRows = (
     const row: Row = {
       id: answer.id,
       category: answer.form_title,
-      title: answer.title,
+      title: answer.title ?? '',
       date: formatString(answer.timestamp),
     };
     return row;

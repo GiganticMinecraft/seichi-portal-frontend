@@ -17,7 +17,7 @@ import { apiClient } from '@/lib/apiClient';
 import FormSettings from './FormSettings';
 import QuestionComponent from './Question';
 import type { Form } from '../_schema/createFormSchema';
-import type { GetFormLabelsResponse } from '@/lib/api-schema-types';
+import type { GetFormLabelsResponse } from '@/lib/api-types';
 
 const FormCreateForm = (props: { labelOptions: GetFormLabelsResponse }) => {
   const {

@@ -15,7 +15,7 @@ import {
   Button,
 } from '@mui/material';
 import { formatString } from '@/generic/DateFormatter';
-import type { GetFormsResponse } from '@/lib/api-schema-types';
+import type { GetFormsResponse } from '@/lib/api-types';
 
 const formatResponsePeriod = (startAt: string | null, endAt: string | null) => {
   if (startAt != null && endAt != null) {
@@ -25,18 +25,10 @@ const formatResponsePeriod = (startAt: string | null, endAt: string | null) => {
   }
 };
 
-type Form = {
-  id: string;
-  title: string;
-  description: string;
-  response_period: {
-    start_at: string | null;
-    end_at: string | null;
-  };
-  answer_visibility: 'PUBLIC' | 'PRIVATE';
-};
+type FormItem = GetFormsResponse[number];
 
-const EachForm = ({ form }: { form: Form }) => {
+const EachForm = ({ form }: { form: FormItem }) => {
+  const responsePeriod = form.settings.answer_settings.response_period;
   return (
     <Box sx={{ minWidth: 275 }}>
       <Card variant="outlined">
@@ -46,8 +38,8 @@ const EachForm = ({ form }: { form: Form }) => {
           </Typography>
           <Typography color="text.secondary">
             {formatResponsePeriod(
-              form.response_period.start_at,
-              form.response_period.end_at
+              responsePeriod.start_at ?? null,
+              responsePeriod.end_at ?? null
             )}
           </Typography>
           {form.description && (

@@ -5,7 +5,7 @@ import useSWR from 'swr';
 import ErrorModal from '@/app/_components/ErrorModal';
 import LoadingCircular from '@/app/_components/LoadingCircular';
 import AnswerForm from './_components/AnswerForm';
-import type { GetQuestionsResponse } from '@/lib/api-schema-types';
+import type { GetQuestionsResponse } from '@/lib/api-types';
 
 const Home = ({ params }: { params: Promise<{ formId: string }> }) => {
   const { formId } = use(params);

@@ -9,7 +9,7 @@ import AnswerList from './_components/AnswerList';
 import type {
   GetFormAnswersResponse,
   GetFormsResponse,
-} from '@/lib/api-schema-types';
+} from '@/lib/api-types';
 
 const Home = ({ params }: { params: Promise<{ formId: number }> }) => {
   const { formId } = use(params);

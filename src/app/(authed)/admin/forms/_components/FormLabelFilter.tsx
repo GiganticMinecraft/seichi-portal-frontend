@@ -2,7 +2,7 @@ import Autocomplete from '@mui/material/Autocomplete';
 import Box from '@mui/material/Box';
 import Chip from '@mui/material/Chip';
 import TextField from '@mui/material/TextField';
-import type { GetFormLabelsResponse } from '@/lib/api-schema-types';
+import type { GetFormLabelsResponse } from '@/lib/api-types';
 import type { Dispatch, SetStateAction } from 'react';
 
 const FormLabelFilter = (props: {

@@ -8,7 +8,7 @@ import LoadingCircular from '@/app/_components/LoadingCircular';
 import InputMessageField from './_components/InputMessageField';
 import Messages from './_components/Messages';
 import adminDashboardTheme from '../../../theme/adminDashboardTheme';
-import type { GetMessagesResponse } from '@/lib/api-schema-types';
+import type { GetMessagesResponse } from '@/lib/api-types';
 
 const Home = ({ params }: { params: Promise<{ answerId: number }> }) => {
   const { answerId } = use(params);

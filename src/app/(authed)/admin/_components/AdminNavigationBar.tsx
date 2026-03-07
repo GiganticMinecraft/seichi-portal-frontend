@@ -17,7 +17,7 @@ import { useState } from 'react';
 import useSWR from 'swr';
 import ErrorModal from '@/app/_components/ErrorModal';
 import SearchResult from './SearchResult';
-import type { GetUsersResponse } from '@/lib/api-schema-types';
+import type { GetUsersResponse } from '@/lib/api-types';
 
 const SearchField = () => {
   const [openSearchResultModal, setOpenSearchResultModal] = useState(false);
@@ -99,7 +99,7 @@ const NavBar = () => {
           <SearchField />
           <Avatar
             alt="PlayerHead"
-            src={data ? `https://mc-heads.net/avatar/${data.id}` : ''}
+            src={data ? `https://mc-heads.net/avatar/${data.uuid}` : ''}
             sx={{ marginLeft: '20px' }}
           />
         </Toolbar>

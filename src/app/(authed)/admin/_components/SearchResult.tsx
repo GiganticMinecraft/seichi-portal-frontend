@@ -6,7 +6,7 @@ import { DataGrid } from '@mui/x-data-grid';
 import { useRouter } from 'next/navigation';
 import useSWR from 'swr';
 import ErrorModal from '@/app/_components/ErrorModal';
-import type { SearchResponse } from '@/lib/api-schema-types';
+import type { SearchResponse } from '@/lib/api-types';
 import type {
   GridColDef,
   GridEventListener,
@@ -50,35 +50,35 @@ const SearchResult = (props: {
     assert(data);
 
     return [
-      data.forms.map((form) => {
+      (data.forms as { title: string; id: string }[]).map((form) => {
         return {
           category: 'フォーム',
           title: form.title,
           url: `/admin/forms/edit/${form.id}`,
         };
       }),
-      data.answers.map((answer) => {
+      (data.answers as { answer: string; answer_id: string }[]).map((answer) => {
         return {
           category: '回答',
           title: answer.answer,
           url: `/admin/answer/${answer.answer_id}`,
         };
       }),
-      data.users.map((user) => {
+      (data.users as { name: string }[]).map((user) => {
         return {
           category: 'ユーザー',
           title: user.name,
           url: `/admin/users/`,
         };
       }),
-      data.label_for_forms.map((label) => {
+      (data.label_for_forms as { name: string }[]).map((label) => {
         return {
           category: 'フォーム用ラベル',
           title: label.name,
           url: `/admin/labels/forms`,
         };
       }),
-      data.label_for_answers.map((label) => {
+      (data.label_for_answers as { name: string }[]).map((label) => {
         return {
           category: '回答用ラベル',
           title: label.name,

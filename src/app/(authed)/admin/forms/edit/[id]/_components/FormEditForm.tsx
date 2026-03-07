@@ -20,14 +20,14 @@ import type { Form } from '../_schema/editFormSchema';
 import type {
   GetFormLabelsResponse,
   GetFormResponse,
-} from '@/lib/api-schema-types';
+} from '@/lib/api-types';
 
 const FormEditForm = (props: {
   form: GetFormResponse;
   labelOptions: GetFormLabelsResponse;
 }) => {
-  const start_at = props.form.settings.response_period?.start_at;
-  const end_at = props.form.settings.response_period?.end_at;
+  const start_at = props.form.settings.answer_settings.response_period.start_at;
+  const end_at = props.form.settings.answer_settings.response_period.end_at;
 
   const {
     control,
@@ -42,7 +42,11 @@ const FormEditForm = (props: {
       ...props.form,
       questions: props.form.questions.map((question) => {
         return {
-          ...question,
+          id: question.id ?? null,
+          title: question.title,
+          description: question.description ?? '',
+          question_type: question.question_type as 'TEXT' | 'SINGLE' | 'MULTIPLE',
+          is_required: question.is_required,
           choices: question.choices.map((choice) => {
             return {
               choice: choice,
@@ -51,12 +55,15 @@ const FormEditForm = (props: {
         };
       }),
       settings: {
-        ...props.form.settings,
         has_response_period: start_at && end_at ? true : false,
         response_period: {
           start_at: start_at ? fromStringToJSTDateTime(start_at) : null,
           end_at: end_at ? fromStringToJSTDateTime(end_at) : null,
         },
+        webhook_url: props.form.settings.webhook_url ?? null,
+        visibility: props.form.settings.visibility as 'PUBLIC' | 'PRIVATE',
+        default_answer_title: props.form.settings.answer_settings.default_answer_title ?? null,
+        answer_visibility: props.form.settings.answer_settings.visibility,
       },
     },
   });

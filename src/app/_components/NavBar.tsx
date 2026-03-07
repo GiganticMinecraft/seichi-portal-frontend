@@ -22,7 +22,7 @@ import useSWR from 'swr';
 import { MsalProvider } from './MsalProvider';
 import { SigninButton } from './SigninButton';
 import { SignoutButton } from './SignoutButton';
-import type { GetUsersResponse } from '@/lib/api-schema-types';
+import type { GetUsersResponse } from '@/lib/api-types';
 
 const NavBar = () => {
   const { data } = useSWR<GetUsersResponse>('/api/proxy/users/me');
@@ -52,7 +52,7 @@ const NavBar = () => {
                 <Box>
                   <Avatar
                     alt="PlayerHead"
-                    src={data ? `https://mc-heads.net/avatar/${data.id}` : ''}
+                    src={data ? `https://mc-heads.net/avatar/${data.uuid}` : ''}
                     sx={{ marginLeft: '20px' }}
                     onClick={(event: React.MouseEvent<HTMLElement>) =>
                       setAnchorEl(event.currentTarget)
@@ -68,7 +68,7 @@ const NavBar = () => {
                     </MenuItem>
                     <MenuItem>
                       <Link
-                        href={`/users/${data.id}`}
+                        href={`/users/${data.uuid}`}
                         color="inherit"
                         sx={{ textDecoration: 'none' }}
                       >

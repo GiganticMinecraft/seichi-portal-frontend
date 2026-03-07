@@ -12,7 +12,7 @@ import ToManageFormLabelButton from './_components/ToManageFormLabelButton';
 import type {
   GetFormLabelsResponse,
   GetFormsResponse,
-} from '@/lib/api-schema-types';
+} from '@/lib/api-types';
 
 const Home = () => {
   const {

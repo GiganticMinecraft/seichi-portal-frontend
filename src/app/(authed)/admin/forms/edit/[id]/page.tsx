@@ -11,7 +11,7 @@ import adminDashboardTheme from '../../../theme/adminDashboardTheme';
 import type {
   GetFormLabelsResponse,
   GetFormResponse,
-} from '@/lib/api-schema-types';
+} from '@/lib/api-types';
 
 const Home = ({ params }: { params: Promise<{ id: number }> }) => {
   const { id } = use(params);

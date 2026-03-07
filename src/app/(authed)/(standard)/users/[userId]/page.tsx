@@ -12,7 +12,7 @@ import UserInformation from './_components/UserInformation';
 import type {
   GetNotificationSettingsResponse,
   GetUsersResponse,
-} from '@/lib/api-schema-types';
+} from '@/lib/api-types';
 
 const Home = ({ params }: { params: Promise<{ userId: string }> }) => {
   const { userId } = use(params);
@@ -48,7 +48,7 @@ const Home = ({ params }: { params: Promise<{ userId: string }> }) => {
     >
       <Stack spacing={2}>
         <UserInformation user={data} />
-        {data.discord_user_id ? (
+        {data['discord_user_id'] ? (
           <Stack>
             <UnlinkDiscordButton />
             <DiscordNotificationSettings

@@ -11,7 +11,7 @@ import Comments from './_components/Comments';
 import type {
   GetAnswerResponse,
   GetQuestionsResponse,
-} from '@/lib/api-schema-types';
+} from '@/lib/api-types';
 
 const Home = ({
   params,
@@ -55,7 +55,8 @@ const Home = ({
       <Typography variant="h4">{answer.title}</Typography>
       <AnswerMeta answer={answer} />
       <AnswerDetails answer={answer} questions={formQuestions} />
-      <Comments comments={answer.comments} answerId={answer.id} />
+      {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+      <Comments comments={answer.comments as any} answerId={answer.id} />
     </Stack>
   );
 };

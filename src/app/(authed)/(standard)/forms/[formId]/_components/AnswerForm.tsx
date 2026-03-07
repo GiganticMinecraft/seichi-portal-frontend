@@ -24,15 +24,15 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import Markdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-import { errorResponseSchema } from '@/lib/api-schema-types';
-import type { GetQuestionsResponse } from '@/lib/api-schema-types';
+import { errorResponseSchema } from '@/lib/api-types';
+import type { GetQuestionsResponse } from '@/lib/api-types';
 import type { NonEmptyArray } from '@/generic/Types';
 
 type Question = {
-  id: number;
+  id?: number | null | undefined;
   title: string;
-  description: string;
-  question_type: 'TEXT' | 'SINGLE' | 'MULTIPLE';
+  description?: string | null | undefined;
+  question_type: string;
   choices: string[];
   is_required: boolean;
 };
@@ -133,11 +133,12 @@ const AnswerForm = ({ questions: questions, formId }: Props) => {
   };
 
   const generateInputSpace = (question: Question) => {
+    const qId = (question.id ?? '').toString();
     switch (question.question_type) {
       case 'TEXT':
         return (
           <Input
-            {...register(question.id.toString())}
+            {...register(qId)}
             className="materialUIInput"
             required={question.is_required}
             multiline
@@ -147,7 +148,7 @@ const AnswerForm = ({ questions: questions, formId }: Props) => {
       case 'SINGLE': {
         // TODO: 選択をリセットできるようにする
         // TODO: 何も選択されなかったとき、APIに送られる値は空文字になるが許容されるか？undefinedやnullでなくてよい？
-        const questionId = question.id.toString();
+        const questionId = qId;
         return (
           <Select
             {...register(questionId)}
@@ -175,7 +176,7 @@ const AnswerForm = ({ questions: questions, formId }: Props) => {
           >
             {question.choices.map((choice, index) => {
               return (
-                <MenuItem key={`q-${question.id}.a-${index}`} value={choice}>
+                <MenuItem key={`q-${qId}.a-${index}`} value={choice}>
                   {choice}
                 </MenuItem>
               );
@@ -197,11 +198,11 @@ const AnswerForm = ({ questions: questions, formId }: Props) => {
             >
               {question.choices.map((choice, index) => (
                 <FormControlLabel
-                  key={`q-${question.id}.a-${index}`}
+                  key={`q-${qId}.a-${index}`}
                   sx={{ width: '24%', justifyContent: 'center' }}
                   control={
                     <Checkbox
-                      {...register(question.id.toString(), {
+                      {...register(qId, {
                         validate: {
                           itemMustBeChecked: (v) => {
                             if (!question.is_required) return true;
@@ -224,13 +225,15 @@ const AnswerForm = ({ questions: questions, formId }: Props) => {
                 />
               ))}
             </FormGroup>
-            {errors[question.id.toString()] && (
+            {errors[qId] && (
               <FormHelperText sx={{ color: 'red', textAlign: 'center' }}>
-                {errors[question.id.toString()]?.message}
+                {errors[qId]?.message}
               </FormHelperText>
             )}
           </>
         );
+      default:
+        return null;
     }
   };
 

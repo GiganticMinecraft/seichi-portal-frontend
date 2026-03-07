@@ -6,7 +6,7 @@ import ErrorModal from '@/app/_components/ErrorModal';
 import LoadingCircular from '@/app/_components/LoadingCircular';
 import FormCreateForm from './_components/FormCreateForm';
 import adminDashboardTheme from '../../theme/adminDashboardTheme';
-import type { GetFormLabelsResponse } from '@/lib/api-schema-types';
+import type { GetFormLabelsResponse } from '@/lib/api-types';
 
 const Home = () => {
   const {

@@ -7,7 +7,7 @@ import LoadingCircular from '@/app/_components/LoadingCircular';
 import CreateLabelField from './_components/CreateLabelField';
 import Labels from './_components/Labels';
 import adminDashboardTheme from '../../theme/adminDashboardTheme';
-import type { GetAnswerLabelsResponse } from '@/lib/api-schema-types';
+import type { GetAnswerLabelsResponse } from '@/lib/api-types';
 
 const Home = () => {
   const { data, error, isLoading } = useSWR<GetAnswerLabelsResponse>(

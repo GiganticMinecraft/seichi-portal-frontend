@@ -9,7 +9,7 @@ import ErrorModal from '../../_components/ErrorModal';
 import type {
   GetAnswersResponse,
   GetFormsResponse,
-} from '@/lib/api-schema-types';
+} from '@/lib/api-types';
 
 const Home = () => {
   const {
