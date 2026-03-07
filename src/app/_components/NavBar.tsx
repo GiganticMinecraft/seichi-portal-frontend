@@ -22,16 +22,10 @@ import useSWR from 'swr';
 import { MsalProvider } from './MsalProvider';
 import { SigninButton } from './SigninButton';
 import { SignoutButton } from './SignoutButton';
-import type {
-  ErrorResponse,
-  GetUsersResponse,
-} from '../api/_schemas/ResponseSchemas';
-import type { Either } from 'fp-ts/lib/Either';
+import type { GetUsersResponse } from '@/lib/api-schema-types';
 
 const NavBar = () => {
-  const { data } = useSWR<Either<ErrorResponse, GetUsersResponse>>(
-    '/api/proxy/users/me'
-  );
+  const { data } = useSWR<GetUsersResponse>('/api/proxy/users/me');
   const [anchorEl, setAnchorEl] = useState<undefined | HTMLElement>(undefined);
 
   return (
@@ -54,13 +48,11 @@ const NavBar = () => {
               </Link>
             </Typography>
             <AuthenticatedTemplate>
-              {data?._tag === 'Right' ? (
+              {data ? (
                 <Box>
                   <Avatar
                     alt="PlayerHead"
-                    src={
-                      data ? `https://mc-heads.net/avatar/${data.right.id}` : ''
-                    }
+                    src={data ? `https://mc-heads.net/avatar/${data.id}` : ''}
                     sx={{ marginLeft: '20px' }}
                     onClick={(event: React.MouseEvent<HTMLElement>) =>
                       setAnchorEl(event.currentTarget)
@@ -76,7 +68,7 @@ const NavBar = () => {
                     </MenuItem>
                     <MenuItem>
                       <Link
-                        href={`/users/${data.right.id}`}
+                        href={`/users/${data.id}`}
                         color="inherit"
                         sx={{ textDecoration: 'none' }}
                       >

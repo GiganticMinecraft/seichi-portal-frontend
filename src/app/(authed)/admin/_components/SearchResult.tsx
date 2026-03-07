@@ -6,16 +6,12 @@ import { DataGrid } from '@mui/x-data-grid';
 import { useRouter } from 'next/navigation';
 import useSWR from 'swr';
 import ErrorModal from '@/app/_components/ErrorModal';
-import type {
-  ErrorResponse,
-  SearchResponse,
-} from '@/app/api/_schemas/ResponseSchemas';
+import type { SearchResponse } from '@/lib/api-schema-types';
 import type {
   GridColDef,
   GridEventListener,
   GridRowParams,
 } from '@mui/x-data-grid';
-import type { Either } from 'fp-ts/lib/Either';
 
 const SearchResult = (props: {
   searchContent: string;
@@ -23,13 +19,13 @@ const SearchResult = (props: {
   onClose: () => void;
 }) => {
   const router = useRouter();
-  const { data, isLoading } = useSWR<Either<ErrorResponse, SearchResponse>>(
+  const { data, isLoading, error } = useSWR<SearchResponse>(
     encodeURI(`/api/proxy/search?query=${props.searchContent}`)
   );
 
   if (!data) {
     return null;
-  } else if (!isLoading && data._tag === 'Left') {
+  } else if (!isLoading && error) {
     return <ErrorModal />;
   }
 
@@ -50,47 +46,46 @@ const SearchResult = (props: {
     url: string;
   }
 
-  // NOTE: `data` が Right であることを保証してから呼び出さなければならない。
   const prepareRows = () => {
-    assert(data._tag === 'Right');
+    assert(data);
 
     return [
-      data.right.forms.map((form) => {
+      data.forms.map((form) => {
         return {
           category: 'フォーム',
           title: form.title,
           url: `/admin/forms/edit/${form.id}`,
         };
       }),
-      data.right.answers.map((answer) => {
+      data.answers.map((answer) => {
         return {
           category: '回答',
           title: answer.answer,
           url: `/admin/answer/${answer.answer_id}`,
         };
       }),
-      data.right.users.map((user) => {
+      data.users.map((user) => {
         return {
           category: 'ユーザー',
           title: user.name,
           url: `/admin/users/`,
         };
       }),
-      data.right.label_for_forms.map((label) => {
+      data.label_for_forms.map((label) => {
         return {
           category: 'フォーム用ラベル',
           title: label.name,
           url: `/admin/labels/forms`,
         };
       }),
-      data.right.label_for_answers.map((label) => {
+      data.label_for_answers.map((label) => {
         return {
           category: '回答用ラベル',
           title: label.name,
           url: `/admin/labels/answers`,
         };
       }),
-      data.right.comments.map((comment) => ({
+      data.comments.map((comment) => ({
         category: 'コメント',
         title: comment.content,
         url: `/admin/answer/${comment.answer_id}`,

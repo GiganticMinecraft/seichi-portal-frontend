@@ -4,23 +4,22 @@ import useSWR from 'swr';
 import ErrorModal from '@/app/_components/ErrorModal';
 import LoadingCircular from '@/app/_components/LoadingCircular';
 import FormList from './_components/FormList';
-import type {
-  ErrorResponse,
-  GetFormsResponse,
-} from '@/app/api/_schemas/ResponseSchemas';
-import type { Either } from 'fp-ts/lib/Either';
+import type { GetFormsResponse } from '@/lib/api-schema-types';
 
 const Home = () => {
-  const { data: forms, isLoading } =
-    useSWR<Either<ErrorResponse, GetFormsResponse>>('/api/proxy/forms');
+  const {
+    data: forms,
+    error,
+    isLoading,
+  } = useSWR<GetFormsResponse>('/api/proxy/forms');
 
-  if (!forms) {
+  if (isLoading || !forms) {
     return <LoadingCircular />;
-  } else if ((!isLoading && !forms) || forms._tag == 'Left') {
+  } else if (error) {
     return <ErrorModal />;
   }
 
-  return <FormList forms={forms.right} />;
+  return <FormList forms={forms} />;
 };
 
 export default Home;

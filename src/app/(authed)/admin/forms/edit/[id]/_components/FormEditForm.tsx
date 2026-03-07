@@ -20,7 +20,7 @@ import type { Form } from '../_schema/editFormSchema';
 import type {
   GetFormLabelsResponse,
   GetFormResponse,
-} from '@/app/api/_schemas/ResponseSchemas';
+} from '@/lib/api-schema-types';
 
 const FormEditForm = (props: {
   form: GetFormResponse;

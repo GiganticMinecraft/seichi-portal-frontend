@@ -4,7 +4,7 @@ import '../../globals.css';
 import { Inter } from 'next/font/google';
 import { SWRConfig } from 'swr';
 import NavBar from '@/app/_components/NavBar';
-import { jsonFetcher } from '@/app/_swr/fetcher';
+import { fetcher } from '@/app/_swr/fetcher';
 import styles from '../../page.module.css';
 import type { ReactNode } from 'react';
 
@@ -21,7 +21,7 @@ const RootLayout = ({ children }: { children: ReactNode }) => {
         <main className={styles['main']}>
           <SWRConfig
             value={{
-              fetcher: jsonFetcher,
+              fetcher: fetcher,
             }}
           >
             <NavBar />

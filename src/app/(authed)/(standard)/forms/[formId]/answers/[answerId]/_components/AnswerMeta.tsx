@@ -3,7 +3,7 @@
 import { Grid, Typography } from '@mui/material';
 import { formatString } from '@/generic/DateFormatter';
 import AnswerLabels from './AnswerLabels';
-import type { GetAnswerResponse } from '@/app/api/_schemas/ResponseSchemas';
+import type { GetAnswerResponse } from '@/lib/api-schema-types';
 
 const AnswerMeta = (props: { answer: GetAnswerResponse }) => (
   <Grid container spacing={2}>

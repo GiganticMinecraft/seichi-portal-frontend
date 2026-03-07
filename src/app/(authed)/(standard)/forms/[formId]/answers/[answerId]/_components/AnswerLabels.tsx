@@ -1,6 +1,6 @@
 'use client';
 import { Chip, Typography } from '@mui/material';
-import type { GetAnswerResponse } from '@/app/api/_schemas/ResponseSchemas';
+import type { GetAnswerResponse } from '@/lib/api-schema-types';
 
 const AnswerLabels = (props: { answers: GetAnswerResponse }) => {
   if (props.answers.labels.length === 0) {

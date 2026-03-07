@@ -7,7 +7,7 @@ import { AppRouterCacheProvider } from '@mui/material-nextjs/v15-appRouter';
 import { Inter } from 'next/font/google';
 import { SWRConfig } from 'swr';
 import { MsalProvider } from '@/app/_components/MsalProvider';
-import { jsonFetcher } from '@/app/_swr/fetcher';
+import { fetcher } from '@/app/_swr/fetcher';
 import AdminNavigationBar from './_components/AdminNavigationBar';
 import DashboardMenu from './_components/DashboardMenu';
 import adminDashboardTheme from './theme/adminDashboardTheme';
@@ -28,7 +28,7 @@ const RootLayout = ({ children }: { children: ReactNode }) => {
             <CssBaseline />
             <SWRConfig
               value={{
-                fetcher: jsonFetcher,
+                fetcher: fetcher,
               }}
             >
               <MsalProvider>

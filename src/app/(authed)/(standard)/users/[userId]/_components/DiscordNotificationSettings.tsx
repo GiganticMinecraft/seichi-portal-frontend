@@ -9,8 +9,10 @@ import {
 } from '@mui/material';
 import Checkbox from '@mui/material/Checkbox';
 import { useForm } from 'react-hook-form';
-import type { UpdateNotificationSettingsSchema } from '@/app/api/_schemas/RequestSchemas';
-import type { GetNotificationSettingsResponse } from '@/app/api/_schemas/ResponseSchemas';
+import type {
+  GetNotificationSettingsResponse,
+  UpdateNotificationSettingsSchema,
+} from '@/lib/api-schema-types';
 
 const DiscordNotificationSettings = (props: {
   currentSettings: GetNotificationSettingsResponse;

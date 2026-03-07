@@ -8,7 +8,7 @@ import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import * as React from 'react';
 import { formatString } from '../../../../../generic/DateFormatter';
-import type { GetFormsResponse } from '@/app/api/_schemas/ResponseSchemas';
+import type { GetFormsResponse } from '@/lib/api-schema-types';
 
 interface Props {
   forms: GetFormsResponse;

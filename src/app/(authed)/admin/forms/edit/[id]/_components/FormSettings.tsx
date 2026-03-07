@@ -10,7 +10,7 @@ import {
 } from '@mui/material';
 import FormLabelField from './FormLabelField';
 import type { Form, Visibility } from '../_schema/editFormSchema';
-import type { GetFormLabelsResponse } from '@/app/api/_schemas/ResponseSchemas';
+import type { GetFormLabelsResponse } from '@/lib/api-schema-types';
 import type { UseFormRegister } from 'react-hook-form';
 
 const FormSettings = (props: {

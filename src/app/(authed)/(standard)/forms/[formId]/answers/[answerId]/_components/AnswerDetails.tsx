@@ -4,7 +4,7 @@ import { Stack, Typography } from '@mui/material';
 import type {
   GetAnswerResponse,
   GetQuestionsResponse,
-} from '@/app/api/_schemas/ResponseSchemas';
+} from '@/lib/api-schema-types';
 
 const AnswerDetails = (props: {
   answer: GetAnswerResponse;

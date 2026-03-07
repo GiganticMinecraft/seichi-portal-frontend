@@ -6,27 +6,25 @@ import ErrorModal from '@/app/_components/ErrorModal';
 import LoadingCircular from '@/app/_components/LoadingCircular';
 import FormCreateForm from './_components/FormCreateForm';
 import adminDashboardTheme from '../../theme/adminDashboardTheme';
-import type {
-  ErrorResponse,
-  GetFormLabelsResponse,
-} from '@/app/api/_schemas/ResponseSchemas';
-import type { Either } from 'fp-ts/lib/Either';
+import type { GetFormLabelsResponse } from '@/lib/api-schema-types';
 
 const Home = () => {
-  const { data: labels, isLoading: isLoadingLabels } = useSWR<
-    Either<ErrorResponse, GetFormLabelsResponse>
-  >('/api/proxy/forms/labels/forms');
+  const {
+    data: labels,
+    error,
+    isLoading: isLoadingLabels,
+  } = useSWR<GetFormLabelsResponse>('/api/proxy/forms/labels/forms');
 
   if (!labels) {
     return <LoadingCircular />;
-  } else if ((!isLoadingLabels && !labels) || labels._tag === 'Left') {
+  } else if (!isLoadingLabels && error) {
     return <ErrorModal />;
   }
 
   return (
     <ThemeProvider theme={adminDashboardTheme}>
       <CssBaseline />
-      <FormCreateForm labelOptions={labels.right} />
+      <FormCreateForm labelOptions={labels} />
     </ThemeProvider>
   );
 };

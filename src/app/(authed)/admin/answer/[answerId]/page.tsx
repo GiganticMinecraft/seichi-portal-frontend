@@ -9,40 +9,41 @@ import AnswerDetails from './_components/AnswerDetails';
 import Comments from './_components/Comments';
 import adminDashboardTheme from '../../theme/adminDashboardTheme';
 import type {
-  ErrorResponse,
   GetAnswerLabelsResponse,
   GetAnswerResponse,
   GetQuestionsResponse,
-} from '@/app/api/_schemas/ResponseSchemas';
-import type { Either } from 'fp-ts/lib/Either';
+} from '@/lib/api-schema-types';
 
 const Home = ({ params }: { params: Promise<{ answerId: number }> }) => {
   const { answerId } = use(params);
-  const { data: answers, isLoading: isAnswersLoading } = useSWR<
-    Either<ErrorResponse, GetAnswerResponse>
-  >(`/api/proxy/forms/answers/${answerId}`, { refreshInterval: 1000 });
+  const {
+    data: answers,
+    error: answersError,
+    isLoading: isAnswersLoading,
+  } = useSWR<GetAnswerResponse>(`/api/proxy/forms/answers/${answerId}`, {
+    refreshInterval: 1000,
+  });
 
-  const { data: formQuestions, isLoading: isFormQuestionsLoading } = useSWR<
-    Either<ErrorResponse, GetQuestionsResponse>
-  >(
-    answers && answers._tag === 'Right'
-      ? `/api/proxy/forms/${answers.right.form_id}/questions`
-      : ''
+  const {
+    data: formQuestions,
+    error: formQuestionsError,
+    isLoading: isFormQuestionsLoading,
+  } = useSWR<GetQuestionsResponse>(
+    answers ? `/api/proxy/forms/${answers.form_id}/questions` : null
   );
 
-  const { data: labels, isLoading: isLabelsLoading } = useSWR<
-    Either<ErrorResponse, GetAnswerLabelsResponse>
-  >('/api/proxy/forms/labels/answers');
+  const {
+    data: labels,
+    error: labelsError,
+    isLoading: isLabelsLoading,
+  } = useSWR<GetAnswerLabelsResponse>('/api/proxy/forms/labels/answers');
 
   if (!answers || !formQuestions || !labels) {
     return <LoadingCircular />;
   } else if (
-    (!isAnswersLoading && !answers) ||
-    (!isFormQuestionsLoading && !formQuestions) ||
-    (!isLabelsLoading && !labels) ||
-    answers._tag === 'Left' ||
-    formQuestions._tag === 'Left' ||
-    labels._tag === 'Left'
+    (!isAnswersLoading && answersError) ||
+    (!isFormQuestionsLoading && formQuestionsError) ||
+    (!isLabelsLoading && labelsError)
   ) {
     return <ErrorModal />;
   }
@@ -58,11 +59,11 @@ const Home = ({ params }: { params: Promise<{ answerId: number }> }) => {
         sx={{ width: '100%' }}
       >
         <AnswerDetails
-          answers={answers.right}
-          questions={formQuestions.right}
-          labels={labels.right}
+          answers={answers}
+          questions={formQuestions}
+          labels={labels}
         />
-        <Comments comments={answers.right.comments} answerId={answerId} />
+        <Comments comments={answers.comments} answerId={answerId} />
       </Stack>
     </ThemeProvider>
   );

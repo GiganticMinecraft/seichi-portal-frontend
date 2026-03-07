@@ -1,5 +1,5 @@
 import Grid from '@mui/material/Grid';
-import type { GetUsersResponse } from '@/app/api/_schemas/ResponseSchemas';
+import type { GetUsersResponse } from '@/lib/api-schema-types';
 
 const UserInformation = (props: { user: GetUsersResponse }) => {
   return (

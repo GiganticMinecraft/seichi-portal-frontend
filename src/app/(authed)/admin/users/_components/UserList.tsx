@@ -9,7 +9,7 @@ import {
   Select,
   Stack,
 } from '@mui/material';
-import type { GetUserListResponse } from '@/app/api/_schemas/ResponseSchemas';
+import type { GetUserListResponse } from '@/lib/api-schema-types';
 
 const UserList = (props: { users: GetUserListResponse }) => {
   return (

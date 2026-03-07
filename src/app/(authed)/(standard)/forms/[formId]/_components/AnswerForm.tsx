@@ -24,8 +24,8 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import Markdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-import { errorResponseSchema } from '@/app/api/_schemas/ResponseSchemas';
-import type { GetQuestionsResponse } from '@/app/api/_schemas/ResponseSchemas';
+import { errorResponseSchema } from '@/lib/api-schema-types';
+import type { GetQuestionsResponse } from '@/lib/api-schema-types';
 import type { NonEmptyArray } from '@/generic/Types';
 
 type Question = {

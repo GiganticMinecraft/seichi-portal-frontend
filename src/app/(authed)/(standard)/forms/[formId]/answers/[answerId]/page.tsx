@@ -1,7 +1,6 @@
 'use client';
 
 import { Stack, Typography } from '@mui/material';
-import { redirect } from 'next/navigation';
 import { use } from 'react';
 import useSWR from 'swr';
 import ErrorModal from '@/app/_components/ErrorModal';
@@ -10,11 +9,9 @@ import AnswerDetails from './_components/AnswerDetails';
 import AnswerMeta from './_components/AnswerMeta';
 import Comments from './_components/Comments';
 import type {
-  ErrorResponse,
   GetAnswerResponse,
   GetQuestionsResponse,
-} from '@/app/api/_schemas/ResponseSchemas';
-import type { Either } from 'fp-ts/lib/Either';
+} from '@/lib/api-schema-types';
 
 const Home = ({
   params,
@@ -22,30 +19,27 @@ const Home = ({
   params: Promise<{ formId: number; answerId: number }>;
 }) => {
   const { answerId } = use(params);
-  const { data: answer, isLoading: isLoadingAnswers } = useSWR<
-    Either<ErrorResponse, GetAnswerResponse>
-  >(`/api/proxy/forms/answers/${answerId}`, { refreshInterval: 1000 });
+  const {
+    data: answer,
+    error: answerError,
+    isLoading: isLoadingAnswers,
+  } = useSWR<GetAnswerResponse>(`/api/proxy/forms/answers/${answerId}`, {
+    refreshInterval: 1000,
+  });
 
-  const { data: formQuestions, isLoading: isLoadingFormQuestions } = useSWR<
-    Either<ErrorResponse, GetQuestionsResponse>
-  >(
-    answer && answer._tag === 'Right'
-      ? `/api/proxy/forms/${answer.right.form_id}/questions`
-      : ''
+  const {
+    data: formQuestions,
+    error: formQuestionsError,
+    isLoading: isLoadingFormQuestions,
+  } = useSWR<GetQuestionsResponse>(
+    answer ? `/api/proxy/forms/${answer.form_id}/questions` : null
   );
 
-  if (
-    answer?._tag === 'Left' &&
-    answer.left.errorCode === 'DO_NOT_HAVE_PERMISSION_TO_GET_ANSWER'
-  ) {
-    return redirect('/forbidden');
-  } else if (!answer || !formQuestions) {
+  if (!answer || !formQuestions) {
     return <LoadingCircular />;
   } else if (
-    (!isLoadingAnswers && !answer) ||
-    answer._tag === 'Left' ||
-    (!isLoadingFormQuestions && !formQuestions) ||
-    formQuestions._tag === 'Left'
+    (!isLoadingAnswers && answerError) ||
+    (!isLoadingFormQuestions && formQuestionsError)
   ) {
     return <ErrorModal />;
   }
@@ -58,10 +52,10 @@ const Home = ({
       spacing={4}
       sx={{ width: '100%' }}
     >
-      <Typography variant="h4">{answer.right.title}</Typography>
-      <AnswerMeta answer={answer.right} />
-      <AnswerDetails answer={answer.right} questions={formQuestions.right} />
-      <Comments comments={answer.right.comments} answerId={answer.right.id} />
+      <Typography variant="h4">{answer.title}</Typography>
+      <AnswerMeta answer={answer} />
+      <AnswerDetails answer={answer} questions={formQuestions} />
+      <Comments comments={answer.comments} answerId={answer.id} />
     </Stack>
   );
 };

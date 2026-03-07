@@ -15,7 +15,7 @@ import {
   Button,
 } from '@mui/material';
 import { formatString } from '@/generic/DateFormatter';
-import type { GetFormsResponse } from '@/app/api/_schemas/ResponseSchemas';
+import type { GetFormsResponse } from '@/lib/api-schema-types';
 
 const formatResponsePeriod = (startAt: string | null, endAt: string | null) => {
   if (startAt != null && endAt != null) {
@@ -30,8 +30,8 @@ type Form = {
   title: string;
   description: string;
   response_period: {
-    start_at: string;
-    end_at: string;
+    start_at: string | null;
+    end_at: string | null;
   };
   answer_visibility: 'PUBLIC' | 'PRIVATE';
 };

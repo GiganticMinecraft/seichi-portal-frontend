@@ -7,28 +7,26 @@ import DataTable from './_components/Dashboard';
 import adminDashboardTheme from './theme/adminDashboardTheme';
 import ErrorModal from '../../_components/ErrorModal';
 import type {
-  ErrorResponse,
   GetAnswersResponse,
   GetFormsResponse,
-} from '@/app/api/_schemas/ResponseSchemas';
-import type { Either } from 'fp-ts/lib/Either';
+} from '@/lib/api-schema-types';
 
 const Home = () => {
-  const { data: answers, isLoading } = useSWR<
-    Either<ErrorResponse, GetAnswersResponse>
-  >('/api/proxy/forms/answers');
+  const {
+    data: answers,
+    error: answersError,
+    isLoading,
+  } = useSWR<GetAnswersResponse>('/api/proxy/forms/answers');
 
-  const { data: forms, isLoading: isLoadingForms } =
-    useSWR<Either<ErrorResponse, GetFormsResponse>>('/api/proxy/forms');
+  const {
+    data: forms,
+    error: formsError,
+    isLoading: isLoadingForms,
+  } = useSWR<GetFormsResponse>('/api/proxy/forms');
 
   if (!answers || !forms) {
     return <LoadingCircular />;
-  } else if (
-    (!isLoading && !answers) ||
-    (!isLoadingForms && !forms) ||
-    answers._tag === 'Left' ||
-    forms._tag === 'Left'
-  ) {
+  } else if ((!isLoading && answersError) || (!isLoadingForms && formsError)) {
     return <ErrorModal />;
   }
 
@@ -36,11 +34,11 @@ const Home = () => {
     <ThemeProvider theme={adminDashboardTheme}>
       <CssBaseline />
       <DataTable
-        answerResponseWithFormTitle={answers.right.map((answer) => {
+        answerResponseWithFormTitle={answers.map((answer) => {
           return {
             ...answer,
             form_title:
-              forms.right.find((form) => form.id === answer.form_id)?.title ??
+              forms.find((form) => form.id === answer.form_id)?.title ??
               'unknown form',
           };
         })}

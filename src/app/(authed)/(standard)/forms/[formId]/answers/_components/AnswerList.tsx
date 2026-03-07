@@ -3,7 +3,7 @@
 import { DataGrid } from '@mui/x-data-grid';
 import { useRouter } from 'next/navigation';
 import { formatString } from '@/generic/DateFormatter';
-import type { GetFormAnswersResponse } from '@/app/api/_schemas/ResponseSchemas';
+import type { GetFormAnswersResponse } from '@/lib/api-schema-types';
 import type {
   GridColDef,
   GridEventListener,

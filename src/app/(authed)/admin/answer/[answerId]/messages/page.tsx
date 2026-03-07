@@ -8,23 +8,22 @@ import LoadingCircular from '@/app/_components/LoadingCircular';
 import InputMessageField from './_components/InputMessageField';
 import Messages from './_components/Messages';
 import adminDashboardTheme from '../../../theme/adminDashboardTheme';
-import type {
-  ErrorResponse,
-  GetMessagesResponse,
-} from '@/app/api/_schemas/ResponseSchemas';
-import type { Either } from 'fp-ts/lib/Either';
+import type { GetMessagesResponse } from '@/lib/api-schema-types';
 
 const Home = ({ params }: { params: Promise<{ answerId: number }> }) => {
   const { answerId } = use(params);
-  const { data: messages, isLoading: isMessagesLoading } = useSWR<
-    Either<ErrorResponse, GetMessagesResponse>
-  >(`/api/proxy/forms/answers/${answerId}/messages`, {
-    refreshInterval: 1000,
-  });
+  const {
+    data: messages,
+    error,
+    isLoading: isMessagesLoading,
+  } = useSWR<GetMessagesResponse>(
+    `/api/proxy/forms/answers/${answerId}/messages`,
+    { refreshInterval: 1000 }
+  );
 
   if (!messages) {
     return <LoadingCircular />;
-  } else if ((!isMessagesLoading && !messages) || messages._tag === 'Left') {
+  } else if (!isMessagesLoading && error) {
     return <ErrorModal />;
   }
 
@@ -61,7 +60,7 @@ const Home = ({ params }: { params: Promise<{ answerId: number }> }) => {
             px: { xs: 2, sm: 3 },
           }}
         >
-          <Messages messages={messages.right} answerId={answerId} />
+          <Messages messages={messages} answerId={answerId} />
         </Container>
         <InputMessageField answer_id={answerId} />
       </Stack>

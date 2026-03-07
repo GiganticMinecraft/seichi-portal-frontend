@@ -9,7 +9,7 @@ import {
 import { useRouter } from 'next/navigation';
 import * as React from 'react';
 import { formatString } from '@/generic/DateFormatter';
-import type { GetAnswerResponse } from '@/app/api/_schemas/ResponseSchemas';
+import type { GetAnswerResponse } from '@/lib/api-schema-types';
 
 const columns: GridColDef[] = [
   { field: 'category', headerName: '種別', width: 200 },
