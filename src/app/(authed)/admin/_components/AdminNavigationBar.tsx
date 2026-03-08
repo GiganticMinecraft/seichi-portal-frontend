@@ -99,7 +99,7 @@ const NavBar = () => {
           <SearchField />
           <Avatar
             alt="PlayerHead"
-            src={data ? `https://mc-heads.net/avatar/${data.uuid}` : ''}
+            src={data ? `https://mc-heads.net/avatar/${data.id}` : ''}
             sx={{ marginLeft: '20px' }}
           />
         </Toolbar>
