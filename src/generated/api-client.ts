@@ -1,5 +1,5 @@
-import { makeApi, Zodios, type ZodiosOptions } from '@zodios/core';
-import { z } from 'zod';
+import { makeApi, Zodios, type ZodiosOptions } from "@zodios/core";
+import { z } from "zod";
 
 const FormLabelResponseSchema = z
   .object({ id: z.string(), name: z.string() })
@@ -21,27 +21,28 @@ const QuestionResponseSchema = z
     title: z.string(),
   })
   .passthrough();
-const ResponsePeriodSchema = z
+const ResponsePeriodInput = z
   .object({
     end_at: z.union([z.string(), z.null()]),
     start_at: z.union([z.string(), z.null()]),
   })
   .partial()
   .passthrough();
-const AnswerVisibility = z.enum(['PUBLIC', 'PRIVATE']);
 const AnswerSettingsSchema = z
   .object({
-    default_answer_title: z.union([z.string(), z.null()]).optional(),
-    response_period: ResponsePeriodSchema,
-    visibility: AnswerVisibility,
+    default_answer_title: z.union([z.string(), z.null()]),
+    response_period: z.union([z.null(), ResponsePeriodInput]),
+    visibility: z.union([z.string(), z.null()]),
   })
+  .partial()
   .passthrough();
 const FormSettingsSchema = z
   .object({
-    answer_settings: AnswerSettingsSchema,
-    visibility: z.string(),
-    webhook_url: z.union([z.string(), z.null()]).optional(),
+    answer_settings: z.union([z.null(), AnswerSettingsSchema]),
+    visibility: z.union([z.string(), z.null()]),
+    webhook_url: z.union([z.string(), z.null()]),
   })
+  .partial()
   .passthrough();
 const FormSchema = z
   .object({
@@ -60,7 +61,7 @@ const FormCreateSchema = z
 const AnswerContent = z
   .object({ answer: z.string(), question_id: z.number().int() })
   .passthrough();
-const Role = z.enum(['STANDARD_USER', 'ADMINISTRATOR']);
+const Role = z.enum(["STANDARD_USER", "ADMINISTRATOR"]);
 const User = z
   .object({ name: z.string(), role: Role, uuid: z.string() })
   .passthrough();
@@ -148,6 +149,12 @@ const FormQuestionPutSchema = z
   .object({ questions: z.array(QuestionSchema) })
   .partial()
   .passthrough();
+const PutQuestionsResponseSchema = z
+  .object({ questions: z.array(QuestionResponseSchema) })
+  .passthrough();
+const AnswerLabelResponseSchema = z
+  .object({ id: z.string(), name: z.string() })
+  .passthrough();
 const AnswerLabelSchema = z
   .object({ name: NonEmptyString.min(1) })
   .passthrough();
@@ -191,6 +198,18 @@ const CrossSearchResult = z
 const SessionCreateSchema = z
   .object({ expires: z.number().int().gte(0) })
   .passthrough();
+const UserSchema = z
+  .object({ id: z.string(), name: z.string(), role: z.string() })
+  .passthrough();
+const UserInfoResponse = z
+  .object({
+    discord_user_id: z.union([z.string(), z.null()]).optional(),
+    discord_username: z.union([z.string(), z.null()]).optional(),
+    id: z.string(),
+    name: z.string(),
+    role: z.string(),
+  })
+  .passthrough();
 const UserUpdateSchema = z
   .object({
     id: z.union([z.string(), z.null()]),
@@ -204,8 +223,7 @@ export const schemas = {
   FormLabelResponseSchema,
   FormMetaSchema,
   QuestionResponseSchema,
-  ResponsePeriodSchema,
-  AnswerVisibility,
+  ResponsePeriodInput,
   AnswerSettingsSchema,
   FormSettingsSchema,
   FormSchema,
@@ -231,6 +249,8 @@ export const schemas = {
   AnswerCreateSchema,
   QuestionSchema,
   FormQuestionPutSchema,
+  PutQuestionsResponseSchema,
+  AnswerLabelResponseSchema,
   AnswerLabelSchema,
   AnswerLabelUpdateSchema,
   FormLabelCreateSchema,
@@ -241,24 +261,26 @@ export const schemas = {
   CommentSchema,
   CrossSearchResult,
   SessionCreateSchema,
+  UserSchema,
+  UserInfoResponse,
   UserUpdateSchema,
 };
 
 const endpoints = makeApi([
   {
-    method: 'get',
-    path: '/forms',
-    alias: 'form_list_handler',
-    requestFormat: 'json',
+    method: "get",
+    path: "/forms",
+    alias: "form_list_handler",
+    requestFormat: "json",
     parameters: [
       {
-        name: 'offset',
-        type: 'Query',
+        name: "offset",
+        type: "Query",
         schema: z.number().int().gte(0).optional(),
       },
       {
-        name: 'limit',
-        type: 'Query',
+        name: "limit",
+        type: "Query",
         schema: z.number().int().gte(0).optional(),
       },
     ],
@@ -287,14 +309,14 @@ const endpoints = makeApi([
     ],
   },
   {
-    method: 'post',
-    path: '/forms',
-    alias: 'create_form_handler',
-    requestFormat: 'json',
+    method: "post",
+    path: "/forms",
+    alias: "create_form_handler",
+    requestFormat: "json",
     parameters: [
       {
-        name: 'body',
-        type: 'Body',
+        name: "body",
+        type: "Body",
         schema: FormCreateSchema,
       },
     ],
@@ -328,19 +350,19 @@ const endpoints = makeApi([
     ],
   },
   {
-    method: 'get',
-    path: '/forms/:form_id/answers/:answer_id',
-    alias: 'get_answer_handler',
-    requestFormat: 'json',
+    method: "get",
+    path: "/forms/:form_id/answers/:answer_id",
+    alias: "get_answer_handler",
+    requestFormat: "json",
     parameters: [
       {
-        name: 'form_id',
-        type: 'Path',
+        name: "form_id",
+        type: "Path",
         schema: z.string(),
       },
       {
-        name: 'answer_id',
-        type: 'Path',
+        name: "answer_id",
+        type: "Path",
         schema: z.string(),
       },
     ],
@@ -379,24 +401,24 @@ const endpoints = makeApi([
     ],
   },
   {
-    method: 'patch',
-    path: '/forms/:form_id/answers/:answer_id',
-    alias: 'update_answer_handler',
-    requestFormat: 'json',
+    method: "patch",
+    path: "/forms/:form_id/answers/:answer_id",
+    alias: "update_answer_handler",
+    requestFormat: "json",
     parameters: [
       {
-        name: 'body',
-        type: 'Body',
+        name: "body",
+        type: "Body",
         schema: AnswerUpdateSchema,
       },
       {
-        name: 'form_id',
-        type: 'Path',
+        name: "form_id",
+        type: "Path",
         schema: z.string(),
       },
       {
-        name: 'answer_id',
-        type: 'Path',
+        name: "answer_id",
+        type: "Path",
         schema: z.string(),
       },
     ],
@@ -435,19 +457,19 @@ const endpoints = makeApi([
     ],
   },
   {
-    method: 'get',
-    path: '/forms/:form_id/answers/:answer_id/comments',
-    alias: 'get_form_comment',
-    requestFormat: 'json',
+    method: "get",
+    path: "/forms/:form_id/answers/:answer_id/comments",
+    alias: "get_form_comment",
+    requestFormat: "json",
     parameters: [
       {
-        name: 'form_id',
-        type: 'Path',
+        name: "form_id",
+        type: "Path",
         schema: z.string(),
       },
       {
-        name: 'answer_id',
-        type: 'Path',
+        name: "answer_id",
+        type: "Path",
         schema: z.string(),
       },
     ],
@@ -486,80 +508,24 @@ const endpoints = makeApi([
     ],
   },
   {
-    method: 'post',
-    path: '/forms/:form_id/answers/:answer_id/comments',
-    alias: 'post_form_comment',
-    requestFormat: 'json',
+    method: "post",
+    path: "/forms/:form_id/answers/:answer_id/comments",
+    alias: "post_form_comment",
+    requestFormat: "json",
     parameters: [
       {
-        name: 'body',
-        type: 'Body',
+        name: "body",
+        type: "Body",
         schema: CommentPostSchema,
       },
       {
-        name: 'form_id',
-        type: 'Path',
+        name: "form_id",
+        type: "Path",
         schema: z.string(),
       },
       {
-        name: 'answer_id',
-        type: 'Path',
-        schema: z.string(),
-      },
-    ],
-    response: z.void(),
-    errors: [
-      {
-        status: 400,
-        description: `The server could not understand the request due to invalid syntax.`,
-        schema: z.void(),
-      },
-      {
-        status: 401,
-        description: `Access is unauthorized.`,
-        schema: z.void(),
-      },
-      {
-        status: 403,
-        description: `Access is forbidden.`,
-        schema: z.void(),
-      },
-      {
-        status: 404,
-        description: `The server cannot find the requested resource.`,
-        schema: z.void(),
-      },
-      {
-        status: 422,
-        description: `Client error`,
-        schema: z.void(),
-      },
-      {
-        status: 500,
-        description: `Server error`,
-        schema: z.void(),
-      },
-    ],
-  },
-  {
-    method: 'delete',
-    path: '/forms/:form_id/answers/:answer_id/comments/:comment_id',
-    alias: 'delete_form_comment_handler',
-    requestFormat: 'json',
-    parameters: [
-      {
-        name: 'form_id',
-        type: 'Path',
-        schema: z.string(),
-      },
-      {
-        name: 'answer_id',
-        type: 'Path',
-        schema: z.string(),
-      },
-      {
-        name: 'comment_id',
-        type: 'Path',
+        name: "answer_id",
+        type: "Path",
         schema: z.string(),
       },
     ],
@@ -598,29 +564,85 @@ const endpoints = makeApi([
     ],
   },
   {
-    method: 'patch',
-    path: '/forms/:form_id/answers/:answer_id/comments/:comment_id',
-    alias: 'update_form_comment',
-    requestFormat: 'json',
+    method: "delete",
+    path: "/forms/:form_id/answers/:answer_id/comments/:comment_id",
+    alias: "delete_form_comment_handler",
+    requestFormat: "json",
     parameters: [
       {
-        name: 'body',
-        type: 'Body',
+        name: "form_id",
+        type: "Path",
+        schema: z.string(),
+      },
+      {
+        name: "answer_id",
+        type: "Path",
+        schema: z.string(),
+      },
+      {
+        name: "comment_id",
+        type: "Path",
+        schema: z.string(),
+      },
+    ],
+    response: z.void(),
+    errors: [
+      {
+        status: 400,
+        description: `The server could not understand the request due to invalid syntax.`,
+        schema: z.void(),
+      },
+      {
+        status: 401,
+        description: `Access is unauthorized.`,
+        schema: z.void(),
+      },
+      {
+        status: 403,
+        description: `Access is forbidden.`,
+        schema: z.void(),
+      },
+      {
+        status: 404,
+        description: `The server cannot find the requested resource.`,
+        schema: z.void(),
+      },
+      {
+        status: 422,
+        description: `Client error`,
+        schema: z.void(),
+      },
+      {
+        status: 500,
+        description: `Server error`,
+        schema: z.void(),
+      },
+    ],
+  },
+  {
+    method: "patch",
+    path: "/forms/:form_id/answers/:answer_id/comments/:comment_id",
+    alias: "update_form_comment",
+    requestFormat: "json",
+    parameters: [
+      {
+        name: "body",
+        type: "Body",
         schema: CommentUpdateSchema,
       },
       {
-        name: 'form_id',
-        type: 'Path',
+        name: "form_id",
+        type: "Path",
         schema: z.string(),
       },
       {
-        name: 'answer_id',
-        type: 'Path',
+        name: "answer_id",
+        type: "Path",
         schema: z.string(),
       },
       {
-        name: 'comment_id',
-        type: 'Path',
+        name: "comment_id",
+        type: "Path",
         schema: z.string(),
       },
     ],
@@ -659,19 +681,19 @@ const endpoints = makeApi([
     ],
   },
   {
-    method: 'get',
-    path: '/forms/:form_id/answers/:answer_id/messages',
-    alias: 'get_messages_handler',
-    requestFormat: 'json',
+    method: "get",
+    path: "/forms/:form_id/answers/:answer_id/messages",
+    alias: "get_messages_handler",
+    requestFormat: "json",
     parameters: [
       {
-        name: 'form_id',
-        type: 'Path',
+        name: "form_id",
+        type: "Path",
         schema: z.string(),
       },
       {
-        name: 'answer_id',
-        type: 'Path',
+        name: "answer_id",
+        type: "Path",
         schema: z.string(),
       },
     ],
@@ -710,24 +732,24 @@ const endpoints = makeApi([
     ],
   },
   {
-    method: 'post',
-    path: '/forms/:form_id/answers/:answer_id/messages',
-    alias: 'post_message_handler',
-    requestFormat: 'json',
+    method: "post",
+    path: "/forms/:form_id/answers/:answer_id/messages",
+    alias: "post_message_handler",
+    requestFormat: "json",
     parameters: [
       {
-        name: 'body',
-        type: 'Body',
+        name: "body",
+        type: "Body",
         schema: z.object({ body: z.string() }).passthrough(),
       },
       {
-        name: 'form_id',
-        type: 'Path',
+        name: "form_id",
+        type: "Path",
         schema: z.string(),
       },
       {
-        name: 'answer_id',
-        type: 'Path',
+        name: "answer_id",
+        type: "Path",
         schema: z.string(),
       },
     ],
@@ -766,24 +788,24 @@ const endpoints = makeApi([
     ],
   },
   {
-    method: 'delete',
-    path: '/forms/:form_id/answers/:answer_id/messages/:message_id',
-    alias: 'delete_message_handler',
-    requestFormat: 'json',
+    method: "delete",
+    path: "/forms/:form_id/answers/:answer_id/messages/:message_id",
+    alias: "delete_message_handler",
+    requestFormat: "json",
     parameters: [
       {
-        name: 'form_id',
-        type: 'Path',
+        name: "form_id",
+        type: "Path",
         schema: z.string(),
       },
       {
-        name: 'answer_id',
-        type: 'Path',
+        name: "answer_id",
+        type: "Path",
         schema: z.string(),
       },
       {
-        name: 'message_id',
-        type: 'Path',
+        name: "message_id",
+        type: "Path",
         schema: z.string(),
       },
     ],
@@ -817,29 +839,29 @@ const endpoints = makeApi([
     ],
   },
   {
-    method: 'patch',
-    path: '/forms/:form_id/answers/:answer_id/messages/:message_id',
-    alias: 'update_message_handler',
-    requestFormat: 'json',
+    method: "patch",
+    path: "/forms/:form_id/answers/:answer_id/messages/:message_id",
+    alias: "update_message_handler",
+    requestFormat: "json",
     parameters: [
       {
-        name: 'body',
-        type: 'Body',
+        name: "body",
+        type: "Body",
         schema: MessageUpdateSchema,
       },
       {
-        name: 'form_id',
-        type: 'Path',
+        name: "form_id",
+        type: "Path",
         schema: z.string(),
       },
       {
-        name: 'answer_id',
-        type: 'Path',
+        name: "answer_id",
+        type: "Path",
         schema: z.string(),
       },
       {
-        name: 'message_id',
-        type: 'Path',
+        name: "message_id",
+        type: "Path",
         schema: z.string(),
       },
     ],
@@ -878,19 +900,19 @@ const endpoints = makeApi([
     ],
   },
   {
-    method: 'put',
-    path: '/forms/:form_id/labels',
-    alias: 'replace_form_labels',
-    requestFormat: 'json',
+    method: "put",
+    path: "/forms/:form_id/labels",
+    alias: "replace_form_labels",
+    requestFormat: "json",
     parameters: [
       {
-        name: 'body',
-        type: 'Body',
+        name: "body",
+        type: "Body",
         schema: ReplaceFormLabelSchema,
       },
       {
-        name: 'form_id',
-        type: 'Path',
+        name: "form_id",
+        type: "Path",
         schema: z.string(),
       },
     ],
@@ -924,14 +946,14 @@ const endpoints = makeApi([
     ],
   },
   {
-    method: 'get',
-    path: '/forms/:id',
-    alias: 'get_form_handler',
-    requestFormat: 'json',
+    method: "get",
+    path: "/forms/:id",
+    alias: "get_form_handler",
+    requestFormat: "json",
     parameters: [
       {
-        name: 'id',
-        type: 'Path',
+        name: "id",
+        type: "Path",
         schema: z.string(),
       },
     ],
@@ -965,14 +987,14 @@ const endpoints = makeApi([
     ],
   },
   {
-    method: 'delete',
-    path: '/forms/:id',
-    alias: 'delete_form_handler',
-    requestFormat: 'json',
+    method: "delete",
+    path: "/forms/:id",
+    alias: "delete_form_handler",
+    requestFormat: "json",
     parameters: [
       {
-        name: 'id',
-        type: 'Path',
+        name: "id",
+        type: "Path",
         schema: z.string(),
       },
     ],
@@ -1006,19 +1028,19 @@ const endpoints = makeApi([
     ],
   },
   {
-    method: 'patch',
-    path: '/forms/:id',
-    alias: 'update_form_handler',
-    requestFormat: 'json',
+    method: "patch",
+    path: "/forms/:id",
+    alias: "update_form_handler",
+    requestFormat: "json",
     parameters: [
       {
-        name: 'body',
-        type: 'Body',
+        name: "body",
+        type: "Body",
         schema: FormUpdateSchema,
       },
       {
-        name: 'id',
-        type: 'Path',
+        name: "id",
+        type: "Path",
         schema: z.string(),
       },
     ],
@@ -1057,14 +1079,14 @@ const endpoints = makeApi([
     ],
   },
   {
-    method: 'get',
-    path: '/forms/:id/answers',
-    alias: 'get_answer_by_form_id_handler',
-    requestFormat: 'json',
+    method: "get",
+    path: "/forms/:id/answers",
+    alias: "get_answer_by_form_id_handler",
+    requestFormat: "json",
     parameters: [
       {
-        name: 'id',
-        type: 'Path',
+        name: "id",
+        type: "Path",
         schema: z.string(),
       },
     ],
@@ -1103,19 +1125,19 @@ const endpoints = makeApi([
     ],
   },
   {
-    method: 'post',
-    path: '/forms/:id/answers',
-    alias: 'post_answer_handler',
-    requestFormat: 'json',
+    method: "post",
+    path: "/forms/:id/answers",
+    alias: "post_answer_handler",
+    requestFormat: "json",
     parameters: [
       {
-        name: 'body',
-        type: 'Body',
+        name: "body",
+        type: "Body",
         schema: AnswerCreateSchema,
       },
       {
-        name: 'id',
-        type: 'Path',
+        name: "id",
+        type: "Path",
         schema: z.string(),
       },
     ],
@@ -1154,14 +1176,14 @@ const endpoints = makeApi([
     ],
   },
   {
-    method: 'get',
-    path: '/forms/:id/questions',
-    alias: 'get_questions_handler',
-    requestFormat: 'json',
+    method: "get",
+    path: "/forms/:id/questions",
+    alias: "get_questions_handler",
+    requestFormat: "json",
     parameters: [
       {
-        name: 'id',
-        type: 'Path',
+        name: "id",
+        type: "Path",
         schema: z.string(),
       },
     ],
@@ -1195,23 +1217,23 @@ const endpoints = makeApi([
     ],
   },
   {
-    method: 'put',
-    path: '/forms/:id/questions',
-    alias: 'put_question_handler',
-    requestFormat: 'json',
+    method: "put",
+    path: "/forms/:id/questions",
+    alias: "put_question_handler",
+    requestFormat: "json",
     parameters: [
       {
-        name: 'body',
-        type: 'Body',
+        name: "body",
+        type: "Body",
         schema: FormQuestionPutSchema,
       },
       {
-        name: 'id',
-        type: 'Path',
+        name: "id",
+        type: "Path",
         schema: z.string(),
       },
     ],
-    response: z.void(),
+    response: PutQuestionsResponseSchema,
     errors: [
       {
         status: 400,
@@ -1246,10 +1268,10 @@ const endpoints = makeApi([
     ],
   },
   {
-    method: 'get',
-    path: '/forms/answers',
-    alias: 'get_all_answers',
-    requestFormat: 'json',
+    method: "get",
+    path: "/forms/answers",
+    alias: "get_all_answers",
+    requestFormat: "json",
     response: z.array(FormAnswer),
     errors: [
       {
@@ -1275,19 +1297,19 @@ const endpoints = makeApi([
     ],
   },
   {
-    method: 'put',
-    path: '/forms/answers/:answer_id/labels',
-    alias: 'replace_answer_labels',
-    requestFormat: 'json',
+    method: "put",
+    path: "/forms/answers/:answer_id/labels",
+    alias: "replace_answer_labels",
+    requestFormat: "json",
     parameters: [
       {
-        name: 'body',
-        type: 'Body',
+        name: "body",
+        type: "Body",
         schema: ReplaceAnswerLabelSchema,
       },
       {
-        name: 'answer_id',
-        type: 'Path',
+        name: "answer_id",
+        type: "Path",
         schema: z.string(),
       },
     ],
@@ -1321,10 +1343,10 @@ const endpoints = makeApi([
     ],
   },
   {
-    method: 'get',
-    path: '/health',
-    alias: 'health_check',
-    requestFormat: 'json',
+    method: "get",
+    path: "/health",
+    alias: "health_check",
+    requestFormat: "json",
     response: z.void(),
     errors: [
       {
@@ -1335,11 +1357,11 @@ const endpoints = makeApi([
     ],
   },
   {
-    method: 'get',
-    path: '/labels/answers',
-    alias: 'get_labels_for_answers',
-    requestFormat: 'json',
-    response: z.void(),
+    method: "get",
+    path: "/labels/answers",
+    alias: "get_labels_for_answers",
+    requestFormat: "json",
+    response: z.array(AnswerLabelResponseSchema),
     errors: [
       {
         status: 400,
@@ -1364,18 +1386,18 @@ const endpoints = makeApi([
     ],
   },
   {
-    method: 'post',
-    path: '/labels/answers',
-    alias: 'create_label_for_answers',
-    requestFormat: 'json',
+    method: "post",
+    path: "/labels/answers",
+    alias: "create_label_for_answers",
+    requestFormat: "json",
     parameters: [
       {
-        name: 'body',
-        type: 'Body',
+        name: "body",
+        type: "Body",
         schema: AnswerLabelSchema,
       },
     ],
-    response: z.void(),
+    response: AnswerLabelResponseSchema,
     errors: [
       {
         status: 400,
@@ -1405,14 +1427,14 @@ const endpoints = makeApi([
     ],
   },
   {
-    method: 'delete',
-    path: '/labels/answers/:label_id',
-    alias: 'delete_label_for_answers',
-    requestFormat: 'json',
+    method: "delete",
+    path: "/labels/answers/:label_id",
+    alias: "delete_label_for_answers",
+    requestFormat: "json",
     parameters: [
       {
-        name: 'label_id',
-        type: 'Path',
+        name: "label_id",
+        type: "Path",
         schema: z.string(),
       },
     ],
@@ -1446,23 +1468,23 @@ const endpoints = makeApi([
     ],
   },
   {
-    method: 'patch',
-    path: '/labels/answers/:label_id',
-    alias: 'edit_label_for_answers',
-    requestFormat: 'json',
+    method: "patch",
+    path: "/labels/answers/:label_id",
+    alias: "edit_label_for_answers",
+    requestFormat: "json",
     parameters: [
       {
-        name: 'body',
-        type: 'Body',
+        name: "body",
+        type: "Body",
         schema: AnswerLabelUpdateSchema,
       },
       {
-        name: 'label_id',
-        type: 'Path',
+        name: "label_id",
+        type: "Path",
         schema: z.string(),
       },
     ],
-    response: z.void(),
+    response: AnswerLabelResponseSchema,
     errors: [
       {
         status: 400,
@@ -1497,11 +1519,11 @@ const endpoints = makeApi([
     ],
   },
   {
-    method: 'get',
-    path: '/labels/forms',
-    alias: 'get_labels_for_forms',
-    requestFormat: 'json',
-    response: z.void(),
+    method: "get",
+    path: "/labels/forms",
+    alias: "get_labels_for_forms",
+    requestFormat: "json",
+    response: z.array(FormLabelResponseSchema),
     errors: [
       {
         status: 400,
@@ -1526,18 +1548,18 @@ const endpoints = makeApi([
     ],
   },
   {
-    method: 'post',
-    path: '/labels/forms',
-    alias: 'create_label_for_forms',
-    requestFormat: 'json',
+    method: "post",
+    path: "/labels/forms",
+    alias: "create_label_for_forms",
+    requestFormat: "json",
     parameters: [
       {
-        name: 'body',
-        type: 'Body',
+        name: "body",
+        type: "Body",
         schema: FormLabelCreateSchema,
       },
     ],
-    response: z.void(),
+    response: FormLabelResponseSchema,
     errors: [
       {
         status: 400,
@@ -1567,14 +1589,14 @@ const endpoints = makeApi([
     ],
   },
   {
-    method: 'delete',
-    path: '/labels/forms/:label_id',
-    alias: 'delete_label_for_forms',
-    requestFormat: 'json',
+    method: "delete",
+    path: "/labels/forms/:label_id",
+    alias: "delete_label_for_forms",
+    requestFormat: "json",
     parameters: [
       {
-        name: 'label_id',
-        type: 'Path',
+        name: "label_id",
+        type: "Path",
         schema: z.string(),
       },
     ],
@@ -1608,19 +1630,19 @@ const endpoints = makeApi([
     ],
   },
   {
-    method: 'patch',
-    path: '/labels/forms/:label_id',
-    alias: 'edit_label_for_forms',
-    requestFormat: 'json',
+    method: "patch",
+    path: "/labels/forms/:label_id",
+    alias: "edit_label_for_forms",
+    requestFormat: "json",
     parameters: [
       {
-        name: 'body',
-        type: 'Body',
+        name: "body",
+        type: "Body",
         schema: FormLabelUpdateSchema,
       },
       {
-        name: 'label_id',
-        type: 'Path',
+        name: "label_id",
+        type: "Path",
         schema: z.string(),
       },
     ],
@@ -1659,14 +1681,14 @@ const endpoints = makeApi([
     ],
   },
   {
-    method: 'post',
-    path: '/link-discord',
-    alias: 'link_discord',
-    requestFormat: 'json',
+    method: "post",
+    path: "/link-discord",
+    alias: "link_discord",
+    requestFormat: "json",
     parameters: [
       {
-        name: 'body',
-        type: 'Body',
+        name: "body",
+        type: "Body",
         schema: z.object({ token: z.string() }).passthrough(),
       },
     ],
@@ -1705,10 +1727,10 @@ const endpoints = makeApi([
     ],
   },
   {
-    method: 'delete',
-    path: '/link-discord',
-    alias: 'unlink_discord',
-    requestFormat: 'json',
+    method: "delete",
+    path: "/link-discord",
+    alias: "unlink_discord",
+    requestFormat: "json",
     response: z.void(),
     errors: [
       {
@@ -1744,14 +1766,14 @@ const endpoints = makeApi([
     ],
   },
   {
-    method: 'get',
-    path: '/notifications/settings/:uuid',
-    alias: 'get_notification_settings',
-    requestFormat: 'json',
+    method: "get",
+    path: "/notifications/settings/:uuid",
+    alias: "get_notification_settings",
+    requestFormat: "json",
     parameters: [
       {
-        name: 'uuid',
-        type: 'Path',
+        name: "uuid",
+        type: "Path",
         schema: z.string(),
       },
     ],
@@ -1792,10 +1814,10 @@ const endpoints = makeApi([
     ],
   },
   {
-    method: 'get',
-    path: '/notifications/settings/me',
-    alias: 'get_my_notification_settings',
-    requestFormat: 'json',
+    method: "get",
+    path: "/notifications/settings/me",
+    alias: "get_my_notification_settings",
+    requestFormat: "json",
     response: z
       .object({ is_send_message_notification: z.boolean() })
       .passthrough(),
@@ -1833,14 +1855,14 @@ const endpoints = makeApi([
     ],
   },
   {
-    method: 'patch',
-    path: '/notifications/settings/me',
-    alias: 'update_notification_settings',
-    requestFormat: 'json',
+    method: "patch",
+    path: "/notifications/settings/me",
+    alias: "update_notification_settings",
+    requestFormat: "json",
     parameters: [
       {
-        name: 'body',
-        type: 'Body',
+        name: "body",
+        type: "Body",
         schema: NotificationSettingsUpdateSchema,
       },
     ],
@@ -1879,14 +1901,14 @@ const endpoints = makeApi([
     ],
   },
   {
-    method: 'get',
-    path: '/search',
-    alias: 'cross_search',
-    requestFormat: 'json',
+    method: "get",
+    path: "/search",
+    alias: "cross_search",
+    requestFormat: "json",
     parameters: [
       {
-        name: 'query',
-        type: 'Query',
+        name: "query",
+        type: "Query",
         schema: z.string().optional(),
       },
     ],
@@ -1915,14 +1937,14 @@ const endpoints = makeApi([
     ],
   },
   {
-    method: 'post',
-    path: '/session',
-    alias: 'start_session',
-    requestFormat: 'json',
+    method: "post",
+    path: "/session",
+    alias: "start_session",
+    requestFormat: "json",
     parameters: [
       {
-        name: 'body',
-        type: 'Body',
+        name: "body",
+        type: "Body",
         schema: z.object({ expires: z.number().int().gte(0) }).passthrough(),
       },
     ],
@@ -1956,10 +1978,10 @@ const endpoints = makeApi([
     ],
   },
   {
-    method: 'delete',
-    path: '/session',
-    alias: 'end_session',
-    requestFormat: 'json',
+    method: "delete",
+    path: "/session",
+    alias: "end_session",
+    requestFormat: "json",
     response: z.void(),
     errors: [
       {
@@ -1990,11 +2012,11 @@ const endpoints = makeApi([
     ],
   },
   {
-    method: 'get',
-    path: '/users',
-    alias: 'user_list',
-    requestFormat: 'json',
-    response: z.void(),
+    method: "get",
+    path: "/users",
+    alias: "user_list",
+    requestFormat: "json",
+    response: z.array(UserSchema),
     errors: [
       {
         status: 400,
@@ -2019,18 +2041,18 @@ const endpoints = makeApi([
     ],
   },
   {
-    method: 'get',
-    path: '/users/:uuid',
-    alias: 'get_user_info',
-    requestFormat: 'json',
+    method: "get",
+    path: "/users/:uuid",
+    alias: "get_user_info",
+    requestFormat: "json",
     parameters: [
       {
-        name: 'uuid',
-        type: 'Path',
+        name: "uuid",
+        type: "Path",
         schema: z.string(),
       },
     ],
-    response: z.void(),
+    response: UserInfoResponse,
     errors: [
       {
         status: 400,
@@ -2060,23 +2082,23 @@ const endpoints = makeApi([
     ],
   },
   {
-    method: 'patch',
-    path: '/users/:uuid',
-    alias: 'patch_user_role',
-    requestFormat: 'json',
+    method: "patch",
+    path: "/users/:uuid",
+    alias: "patch_user_role",
+    requestFormat: "json",
     parameters: [
       {
-        name: 'body',
-        type: 'Body',
+        name: "body",
+        type: "Body",
         schema: UserUpdateSchema,
       },
       {
-        name: 'uuid',
-        type: 'Path',
+        name: "uuid",
+        type: "Path",
         schema: z.string(),
       },
     ],
-    response: z.void(),
+    response: UserSchema,
     errors: [
       {
         status: 400,
@@ -2106,11 +2128,11 @@ const endpoints = makeApi([
     ],
   },
   {
-    method: 'get',
-    path: '/users/me',
-    alias: 'get_my_user_info',
-    requestFormat: 'json',
-    response: z.void(),
+    method: "get",
+    path: "/users/me",
+    alias: "get_my_user_info",
+    requestFormat: "json",
+    response: UserInfoResponse,
     errors: [
       {
         status: 400,

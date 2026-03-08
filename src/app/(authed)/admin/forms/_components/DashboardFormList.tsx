@@ -54,9 +54,9 @@ export const Forms = ({ forms }: Props) => {
                 </Typography>
                 <Typography variant="body2" sx={{ mb: 1.5, color: 'gray' }}>
                   {formatResponsePeriod(
-                    form.settings.answer_settings.response_period.start_at ??
+                    form.settings.answer_settings?.response_period?.start_at ??
                       null,
-                    form.settings.answer_settings.response_period.end_at ?? null
+                    form.settings.answer_settings?.response_period?.end_at ?? null
                   )}
                 </Typography>
               </CardContent>
