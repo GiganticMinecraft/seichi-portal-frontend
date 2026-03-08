@@ -28,7 +28,7 @@ const formatResponsePeriod = (startAt: string | null, endAt: string | null) => {
 type FormItem = GetFormsResponse[number];
 
 const EachForm = ({ form }: { form: FormItem }) => {
-  const responsePeriod = form.settings.answer_settings.response_period;
+  const responsePeriod = form.settings.answer_settings?.response_period ?? null;
   return (
     <Box sx={{ minWidth: 275 }}>
       <Card variant="outlined">
@@ -38,8 +38,8 @@ const EachForm = ({ form }: { form: FormItem }) => {
           </Typography>
           <Typography color="text.secondary">
             {formatResponsePeriod(
-              responsePeriod.start_at ?? null,
-              responsePeriod.end_at ?? null
+              responsePeriod?.start_at ?? null,
+              responsePeriod?.end_at ?? null
             )}
           </Typography>
           {form.description && (

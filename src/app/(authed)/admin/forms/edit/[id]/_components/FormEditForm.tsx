@@ -27,8 +27,9 @@ const FormEditForm = (props: {
   form: GetFormResponse;
   labelOptions: GetFormLabelsResponse;
 }) => {
-  const start_at = props.form.settings.answer_settings.response_period.start_at;
-  const end_at = props.form.settings.answer_settings.response_period.end_at;
+  const start_at =
+    props.form.settings.answer_settings?.response_period?.start_at;
+  const end_at = props.form.settings.answer_settings?.response_period?.end_at;
 
   const {
     control,
@@ -72,8 +73,13 @@ const FormEditForm = (props: {
           return result.success ? result.data : 'PUBLIC';
         })(),
         default_answer_title:
-          props.form.settings.answer_settings.default_answer_title ?? null,
-        answer_visibility: props.form.settings.answer_settings.visibility,
+          props.form.settings.answer_settings?.default_answer_title ?? null,
+        answer_visibility: (() => {
+          const result = formVisibilitySchema.safeParse(
+            props.form.settings.answer_settings?.visibility
+          );
+          return result.success ? result.data : 'PUBLIC';
+        })(),
       },
     },
   });
