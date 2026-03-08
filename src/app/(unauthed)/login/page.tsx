@@ -1,6 +1,9 @@
 'use client';
 
-import { InteractionRequiredAuthError, InteractionStatus } from '@azure/msal-browser';
+import {
+  InteractionRequiredAuthError,
+  InteractionStatus,
+} from '@azure/msal-browser';
 import { useMsal } from '@azure/msal-react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState, Suspense } from 'react';
