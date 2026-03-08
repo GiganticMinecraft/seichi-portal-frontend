@@ -27,7 +27,8 @@ const FormEditForm = (props: {
   form: GetFormResponse;
   labelOptions: GetFormLabelsResponse;
 }) => {
-  const start_at = props.form.settings.answer_settings?.response_period?.start_at;
+  const start_at =
+    props.form.settings.answer_settings?.response_period?.start_at;
   const end_at = props.form.settings.answer_settings?.response_period?.end_at;
 
   const {

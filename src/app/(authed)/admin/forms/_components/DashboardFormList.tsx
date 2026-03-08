@@ -56,7 +56,8 @@ export const Forms = ({ forms }: Props) => {
                   {formatResponsePeriod(
                     form.settings.answer_settings?.response_period?.start_at ??
                       null,
-                    form.settings.answer_settings?.response_period?.end_at ?? null
+                    form.settings.answer_settings?.response_period?.end_at ??
+                      null
                   )}
                 </Typography>
               </CardContent>
