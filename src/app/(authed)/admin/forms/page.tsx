@@ -9,10 +9,7 @@ import { Forms } from './_components/DashboardFormList';
 import FormCreateButton from './_components/FormCreateButton';
 import FormLabelFilter from './_components/FormLabelFilter';
 import ToManageFormLabelButton from './_components/ToManageFormLabelButton';
-import type {
-  GetFormLabelsResponse,
-  GetFormsResponse,
-} from '@/lib/api-types';
+import type { GetFormLabelsResponse, GetFormsResponse } from '@/lib/api-types';
 
 const Home = () => {
   const {

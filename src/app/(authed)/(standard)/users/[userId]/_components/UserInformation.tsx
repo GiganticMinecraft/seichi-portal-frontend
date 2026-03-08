@@ -10,11 +10,15 @@ const UserInformation = (props: { user: GetUsersResponse }) => {
       <Grid size={6}>{props.user.uuid}</Grid>
       <Grid size={2}>Discord ユーザー名: </Grid>
       <Grid size={2}>
-        {!props.user['discord_username'] ? '未設定' : String(props.user['discord_username'])}
+        {!props.user['discord_username']
+          ? '未設定'
+          : String(props.user['discord_username'])}
       </Grid>
       <Grid size={2}>Discord ID: </Grid>
       <Grid size={6}>
-        {!props.user['discord_user_id'] ? '未設定' : String(props.user['discord_user_id'])}
+        {!props.user['discord_user_id']
+          ? '未設定'
+          : String(props.user['discord_user_id'])}
       </Grid>
     </Grid>
   );

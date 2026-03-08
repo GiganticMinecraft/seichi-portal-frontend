@@ -59,31 +59,61 @@ const SearchResult = (props: {
       data.forms.flatMap((form) => {
         const result = searchFormItemSchema.safeParse(form);
         return result.success
-          ? [{ category: 'フォーム' as const, title: result.data.title, url: `/admin/forms/edit/${result.data.id}` }]
+          ? [
+              {
+                category: 'フォーム' as const,
+                title: result.data.title,
+                url: `/admin/forms/edit/${result.data.id}`,
+              },
+            ]
           : [];
       }),
       data.answers.flatMap((answer) => {
         const result = searchAnswerItemSchema.safeParse(answer);
         return result.success
-          ? [{ category: '回答' as const, title: result.data.answer, url: `/admin/answer/${result.data.answer_id}` }]
+          ? [
+              {
+                category: '回答' as const,
+                title: result.data.answer,
+                url: `/admin/answer/${result.data.answer_id}`,
+              },
+            ]
           : [];
       }),
       data.users.flatMap((user) => {
         const result = searchUserItemSchema.safeParse(user);
         return result.success
-          ? [{ category: 'ユーザー' as const, title: result.data.name, url: `/admin/users/` }]
+          ? [
+              {
+                category: 'ユーザー' as const,
+                title: result.data.name,
+                url: `/admin/users/`,
+              },
+            ]
           : [];
       }),
       data.label_for_forms.flatMap((label) => {
         const result = searchLabelItemSchema.safeParse(label);
         return result.success
-          ? [{ category: 'フォーム用ラベル' as const, title: result.data.name, url: `/admin/labels/forms` }]
+          ? [
+              {
+                category: 'フォーム用ラベル' as const,
+                title: result.data.name,
+                url: `/admin/labels/forms`,
+              },
+            ]
           : [];
       }),
       data.label_for_answers.flatMap((label) => {
         const result = searchLabelItemSchema.safeParse(label);
         return result.success
-          ? [{ category: '回答用ラベル' as const, title: result.data.name, url: `/admin/labels/answers` }]
+          ? [
+              {
+                category: '回答用ラベル' as const,
+                title: result.data.name,
+                url: `/admin/labels/answers`,
+              },
+            ]
           : [];
       }),
       data.comments.map((comment) => ({

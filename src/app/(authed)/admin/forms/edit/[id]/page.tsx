@@ -8,10 +8,7 @@ import ErrorModal from '@/app/_components/ErrorModal';
 import LoadingCircular from '@/app/_components/LoadingCircular';
 import FormEditForm from './_components/FormEditForm';
 import adminDashboardTheme from '../../../theme/adminDashboardTheme';
-import type {
-  GetFormLabelsResponse,
-  GetFormResponse,
-} from '@/lib/api-types';
+import type { GetFormLabelsResponse, GetFormResponse } from '@/lib/api-types';
 
 const Home = ({ params }: { params: Promise<{ id: number }> }) => {
   const { id } = use(params);

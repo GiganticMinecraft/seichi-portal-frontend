@@ -6,10 +6,7 @@ import useSWR from 'swr';
 import ErrorModal from '@/app/_components/ErrorModal';
 import LoadingCircular from '@/app/_components/LoadingCircular';
 import AnswerList from './_components/AnswerList';
-import type {
-  GetFormAnswersResponse,
-  GetFormsResponse,
-} from '@/lib/api-types';
+import type { GetFormAnswersResponse, GetFormsResponse } from '@/lib/api-types';
 
 const Home = ({ params }: { params: Promise<{ formId: number }> }) => {
   const { formId } = use(params);

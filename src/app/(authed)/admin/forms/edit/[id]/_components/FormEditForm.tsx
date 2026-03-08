@@ -21,10 +21,7 @@ const formVisibilitySchema = z.enum(['PUBLIC', 'PRIVATE']);
 import FormSettings from './FormSettings';
 import QuestionComponent from './Question';
 import type { Form } from '../_schema/editFormSchema';
-import type {
-  GetFormLabelsResponse,
-  GetFormResponse,
-} from '@/lib/api-types';
+import type { GetFormLabelsResponse, GetFormResponse } from '@/lib/api-types';
 
 const FormEditForm = (props: {
   form: GetFormResponse;
@@ -69,10 +66,13 @@ const FormEditForm = (props: {
         },
         webhook_url: props.form.settings.webhook_url ?? null,
         visibility: (() => {
-          const result = formVisibilitySchema.safeParse(props.form.settings.visibility);
+          const result = formVisibilitySchema.safeParse(
+            props.form.settings.visibility
+          );
           return result.success ? result.data : 'PUBLIC';
         })(),
-        default_answer_title: props.form.settings.answer_settings.default_answer_title ?? null,
+        default_answer_title:
+          props.form.settings.answer_settings.default_answer_title ?? null,
         answer_visibility: props.form.settings.answer_settings.visibility,
       },
     },

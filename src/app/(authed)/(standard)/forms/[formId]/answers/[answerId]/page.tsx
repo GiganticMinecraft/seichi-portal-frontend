@@ -56,7 +56,10 @@ const Home = ({
       <Typography variant="h4">{answer.title}</Typography>
       <AnswerMeta answer={answer} />
       <AnswerDetails answer={answer} questions={formQuestions} />
-      <Comments comments={answer.comments as AnswerCommentType[]} answerId={answer.id} />
+      <Comments
+        comments={answer.comments as AnswerCommentType[]}
+        answerId={answer.id}
+      />
     </Stack>
   );
 };

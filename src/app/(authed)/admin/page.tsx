@@ -6,10 +6,7 @@ import LoadingCircular from '@/app/_components/LoadingCircular';
 import DataTable from './_components/Dashboard';
 import adminDashboardTheme from './theme/adminDashboardTheme';
 import ErrorModal from '../../_components/ErrorModal';
-import type {
-  GetAnswersResponse,
-  GetFormsResponse,
-} from '@/lib/api-types';
+import type { GetAnswersResponse, GetFormsResponse } from '@/lib/api-types';
 
 const Home = () => {
   const {
