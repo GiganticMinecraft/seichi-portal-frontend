@@ -1,6 +1,6 @@
 'use client';
 
-import { InteractionStatus } from '@azure/msal-browser';
+import { InteractionRequiredAuthError, InteractionStatus } from '@azure/msal-browser';
 import { useMsal } from '@azure/msal-react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState, Suspense } from 'react';
@@ -33,24 +33,37 @@ const LoginContent = () => {
           ...loginRequest,
         };
 
-        await instance
-          .acquireTokenSilent(requestWithAccount)
-          .then(async (r) => {
-            const token = r.accessToken;
+        const callbackQuery = new URLSearchParams({
+          callbackUrl: callbackUrl ?? '/',
+        }).toString();
 
-            await fetch('/api/minecraft-access-token', {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify({ token }),
-            });
+        try {
+          const r = await instance.acquireTokenSilent(requestWithAccount);
+
+          const res = await fetch('/api/minecraft-access-token', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ token: r.accessToken }),
           });
 
-        if (callbackUrl) {
-          router.push(callbackUrl);
-        } else {
-          router.push('/');
+          if (!res.ok) {
+            router.push('/internal-error');
+            return;
+          }
+
+          router.push(callbackUrl ?? '/');
+        } catch (e) {
+          if (e instanceof InteractionRequiredAuthError) {
+            await instance.loginRedirect({
+              ...loginRequest,
+              redirectStartPage: `/login?${callbackQuery}`,
+            });
+          } else {
+            console.error(e);
+            router.push('/internal-error');
+          }
         }
       } else if (isInitialized && inProgress === InteractionStatus.None) {
         const callbackQuery = new URLSearchParams({
