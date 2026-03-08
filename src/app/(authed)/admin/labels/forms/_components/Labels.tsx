@@ -15,7 +15,7 @@ import { useForm } from 'react-hook-form';
 import type { EditLabelSchema } from '../../_schemas/labelSchemas';
 
 type Label = {
-  id: number;
+  id: string;
   name: string;
 };
 

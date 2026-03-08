@@ -9,25 +9,25 @@ import { Forms } from './_components/DashboardFormList';
 import FormCreateButton from './_components/FormCreateButton';
 import FormLabelFilter from './_components/FormLabelFilter';
 import ToManageFormLabelButton from './_components/ToManageFormLabelButton';
-import type {
-  ErrorResponse,
-  GetFormLabelsResponse,
-  GetFormsResponse,
-} from '@/app/api/_schemas/ResponseSchemas';
-import type { Either } from 'fp-ts/lib/Either';
+import type { GetFormLabelsResponse, GetFormsResponse } from '@/lib/api-types';
 
 const Home = () => {
-  const { data: forms, isLoading: isLoadingForms } =
-    useSWR<Either<ErrorResponse, GetFormsResponse>>('/api/proxy/forms');
-  const { data: labels, isLoading: isLoadingLabels } = useSWR<
-    Either<ErrorResponse, GetFormLabelsResponse>
-  >('/api/proxy/forms/labels/forms');
+  const {
+    data: forms,
+    error: formsError,
+    isLoading: isLoadingForms,
+  } = useSWR<GetFormsResponse>('/api/proxy/forms');
+  const {
+    data: labels,
+    error: labelsError,
+    isLoading: isLoadingLabels,
+  } = useSWR<GetFormLabelsResponse>('/api/proxy/forms/labels/forms');
   const [labelFilter, setLabelFilter] = useState<GetFormLabelsResponse>([]);
 
   const filteredForms = useMemo(() => {
-    if (forms?._tag !== 'Right') return [];
-    if (labelFilter.length === 0) return forms.right;
-    return forms.right.filter((form) =>
+    if (!forms) return [];
+    if (labelFilter.length === 0) return forms;
+    return forms.filter((form) =>
       labelFilter.every((label) =>
         form.labels.map((l) => l.id).includes(label.id)
       )
@@ -37,10 +37,8 @@ const Home = () => {
   if (!forms || !labels) {
     return <LoadingCircular />;
   } else if (
-    (!isLoadingForms && !forms) ||
-    forms._tag === 'Left' ||
-    (!isLoadingLabels && !labels) ||
-    labels._tag === 'Left'
+    (!isLoadingForms && formsError) ||
+    (!isLoadingLabels && labelsError)
   ) {
     return <ErrorModal />;
   }
@@ -57,7 +55,7 @@ const Home = () => {
           <Grid size="auto">
             <Stack direction="row">
               <FormLabelFilter
-                labelOptions={labels.right}
+                labelOptions={labels}
                 setLabelFilter={setLabelFilter}
               />
               <ToManageFormLabelButton />

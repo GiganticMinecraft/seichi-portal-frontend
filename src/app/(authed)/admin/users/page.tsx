@@ -6,27 +6,24 @@ import ErrorModal from '@/app/_components/ErrorModal';
 import LoadingCircular from '@/app/_components/LoadingCircular';
 import UserList from './_components/UserList';
 import adminDashboardTheme from '../theme/adminDashboardTheme';
-import type {
-  ErrorResponse,
-  GetUserListResponse,
-} from '@/app/api/_schemas/ResponseSchemas';
-import type { Either } from 'fp-ts/lib/Either';
+import type { GetUserListResponse } from '@/lib/api-types';
 
 const Home = () => {
-  const { data, isLoading } = useSWR<
-    Either<ErrorResponse, GetUserListResponse>
-  >('/api/proxy/users/list', { refreshInterval: 1000 });
+  const { data, error, isLoading } = useSWR<GetUserListResponse>(
+    '/api/proxy/users/list',
+    { refreshInterval: 1000 }
+  );
 
   if (!data) {
     return <LoadingCircular />;
-  } else if ((!isLoading && !data) || data._tag === 'Left') {
+  } else if (!isLoading && error) {
     return <ErrorModal />;
   }
 
   return (
     <ThemeProvider theme={adminDashboardTheme}>
       <CssBaseline />
-      <UserList users={data.right} />
+      <UserList users={data} />
     </ThemeProvider>
   );
 };

@@ -5,25 +5,23 @@ import useSWR from 'swr';
 import ErrorModal from '@/app/_components/ErrorModal';
 import LoadingCircular from '@/app/_components/LoadingCircular';
 import AnswerForm from './_components/AnswerForm';
-import type {
-  ErrorResponse,
-  GetQuestionsResponse,
-} from '@/app/api/_schemas/ResponseSchemas';
-import type { Either } from 'fp-ts/lib/Either';
+import type { GetQuestionsResponse } from '@/lib/api-types';
 
 const Home = ({ params }: { params: Promise<{ formId: string }> }) => {
   const { formId } = use(params);
-  const { data: questions, isLoading } = useSWR<
-    Either<ErrorResponse, GetQuestionsResponse>
-  >(`/api/proxy/forms/${formId}/questions`);
+  const {
+    data: questions,
+    error,
+    isLoading,
+  } = useSWR<GetQuestionsResponse>(`/api/proxy/forms/${formId}/questions`);
 
   if (!questions) {
     return <LoadingCircular />;
-  } else if ((!isLoading && !questions) || questions._tag == 'Left') {
+  } else if (!isLoading && error) {
     return <ErrorModal />;
   }
 
-  return <AnswerForm questions={questions.right} formId={formId} />;
+  return <AnswerForm questions={questions} formId={formId} />;
 };
 
 export default Home;

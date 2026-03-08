@@ -6,16 +6,18 @@ import { DataGrid } from '@mui/x-data-grid';
 import { useRouter } from 'next/navigation';
 import useSWR from 'swr';
 import ErrorModal from '@/app/_components/ErrorModal';
-import type {
-  ErrorResponse,
-  SearchResponse,
-} from '@/app/api/_schemas/ResponseSchemas';
+import {
+  searchAnswerItemSchema,
+  searchFormItemSchema,
+  searchLabelItemSchema,
+  searchUserItemSchema,
+} from '@/lib/api-types';
+import type { SearchResponse } from '@/lib/api-types';
 import type {
   GridColDef,
   GridEventListener,
   GridRowParams,
 } from '@mui/x-data-grid';
-import type { Either } from 'fp-ts/lib/Either';
 
 const SearchResult = (props: {
   searchContent: string;
@@ -23,13 +25,13 @@ const SearchResult = (props: {
   onClose: () => void;
 }) => {
   const router = useRouter();
-  const { data, isLoading } = useSWR<Either<ErrorResponse, SearchResponse>>(
+  const { data, isLoading, error } = useSWR<SearchResponse>(
     encodeURI(`/api/proxy/search?query=${props.searchContent}`)
   );
 
   if (!data) {
     return null;
-  } else if (!isLoading && data._tag === 'Left') {
+  } else if (!isLoading && error) {
     return <ErrorModal />;
   }
 
@@ -50,47 +52,71 @@ const SearchResult = (props: {
     url: string;
   }
 
-  // NOTE: `data` が Right であることを保証してから呼び出さなければならない。
   const prepareRows = () => {
-    assert(data._tag === 'Right');
+    assert(data);
 
     return [
-      data.right.forms.map((form) => {
-        return {
-          category: 'フォーム',
-          title: form.title,
-          url: `/admin/forms/edit/${form.id}`,
-        };
+      data.forms.flatMap((form) => {
+        const result = searchFormItemSchema.safeParse(form);
+        return result.success
+          ? [
+              {
+                category: 'フォーム' as const,
+                title: result.data.title,
+                url: `/admin/forms/edit/${result.data.id}`,
+              },
+            ]
+          : [];
       }),
-      data.right.answers.map((answer) => {
-        return {
-          category: '回答',
-          title: answer.answer,
-          url: `/admin/answer/${answer.answer_id}`,
-        };
+      data.answers.flatMap((answer) => {
+        const result = searchAnswerItemSchema.safeParse(answer);
+        return result.success
+          ? [
+              {
+                category: '回答' as const,
+                title: result.data.answer,
+                url: `/admin/answer/${result.data.answer_id}`,
+              },
+            ]
+          : [];
       }),
-      data.right.users.map((user) => {
-        return {
-          category: 'ユーザー',
-          title: user.name,
-          url: `/admin/users/`,
-        };
+      data.users.flatMap((user) => {
+        const result = searchUserItemSchema.safeParse(user);
+        return result.success
+          ? [
+              {
+                category: 'ユーザー' as const,
+                title: result.data.name,
+                url: `/admin/users/`,
+              },
+            ]
+          : [];
       }),
-      data.right.label_for_forms.map((label) => {
-        return {
-          category: 'フォーム用ラベル',
-          title: label.name,
-          url: `/admin/labels/forms`,
-        };
+      data.label_for_forms.flatMap((label) => {
+        const result = searchLabelItemSchema.safeParse(label);
+        return result.success
+          ? [
+              {
+                category: 'フォーム用ラベル' as const,
+                title: result.data.name,
+                url: `/admin/labels/forms`,
+              },
+            ]
+          : [];
       }),
-      data.right.label_for_answers.map((label) => {
-        return {
-          category: '回答用ラベル',
-          title: label.name,
-          url: `/admin/labels/answers`,
-        };
+      data.label_for_answers.flatMap((label) => {
+        const result = searchLabelItemSchema.safeParse(label);
+        return result.success
+          ? [
+              {
+                category: '回答用ラベル' as const,
+                title: result.data.name,
+                url: `/admin/labels/answers`,
+              },
+            ]
+          : [];
       }),
-      data.right.comments.map((comment) => ({
+      data.comments.map((comment) => ({
         category: 'コメント',
         title: comment.content,
         url: `/admin/answer/${comment.answer_id}`,

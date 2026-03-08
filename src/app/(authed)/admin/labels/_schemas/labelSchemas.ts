@@ -7,7 +7,7 @@ export const createLabelSchema = z.object({
 export type CreateLabelSchema = z.infer<typeof createLabelSchema>;
 
 export const editLabelSchema = z.object({
-  id: z.number(),
+  id: z.string(),
   name: z.string(),
 });
 

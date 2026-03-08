@@ -17,11 +17,7 @@ import { useState } from 'react';
 import useSWR from 'swr';
 import ErrorModal from '@/app/_components/ErrorModal';
 import SearchResult from './SearchResult';
-import type {
-  ErrorResponse,
-  GetUsersResponse,
-} from '@/app/api/_schemas/ResponseSchemas';
-import type { Either } from 'fp-ts/lib/Either';
+import type { GetUsersResponse } from '@/lib/api-types';
 
 const SearchField = () => {
   const [openSearchResultModal, setOpenSearchResultModal] = useState(false);
@@ -69,11 +65,9 @@ const SearchField = () => {
 };
 
 const NavBar = () => {
-  const { data } = useSWR<Either<ErrorResponse, GetUsersResponse>>(
-    '/api/proxy/users/me'
-  );
+  const { data, error } = useSWR<GetUsersResponse>('/api/proxy/users/me');
 
-  if (data?._tag === 'Left') {
+  if (error) {
     return <ErrorModal />;
   }
 
@@ -105,7 +99,7 @@ const NavBar = () => {
           <SearchField />
           <Avatar
             alt="PlayerHead"
-            src={data ? `https://mc-heads.net/avatar/${data.right.id}` : ''}
+            src={data ? `https://mc-heads.net/avatar/${data.uuid}` : ''}
             sx={{ marginLeft: '20px' }}
           />
         </Toolbar>

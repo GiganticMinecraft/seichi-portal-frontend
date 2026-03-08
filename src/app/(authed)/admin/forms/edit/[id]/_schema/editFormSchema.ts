@@ -15,7 +15,7 @@ export const questionSchema = z.object({
 const _visibility = z.enum(['PUBLIC', 'PRIVATE']);
 
 export const formSchema = z.object({
-  id: z.number(),
+  id: z.string(),
   title: z.string(),
   description: z.string(),
   questions: z

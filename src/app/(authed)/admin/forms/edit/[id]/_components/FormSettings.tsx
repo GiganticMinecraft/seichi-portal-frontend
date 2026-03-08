@@ -10,7 +10,7 @@ import {
 } from '@mui/material';
 import FormLabelField from './FormLabelField';
 import type { Form, Visibility } from '../_schema/editFormSchema';
-import type { GetFormLabelsResponse } from '@/app/api/_schemas/ResponseSchemas';
+import type { GetFormLabelsResponse } from '@/lib/api-types';
 import type { UseFormRegister } from 'react-hook-form';
 
 const FormSettings = (props: {
@@ -18,7 +18,7 @@ const FormSettings = (props: {
   visibility: Visibility;
   answerVisibility: Visibility;
   has_response_period: boolean;
-  formId: number;
+  formId: string;
   labelOptions: GetFormLabelsResponse;
   currentLabels: GetFormLabelsResponse;
 }) => (

@@ -6,28 +6,26 @@ import useSWR from 'swr';
 import ErrorModal from '@/app/_components/ErrorModal';
 import LoadingCircular from '@/app/_components/LoadingCircular';
 import AnswerList from './_components/AnswerList';
-import type {
-  ErrorResponse,
-  GetFormAnswersResponse,
-  GetFormsResponse,
-} from '@/app/api/_schemas/ResponseSchemas';
-import type { Either } from 'fp-ts/lib/Either';
+import type { GetFormAnswersResponse, GetFormsResponse } from '@/lib/api-types';
 
 const Home = ({ params }: { params: Promise<{ formId: number }> }) => {
   const { formId } = use(params);
-  const { data: answers, isLoading: isLoadingAnswers } = useSWR<
-    Either<ErrorResponse, GetFormAnswersResponse>
-  >(`/api/proxy/forms/${formId}/answers`);
-  const { data: forms, isLoading: isLoadingForms } =
-    useSWR<Either<ErrorResponse, GetFormsResponse>>('/api/proxy/forms');
+  const {
+    data: answers,
+    error: answersError,
+    isLoading: isLoadingAnswers,
+  } = useSWR<GetFormAnswersResponse>(`/api/proxy/forms/${formId}/answers`);
+  const {
+    data: forms,
+    error: formsError,
+    isLoading: isLoadingForms,
+  } = useSWR<GetFormsResponse>('/api/proxy/forms');
 
   if (!answers || !forms) {
     return <LoadingCircular />;
   } else if (
-    (!isLoadingAnswers && !answers) ||
-    answers._tag == 'Left' ||
-    (!isLoadingForms && !forms) ||
-    forms._tag == 'Left'
+    (!isLoadingAnswers && answersError) ||
+    (!isLoadingForms && formsError)
   ) {
     return <ErrorModal />;
   }
@@ -36,10 +34,10 @@ const Home = ({ params }: { params: Promise<{ formId: number }> }) => {
     <Box sx={{ width: '100%', justifyContent: 'center', alignItems: 'center' }}>
       <AnswerList
         formTitle={
-          forms.right.find((form) => form.id === answers.right[0]?.form_id)
-            ?.title ?? 'unknown form'
+          forms.find((form) => form.id === answers[0]?.form_id)?.title ??
+          'unknown form'
         }
-        answers={answers.right}
+        answers={answers}
       />
     </Box>
   );

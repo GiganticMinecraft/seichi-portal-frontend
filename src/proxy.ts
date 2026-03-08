@@ -1,7 +1,15 @@
+import { z } from 'zod';
 import { NextResponse, type NextRequest } from 'next/server';
-import { getUsersResponseSchema } from './app/api/_schemas/ResponseSchemas';
 import { BACKEND_SERVER_URL } from './env';
 import { getCachedToken } from './user-token/mcToken';
+
+const getUsersResponseSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  role: z.enum(['ADMINISTRATOR', 'STANDARD_USER']),
+  discord_user_id: z.string().nullable(),
+  discord_username: z.string().nullable(),
+});
 
 const proxyToBackend = (request: NextRequest, token: string) => {
   const nextResponse = NextResponse.rewrite(

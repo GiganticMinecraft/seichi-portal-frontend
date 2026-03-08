@@ -9,7 +9,7 @@ import {
   Select,
   Stack,
 } from '@mui/material';
-import type { GetUserListResponse } from '@/app/api/_schemas/ResponseSchemas';
+import type { GetUserListResponse } from '@/lib/api-types';
 
 const UserList = (props: { users: GetUserListResponse }) => {
   return (
@@ -33,7 +33,7 @@ const UserList = (props: { users: GetUserListResponse }) => {
             <Select
               defaultValue={user.role}
               onChange={async (event) => {
-                await fetch(`/api/proxy/forms/users/${user.id}`, {
+                await fetch(`/api/proxy/forms/users/${user.uuid}`, {
                   method: 'PATCH',
                   headers: {
                     'Content-Type': 'application/json',
@@ -53,7 +53,7 @@ const UserList = (props: { users: GetUserListResponse }) => {
             sx={{ justifyContent: 'space-between', width: '100%' }}
           >
             <ListItemText sx={{ alignItems: 'center' }} primary={user.name} />
-            <ListItemText sx={{ alignItems: 'center' }} primary={user.id} />
+            <ListItemText sx={{ alignItems: 'center' }} primary={user.uuid} />
           </Stack>
         </ListItem>
       ))}

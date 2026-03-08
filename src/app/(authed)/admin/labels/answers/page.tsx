@@ -7,20 +7,17 @@ import LoadingCircular from '@/app/_components/LoadingCircular';
 import adminDashboardTheme from '../../theme/adminDashboardTheme';
 import CreateLabelField from '../_components/CreateLabelField';
 import Labels from '../_components/Labels';
-import type {
-  ErrorResponse,
-  GetAnswerLabelsResponse,
-} from '@/app/api/_schemas/ResponseSchemas';
-import type { Either } from 'fp-ts/lib/Either';
+import type { GetAnswerLabelsResponse } from '@/lib/api-types';
 
 const Home = () => {
-  const { data, isLoading } = useSWR<
-    Either<ErrorResponse, GetAnswerLabelsResponse>
-  >('/api/proxy/forms/labels/answers', { refreshInterval: 1000 });
+  const { data, error, isLoading } = useSWR<GetAnswerLabelsResponse>(
+    '/api/proxy/forms/labels/answers',
+    { refreshInterval: 1000 }
+  );
 
   if (!data) {
     return <LoadingCircular />;
-  } else if ((!isLoading && !data) || data._tag === 'Left') {
+  } else if (!isLoading && error) {
     return <ErrorModal />;
   }
 
@@ -30,7 +27,7 @@ const Home = () => {
       <Stack spacing={2} sx={{ width: '100%' }}>
         <Typography variant="h4">回答設定用ラベル管理</Typography>
         <CreateLabelField />
-        <Labels labels={data.right} />
+        <Labels labels={data} />
       </Stack>
     </ThemeProvider>
   );

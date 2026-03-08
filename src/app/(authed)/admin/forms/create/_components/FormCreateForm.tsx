@@ -13,11 +13,11 @@ import {
 } from '@mui/material';
 import { useState } from 'react';
 import { useFieldArray, useForm, useWatch } from 'react-hook-form';
-import { createFormResponseSchema } from '@/app/api/_schemas/ResponseSchemas';
+import { apiClient } from '@/lib/apiClient';
 import FormSettings from './FormSettings';
 import QuestionComponent from './Question';
 import type { Form } from '../_schema/createFormSchema';
-import type { GetFormLabelsResponse } from '@/app/api/_schemas/ResponseSchemas';
+import type { GetFormLabelsResponse } from '@/lib/api-types';
 
 const FormCreateForm = (props: { labelOptions: GetFormLabelsResponse }) => {
   const {
@@ -62,28 +62,18 @@ const FormCreateForm = (props: { labelOptions: GetFormLabelsResponse }) => {
   const [labels, setLabels] = useState<GetFormLabelsResponse>([]);
 
   const onSubmit = async (data: Form) => {
-    const createFormResponse = await fetch('/api/proxy/forms', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
+    let createdFormId: string;
+    try {
+      const createdForm = await apiClient.create_form_handler({
         title: data.title,
         description: data.description,
-      }),
-      cache: 'no-cache',
-    });
-
-    const parsedCreateFormResponse = createFormResponseSchema.safeParse(
-      await createFormResponse.json()
-    );
-
-    if (!parsedCreateFormResponse.success) {
+      });
+      createdFormId = createdForm.id;
+    } catch {
       setError('root', {
         type: 'manual',
         message: 'フォームの作成に失敗しました。',
       });
-
       return;
     }
 
@@ -108,7 +98,7 @@ const FormCreateForm = (props: { labelOptions: GetFormLabelsResponse }) => {
     };
 
     const setFormMetadataResponse = await fetch(
-      `/api/proxy/forms/${parsedCreateFormResponse.data.id}`,
+      `/api/proxy/forms/${createdFormId}`,
       {
         method: 'PATCH',
         headers: {
@@ -135,10 +125,10 @@ const FormCreateForm = (props: { labelOptions: GetFormLabelsResponse }) => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        form_id: parsedCreateFormResponse.data.id,
+        form_id: createdFormId,
         questions: data.questions.map((question) => ({
           ...question,
-          form_id: parsedCreateFormResponse.data.id,
+          form_id: createdFormId,
           choices: question.choices.map((choice) => choice.choice),
         })),
       }),
@@ -147,7 +137,7 @@ const FormCreateForm = (props: { labelOptions: GetFormLabelsResponse }) => {
 
     if (addQuestionResponse.ok) {
       const putLabelsResponse = await fetch(
-        `/api/proxy/forms/${parsedCreateFormResponse.data.id}/labels`,
+        `/api/proxy/forms/${createdFormId}/labels`,
         {
           method: 'PUT',
           headers: {

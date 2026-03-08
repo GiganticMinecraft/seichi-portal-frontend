@@ -8,7 +8,7 @@ import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import * as React from 'react';
 import { formatString } from '../../../../../generic/DateFormatter';
-import type { GetFormsResponse } from '@/app/api/_schemas/ResponseSchemas';
+import type { GetFormsResponse } from '@/lib/api-types';
 
 interface Props {
   forms: GetFormsResponse;
@@ -54,8 +54,9 @@ export const Forms = ({ forms }: Props) => {
                 </Typography>
                 <Typography variant="body2" sx={{ mb: 1.5, color: 'gray' }}>
                   {formatResponsePeriod(
-                    form.response_period.start_at,
-                    form.response_period.end_at
+                    form.settings.answer_settings.response_period.start_at ??
+                      null,
+                    form.settings.answer_settings.response_period.end_at ?? null
                   )}
                 </Typography>
               </CardContent>

@@ -12,14 +12,11 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { left, right } from 'fp-ts/lib/Either';
 import { useState } from 'react';
 import Markdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-import { errorResponseSchema } from '@/app/api/_schemas/ResponseSchemas';
+import { errorResponseSchema } from '@/lib/api-types';
 import { formatString } from '@/generic/DateFormatter';
-import type { ErrorResponse } from '@/app/api/_schemas/ResponseSchemas';
-import type { Either } from 'fp-ts/lib/Either';
 
 type Message = {
   id: string;
@@ -27,7 +24,7 @@ type Message = {
   sender: {
     uuid: string;
     name: string;
-    role: 'ADMINISTRATOR' | 'STANDARD_USER';
+    role: string;
   };
   timestamp: string;
 };
@@ -47,7 +44,7 @@ const Message = (props: {
 
   const updateMessage = async (
     body: string
-  ): Promise<Either<ErrorResponse, boolean>> => {
+  ): Promise<{ success: boolean; forbidden?: boolean }> => {
     const response = await fetch(
       `/api/proxy/forms/answers/${props.answerId}/messages/${props.message.id}`,
       {
@@ -60,16 +57,14 @@ const Message = (props: {
     );
 
     if (response.ok) {
-      return right(true);
-    } else {
-      const parseResult = errorResponseSchema.safeParse(await response.json());
-
-      if (parseResult.success) {
-        return left(parseResult.data);
-      } else {
-        return right(false);
-      }
+      return { success: true };
     }
+
+    const parseResult = errorResponseSchema.safeParse(await response.json());
+    if (parseResult.success && parseResult.data.errorCode === 'FORBIDDEN') {
+      return { success: false, forbidden: true };
+    }
+    return { success: false };
   };
 
   const deleteMessage = async () => {
@@ -158,19 +153,13 @@ const Message = (props: {
                 edittingMessage !== undefined &&
                 edittingMessage !== ''
               ) {
-                const updateResult = await updateMessage(edittingMessage);
+                const result = await updateMessage(edittingMessage);
 
-                if (
-                  updateResult._tag === 'Left' &&
-                  updateResult.left.errorCode === 'FORBIDDEN'
-                ) {
+                if (result.forbidden) {
                   setOperationResultMessage(
                     'このメッセージを編集する権限がありません。'
                   );
-                } else if (
-                  updateResult._tag === 'Right' &&
-                  updateResult.right
-                ) {
+                } else if (result.success) {
                   props.handleCancelEditting();
                 } else {
                   setOperationResultMessage(

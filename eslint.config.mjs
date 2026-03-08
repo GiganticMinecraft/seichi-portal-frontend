@@ -43,6 +43,7 @@ export default defineConfig([
     'out/**',
     'build/**',
     'next-env.d.ts',
+    'src/generated/**',
   ]),
   importX.flatConfigs.recommended,
   importX.flatConfigs.typescript,

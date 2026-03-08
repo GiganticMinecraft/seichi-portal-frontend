@@ -12,7 +12,9 @@
     "fmt": "prettier --check --log-level=warn './**/*.{ts,tsx,css}'",
     "fmt:fix": "prettier --write --log-level=warn './**/*.{ts,tsx,css}'",
     "postinstall": "typesync || :",
-    "pretty": "pnpm lint:fix && pnpm fmt:fix && pnpm build"
+    "pretty": "pnpm lint:fix && pnpm fmt:fix && pnpm build",
+    "codegen": "tsx scripts/codegen.ts",
+    "codegen:check": "tsx scripts/codegen.ts && git diff --exit-code src/generated"
   },
   "dependencies": {
     "@azure/msal-browser": "^4.28.1",
@@ -25,6 +27,7 @@
     "@mui/material": "^7.3.7",
     "@mui/material-nextjs": "^7.3.7",
     "@mui/x-data-grid": "^8.0.0",
+    "@zodios/core": "^10.9.6",
     "browserslist": "^4.23.0",
     "dayjs": "^1.11.9",
     "fp-ts": "^2.16.8",
@@ -61,7 +64,10 @@
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^7.0.1",
     "eslint-plugin-unused-imports": "^4",
+    "openapi-typescript": "^7.13.0",
+    "openapi-zod-client": "^1.18.3",
     "prettier": "^3.0.1",
+    "tsx": "^4.21.0",
     "typescript": "5.9.3",
     "typescript-eslint": "^8.53.1",
     "typesync": "^0.14.0"
