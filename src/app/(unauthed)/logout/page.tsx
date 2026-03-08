@@ -10,12 +10,13 @@ const Home = () => {
   const router = useRouter();
 
   useEffect(() => {
+    if (inProgress !== InteractionStatus.None) return;
+
     (async () => {
-      if (accounts[0] && inProgress === InteractionStatus.None) {
+      await fetch('/api/logout', { method: 'DELETE' });
+
+      if (accounts[0]) {
         await instance.initialize().catch((e) => console.log(e));
-        await fetch('/api/logout', {
-          method: 'DELETE',
-        });
         await instance.logoutRedirect({
           account: instance.getAccountByHomeId(accounts[0].homeAccountId),
           postLogoutRedirectUri: '/',
