@@ -13,7 +13,7 @@ const Home = () => {
     (async () => {
       if (accounts[0] && inProgress === InteractionStatus.None) {
         await instance.initialize().catch((e) => console.log(e));
-        await fetch('/api/proxy/session', {
+        await fetch('/api/logout', {
           method: 'DELETE',
         });
         await instance.logoutRedirect({

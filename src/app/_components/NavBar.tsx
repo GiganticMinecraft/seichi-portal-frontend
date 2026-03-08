@@ -52,7 +52,7 @@ const NavBar = () => {
                 <Box>
                   <Avatar
                     alt="PlayerHead"
-                    src={data ? `https://mc-heads.net/avatar/${data.uuid}` : ''}
+                    src={data ? `https://mc-heads.net/avatar/${data.id}` : ''}
                     sx={{ marginLeft: '20px' }}
                     onClick={(event: React.MouseEvent<HTMLElement>) =>
                       setAnchorEl(event.currentTarget)
@@ -68,7 +68,7 @@ const NavBar = () => {
                     </MenuItem>
                     <MenuItem>
                       <Link
-                        href={`/users/${data.uuid}`}
+                        href={`/users/${data.id}`}
                         color="inherit"
                         sx={{ textDecoration: 'none' }}
                       >

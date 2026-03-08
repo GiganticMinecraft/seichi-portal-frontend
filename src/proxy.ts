@@ -51,7 +51,14 @@ export const proxy = async (request: NextRequest) => {
 
   if (!me.success) {
     console.error('Failed to parse user!');
-    return NextResponse.redirect(`${request.nextUrl.origin}/internal-error`);
+    const response = NextResponse.redirect(
+      `${request.nextUrl.origin}/login?callbackUrl=${request.nextUrl.pathname}`
+    );
+    response.cookies.set('SEICHI_PORTAL__SESSION_ID', '', {
+      maxAge: 0,
+      path: '/',
+    });
+    return response;
   }
 
   if (pathName.startsWith('/admin') && me.data.role !== 'ADMINISTRATOR') {
