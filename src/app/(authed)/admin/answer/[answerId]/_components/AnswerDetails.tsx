@@ -123,8 +123,6 @@ const AnswerLabels = (props: {
         );
       }}
       renderInput={(params) => (
-        // @ts-expect-error (解決方法がよくわからないのでとりあえずignoreする)
-        // FIXME: あとで調べる
         <TextField
           {...params}
           variant="standard"
