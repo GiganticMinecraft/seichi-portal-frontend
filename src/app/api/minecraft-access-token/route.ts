@@ -11,6 +11,13 @@ const microsoftAccountTokenSchema = z.object({
   token: z.string().min(1),
 });
 
+class UpstreamServiceError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = 'UpstreamServiceError';
+  }
+}
+
 export async function POST(req: NextRequest) {
   try {
     const requestBody: unknown = await req.json().catch(() => null);
@@ -62,6 +69,13 @@ export async function POST(req: NextRequest) {
     return nextResponse;
   } catch (error) {
     console.error('Minecraft login flow failed:', error);
+    if (error instanceof UpstreamServiceError || error instanceof z.ZodError) {
+      return NextResponse.json(
+        { error: 'Failed during upstream authentication' },
+        { status: 502 }
+      );
+    }
+
     return NextResponse.json(
       { error: 'Unexpected error during login' },
       { status: 500 }
@@ -90,7 +104,9 @@ const acquireXboxLiveTokenWithUserHash = async (token: string) => {
   });
 
   if (!response.ok) {
-    throw new Error(`Xbox Live auth failed with status ${response.status}`);
+    throw new UpstreamServiceError(
+      `Xbox Live auth failed with status ${response.status}`
+    );
   }
 
   const body: unknown = await response.json().catch(() => null);
@@ -121,7 +137,9 @@ const acquireXboxServiceSecurityTokenWithUserHash = async ({
   });
 
   if (!response.ok) {
-    throw new Error(`XSTS auth failed with status ${response.status}`);
+    throw new UpstreamServiceError(
+      `XSTS auth failed with status ${response.status}`
+    );
   }
 
   const body: unknown = await response.json().catch(() => null);
@@ -149,7 +167,7 @@ const acquireMinecraftAccessToken = async ({
   });
 
   if (!response.ok) {
-    throw new Error(
+    throw new UpstreamServiceError(
       `Minecraft service auth failed with status ${response.status}`
     );
   }

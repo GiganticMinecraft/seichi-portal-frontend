@@ -5,6 +5,11 @@ import { schemas } from './generated/api-client';
 
 const getUsersResponseSchema = schemas.UserInfoResponse;
 
+type FetchUserResult =
+  | { kind: 'ok'; user: typeof getUsersResponseSchema._type }
+  | { kind: 'unauthorized' }
+  | { kind: 'error' };
+
 const proxyToBackend = (request: NextRequest, token: string) => {
   const nextResponse = NextResponse.rewrite(
     `${BACKEND_SERVER_URL}${request.nextUrl.pathname.replace(
@@ -29,17 +34,27 @@ const fetchUser = async (token: string) => {
       cache: 'no-cache',
     });
 
+    if (response.status === 401) {
+      return { kind: 'unauthorized' } satisfies FetchUserResult;
+    }
+
     if (!response.ok) {
-      return null;
+      console.error('Failed to fetch user from backend:', response.status);
+      return { kind: 'error' } satisfies FetchUserResult;
     }
 
     const body: unknown = await response.json().catch(() => null);
     const parsed = getUsersResponseSchema.safeParse(body);
 
-    return parsed.success ? parsed.data : null;
+    if (!parsed.success) {
+      console.error('Failed to parse user response from backend');
+      return { kind: 'error' } satisfies FetchUserResult;
+    }
+
+    return { kind: 'ok', user: parsed.data } satisfies FetchUserResult;
   } catch (error) {
     console.error('Failed to fetch user from backend:', error);
-    return null;
+    return { kind: 'error' } satisfies FetchUserResult;
   }
 };
 
@@ -63,7 +78,7 @@ export const proxy = async (request: NextRequest) => {
 
   const me = await fetchUser(token);
 
-  if (!me) {
+  if (me.kind === 'unauthorized') {
     const response = NextResponse.redirect(
       `${request.nextUrl.origin}/login?callbackUrl=${request.nextUrl.pathname}`
     );
@@ -74,7 +89,11 @@ export const proxy = async (request: NextRequest) => {
     return response;
   }
 
-  if (pathName.startsWith('/admin') && me.role !== 'ADMINISTRATOR') {
+  if (me.kind === 'error') {
+    return NextResponse.redirect(`${request.nextUrl.origin}/internal-error`);
+  }
+
+  if (pathName.startsWith('/admin') && me.user.role !== 'ADMINISTRATOR') {
     return NextResponse.redirect(`${request.nextUrl.origin}/forbidden`);
   }
 
