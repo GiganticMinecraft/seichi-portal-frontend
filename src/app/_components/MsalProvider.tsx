@@ -2,7 +2,7 @@
 
 import { PublicClientApplication } from '@azure/msal-browser';
 import { MsalProvider as MsalLibProvider } from '@azure/msal-react';
-import { MS_APP_CLIENT_ID, MS_APP_REDIRECT_URL } from '@/env';
+import { MS_APP_CLIENT_ID, MS_APP_REDIRECT_URL } from '@/env.client';
 import type { Configuration } from '@azure/msal-browser';
 import type { ReactNode } from 'react';
 

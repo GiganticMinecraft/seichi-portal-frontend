@@ -1,5 +1,5 @@
 import { NextResponse, type NextRequest } from 'next/server';
-import { BACKEND_SERVER_URL } from './env';
+import { BACKEND_SERVER_URL } from './env.server';
 import { getCachedToken } from './user-token/mcToken';
 import { schemas } from './generated/api-client';
 
@@ -19,14 +19,28 @@ const proxyToBackend = (request: NextRequest, token: string) => {
 };
 
 const fetchUser = async (token: string) => {
-  return await fetch(`${BACKEND_SERVER_URL}/users/me`, {
-    method: 'GET',
-    headers: {
-      Accept: 'application/json',
-      Authorization: `Bearer ${token}`,
-    },
-    cache: 'no-cache',
-  }).then(async (res) => getUsersResponseSchema.safeParse(await res.json()));
+  try {
+    const response = await fetch(`${BACKEND_SERVER_URL}/users/me`, {
+      method: 'GET',
+      headers: {
+        Accept: 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      cache: 'no-cache',
+    });
+
+    if (!response.ok) {
+      return null;
+    }
+
+    const body: unknown = await response.json().catch(() => null);
+    const parsed = getUsersResponseSchema.safeParse(body);
+
+    return parsed.success ? parsed.data : null;
+  } catch (error) {
+    console.error('Failed to fetch user from backend:', error);
+    return null;
+  }
 };
 
 // NOTE: ここでやらなければならないのは
@@ -49,8 +63,7 @@ export const proxy = async (request: NextRequest) => {
 
   const me = await fetchUser(token);
 
-  if (!me.success) {
-    console.error('Failed to parse user!');
+  if (!me) {
     const response = NextResponse.redirect(
       `${request.nextUrl.origin}/login?callbackUrl=${request.nextUrl.pathname}`
     );
@@ -61,7 +74,7 @@ export const proxy = async (request: NextRequest) => {
     return response;
   }
 
-  if (pathName.startsWith('/admin') && me.data.role !== 'ADMINISTRATOR') {
+  if (pathName.startsWith('/admin') && me.role !== 'ADMINISTRATOR') {
     return NextResponse.redirect(`${request.nextUrl.origin}/forbidden`);
   }
 

@@ -1,4 +1,4 @@
-import { BACKEND_SERVER_URL } from '@/env';
+import { BACKEND_SERVER_URL } from '@/env.server';
 import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
 
