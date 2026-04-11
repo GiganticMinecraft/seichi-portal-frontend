@@ -18,7 +18,10 @@ export async function POST(req: NextRequest) {
       microsoftAccountTokenSchema.safeParse(requestBody);
 
     if (!microsoftAccountToken.success) {
-      return NextResponse.json({ error: 'Invalid request body' }, { status: 400 });
+      return NextResponse.json(
+        { error: 'Invalid request body' },
+        { status: 400 }
+      );
     }
 
     const xboxLiveTokenWithUserHash = await acquireXboxLiveTokenWithUserHash(
