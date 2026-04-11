@@ -1,4 +1,4 @@
 minimumReleaseAge: 10080
 minimumReleaseAgeExclude:
-  # Renovate security update: next@16.1.7
-  - next@16.1.7
+  # Renovate security update: next@16.1.7 || 16.2.3
+  - next@16.1.7 || 16.2.3
