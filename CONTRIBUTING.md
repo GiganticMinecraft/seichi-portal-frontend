@@ -43,12 +43,19 @@ mise install
 | ------------------------------- | ---------------------------------------------------------------------------------------------------------- |
 | NEXT_PUBLIC_MS_APP_CLIENT_ID    | Microsoft アカウントログイン用の CLIENT ID                                                                 |
 | NEXT_PUBLIC_MS_APP_REDIRECT_URL | ログイン後にリダイレクトされるデフォルトの URL                                                             |
-| NEXT_PUBLIC_BACKEND_SERVER_URL  | [seichi-portal-backend](https://github.com/GiganticMinecraft/seichi-portal-backend) にアクセスできるリンク |
+| BACKEND_SERVER_URL              | [seichi-portal-backend](https://github.com/GiganticMinecraft/seichi-portal-backend) にアクセスできるリンク |
+| DISCORD_CLIENT_ID               | Discord 連携用 OAuth クライアント ID                                                                       |
+| DISCORD_CLIENT_SECRET           | Discord 連携用 OAuth クライアントシークレット                                                              |
+| DISCORD_REDIRECT_URI            | Discord OAuth コールバック URL                                                                             |
 | NEXT_PUBLIC_DEBUG_MODE          | デバッグモードを有効にします                                                                               |
 
 > [!TIP]
 >
-> `NEXT_PUBLIC_MS_APP_CLIENT_ID` は Microsoft アカウントによる認証に必要な環境変数のため、 `NEXT_PUBLIC_DEBUG_MODE` が `true` のときは設定されていなくても問題ありません。
+> `NEXT_PUBLIC_MS_APP_CLIENT_ID` と `NEXT_PUBLIC_MS_APP_REDIRECT_URL` は build 時にも参照されます。`NEXT_PUBLIC_DEBUG_MODE` が `true` でも、`pnpm build` や本番デプロイでは設定が必要です。
+
+> [!TIP]
+>
+> `DISCORD_CLIENT_ID` / `DISCORD_CLIENT_SECRET` / `DISCORD_REDIRECT_URI` はサーバ側専用の環境変数です。`NEXT_PUBLIC_*` を付けずに設定してください。
 
 ## デバッグモード
 

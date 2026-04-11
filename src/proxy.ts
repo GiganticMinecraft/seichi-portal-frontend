@@ -1,18 +1,20 @@
 import { NextResponse, type NextRequest } from 'next/server';
-import { BACKEND_SERVER_URL } from './env.server';
+import { z } from 'zod';
+import { getBackendServerUrl } from './env.server';
 import { getCachedToken } from './user-token/mcToken';
 import { schemas } from './generated/api-client';
 
 const getUsersResponseSchema = schemas.UserInfoResponse;
 
 type FetchUserResult =
-  | { kind: 'ok'; user: typeof getUsersResponseSchema._type }
+  | { kind: 'ok'; user: z.infer<typeof getUsersResponseSchema> }
   | { kind: 'unauthorized' }
   | { kind: 'error' };
 
 const proxyToBackend = (request: NextRequest, token: string) => {
+  const backendServerUrl = getBackendServerUrl();
   const nextResponse = NextResponse.rewrite(
-    `${BACKEND_SERVER_URL}${request.nextUrl.pathname.replace(
+    `${backendServerUrl}${request.nextUrl.pathname.replace(
       '/api/proxy',
       ''
     )}${request.nextUrl.search}`
@@ -25,7 +27,8 @@ const proxyToBackend = (request: NextRequest, token: string) => {
 
 const fetchUser = async (token: string) => {
   try {
-    const response = await fetch(`${BACKEND_SERVER_URL}/users/me`, {
+    const backendServerUrl = getBackendServerUrl();
+    const response = await fetch(`${backendServerUrl}/users/me`, {
       method: 'GET',
       headers: {
         Accept: 'application/json',

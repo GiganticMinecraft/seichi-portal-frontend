@@ -1,25 +1,20 @@
 import { NextResponse } from 'next/server';
-import {
-  BACKEND_SERVER_URL,
-  DISCORD_CLIENT_ID,
-  DISCORD_CLIENT_SECRET,
-  DISCORD_REDIRECT_URI,
-} from '@/env.server';
+import { getBackendServerUrl, getDiscordConfig } from '@/env.server';
 import { getCachedToken } from '@/user-token/mcToken';
 import { discordTokenSchema } from '../_schemas/External';
 import type { NextRequest } from 'next/server';
-
-const OAUTH_QUERY = new URLSearchParams({
-  client_id: DISCORD_CLIENT_ID,
-  redirect_uri: DISCORD_REDIRECT_URI,
-  response_type: 'code',
-  scope: 'identify',
-}).toString();
-
-const DISCORD_OAUTH_URL = `https://discord.com/oauth2/authorize?${OAUTH_QUERY}`;
 const DISCORD_TOKEN_URL = 'https://discord.com/api/oauth2/token';
 
 export async function GET(req: NextRequest) {
+  const { clientId, clientSecret, redirectUri } = getDiscordConfig();
+  const backendServerUrl = getBackendServerUrl();
+  const oauthQuery = new URLSearchParams({
+    client_id: clientId,
+    redirect_uri: redirectUri,
+    response_type: 'code',
+    scope: 'identify',
+  }).toString();
+  const discordOauthUrl = `https://discord.com/oauth2/authorize?${oauthQuery}`;
   const seichiPortalToken = await getCachedToken();
   if (!seichiPortalToken) {
     return NextResponse.redirect(
@@ -31,15 +26,15 @@ export async function GET(req: NextRequest) {
   const code = searchParams.get('code');
 
   if (code === null) {
-    return NextResponse.redirect(DISCORD_OAUTH_URL);
+    return NextResponse.redirect(discordOauthUrl);
   }
 
   const body = new URLSearchParams({
-    client_id: DISCORD_CLIENT_ID,
-    client_secret: DISCORD_CLIENT_SECRET,
+    client_id: clientId,
+    client_secret: clientSecret,
     code,
     grant_type: 'authorization_code',
-    redirect_uri: DISCORD_REDIRECT_URI,
+    redirect_uri: redirectUri,
   }).toString();
 
   try {
@@ -70,7 +65,7 @@ export async function GET(req: NextRequest) {
     }
 
     const linkDiscordResponse = await fetch(
-      `${BACKEND_SERVER_URL}/link-discord`,
+      `${backendServerUrl}/link-discord`,
       {
         method: 'POST',
         headers: {

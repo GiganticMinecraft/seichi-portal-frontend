@@ -4,7 +4,7 @@ import {
   minecraftAccessTokenResponseSchema,
   xboxLiveServiceTokenResponseSchema,
 } from '@/_schemas/loginSchema';
-import { BACKEND_SERVER_URL } from '@/env.server';
+import { getBackendServerUrl } from '@/env.server';
 import type { NextRequest } from 'next/server';
 
 const microsoftAccountTokenSchema = z.object({
@@ -182,7 +182,7 @@ const createSession = async ({
   token,
   expires,
 }: Awaited<ReturnType<typeof acquireMinecraftAccessToken>>) => {
-  return await fetch(`${BACKEND_SERVER_URL}/session`, {
+  return await fetch(`${getBackendServerUrl()}/session`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
