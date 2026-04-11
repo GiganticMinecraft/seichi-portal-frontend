@@ -1,37 +1,86 @@
 import { NextResponse } from 'next/server';
+import { z } from 'zod';
 import {
   minecraftAccessTokenResponseSchema,
   xboxLiveServiceTokenResponseSchema,
 } from '@/_schemas/loginSchema';
-import { BACKEND_SERVER_URL } from '@/env';
+import { getBackendServerUrl } from '@/env.server';
 import type { NextRequest } from 'next/server';
 
-export async function POST(req: NextRequest) {
-  const microsoftAccountToken = (await req.json()) as { token: string };
+const microsoftAccountTokenSchema = z.object({
+  token: z.string().min(1),
+});
 
-  const xboxLiveTokenWithUserHash = await acquireXboxLiveTokenWithUserHash(
-    microsoftAccountToken.token
-  );
-  const xboxServiceSecurityToken =
-    await acquireXboxServiceSecurityTokenWithUserHash(
-      xboxLiveTokenWithUserHash
-    );
-  const minecraftAccessTokenResult = await acquireMinecraftAccessToken(
-    xboxServiceSecurityToken
-  );
-
-  const sessionResult = await createSession(minecraftAccessTokenResult);
-  const nextResponse = NextResponse.json({});
-
-  const setCookieHeader = sessionResult.headers.get('Set-Cookie');
-
-  if (setCookieHeader === null) {
-    return NextResponse.redirect(`${req.nextUrl.origin}/internal-error`);
-  } else {
-    nextResponse.headers.set('Set-Cookie', setCookieHeader);
+class UpstreamServiceError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = 'UpstreamServiceError';
   }
+}
 
-  return nextResponse;
+export async function POST(req: NextRequest) {
+  try {
+    const requestBody: unknown = await req.json().catch(() => null);
+    const microsoftAccountToken =
+      microsoftAccountTokenSchema.safeParse(requestBody);
+
+    if (!microsoftAccountToken.success) {
+      return NextResponse.json(
+        { error: 'Invalid request body' },
+        { status: 400 }
+      );
+    }
+
+    const xboxLiveTokenWithUserHash = await acquireXboxLiveTokenWithUserHash(
+      microsoftAccountToken.data.token
+    );
+    const xboxServiceSecurityToken =
+      await acquireXboxServiceSecurityTokenWithUserHash(
+        xboxLiveTokenWithUserHash
+      );
+    const minecraftAccessTokenResult = await acquireMinecraftAccessToken(
+      xboxServiceSecurityToken
+    );
+
+    const sessionResult = await createSession(minecraftAccessTokenResult);
+    if (!sessionResult.ok) {
+      console.error(
+        'Failed to create backend session:',
+        sessionResult.status,
+        sessionResult.statusText
+      );
+      return NextResponse.json(
+        { error: 'Failed to create backend session' },
+        { status: 502 }
+      );
+    }
+
+    const nextResponse = NextResponse.json({});
+    const setCookieHeader = sessionResult.headers.get('Set-Cookie');
+
+    if (setCookieHeader === null) {
+      return NextResponse.json(
+        { error: 'Backend session cookie was not returned' },
+        { status: 502 }
+      );
+    }
+
+    nextResponse.headers.set('Set-Cookie', setCookieHeader);
+    return nextResponse;
+  } catch (error) {
+    console.error('Minecraft login flow failed:', error);
+    if (error instanceof UpstreamServiceError || error instanceof z.ZodError) {
+      return NextResponse.json(
+        { error: 'Failed during upstream authentication' },
+        { status: 502 }
+      );
+    }
+
+    return NextResponse.json(
+      { error: 'Unexpected error during login' },
+      { status: 500 }
+    );
+  }
 }
 
 const acquireXboxLiveTokenWithUserHash = async (token: string) => {
@@ -54,9 +103,14 @@ const acquireXboxLiveTokenWithUserHash = async (token: string) => {
     }),
   });
 
-  const result = xboxLiveServiceTokenResponseSchema.parse(
-    await response.json()
-  );
+  if (!response.ok) {
+    throw new UpstreamServiceError(
+      `Xbox Live auth failed with status ${response.status}`
+    );
+  }
+
+  const body: unknown = await response.json().catch(() => null);
+  const result = xboxLiveServiceTokenResponseSchema.parse(body);
 
   return { token: result.Token, userHash: result.DisplayClaims.xui[0].uhs };
 };
@@ -82,9 +136,14 @@ const acquireXboxServiceSecurityTokenWithUserHash = async ({
     }),
   });
 
-  const result = xboxLiveServiceTokenResponseSchema.parse(
-    await response.json()
-  );
+  if (!response.ok) {
+    throw new UpstreamServiceError(
+      `XSTS auth failed with status ${response.status}`
+    );
+  }
+
+  const body: unknown = await response.json().catch(() => null);
+  const result = xboxLiveServiceTokenResponseSchema.parse(body);
 
   return { token: result.Token, userHash: result.DisplayClaims.xui[0].uhs };
 };
@@ -107,9 +166,14 @@ const acquireMinecraftAccessToken = async ({
     }),
   });
 
-  const result = minecraftAccessTokenResponseSchema.parse(
-    await response.json()
-  );
+  if (!response.ok) {
+    throw new UpstreamServiceError(
+      `Minecraft service auth failed with status ${response.status}`
+    );
+  }
+
+  const body: unknown = await response.json().catch(() => null);
+  const result = minecraftAccessTokenResponseSchema.parse(body);
 
   return { token: result.access_token, expires: result.expires_in };
 };
@@ -118,7 +182,7 @@ const createSession = async ({
   token,
   expires,
 }: Awaited<ReturnType<typeof acquireMinecraftAccessToken>>) => {
-  return await fetch(`${BACKEND_SERVER_URL}/session`, {
+  return await fetch(`${getBackendServerUrl()}/session`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

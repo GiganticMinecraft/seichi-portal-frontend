@@ -1,13 +1,20 @@
 import { NextResponse, type NextRequest } from 'next/server';
-import { BACKEND_SERVER_URL } from './env';
+import { z } from 'zod';
+import { getBackendServerUrl } from './env.server';
 import { getCachedToken } from './user-token/mcToken';
 import { schemas } from './generated/api-client';
 
 const getUsersResponseSchema = schemas.UserInfoResponse;
 
+type FetchUserResult =
+  | { kind: 'ok'; user: z.infer<typeof getUsersResponseSchema> }
+  | { kind: 'unauthorized' }
+  | { kind: 'error' };
+
 const proxyToBackend = (request: NextRequest, token: string) => {
+  const backendServerUrl = getBackendServerUrl();
   const nextResponse = NextResponse.rewrite(
-    `${BACKEND_SERVER_URL}${request.nextUrl.pathname.replace(
+    `${backendServerUrl}${request.nextUrl.pathname.replace(
       '/api/proxy',
       ''
     )}${request.nextUrl.search}`
@@ -19,14 +26,39 @@ const proxyToBackend = (request: NextRequest, token: string) => {
 };
 
 const fetchUser = async (token: string) => {
-  return await fetch(`${BACKEND_SERVER_URL}/users/me`, {
-    method: 'GET',
-    headers: {
-      Accept: 'application/json',
-      Authorization: `Bearer ${token}`,
-    },
-    cache: 'no-cache',
-  }).then(async (res) => getUsersResponseSchema.safeParse(await res.json()));
+  try {
+    const backendServerUrl = getBackendServerUrl();
+    const response = await fetch(`${backendServerUrl}/users/me`, {
+      method: 'GET',
+      headers: {
+        Accept: 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      cache: 'no-cache',
+    });
+
+    if (response.status === 401) {
+      return { kind: 'unauthorized' } satisfies FetchUserResult;
+    }
+
+    if (!response.ok) {
+      console.error('Failed to fetch user from backend:', response.status);
+      return { kind: 'error' } satisfies FetchUserResult;
+    }
+
+    const body: unknown = await response.json().catch(() => null);
+    const parsed = getUsersResponseSchema.safeParse(body);
+
+    if (!parsed.success) {
+      console.error('Failed to parse user response from backend');
+      return { kind: 'error' } satisfies FetchUserResult;
+    }
+
+    return { kind: 'ok', user: parsed.data } satisfies FetchUserResult;
+  } catch (error) {
+    console.error('Failed to fetch user from backend:', error);
+    return { kind: 'error' } satisfies FetchUserResult;
+  }
 };
 
 // NOTE: ここでやらなければならないのは
@@ -49,8 +81,7 @@ export const proxy = async (request: NextRequest) => {
 
   const me = await fetchUser(token);
 
-  if (!me.success) {
-    console.error('Failed to parse user!');
+  if (me.kind === 'unauthorized') {
     const response = NextResponse.redirect(
       `${request.nextUrl.origin}/login?callbackUrl=${request.nextUrl.pathname}`
     );
@@ -61,7 +92,11 @@ export const proxy = async (request: NextRequest) => {
     return response;
   }
 
-  if (pathName.startsWith('/admin') && me.data.role !== 'ADMINISTRATOR') {
+  if (me.kind === 'error') {
+    return NextResponse.redirect(`${request.nextUrl.origin}/internal-error`);
+  }
+
+  if (pathName.startsWith('/admin') && me.user.role !== 'ADMINISTRATOR') {
     return NextResponse.redirect(`${request.nextUrl.origin}/forbidden`);
   }
 

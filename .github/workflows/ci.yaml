@@ -11,6 +11,12 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      # Build-time validation needs these public MSAL values even in CI.
+      # Dummy values are enough because this workflow only verifies lint/format/build.
+      NEXT_PUBLIC_MS_APP_CLIENT_ID: 00000000-0000-0000-0000-000000000000
+      NEXT_PUBLIC_MS_APP_REDIRECT_URL: http://localhost:3000
+      NEXT_PUBLIC_DEBUG_MODE: 'false'
     steps:
       - uses: actions/checkout@v6
 

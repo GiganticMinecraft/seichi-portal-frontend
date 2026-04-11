@@ -1,4 +1,4 @@
-import { BACKEND_SERVER_URL } from '@/env';
+import { getBackendServerUrl } from '@/env.server';
 import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
 
@@ -9,7 +9,7 @@ export const DELETE = async () => {
   const token = cookieStore.get(SESSION_COOKIE)?.value;
 
   if (token) {
-    await fetch(`${BACKEND_SERVER_URL}/session`, {
+    await fetch(`${getBackendServerUrl()}/session`, {
       method: 'DELETE',
       headers: {
         Authorization: `Bearer ${token}`,
