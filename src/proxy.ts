@@ -64,7 +64,7 @@ const fetchUser = async (token: string) => {
 // NOTE: ここでやらなければならないのは
 // - ミドルウェアを経由する処理はすべてログイン済みであることを保証すること(トークンが取得できる)
 // - `/api/proxy` に対するリクエストはすべて seichi-portal-backend に転送すること
-// - `/admin` に対するリクエストを行ったものは `ADMINISTRATOR` であることを保証すること
+// - セッション失効時はログイン画面に戻すこと
 export const proxy = async (request: NextRequest) => {
   const token = await getCachedToken(request.cookies);
   if (!token) {
@@ -76,8 +76,6 @@ export const proxy = async (request: NextRequest) => {
   if (request.nextUrl.pathname.startsWith('/api/proxy')) {
     return proxyToBackend(request, token);
   }
-
-  const pathName = request.nextUrl.pathname.toLowerCase();
 
   const me = await fetchUser(token);
 
@@ -93,11 +91,7 @@ export const proxy = async (request: NextRequest) => {
   }
 
   if (me.kind === 'error') {
-    return NextResponse.redirect(`${request.nextUrl.origin}/internal-error`);
-  }
-
-  if (pathName.startsWith('/admin') && me.user.role !== 'ADMINISTRATOR') {
-    return NextResponse.redirect(`${request.nextUrl.origin}/forbidden`);
+    return NextResponse.next();
   }
 
   return NextResponse.next();

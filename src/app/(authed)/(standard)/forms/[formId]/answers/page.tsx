@@ -21,13 +21,12 @@ const Home = ({ params }: { params: Promise<{ formId: number }> }) => {
     isLoading: isLoadingForms,
   } = useSWR<GetFormsResponse>('/api/proxy/forms');
 
-  if (!answers || !forms) {
+  if (answersError || formsError) {
+    return <ErrorModal error={answersError ?? formsError} />;
+  }
+
+  if (isLoadingAnswers || isLoadingForms || !answers || !forms) {
     return <LoadingCircular />;
-  } else if (
-    (!isLoadingAnswers && answersError) ||
-    (!isLoadingForms && formsError)
-  ) {
-    return <ErrorModal />;
   }
 
   return (

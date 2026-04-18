@@ -1,5 +1,15 @@
-export const fetcher = (url: string) =>
-  fetch(url).then((res) => {
-    if (!res.ok) throw new Error(`Request failed: ${res.status}`);
-    return res.json();
-  });
+import { HttpError } from '@/lib/httpError';
+
+export const fetcher = async (url: string) => {
+  const res = await fetch(url);
+
+  if (!res.ok) {
+    throw new HttpError({
+      message: `Request failed: ${res.status}`,
+      status: res.status,
+      url,
+    });
+  }
+
+  return res.json();
+};

@@ -63,7 +63,10 @@ const LoginContent = () => {
           });
 
           if (!res.ok) {
-            router.push('/internal-error');
+            handleFailure(
+              'ログインに失敗しました。時間を置いて再試行してください。',
+              res.status
+            );
             return;
           }
 
@@ -75,8 +78,10 @@ const LoginContent = () => {
               redirectStartPage: `/login?${callbackQuery}`,
             });
           } else {
-            console.error(e);
-            router.push('/internal-error');
+            handleFailure(
+              'ログインに失敗しました。時間を置いて再試行してください。',
+              e
+            );
           }
         }
       } else if (isInitialized && inProgress === InteractionStatus.None) {

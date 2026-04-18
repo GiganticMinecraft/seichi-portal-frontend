@@ -13,10 +13,12 @@ const Home = () => {
     isLoading,
   } = useSWR<GetFormsResponse>('/api/proxy/forms');
 
+  if (error) {
+    return <ErrorModal error={error} />;
+  }
+
   if (isLoading || !forms) {
     return <LoadingCircular />;
-  } else if (error) {
-    return <ErrorModal />;
   }
 
   return <FormList forms={forms} />;
