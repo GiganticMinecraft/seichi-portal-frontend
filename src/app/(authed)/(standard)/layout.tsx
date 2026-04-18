@@ -2,6 +2,7 @@
 
 import '../../globals.css';
 import { Inter } from 'next/font/google';
+import { AppRouterCacheProvider } from '@mui/material-nextjs/v16-appRouter';
 import { SWRConfig } from 'swr';
 import NavBar from '@/app/_components/NavBar';
 import { fetcher } from '@/app/_swr/fetcher';
@@ -18,16 +19,18 @@ const RootLayout = ({ children }: { children: ReactNode }) => {
         <meta name="description" content="整地鯖公式のポータルサイトです。" />
       </head>
       <body className={inter.className}>
-        <main className={styles['main']}>
-          <SWRConfig
-            value={{
-              fetcher: fetcher,
-            }}
-          >
-            <NavBar />
-            {children}
-          </SWRConfig>
-        </main>
+        <AppRouterCacheProvider>
+          <main className={styles['main']}>
+            <SWRConfig
+              value={{
+                fetcher: fetcher,
+              }}
+            >
+              <NavBar />
+              {children}
+            </SWRConfig>
+          </main>
+        </AppRouterCacheProvider>
       </body>
     </html>
   );
