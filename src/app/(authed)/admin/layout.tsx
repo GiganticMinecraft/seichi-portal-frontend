@@ -4,16 +4,55 @@ import '../../globals.css';
 import { ThemeProvider } from '@emotion/react';
 import { CssBaseline } from '@mui/material';
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v16-appRouter';
-import { SWRConfig } from 'swr';
+import useSWR, { SWRConfig } from 'swr';
+import ErrorModal from '@/app/_components/ErrorModal';
+import LoadingCircular from '@/app/_components/LoadingCircular';
 import { MsalProvider } from '@/app/_components/MsalProvider';
 import { fetcher } from '@/app/_swr/fetcher';
 import AdminNavigationBar from './_components/AdminNavigationBar';
 import DashboardMenu from './_components/DashboardMenu';
 import adminDashboardTheme from './theme/adminDashboardTheme';
 import styles from '../../page.module.css';
+import type { GetUsersResponse } from '@/lib/api-types';
 import type { ReactNode } from 'react';
 
 const RootLayout = ({ children }: { children: ReactNode }) => {
+  const {
+    data: me,
+    error,
+    isLoading,
+  } = useSWR<GetUsersResponse>('/api/proxy/users/me', fetcher);
+
+  const content = (() => {
+    if (error) {
+      return <ErrorModal error={error} />;
+    }
+
+    if (isLoading || !me) {
+      return <LoadingCircular />;
+    }
+
+    if (me.role !== 'ADMINISTRATOR') {
+      return (
+        <ErrorModal
+          showDiagnostics={false}
+          title="このページを表示する権限がありません。"
+          message="管理者権限を持つアカウントでサインインしてください。"
+        />
+      );
+    }
+
+    return (
+      <>
+        <AdminNavigationBar />
+        <main className={styles['main']}>
+          <DashboardMenu />
+          {children}
+        </main>
+      </>
+    );
+  })();
+
   return (
     <html lang="ja">
       <head>
@@ -28,13 +67,7 @@ const RootLayout = ({ children }: { children: ReactNode }) => {
                 fetcher: fetcher,
               }}
             >
-              <MsalProvider>
-                <AdminNavigationBar />
-                <main className={styles['main']}>
-                  <DashboardMenu />
-                  {children}
-                </main>
-              </MsalProvider>
+              <MsalProvider>{content}</MsalProvider>
             </SWRConfig>
           </ThemeProvider>
         </AppRouterCacheProvider>
