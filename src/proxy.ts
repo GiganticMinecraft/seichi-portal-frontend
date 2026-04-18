@@ -104,5 +104,10 @@ export const proxy = async (request: NextRequest) => {
 };
 
 export const config = {
-  matcher: ['/api/proxy/:path*', '/admin/:path*', '/forms/:path*'],
+  matcher: [
+    '/api/proxy/:path*',
+    '/admin/:path*',
+    '/forms/:path*',
+    '/users/:path*',
+  ],
 };

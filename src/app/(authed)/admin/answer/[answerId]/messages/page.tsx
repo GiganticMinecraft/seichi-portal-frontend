@@ -28,13 +28,12 @@ const Home = ({ params }: { params: Promise<{ answerId: number }> }) => {
     { refreshInterval: 1000 }
   );
 
-  if (!answer || !messages) {
-    return <LoadingCircular />;
-  } else if (
-    (!isAnswerLoading && answerError) ||
-    (!isMessagesLoading && messagesError)
-  ) {
+  if (answerError || messagesError) {
     return <ErrorModal />;
+  }
+
+  if (isAnswerLoading || isMessagesLoading || !answer || !messages) {
+    return <LoadingCircular />;
   }
 
   return (

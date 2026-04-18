@@ -29,10 +29,12 @@ const SearchResult = (props: {
     encodeURI(`/api/proxy/search?query=${props.searchContent}`)
   );
 
-  if (!data) {
-    return null;
-  } else if (!isLoading && error) {
+  if (error) {
     return <ErrorModal />;
+  }
+
+  if (isLoading || !data) {
+    return null;
   }
 
   const columns: GridColDef[] = [

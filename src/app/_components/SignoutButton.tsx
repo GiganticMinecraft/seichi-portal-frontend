@@ -20,7 +20,7 @@ export const SignoutButton = () => {
       await fetch('/api/logout', { method: 'DELETE' });
 
       if (accounts[0]) {
-        await instance.initialize().catch((e) => console.log(e));
+        await instance.initialize();
         await instance.logoutRedirect({
           account: instance.getAccountByHomeId(accounts[0].homeAccountId),
           postLogoutRedirectUri: '/',
@@ -30,7 +30,7 @@ export const SignoutButton = () => {
 
       router.push('/');
     } catch (e) {
-      console.log(e);
+      console.error('Failed to sign out:', e);
       setIsSubmitting(false);
     }
   };

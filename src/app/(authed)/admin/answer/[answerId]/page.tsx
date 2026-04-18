@@ -39,14 +39,19 @@ const Home = ({ params }: { params: Promise<{ answerId: number }> }) => {
     isLoading: isLabelsLoading,
   } = useSWR<GetAnswerLabelsResponse>('/api/proxy/forms/labels/answers');
 
-  if (!answers || !formQuestions || !labels) {
-    return <LoadingCircular />;
-  } else if (
-    (!isAnswersLoading && answersError) ||
-    (!isFormQuestionsLoading && formQuestionsError) ||
-    (!isLabelsLoading && labelsError)
-  ) {
+  if (answersError || formQuestionsError || labelsError) {
     return <ErrorModal />;
+  }
+
+  if (
+    isAnswersLoading ||
+    isFormQuestionsLoading ||
+    isLabelsLoading ||
+    !answers ||
+    !formQuestions ||
+    !labels
+  ) {
+    return <LoadingCircular />;
   }
 
   return (
