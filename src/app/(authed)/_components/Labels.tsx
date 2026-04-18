@@ -122,11 +122,7 @@ const Labels = (props: {
           >
             {editLabel === label ? (
               <Box>
-                <TextField
-                  {...register('id')}
-                  value={label.id}
-                  type="hidden"
-                />
+                <TextField {...register('id')} value={label.id} type="hidden" />
                 <TextField {...register('name')} defaultValue={label.name} />
               </Box>
             ) : (
