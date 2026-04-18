@@ -1,6 +1,6 @@
 'use client';
 
-import { Box, Stack } from '@mui/material';
+import { Box, Card, CardContent, Divider, Stack } from '@mui/material';
 import { use } from 'react';
 import useSWR from 'swr';
 import ErrorModal from '@/app/_components/ErrorModal';
@@ -28,38 +28,35 @@ const Home = ({ params }: { params: Promise<{ userId: string }> }) => {
     `/api/proxy/notifications/settings/${userId}`
   );
 
-  if (!data || !notificationSettings) {
+  if (isLoading || isNotificationSettingsLoading) {
     return <LoadingCircular />;
-  } else if (
-    (!isLoading && error) ||
-    (!isNotificationSettingsLoading && notificationError)
-  ) {
+  } else if (error || notificationError) {
     return <ErrorModal />;
   }
 
+  if (!data || !notificationSettings) {
+    return <LoadingCircular />;
+  }
+
   return (
-    <Box
-      sx={{
-        width: '100%',
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'start',
-      }}
-    >
-      <Stack spacing={2}>
-        <UserInformation user={data} />
-        {data['discord_user_id'] ? (
-          <Stack>
+    <Box sx={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
+    <Stack spacing={3} sx={{ maxWidth: 640, width: '100%' }}>
+      <UserInformation user={data} />
+      {data['discord_user_id'] ? (
+        <Card variant="outlined">
+          <CardContent>
             <UnlinkDiscordButton />
-            <DiscordNotificationSettings
-              userId={userId}
-              currentSettings={notificationSettings}
-            />
-          </Stack>
-        ) : (
-          <LinkDiscordButton />
-        )}
-      </Stack>
+          </CardContent>
+          <Divider />
+          <DiscordNotificationSettings
+            userId={userId}
+            currentSettings={notificationSettings}
+          />
+        </Card>
+      ) : (
+        <LinkDiscordButton />
+      )}
+    </Stack>
     </Box>
   );
 };
