@@ -1,10 +1,10 @@
 'use client';
 
+import { proxyClient } from '@/lib/proxyClient';
+
 export const useDiscordActions = () => {
   const unlinkDiscord = async () => {
-    await fetch('/api/proxy/link-discord', {
-      method: 'DELETE',
-    });
+    await proxyClient.DELETE('/link-discord', {});
   };
 
   return { unlinkDiscord };

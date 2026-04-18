@@ -58,6 +58,7 @@ const Home = ({
       <AnswerDetails answer={answer} questions={formQuestions} />
       <Comments
         comments={answer.comments as AnswerCommentType[]}
+        formId={answer.form_id}
         answerId={answer.id}
         inputSx={{
           '& .MuiInputBase-input': { color: 'white' },

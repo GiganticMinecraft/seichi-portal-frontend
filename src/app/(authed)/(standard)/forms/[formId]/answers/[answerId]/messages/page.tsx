@@ -9,8 +9,12 @@ import InputMessageField from './_components/InputMessageField';
 import Messages from './_components/Messages';
 import type { GetMessagesResponse } from '@/lib/api-types';
 
-const Home = ({ params }: { params: Promise<{ answerId: number }> }) => {
-  const { answerId } = use(params);
+const Home = ({
+  params,
+}: {
+  params: Promise<{ formId: string; answerId: number }>;
+}) => {
+  const { formId, answerId } = use(params);
   const {
     data: messages,
     error,
@@ -59,9 +63,9 @@ const Home = ({ params }: { params: Promise<{ answerId: number }> }) => {
           px: { xs: 2, sm: 3 },
         }}
       >
-        <Messages messages={messages} answerId={answerId} />
+        <Messages messages={messages} formId={formId} answerId={answerId} />
       </Container>
-      <InputMessageField answer_id={answerId} />
+      <InputMessageField form_id={formId} answer_id={answerId} />
     </Stack>
   );
 };

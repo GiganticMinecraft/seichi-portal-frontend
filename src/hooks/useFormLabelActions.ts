@@ -1,11 +1,12 @@
 'use client';
 
+import { proxyClient } from '@/lib/proxyClient';
+
 export const useFormLabelActions = (formId: string) => {
   const updateLabels = async (labelIds: (string | number)[]) => {
-    await fetch(`/api/proxy/forms/${formId}/labels`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ labels: labelIds }),
+    await proxyClient.PUT('/forms/{form_id}/labels', {
+      params: { path: { form_id: formId } },
+      body: { labels: labelIds.map(String) },
     });
   };
 

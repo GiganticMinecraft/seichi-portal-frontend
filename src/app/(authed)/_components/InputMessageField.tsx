@@ -11,6 +11,7 @@ type SendMessageSchema = {
 };
 
 const InputMessageField = (props: {
+  form_id: string;
   answer_id: number;
   textFieldSx?: object;
 }) => {
@@ -18,7 +19,7 @@ const InputMessageField = (props: {
   const [sendFailedMessage, setSendFailedMessage] = useState<
     string | undefined
   >(undefined);
-  const { sendMessage } = useSendMessage(props.answer_id);
+  const { sendMessage } = useSendMessage(props.form_id, props.answer_id);
 
   const onSubmit = async (data: SendMessageSchema) => {
     if (data.body === '') {

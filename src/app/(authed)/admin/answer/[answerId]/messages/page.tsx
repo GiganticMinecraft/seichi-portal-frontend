@@ -8,22 +8,32 @@ import LoadingCircular from '@/app/_components/LoadingCircular';
 import InputMessageField from './_components/InputMessageField';
 import Messages from './_components/Messages';
 import adminDashboardTheme from '../../../theme/adminDashboardTheme';
-import type { GetMessagesResponse } from '@/lib/api-types';
+import type { GetAnswerResponse, GetMessagesResponse } from '@/lib/api-types';
 
 const Home = ({ params }: { params: Promise<{ answerId: number }> }) => {
   const { answerId } = use(params);
   const {
+    data: answer,
+    error: answerError,
+    isLoading: isAnswerLoading,
+  } = useSWR<GetAnswerResponse>(`/api/proxy/forms/answers/${answerId}`);
+  const {
     data: messages,
-    error,
+    error: messagesError,
     isLoading: isMessagesLoading,
   } = useSWR<GetMessagesResponse>(
-    `/api/proxy/forms/answers/${answerId}/messages`,
+    answer
+      ? `/api/proxy/forms/${answer.form_id}/answers/${answerId}/messages`
+      : null,
     { refreshInterval: 1000 }
   );
 
-  if (!messages) {
+  if (!answer || !messages) {
     return <LoadingCircular />;
-  } else if (!isMessagesLoading && error) {
+  } else if (
+    (!isAnswerLoading && answerError) ||
+    (!isMessagesLoading && messagesError)
+  ) {
     return <ErrorModal />;
   }
 
@@ -60,9 +70,13 @@ const Home = ({ params }: { params: Promise<{ answerId: number }> }) => {
             px: { xs: 2, sm: 3 },
           }}
         >
-          <Messages messages={messages} answerId={answerId} />
+          <Messages
+            messages={messages}
+            formId={answer.form_id}
+            answerId={answerId}
+          />
         </Container>
-        <InputMessageField answer_id={answerId} />
+        <InputMessageField form_id={answer.form_id} answer_id={answerId} />
       </Stack>
     </ThemeProvider>
   );
