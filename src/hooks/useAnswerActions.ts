@@ -13,11 +13,14 @@ export const useAnswerActions = (answerId: number | string) => {
   const updateLabels = async (
     labelIds: (string | number)[]
   ): Promise<{ ok: boolean }> => {
-    const response = await fetch(`/api/proxy/forms/answers/${answerId}/labels`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ labels: labelIds }),
-    });
+    const response = await fetch(
+      `/api/proxy/forms/answers/${answerId}/labels`,
+      {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ labels: labelIds }),
+      }
+    );
     return { ok: response.ok };
   };
 
