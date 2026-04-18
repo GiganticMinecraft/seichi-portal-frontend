@@ -24,9 +24,11 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import Markdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import type { paths } from '@/generated/api-types';
 import { errorResponseSchema } from '@/lib/api-types';
 import type { GetQuestionsResponse } from '@/lib/api-types';
 import type { NonEmptyArray } from '@/generic/Types';
+import { proxyClient } from '@/lib/proxyClient';
 
 type Question = {
   id?: number | null | undefined;
@@ -45,6 +47,9 @@ interface Props {
 interface IFormInput {
   [key: string]: string | NonEmptyArray<string> | boolean;
 }
+
+type AnswerCreateBody =
+  paths['/forms/{id}/answers']['post']['requestBody']['content']['application/json'];
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -101,18 +106,20 @@ const AnswerForm = ({ questions: questions, formId }: Props) => {
       }
     });
 
-    const postAnswerResponse = await fetch('/api/proxy/forms/answers', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
+    const body: AnswerCreateBody = {
+      contents: formAnswers,
+    };
+
+    const { response, error } = await proxyClient.POST('/forms/{id}/answers', {
+      params: {
+        path: {
+          id: formId,
+        },
       },
-      body: JSON.stringify({
-        form_id: formId,
-        answers: formAnswers,
-      }),
+      body,
     });
 
-    if (postAnswerResponse.ok) {
+    if (response.ok) {
       toggleIsSubmitted(true);
       reset();
       setSelectedValues({});
@@ -120,9 +127,7 @@ const AnswerForm = ({ questions: questions, formId }: Props) => {
       return;
     }
 
-    const safeParsedErrorResponse = errorResponseSchema.safeParse(
-      await postAnswerResponse.json()
-    );
+    const safeParsedErrorResponse = errorResponseSchema.safeParse(error);
 
     if (
       safeParsedErrorResponse.success &&
