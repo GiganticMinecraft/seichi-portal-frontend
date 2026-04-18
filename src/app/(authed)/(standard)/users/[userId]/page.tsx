@@ -40,23 +40,23 @@ const Home = ({ params }: { params: Promise<{ userId: string }> }) => {
 
   return (
     <Box sx={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
-    <Stack spacing={3} sx={{ maxWidth: 640, width: '100%' }}>
-      <UserInformation user={data} />
-      {data['discord_user_id'] ? (
-        <Card variant="outlined">
-          <CardContent>
-            <UnlinkDiscordButton />
-          </CardContent>
-          <Divider />
-          <DiscordNotificationSettings
-            userId={userId}
-            currentSettings={notificationSettings}
-          />
-        </Card>
-      ) : (
-        <LinkDiscordButton />
-      )}
-    </Stack>
+      <Stack spacing={3} sx={{ maxWidth: 640, width: '100%' }}>
+        <UserInformation user={data} />
+        {data['discord_user_id'] ? (
+          <Card variant="outlined">
+            <CardContent>
+              <UnlinkDiscordButton />
+            </CardContent>
+            <Divider />
+            <DiscordNotificationSettings
+              userId={userId}
+              currentSettings={notificationSettings}
+            />
+          </Card>
+        ) : (
+          <LinkDiscordButton />
+        )}
+      </Stack>
     </Box>
   );
 };
