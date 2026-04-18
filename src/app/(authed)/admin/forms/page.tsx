@@ -21,7 +21,7 @@ const Home = () => {
     data: labels,
     error: labelsError,
     isLoading: isLoadingLabels,
-  } = useSWR<GetFormLabelsResponse>('/api/proxy/forms/labels/forms');
+  } = useSWR<GetFormLabelsResponse>('/api/proxy/labels/forms');
   const [labelFilter, setLabelFilter] = useState<GetFormLabelsResponse>([]);
 
   const filteredForms = useMemo(() => {

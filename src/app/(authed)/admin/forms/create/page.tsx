@@ -13,7 +13,7 @@ const Home = () => {
     data: labels,
     error,
     isLoading: isLoadingLabels,
-  } = useSWR<GetFormLabelsResponse>('/api/proxy/forms/labels/forms');
+  } = useSWR<GetFormLabelsResponse>('/api/proxy/labels/forms');
 
   if (!labels) {
     return <LoadingCircular />;
