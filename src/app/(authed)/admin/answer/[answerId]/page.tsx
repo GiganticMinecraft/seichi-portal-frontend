@@ -67,6 +67,7 @@ const Home = ({ params }: { params: Promise<{ answerId: number }> }) => {
         <Comments
           comments={answers.comments as AnswerCommentType[]}
           answerId={answerId}
+          showDeleteButton
         />
       </Stack>
     </ThemeProvider>

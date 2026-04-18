@@ -1,11 +1,14 @@
+'use client';
+
 import LinkOffIcon from '@mui/icons-material/LinkOff';
 import { Button, Chip, Stack, Typography } from '@mui/material';
+import { useDiscordActions } from '@/hooks/useDiscordActions';
 
 const UnlinkDiscordButton = () => {
+  const { unlinkDiscord } = useDiscordActions();
+
   const onClick = async () => {
-    await fetch('/api/proxy/link-discord', {
-      method: 'DELETE',
-    });
+    await unlinkDiscord();
     location.reload();
   };
 

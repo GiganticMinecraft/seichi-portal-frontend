@@ -1,3 +1,5 @@
+'use client';
+
 import SaveAltIcon from '@mui/icons-material/SaveAlt';
 import {
   Button,
@@ -9,6 +11,7 @@ import {
 } from '@mui/material';
 import Checkbox from '@mui/material/Checkbox';
 import { Controller, useForm } from 'react-hook-form';
+import { useNotificationSettings } from '@/hooks/useNotificationSettings';
 import type {
   GetNotificationSettingsResponse,
   UpdateNotificationSettingsSchema,
@@ -27,16 +30,11 @@ const DiscordNotificationSettings = (props: {
       },
     });
 
-  const onSubmit = async (data: UpdateNotificationSettingsSchema) => {
-    const response = await fetch(`/api/proxy/notifications/settings/me`, {
-      method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(data),
-    });
+  const { updateSettings } = useNotificationSettings();
 
-    if (response.ok) {
+  const onSubmit = async (data: UpdateNotificationSettingsSchema) => {
+    const result = await updateSettings(data);
+    if (result.ok) {
       alert('設定を更新しました');
     } else {
       alert('通知設定の更新に失敗しました');
