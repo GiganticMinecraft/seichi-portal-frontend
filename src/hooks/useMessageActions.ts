@@ -4,6 +4,16 @@ import { errorResponseSchema } from '@/lib/api-types';
 
 type MessageActionResult = { success: boolean; forbidden?: boolean };
 
+const parseForbidden = async (response: Response): Promise<boolean> => {
+  try {
+    const json = await response.json();
+    const parseResult = errorResponseSchema.safeParse(json);
+    return parseResult.success && parseResult.data.errorCode === 'FORBIDDEN';
+  } catch {
+    return false;
+  }
+};
+
 export const useMessageActions = (answerId: number) => {
   const updateMessage = async (
     messageId: string,
@@ -22,11 +32,8 @@ export const useMessageActions = (answerId: number) => {
       return { success: true };
     }
 
-    const parseResult = errorResponseSchema.safeParse(await response.json());
-    if (parseResult.success && parseResult.data.errorCode === 'FORBIDDEN') {
-      return { success: false, forbidden: true };
-    }
-    return { success: false };
+    const forbidden = await parseForbidden(response);
+    return { success: false, forbidden };
   };
 
   const deleteMessage = async (
@@ -44,11 +51,8 @@ export const useMessageActions = (answerId: number) => {
       return { success: true };
     }
 
-    const parseResult = errorResponseSchema.safeParse(await response.json());
-    if (parseResult.success && parseResult.data.errorCode === 'FORBIDDEN') {
-      return { success: false, forbidden: true };
-    }
-    return { success: false };
+    const forbidden = await parseForbidden(response);
+    return { success: false, forbidden };
   };
 
   return { updateMessage, deleteMessage };

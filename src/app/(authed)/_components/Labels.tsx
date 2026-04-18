@@ -77,8 +77,8 @@ const Labels = (props: {
       {editState === State.Failed && (
         <Alert severity="error">ラベルの編集に失敗しました。</Alert>
       )}
-      {props.labels.map((label, index) => (
-        <Box key={index} component="form" onSubmit={handleSubmit(onEdit)}>
+      {props.labels.map((label) => (
+        <Box key={label.id} component="form" onSubmit={handleSubmit(onEdit)}>
           <ListItem
             secondaryAction={
               editLabel === label ? (

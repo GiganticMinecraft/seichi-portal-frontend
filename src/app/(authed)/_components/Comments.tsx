@@ -159,9 +159,9 @@ const Comments = (props: {
       {props.comments
         .slice()
         .reverse()
-        .map((comment, index) => (
+        .map((comment) => (
           <CommentItem
-            key={index}
+            key={comment.comment_id}
             comment={comment}
             showDeleteButton={props.showDeleteButton ?? false}
           />
