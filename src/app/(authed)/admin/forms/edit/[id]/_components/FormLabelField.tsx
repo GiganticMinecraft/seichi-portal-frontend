@@ -1,7 +1,10 @@
+'use client';
+
 import Autocomplete from '@mui/material/Autocomplete';
 import Box from '@mui/material/Box';
 import Chip from '@mui/material/Chip';
 import TextField from '@mui/material/TextField';
+import { useFormLabelActions } from '@/hooks/useFormLabelActions';
 import type { GetFormLabelsResponse } from '@/lib/api-types';
 
 const FormLabelField = (props: {
@@ -9,17 +12,7 @@ const FormLabelField = (props: {
   labelOptions: GetFormLabelsResponse;
   currentLabels: GetFormLabelsResponse;
 }) => {
-  const onChangeLabels = async (labels: GetFormLabelsResponse) => {
-    await fetch(`/api/proxy/forms/${props.formId}/labels`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        labels: labels.map((label) => label.id),
-      }),
-    });
-  };
+  const { updateLabels } = useFormLabelActions(props.formId);
 
   return (
     <Autocomplete
@@ -38,18 +31,16 @@ const FormLabelField = (props: {
           />
         ))
       }
-      renderOption={(props, option) => {
-        return (
-          <Box
-            {...props}
-            key={option}
-            component="span"
-            style={{ color: 'black' }}
-          >
-            {option}
-          </Box>
-        );
-      }}
+      renderOption={(renderProps, option) => (
+        <Box
+          {...renderProps}
+          key={option}
+          component="span"
+          style={{ color: 'black' }}
+        >
+          {option}
+        </Box>
+      )}
       renderInput={(params) => (
         <TextField
           {...params}
@@ -59,9 +50,10 @@ const FormLabelField = (props: {
         />
       )}
       onChange={async (_event, value) => {
-        await onChangeLabels(
-          props.labelOptions.filter((label) => value.includes(label.name))
-        );
+        const selectedIds = props.labelOptions
+          .filter((label) => value.includes(label.name))
+          .map((label) => label.id);
+        await updateLabels(selectedIds);
       }}
     />
   );

@@ -15,6 +15,7 @@ import { useState } from 'react';
 import { z } from 'zod';
 import { useFieldArray, useForm, useWatch } from 'react-hook-form';
 import { fromStringToJSTDateTime } from '@/generic/DateFormatter';
+import { useFormEditActions } from '@/hooks/useFormEditActions';
 
 const questionTypeSchema = z.enum(['TEXT', 'SINGLE', 'MULTIPLE']);
 const formVisibilitySchema = z.enum(['PUBLIC', 'PRIVATE']);
@@ -42,23 +43,17 @@ const FormEditForm = (props: {
     reValidateMode: 'onBlur',
     defaultValues: {
       ...props.form,
-      questions: props.form.questions.map((question) => {
-        return {
-          id: question.id ?? null,
-          title: question.title,
-          description: question.description ?? '',
-          question_type: (() => {
-            const result = questionTypeSchema.safeParse(question.question_type);
-            return result.success ? result.data : 'TEXT';
-          })(),
-          is_required: question.is_required,
-          choices: question.choices.map((choice) => {
-            return {
-              choice: choice,
-            };
-          }),
-        };
-      }),
+      questions: props.form.questions.map((question) => ({
+        id: question.id ?? null,
+        title: question.title,
+        description: question.description ?? '',
+        question_type: (() => {
+          const result = questionTypeSchema.safeParse(question.question_type);
+          return result.success ? result.data : 'TEXT';
+        })(),
+        is_required: question.is_required,
+        choices: question.choices.map((choice) => ({ choice })),
+      })),
       settings: {
         has_response_period: start_at && end_at ? true : false,
         response_period: {
@@ -85,34 +80,30 @@ const FormEditForm = (props: {
   });
 
   const { fields, append, remove } = useFieldArray({
-    control: control,
+    control,
     keyName: 'reacthookform-id',
     name: 'questions',
   });
 
-  const visibility = useWatch({
-    control: control,
-    name: 'settings.visibility',
-  });
-
+  const visibility = useWatch({ control, name: 'settings.visibility' });
   const answerVisibility = useWatch({
-    control: control,
+    control,
     name: 'settings.answer_visibility',
   });
-
   const hasResponsePeriod = useWatch({
-    control: control,
+    control,
     name: 'settings.has_response_period',
     defaultValue: start_at && end_at ? true : false,
   });
 
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const { updateFormMeta, updateQuestions } = useFormEditActions(props.form.id);
 
   const onSubmit = async (data: Form) => {
     const start_at = data.settings.response_period?.start_at;
     const end_at = data.settings.response_period?.end_at;
 
-    const body = {
+    const metaResult = await updateFormMeta({
       title: data.title,
       description: data.description,
       has_response_period: data.settings.has_response_period,
@@ -124,59 +115,39 @@ const FormEditForm = (props: {
       default_answer_title: data.settings.default_answer_title,
       visibility: data.settings.visibility,
       answer_visibility: data.settings.answer_visibility,
-    };
-
-    const setFormMetaResponse = await fetch(`/api/proxy/forms/${data.id}`, {
-      method: 'PATCH',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(body),
-      cache: 'no-cache',
     });
 
-    if (!setFormMetaResponse.ok) {
+    if (!metaResult.ok) {
       setError('root', {
         type: 'manual',
         message: 'フォームのメタデータの更新に失敗しました。',
       });
     }
 
-    const putQuestionsResponse = await fetch(`/api/proxy/forms/questions`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
+    const questionsResult = await updateQuestions(
+      data.questions.map((question) => ({
+        id: props.form.questions.find(
+          (beforeQuestion) => beforeQuestion.id == question.id
+        )
+          ? question.id
+          : null,
+        title: question.title,
         form_id: data.id,
-        questions: data.questions.map((question) => {
-          return {
-            id: props.form.questions.find(
-              (beforeQuestion) => beforeQuestion.id == question.id
-            )
-              ? question.id
-              : null,
-            title: question.title,
-            form_id: data.id,
-            description: question.description,
-            question_type: question.question_type,
-            choices: question.choices.map((choice) => choice.choice),
-            is_required: question.is_required,
-          };
-        }),
-      }),
-      cache: 'no-cache',
-    });
+        description: question.description,
+        question_type: question.question_type,
+        choices: question.choices.map((choice) => choice.choice),
+        is_required: question.is_required,
+      }))
+    );
 
-    if (!putQuestionsResponse.ok) {
+    if (!questionsResult.ok) {
       setError('root', {
         type: 'manual',
         message: 'フォームの質問の更新に失敗しました。',
       });
     }
 
-    if (setFormMetaResponse.ok && putQuestionsResponse.ok) {
+    if (metaResult.ok && questionsResult.ok) {
       setIsSubmitted(true);
     }
   };
@@ -230,11 +201,7 @@ const FormEditForm = (props: {
         </Container>
       </Grid>
       <Grid size={2}>
-        <Card
-          sx={{
-            position: 'fixed',
-          }}
-        >
+        <Card sx={{ position: 'fixed' }}>
           <CardContent>
             <Button
               type="button"

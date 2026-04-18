@@ -59,6 +59,13 @@ const Home = ({
       <Comments
         comments={answer.comments as AnswerCommentType[]}
         answerId={answer.id}
+        inputSx={{
+          '& .MuiInputBase-input': { color: 'white' },
+          '& label': { color: 'white' },
+          '& .MuiOutlinedInput-root': {
+            '& fieldset': { borderColor: 'white' },
+          },
+        }}
       />
     </Stack>
   );

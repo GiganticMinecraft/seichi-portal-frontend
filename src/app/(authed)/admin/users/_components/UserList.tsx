@@ -9,9 +9,12 @@ import {
   Select,
   Stack,
 } from '@mui/material';
+import { useUserRoleActions } from '@/hooks/useUserRoleActions';
 import type { GetUserListResponse } from '@/lib/api-types';
 
 const UserList = (props: { users: GetUserListResponse }) => {
+  const { updateUserRole } = useUserRoleActions();
+
   return (
     <List sx={{ width: '100%' }}>
       <ListItem>
@@ -33,13 +36,7 @@ const UserList = (props: { users: GetUserListResponse }) => {
             <Select
               defaultValue={user.role}
               onChange={async (event) => {
-                await fetch(`/api/proxy/forms/users/${user.uuid}`, {
-                  method: 'PATCH',
-                  headers: {
-                    'Content-Type': 'application/json',
-                  },
-                  body: JSON.stringify({ role: event.target.value }),
-                });
+                await updateUserRole(user.uuid, event.target.value);
               }}
             >
               <MenuItem value="STANDARD_USER">通常ユーザー</MenuItem>

@@ -6,7 +6,7 @@ import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
-import * as React from 'react';
+import { useFormActions } from '@/hooks/useFormActions';
 import { formatString } from '../../../../../generic/DateFormatter';
 import type { GetFormsResponse } from '@/lib/api-types';
 
@@ -23,13 +23,12 @@ const formatResponsePeriod = (startAt: string | null, endAt: string | null) => {
 };
 
 export const Forms = ({ forms }: Props) => {
-  const deleteForm = async (formId: string) => {
-    if (confirm('本当に削除しますか？')) {
-      const response = await fetch(`/api/proxy/forms/${formId}`, {
-        method: 'DELETE',
-      });
+  const { deleteForm } = useFormActions();
 
-      if (response.ok) {
+  const handleDelete = async (formId: string) => {
+    if (confirm('本当に削除しますか？')) {
+      const result = await deleteForm(formId);
+      if (result.ok) {
         alert('削除しました');
       } else {
         alert('削除に失敗しました');
@@ -39,40 +38,32 @@ export const Forms = ({ forms }: Props) => {
 
   return (
     <Grid container spacing={2}>
-      {forms.map((form, index) => {
-        return (
-          <Grid key={index}>
-            <Card
-              sx={{
-                width: 320,
-                height: 170,
-              }}
-            >
-              <CardContent>
-                <Typography variant="h5" component="div">
-                  {form.title}
-                </Typography>
-                <Typography variant="body2" sx={{ mb: 1.5, color: 'gray' }}>
-                  {formatResponsePeriod(
-                    form.settings.answer_settings?.response_period?.start_at ??
-                      null,
-                    form.settings.answer_settings?.response_period?.end_at ??
-                      null
-                  )}
-                </Typography>
-              </CardContent>
-              <CardActions sx={{ marginTop: 'auto' }}>
-                <Button size="small" href={`/admin/forms/edit/${form.id}`}>
-                  EDIT
-                </Button>
-                <Button size="small" onClick={() => deleteForm(form.id)}>
-                  DELETE
-                </Button>
-              </CardActions>
-            </Card>
-          </Grid>
-        );
-      })}
+      {forms.map((form, index) => (
+        <Grid key={index}>
+          <Card sx={{ width: 320, height: 170 }}>
+            <CardContent>
+              <Typography variant="h5" component="div">
+                {form.title}
+              </Typography>
+              <Typography variant="body2" sx={{ mb: 1.5, color: 'gray' }}>
+                {formatResponsePeriod(
+                  form.settings.answer_settings?.response_period?.start_at ??
+                    null,
+                  form.settings.answer_settings?.response_period?.end_at ?? null
+                )}
+              </Typography>
+            </CardContent>
+            <CardActions sx={{ marginTop: 'auto' }}>
+              <Button size="small" href={`/admin/forms/edit/${form.id}`}>
+                EDIT
+              </Button>
+              <Button size="small" onClick={() => handleDelete(form.id)}>
+                DELETE
+              </Button>
+            </CardActions>
+          </Card>
+        </Grid>
+      ))}
     </Grid>
   );
 };
