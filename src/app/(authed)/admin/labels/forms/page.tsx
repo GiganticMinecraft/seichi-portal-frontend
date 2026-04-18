@@ -11,7 +11,7 @@ import type { GetAnswerLabelsResponse } from '@/lib/api-types';
 
 const Home = () => {
   const { data, error, isLoading } = useSWR<GetAnswerLabelsResponse>(
-    '/api/proxy/forms/labels/forms',
+    '/api/proxy/labels/forms',
     { refreshInterval: 1000 }
   );
 

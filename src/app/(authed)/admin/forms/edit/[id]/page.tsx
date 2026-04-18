@@ -21,7 +21,7 @@ const Home = ({ params }: { params: Promise<{ id: number }> }) => {
     data: labels,
     error: labelsError,
     isLoading: isLoadingLabels,
-  } = useSWR<GetFormLabelsResponse>('/api/proxy/forms/labels/forms');
+  } = useSWR<GetFormLabelsResponse>('/api/proxy/labels/forms');
 
   if (!form || !labels) {
     return <LoadingCircular />;
