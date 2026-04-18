@@ -33,6 +33,7 @@ type Message = {
 
 const MessageItem = (props: {
   message: Message;
+  formId: string;
   answerId: number;
   edittingMessageId: string | undefined;
   handleEdit: () => void;
@@ -44,7 +45,10 @@ const MessageItem = (props: {
     string | undefined
   >(undefined);
 
-  const { updateMessage, deleteMessage } = useMessageActions(props.answerId);
+  const { updateMessage, deleteMessage } = useMessageActions(
+    props.formId,
+    props.answerId
+  );
 
   const handleDelete = async () => {
     const result = await deleteMessage(props.message.id);
@@ -165,7 +169,11 @@ const MessageItem = (props: {
   );
 };
 
-const Messages = (props: { messages: Message[]; answerId: number }) => {
+const Messages = (props: {
+  messages: Message[];
+  formId: string;
+  answerId: number;
+}) => {
   const [edittingMessageId, setEdittingMessageId] = useState<
     string | undefined
   >(undefined);
@@ -176,6 +184,7 @@ const Messages = (props: { messages: Message[]; answerId: number }) => {
         <Stack key={message.id} spacing={2}>
           <MessageItem
             message={message}
+            formId={props.formId}
             answerId={props.answerId}
             edittingMessageId={edittingMessageId}
             handleEdit={() => setEdittingMessageId(message.id)}

@@ -66,6 +66,7 @@ const Home = ({ params }: { params: Promise<{ answerId: number }> }) => {
         />
         <Comments
           comments={answers.comments as AnswerCommentType[]}
+          formId={answers.form_id}
           answerId={answerId}
           showDeleteButton
         />

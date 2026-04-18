@@ -33,7 +33,9 @@ const DiscordNotificationSettings = (props: {
   const { updateSettings } = useNotificationSettings();
 
   const onSubmit = async (data: UpdateNotificationSettingsSchema) => {
-    const result = await updateSettings(data);
+    const result = await updateSettings({
+      is_send_message_notification: data.is_send_message_notification ?? null,
+    });
     if (result.ok) {
       alert('設定を更新しました');
     } else {

@@ -1,6 +1,7 @@
 'use client';
 
 import { errorResponseSchema } from '@/lib/api-types';
+import { proxyClient } from '@/lib/proxyClient';
 
 type MessageActionResult = { success: boolean; forbidden?: boolean };
 
@@ -14,17 +15,22 @@ const parseForbidden = async (response: Response): Promise<boolean> => {
   }
 };
 
-export const useMessageActions = (answerId: number) => {
+export const useMessageActions = (formId: string, answerId: number) => {
   const updateMessage = async (
     messageId: string,
     body: string
   ): Promise<MessageActionResult> => {
-    const response = await fetch(
-      `/api/proxy/forms/answers/${answerId}/messages/${messageId}`,
+    const { response } = await proxyClient.PATCH(
+      '/forms/{form_id}/answers/{answer_id}/messages/{message_id}',
       {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ body }),
+        params: {
+          path: {
+            form_id: formId,
+            answer_id: String(answerId),
+            message_id: messageId,
+          },
+        },
+        body: { body },
       }
     );
 
@@ -39,11 +45,16 @@ export const useMessageActions = (answerId: number) => {
   const deleteMessage = async (
     messageId: string
   ): Promise<MessageActionResult> => {
-    const response = await fetch(
-      `/api/proxy/forms/answers/${answerId}/messages/${messageId}`,
+    const { response } = await proxyClient.DELETE(
+      '/forms/{form_id}/answers/{answer_id}/messages/{message_id}',
       {
-        method: 'DELETE',
-        headers: { 'Content-Type': 'application/json' },
+        params: {
+          path: {
+            form_id: formId,
+            answer_id: String(answerId),
+            message_id: messageId,
+          },
+        },
       }
     );
 

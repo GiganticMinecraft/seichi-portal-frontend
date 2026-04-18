@@ -1,13 +1,14 @@
 'use client';
 
-export const useSendMessage = (answerId: number) => {
+import { proxyClient } from '@/lib/proxyClient';
+
+export const useSendMessage = (formId: string, answerId: number) => {
   const sendMessage = async (body: string): Promise<{ ok: boolean }> => {
-    const response = await fetch(
-      `/api/proxy/forms/answers/${answerId}/messages`,
+    const { response } = await proxyClient.POST(
+      '/forms/{form_id}/answers/{answer_id}/messages',
       {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ body }),
+        params: { path: { form_id: formId, answer_id: String(answerId) } },
+        body: { body },
       }
     );
     return { ok: response.ok };

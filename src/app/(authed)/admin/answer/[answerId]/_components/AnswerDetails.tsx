@@ -25,7 +25,10 @@ const AnswerTitleForm = (props: { answers: GetAnswerResponse }) => {
   const { handleSubmit, register } = useForm<{ title: string }>();
   const [isEditing, setIsEditing] = useState(false);
   const [title, setTitle] = useState(props.answers.title);
-  const { updateTitle } = useAnswerActions(props.answers.id);
+  const { updateTitle } = useAnswerActions(
+    props.answers.form_id,
+    props.answers.id
+  );
 
   const onSubmit = async (data: { title: string }) => {
     const result = await updateTitle(data.title);
@@ -72,7 +75,10 @@ const AnswerLabels = (props: {
   labelOptions: GetAnswerLabelsResponse;
   answers: GetAnswerResponse;
 }) => {
-  const { updateLabels } = useAnswerActions(props.answers.id);
+  const { updateLabels } = useAnswerActions(
+    props.answers.form_id,
+    props.answers.id
+  );
 
   return (
     <Autocomplete

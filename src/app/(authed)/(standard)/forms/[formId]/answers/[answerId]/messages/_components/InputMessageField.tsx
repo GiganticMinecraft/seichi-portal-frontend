@@ -2,8 +2,12 @@
 
 import InputMessageField from '@/app/(authed)/_components/InputMessageField';
 
-const StandardInputMessageField = (props: { answer_id: number }) => (
+const StandardInputMessageField = (props: {
+  form_id: string;
+  answer_id: number;
+}) => (
   <InputMessageField
+    form_id={props.form_id}
     answer_id={props.answer_id}
     textFieldSx={{
       '& .MuiFormLabel-root': { color: 'white' },

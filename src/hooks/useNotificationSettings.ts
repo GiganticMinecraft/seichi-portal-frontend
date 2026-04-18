@@ -1,15 +1,17 @@
 'use client';
 
-import type { UpdateNotificationSettingsSchema } from '@/lib/api-types';
+import { proxyClient } from '@/lib/proxyClient';
+import type { paths } from '@/generated/api-types';
+
+type NotificationSettingsUpdateBody =
+  paths['/notifications/settings/me']['patch']['requestBody']['content']['application/json'];
 
 export const useNotificationSettings = () => {
   const updateSettings = async (
-    data: UpdateNotificationSettingsSchema
+    data: NotificationSettingsUpdateBody
   ): Promise<{ ok: boolean }> => {
-    const response = await fetch(`/api/proxy/notifications/settings/me`, {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data),
+    const { response } = await proxyClient.PATCH('/notifications/settings/me', {
+      body: data,
     });
     return { ok: response.ok };
   };

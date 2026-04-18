@@ -32,20 +32,14 @@ enum State {
   None,
 }
 
-const Labels = (props: {
-  labels: Label[];
-  deleteEndpointBase: string;
-  editEndpointBase: string;
-}) => {
+const Labels = (props: { labels: Label[]; labelType: 'answers' | 'forms' }) => {
   const [deleteState, setDeleteState] = useState<State>(State.None);
   const [editState, setEditState] = useState<State>(State.None);
   const [editLabel, setEditLabel] = useState<Label>();
   const { handleSubmit, register } = useForm<EditLabelSchema>();
 
   const { deleteLabel, editLabel: editLabelAction } = useLabelCRUD(
-    '',
-    props.deleteEndpointBase,
-    props.editEndpointBase
+    props.labelType
   );
 
   const onDeleteButtonClick = async (label: Label) => {

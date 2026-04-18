@@ -1,11 +1,12 @@
 'use client';
 
+import { proxyClient } from '@/lib/proxyClient';
+
 export const useUserRoleActions = () => {
   const updateUserRole = async (uuid: string, role: string) => {
-    await fetch(`/api/proxy/forms/users/${uuid}`, {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ role }),
+    await proxyClient.PATCH('/users/{uuid}', {
+      params: { path: { uuid } },
+      body: { role },
     });
   };
 

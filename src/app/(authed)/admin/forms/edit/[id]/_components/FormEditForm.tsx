@@ -106,15 +106,20 @@ const FormEditForm = (props: {
     const metaResult = await updateFormMeta({
       title: data.title,
       description: data.description,
-      has_response_period: data.settings.has_response_period,
-      response_period: {
-        start_at: start_at ? `${start_at}:00+09:00` : undefined,
-        end_at: end_at ? `${end_at}:00+09:00` : undefined,
+      settings: {
+        visibility: data.settings.visibility,
+        webhook_url: data.settings.webhook_url,
+        answer_settings: {
+          visibility: data.settings.answer_visibility,
+          default_answer_title: data.settings.default_answer_title,
+          response_period: data.settings.has_response_period
+            ? {
+                start_at: start_at ? `${start_at}:00+09:00` : null,
+                end_at: end_at ? `${end_at}:00+09:00` : null,
+              }
+            : null,
+        },
       },
-      webhook_url: data.settings.webhook_url,
-      default_answer_title: data.settings.default_answer_title,
-      visibility: data.settings.visibility,
-      answer_visibility: data.settings.answer_visibility,
     });
 
     if (!metaResult.ok) {
@@ -124,21 +129,20 @@ const FormEditForm = (props: {
       });
     }
 
-    const questionsResult = await updateQuestions(
-      data.questions.map((question) => ({
+    const questionsResult = await updateQuestions({
+      questions: data.questions.map((question) => ({
         id: props.form.questions.find(
           (beforeQuestion) => beforeQuestion.id == question.id
         )
           ? question.id
           : null,
         title: question.title,
-        form_id: data.id,
         description: question.description,
         question_type: question.question_type,
         choices: question.choices.map((choice) => choice.choice),
         is_required: question.is_required,
-      }))
-    );
+      })),
+    });
 
     if (!questionsResult.ok) {
       setError('root', {

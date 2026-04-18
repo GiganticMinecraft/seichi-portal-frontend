@@ -9,13 +9,9 @@ type CreateLabelSchema = {
   name: string;
 };
 
-const CreateLabelField = (props: { createEndpoint: string }) => {
+const CreateLabelField = (props: { labelType: 'answers' | 'forms' }) => {
   const { handleSubmit, register, reset } = useForm<CreateLabelSchema>();
-  const { createLabel } = useLabelCRUD(
-    props.createEndpoint,
-    props.createEndpoint,
-    props.createEndpoint
-  );
+  const { createLabel } = useLabelCRUD(props.labelType);
 
   const onSubmit = async (data: CreateLabelSchema) => {
     await createLabel(data.name);

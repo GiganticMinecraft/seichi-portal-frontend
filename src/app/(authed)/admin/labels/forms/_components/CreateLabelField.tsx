@@ -2,8 +2,6 @@
 
 import CreateLabelField from '@/app/(authed)/_components/CreateLabelField';
 
-const FormCreateLabelField = () => (
-  <CreateLabelField createEndpoint="/api/proxy/labels/forms" />
-);
+const FormCreateLabelField = () => <CreateLabelField labelType="forms" />;
 
 export default FormCreateLabelField;
