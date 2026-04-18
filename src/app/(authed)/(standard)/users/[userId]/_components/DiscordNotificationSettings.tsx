@@ -1,14 +1,14 @@
 import SaveAltIcon from '@mui/icons-material/SaveAlt';
 import {
   Button,
-  Container,
+  CardContent,
+  Divider,
   FormControlLabel,
   Stack,
-  TextField,
   Typography,
 } from '@mui/material';
 import Checkbox from '@mui/material/Checkbox';
-import { useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import type {
   GetNotificationSettingsResponse,
   UpdateNotificationSettingsSchema,
@@ -18,8 +18,14 @@ const DiscordNotificationSettings = (props: {
   currentSettings: GetNotificationSettingsResponse;
   userId: string;
 }) => {
-  const { handleSubmit, register } =
-    useForm<UpdateNotificationSettingsSchema>();
+  const { handleSubmit, register, control } =
+    useForm<UpdateNotificationSettingsSchema>({
+      defaultValues: {
+        recipient_id: props.userId,
+        is_send_message_notification:
+          props.currentSettings.is_send_message_notification,
+      },
+    });
 
   const onSubmit = async (data: UpdateNotificationSettingsSchema) => {
     const response = await fetch(`/api/proxy/notifications/settings/me`, {
@@ -30,8 +36,6 @@ const DiscordNotificationSettings = (props: {
       body: JSON.stringify(data),
     });
 
-    console.log(response.status);
-
     if (response.ok) {
       alert('設定を更新しました');
     } else {
@@ -40,30 +44,40 @@ const DiscordNotificationSettings = (props: {
   };
 
   return (
-    <Container component="form" onSubmit={handleSubmit(onSubmit)}>
+    <CardContent component="form" onSubmit={handleSubmit(onSubmit)}>
+      <input type="hidden" {...register('recipient_id')} />
+      <Typography variant="h6" gutterBottom>
+        通知設定
+      </Typography>
+      <Divider sx={{ mb: 2 }} />
       <Stack spacing={2}>
-        <TextField
-          {...register('recipient_id')}
-          defaultValue={props.userId}
-          hidden
-        />
-        <Typography variant="h6">Discord への通知設定</Typography>
-        <FormControlLabel
-          label="自身の回答に対するメッセージ通知を受け取る"
-          control={
-            <Checkbox
-              defaultChecked={
-                props.currentSettings.is_send_message_notification
+        <Controller
+          name="is_send_message_notification"
+          control={control}
+          render={({ field }) => (
+            <FormControlLabel
+              label="自身の回答に対するメッセージ通知を受け取る"
+              control={
+                <Checkbox
+                  checked={field.value ?? false}
+                  onChange={field.onChange}
+                  onBlur={field.onBlur}
+                  ref={field.ref}
+                />
               }
-              {...register('is_send_message_notification')}
             />
-          }
+          )}
         />
-        <Button variant="contained" endIcon={<SaveAltIcon />} type="submit">
-          送信
+        <Button
+          variant="contained"
+          endIcon={<SaveAltIcon />}
+          type="submit"
+          sx={{ alignSelf: 'flex-start' }}
+        >
+          保存
         </Button>
       </Stack>
-    </Container>
+    </CardContent>
   );
 };
 
