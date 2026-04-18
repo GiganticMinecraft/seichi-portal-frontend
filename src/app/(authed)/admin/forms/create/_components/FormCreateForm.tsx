@@ -13,11 +13,21 @@ import {
 } from '@mui/material';
 import { useState } from 'react';
 import { useFieldArray, useForm, useWatch } from 'react-hook-form';
-import { apiClient } from '@/lib/apiClient';
+import type { paths } from '@/generated/api-types';
+import { proxyClient } from '@/lib/proxyClient';
 import FormSettings from './FormSettings';
 import QuestionComponent from './Question';
 import type { Form } from '../_schema/createFormSchema';
 import type { GetFormLabelsResponse } from '@/lib/api-types';
+
+type CreateFormBody =
+  paths['/forms']['post']['requestBody']['content']['application/json'];
+type FormUpdateBody =
+  paths['/forms/{id}']['patch']['requestBody']['content']['application/json'];
+type QuestionsUpdateBody =
+  paths['/forms/{id}/questions']['put']['requestBody']['content']['application/json'];
+type FormLabelsUpdateBody =
+  paths['/forms/{form_id}/labels']['put']['requestBody']['content']['application/json'];
 
 const FormCreateForm = (props: { labelOptions: GetFormLabelsResponse }) => {
   const {
@@ -64,10 +74,16 @@ const FormCreateForm = (props: { labelOptions: GetFormLabelsResponse }) => {
   const onSubmit = async (data: Form) => {
     let createdFormId: string;
     try {
-      const createdForm = await apiClient.create_form_handler({
+      const createFormBody: CreateFormBody = {
         title: data.title,
         description: data.description,
+      };
+      const { data: createdForm, response } = await proxyClient.POST('/forms', {
+        body: createFormBody,
       });
+      if (!response.ok || !createdForm) {
+        throw new Error('failed to create form');
+      }
       createdFormId = createdForm.id;
     } catch {
       setError('root', {
@@ -80,33 +96,37 @@ const FormCreateForm = (props: { labelOptions: GetFormLabelsResponse }) => {
     const start_at = data.settings.response_period.start_at;
     const end_at = data.settings.response_period.end_at;
 
-    const body = {
+    const body: FormUpdateBody = {
       title: data.title,
       description: data.description,
-      has_response_period: data.settings.has_response_period,
-      response_period: {
-        start_at: start_at ? `${start_at}:00+09:00` : undefined,
-        end_at: end_at ? `${end_at}:00+09:00` : undefined,
+      settings: {
+        visibility: data.settings.visibility,
+        webhook_url: data.settings.webhook_url,
+        answer_settings: {
+          default_answer_title:
+            data.settings.default_answer_title === ''
+              ? null
+              : data.settings.default_answer_title,
+          response_period: data.settings.has_response_period
+            ? {
+                start_at: start_at ? `${start_at}:00+09:00` : null,
+                end_at: end_at ? `${end_at}:00+09:00` : null,
+              }
+            : null,
+          visibility: data.settings.answer_visibility,
+        },
       },
-      webhook_url: data.settings.webhook_url,
-      default_answer_title:
-        data.settings.default_answer_title === ''
-          ? null
-          : data.settings.default_answer_title,
-      visibility: data.settings.visibility,
-      answer_visibility: data.settings.answer_visibility,
     };
 
-    const setFormMetadataResponse = await fetch(
-      `/api/proxy/forms/${createdFormId}`,
+    const { response: setFormMetadataResponse } = await proxyClient.PATCH(
+      '/forms/{id}',
       {
-        method: 'PATCH',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
+        params: {
+          path: {
+            id: createdFormId,
+          },
         },
-        body: JSON.stringify(body),
-        cache: 'no-cache',
+        body,
       }
     );
 
@@ -119,33 +139,37 @@ const FormCreateForm = (props: { labelOptions: GetFormLabelsResponse }) => {
       return;
     }
 
-    const addQuestionResponse = await fetch('/api/proxy/forms/questions', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        form_id: createdFormId,
-        questions: data.questions.map((question) => ({
-          ...question,
-          form_id: createdFormId,
-          choices: question.choices.map((choice) => choice.choice),
-        })),
-      }),
-      cache: 'no-cache',
-    });
+    const questionsBody: QuestionsUpdateBody = {
+      questions: data.questions.map((question) => ({
+        ...question,
+        choices: question.choices.map((choice) => choice.choice),
+      })),
+    };
+    const { response: addQuestionResponse } = await proxyClient.PUT(
+      '/forms/{id}/questions',
+      {
+        params: {
+          path: {
+            id: createdFormId,
+          },
+        },
+        body: questionsBody,
+      }
+    );
 
     if (addQuestionResponse.ok) {
-      const putLabelsResponse = await fetch(
-        `/api/proxy/forms/${createdFormId}/labels`,
+      const labelsBody: FormLabelsUpdateBody = {
+        labels: labels.map((label) => label.id),
+      };
+      const { response: putLabelsResponse } = await proxyClient.PUT(
+        '/forms/{form_id}/labels',
         {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
+          params: {
+            path: {
+              form_id: createdFormId,
+            },
           },
-          body: JSON.stringify({
-            labels: labels.map((label) => label.id),
-          }),
+          body: labelsBody,
         }
       );
       if (putLabelsResponse.ok) {
