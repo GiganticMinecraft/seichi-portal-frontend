@@ -30,7 +30,7 @@ const clearDiscordOauthStateCookie = (response: NextResponse) => {
 export async function GET(req: NextRequest) {
   const { clientId, clientSecret, redirectUri } = getDiscordConfig();
   const backendServerUrl = getBackendServerUrl();
-  const seichiPortalToken = await getCachedToken();
+  const seichiPortalToken = await getCachedToken(req.cookies);
 
   if (!seichiPortalToken) {
     return NextResponse.redirect(
