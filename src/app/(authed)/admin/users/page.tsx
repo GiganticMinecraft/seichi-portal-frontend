@@ -10,14 +10,15 @@ import type { GetUserListResponse } from '@/lib/api-types';
 
 const Home = () => {
   const { data, error, isLoading } = useSWR<GetUserListResponse>(
-    '/api/proxy/users/list',
-    { refreshInterval: 1000 }
+    '/api/proxy/users/list'
   );
 
-  if (!data) {
-    return <LoadingCircular />;
-  } else if (!isLoading && error) {
+  if (error) {
     return <ErrorModal />;
+  }
+
+  if (isLoading || !data) {
+    return <LoadingCircular />;
   }
 
   return (

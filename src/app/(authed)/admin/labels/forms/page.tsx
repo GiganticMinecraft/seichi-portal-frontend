@@ -11,14 +11,15 @@ import type { GetAnswerLabelsResponse } from '@/lib/api-types';
 
 const Home = () => {
   const { data, error, isLoading } = useSWR<GetAnswerLabelsResponse>(
-    '/api/proxy/labels/forms',
-    { refreshInterval: 1000 }
+    '/api/proxy/labels/forms'
   );
 
-  if (!data) {
-    return <LoadingCircular />;
-  } else if (!isLoading && error) {
+  if (error) {
     return <ErrorModal />;
+  }
+
+  if (isLoading || !data) {
+    return <LoadingCircular />;
   }
 
   return (

@@ -23,13 +23,12 @@ const Home = ({ params }: { params: Promise<{ id: number }> }) => {
     isLoading: isLoadingLabels,
   } = useSWR<GetFormLabelsResponse>('/api/proxy/labels/forms');
 
-  if (!form || !labels) {
-    return <LoadingCircular />;
-  } else if (
-    (!isLoadingForms && formError) ||
-    (!isLoadingLabels && labelsError)
-  ) {
+  if (formError || labelsError) {
     return <ErrorModal />;
+  }
+
+  if (isLoadingForms || isLoadingLabels || !form || !labels) {
+    return <LoadingCircular />;
   }
 
   return (

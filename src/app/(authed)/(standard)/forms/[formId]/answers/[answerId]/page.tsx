@@ -36,13 +36,12 @@ const Home = ({
     answer ? `/api/proxy/forms/${answer.form_id}/questions` : null
   );
 
-  if (!answer || !formQuestions) {
-    return <LoadingCircular />;
-  } else if (
-    (!isLoadingAnswers && answerError) ||
-    (!isLoadingFormQuestions && formQuestionsError)
-  ) {
+  if (answerError || formQuestionsError) {
     return <ErrorModal />;
+  }
+
+  if (isLoadingAnswers || isLoadingFormQuestions || !answer || !formQuestions) {
+    return <LoadingCircular />;
   }
 
   return (

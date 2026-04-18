@@ -26,10 +26,12 @@ const Home = ({
     }
   );
 
-  if (!messages) {
-    return <LoadingCircular />;
-  } else if (!isMessagesLoading && error) {
+  if (error) {
     return <ErrorModal />;
+  }
+
+  if (isMessagesLoading || !messages) {
+    return <LoadingCircular />;
   }
 
   return (

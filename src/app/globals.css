@@ -87,6 +87,8 @@ body {
 }
 
 body {
+  font-family:
+    'Segoe UI', 'Hiragino Sans', 'Hiragino Kaku Gothic ProN', Meiryo, sans-serif;
   color: rgb(var(--foreground-rgb));
   background: linear-gradient(
       to bottom,

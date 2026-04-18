@@ -34,13 +34,12 @@ const Home = () => {
     );
   }, [labelFilter, forms]);
 
-  if (!forms || !labels) {
-    return <LoadingCircular />;
-  } else if (
-    (!isLoadingForms && formsError) ||
-    (!isLoadingLabels && labelsError)
-  ) {
+  if (formsError || labelsError) {
     return <ErrorModal />;
+  }
+
+  if (isLoadingForms || isLoadingLabels || !forms || !labels) {
+    return <LoadingCircular />;
   }
 
   return (
