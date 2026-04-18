@@ -13,6 +13,7 @@
     "fmt:fix": "prettier --write --log-level=warn './**/*.{ts,tsx,css}'",
     "postinstall": "typesync || :",
     "pretty": "pnpm lint:fix && pnpm fmt:fix && pnpm build",
+    "type-check": "tsc --noEmit",
     "codegen": "tsx scripts/codegen.ts",
     "codegen:check": "tsx scripts/codegen.ts && git diff --exit-code src/generated"
   },
@@ -45,7 +46,8 @@
   "pnpm": {
     "overrides": {
       "minimatch": "^10.2.2"
-    }
+    },
+    "onlyBuiltDependencies": ["esbuild", "lefthook", "sharp", "unrs-resolver"]
   },
   "devDependencies": {
     "@eslint/compat": "^2.0.1",
@@ -65,6 +67,7 @@
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^7.0.1",
     "eslint-plugin-unused-imports": "^4",
+    "lefthook": "^2.1.5",
     "openapi-typescript": "^7.13.0",
     "openapi-zod-client": "^1.18.3",
     "prettier": "^3.0.1",

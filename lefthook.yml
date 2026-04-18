@@ -1,0 +1,11 @@
+pre-commit:
+  parallel: false
+  jobs:
+    - name: lint
+      run: pnpm lint
+
+    - name: type-check
+      run: pnpm type-check
+
+    - name: fmt
+      run: pnpm fmt
