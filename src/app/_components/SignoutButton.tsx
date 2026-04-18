@@ -3,10 +3,12 @@
 import { InteractionStatus } from '@azure/msal-browser';
 import { useMsal } from '@azure/msal-react';
 import { Button } from '@mui/material';
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 export const SignoutButton = () => {
   const { instance, accounts, inProgress } = useMsal();
+  const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleClick = async () => {
@@ -26,7 +28,7 @@ export const SignoutButton = () => {
         return;
       }
 
-      window.location.assign('/');
+      router.push('/');
     } catch (e) {
       console.log(e);
       setIsSubmitting(false);
