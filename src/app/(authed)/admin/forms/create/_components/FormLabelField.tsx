@@ -2,41 +2,49 @@ import Autocomplete from '@mui/material/Autocomplete';
 import Box from '@mui/material/Box';
 import Chip from '@mui/material/Chip';
 import TextField from '@mui/material/TextField';
+import { useController } from 'react-hook-form';
 import type { GetFormLabelsResponse } from '@/lib/api-types';
-import type { Dispatch, SetStateAction } from 'react';
+import type { Control } from 'react-hook-form';
+import type { Form } from '../_schema/createFormSchema';
 
 const FormLabelField = (props: {
+  control: Control<Form>;
   labelOptions: GetFormLabelsResponse;
-  setLabels: Dispatch<SetStateAction<GetFormLabelsResponse>>;
 }) => {
+  const { field } = useController({
+    control: props.control,
+    name: 'labels',
+    defaultValue: [],
+  });
+
   return (
     <Autocomplete
       multiple
       id="label"
-      options={props.labelOptions.map((label) => label.name)}
-      getOptionLabel={(option) => option}
-      renderTags={(value: readonly string[], getTagProps) =>
-        value.map((option: string, index: number) => (
+      options={props.labelOptions}
+      getOptionLabel={(option) => option.name}
+      value={field.value}
+      isOptionEqualToValue={(option, value) => option.id === value.id}
+      renderTags={(value, getTagProps) =>
+        value.map((option, index) => (
           <Chip
-            label={option}
+            label={option.name}
             sx={{ background: '#FFFFFF29' }}
             {...getTagProps({ index })}
-            key={index}
+            key={option.id}
           />
         ))
       }
-      renderOption={(props, option) => {
-        return (
-          <Box
-            {...props}
-            key={option}
-            component="span"
-            style={{ color: 'black' }}
-          >
-            {option}
-          </Box>
-        );
-      }}
+      renderOption={(props, option) => (
+        <Box
+          {...props}
+          key={option.id}
+          component="span"
+          style={{ color: 'black' }}
+        >
+          {option.name}
+        </Box>
+      )}
       renderInput={(params) => (
         <TextField
           {...params}
@@ -45,11 +53,7 @@ const FormLabelField = (props: {
           sx={{ borderBottom: '1px solid #FFFFFF6B' }}
         />
       )}
-      onChange={(_event, value) => {
-        props.setLabels(
-          props.labelOptions.filter((label) => value.includes(label.name))
-        );
-      }}
+      onChange={(_event, value) => field.onChange(value)}
     />
   );
 };
