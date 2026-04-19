@@ -22,7 +22,7 @@ const FormCreateForm = (props: { labelOptions: GetFormLabelsResponse }) => {
     control,
     handleSubmit,
     register,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm<Form>({
     mode: 'onSubmit',
   });
@@ -88,7 +88,12 @@ const FormCreateForm = (props: { labelOptions: GetFormLabelsResponse }) => {
         {isSubmitted && (
           <Alert severity="success">フォームを作成しました。</Alert>
         )}
-        <Button type="submit" variant="contained" endIcon={<SendIcon />}>
+        <Button
+          type="submit"
+          variant="contained"
+          endIcon={<SendIcon />}
+          disabled={isSubmitting}
+        >
           フォーム作成
         </Button>
       </Stack>
