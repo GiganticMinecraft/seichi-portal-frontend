@@ -85,11 +85,6 @@ const FormEditForm = (props: {
     name: 'questions',
   });
 
-  const visibility = useWatch({ control, name: 'settings.visibility' });
-  const answerVisibility = useWatch({
-    control,
-    name: 'settings.answer_visibility',
-  });
   const hasResponsePeriod = useWatch({
     control,
     name: 'settings.has_response_period',
@@ -165,8 +160,7 @@ const FormEditForm = (props: {
               <CardContent>
                 <FormSettings
                   register={register}
-                  visibility={visibility}
-                  answerVisibility={answerVisibility}
+                  control={control}
                   has_response_period={hasResponsePeriod}
                   formId={props.form.id}
                   labelOptions={props.labelOptions}
