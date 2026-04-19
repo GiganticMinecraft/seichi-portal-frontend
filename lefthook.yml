@@ -2,7 +2,8 @@ pre-commit:
   parallel: false
   jobs:
     - name: lint
-      run: pnpm lint
+      glob: '*.{js,jsx,ts,tsx,mjs,cjs}'
+      run: pnpm lint -- {staged_files}
 
     - name: type-check
       run: pnpm type-check
