@@ -100,15 +100,12 @@ const QuestionComponent = ({
         helperText="Markdown に対応しています。"
       />
       <TextField
-        {...register(`questions.${index}.question_type` as const)}
+        {...field}
         label="質問の種類"
         select
         required
-        defaultValue={question ? question.question_type : 'TEXT'}
         helperText="質問の種類を選択してください。"
         onChange={(event) => {
-          // NOTE: 単純に onChange 書くと useWatchQuestionType が動作しないので field.onChange を呼び出す必要がある
-          // ref: https://github.com/orgs/react-hook-form/discussions/9144
           field.onChange(event);
 
           if (event.target.value === 'TEXT') {
