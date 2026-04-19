@@ -33,9 +33,14 @@ const EachForm = ({ form }: { form: FormItem }) => {
     <Box sx={{ minWidth: 275 }}>
       <Card variant="outlined">
         <CardContent>
-          <Typography variant="h5" component="div">
-            {form.title}
-          </Typography>
+          <Link
+            href={`/forms/${form.id}`}
+            sx={{ textDecoration: 'none', color: 'inherit' }}
+          >
+            <Typography variant="h5" component="div">
+              {form.title}
+            </Typography>
+          </Link>
           <Typography color="text.secondary">
             {formatResponsePeriod(
               responsePeriod?.start_at ?? null,
@@ -82,15 +87,9 @@ const FormList = ({ forms }: Props) => {
         ) : (
           forms.map((form) => {
             return (
-              <Link
-                href={`/forms/${form.id}`}
-                key={form.id}
-                sx={{ textDecoration: 'none' }}
-              >
-                <Item>
-                  <EachForm form={form} />
-                </Item>
-              </Link>
+              <Item key={form.id}>
+                <EachForm form={form} />
+              </Item>
             );
           })
         )}
