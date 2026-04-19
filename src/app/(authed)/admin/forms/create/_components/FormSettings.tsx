@@ -11,15 +11,14 @@ import {
 import FormLabelField from './FormLabelField';
 import type { Form, Visibility } from '../_schema/createFormSchema';
 import type { GetFormLabelsResponse } from '@/lib/api-types';
-import type { Dispatch, SetStateAction } from 'react';
-import type { UseFormRegister } from 'react-hook-form';
+import type { Control, UseFormRegister } from 'react-hook-form';
 
 const FormSettings = (props: {
+  control: Control<Form>;
   register: UseFormRegister<Form>;
   visibility: Visibility;
   has_response_period: boolean;
   labelOptions: GetFormLabelsResponse;
-  setLabels: Dispatch<SetStateAction<GetFormLabelsResponse>>;
 }) => {
   return (
     <Stack spacing={2}>
@@ -38,8 +37,8 @@ const FormSettings = (props: {
         multiline
       />
       <FormLabelField
+        control={props.control}
         labelOptions={props.labelOptions}
-        setLabels={props.setLabels}
       />
       <FormControlLabel
         label="回答開始日と回答終了日を設定する"

@@ -14,10 +14,16 @@ export const questionSchema = z.object({
 
 const visibility = z.enum(['PUBLIC', 'PRIVATE']);
 
+const formLabelSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+});
+
 export const formSchema = z.object({
   title: z.string(),
   description: z.string(),
   questions: questionSchema.array(),
+  labels: formLabelSchema.array(),
   settings: z.object({
     has_response_period: z.boolean(),
     response_period: z.object({
