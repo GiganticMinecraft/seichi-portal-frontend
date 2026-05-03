@@ -24,7 +24,7 @@ jobs:
         uses: jdx/mise-action@v4
 
       - name: Setup pnpm
-        uses: pnpm/action-setup@v4
+        uses: pnpm/action-setup@v6
 
       - name: Install dependencies
         run: pnpm install
