@@ -1,17 +1,19 @@
 'use client';
 
 import { proxyClient } from '@/lib/proxyClient';
+import { handleMutationResponse } from '@/hooks/useApiMutation';
 
-export const useSendMessage = (formId: string, answerId: number) => {
+export const useSendMessage = (formId: string, answerId: string) => {
   const sendMessage = async (body: string): Promise<{ ok: boolean }> => {
-    const { response } = await proxyClient.POST(
+    const { data, error, response } = await proxyClient.POST(
       '/forms/{form_id}/answers/{answer_id}/messages',
       {
-        params: { path: { form_id: formId, answer_id: String(answerId) } },
+        params: { path: { form_id: formId, answer_id: answerId } },
         body: { body },
       }
     );
-    return { ok: response.ok };
+    const result = handleMutationResponse(response, data, error);
+    return { ok: result.success };
   };
 
   return { sendMessage };
