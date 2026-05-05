@@ -123,22 +123,7 @@ const FormEditForm = (props: {
         },
       },
       questions: data.questions.map((question) => {
-        if (question.question_type === 'Text') {
-          return {
-            id: props.form.questions.find(
-              (beforeQuestion) => beforeQuestion.id === question.id
-            )
-              ? question.id
-              : null,
-            title: question.title,
-            description: question.description,
-            question_type: question.question_type,
-            is_required: question.is_required,
-            position: question.position,
-            template_key: question.template_key,
-          };
-        }
-        return {
+        const questionFields = {
           id: props.form.questions.find(
             (beforeQuestion) => beforeQuestion.id === question.id
           )
@@ -146,10 +131,20 @@ const FormEditForm = (props: {
             : null,
           title: question.title,
           description: question.description,
-          question_type: question.question_type,
           is_required: question.is_required,
           position: question.position,
           template_key: question.template_key,
+        };
+
+        if (question.question_type === 'Text') {
+          return {
+            ...questionFields,
+            question_type: question.question_type,
+          };
+        }
+        return {
+          ...questionFields,
+          question_type: question.question_type,
           choices: question.choices.map((choice, index) => ({
             label: choice.choice,
             position: index,
