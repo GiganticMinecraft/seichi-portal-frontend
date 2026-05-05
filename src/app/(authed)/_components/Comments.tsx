@@ -166,7 +166,10 @@ const Comments = (props: {
         .reverse()
         .map((comment) => (
           <CommentItem
-            key={comment.comment_id}
+            key={
+              comment.comment_id ??
+              `${comment.commented_by.name}-${comment.timestamp}`
+            }
             comment={comment}
             formId={props.formId}
             answerId={props.answerId}
