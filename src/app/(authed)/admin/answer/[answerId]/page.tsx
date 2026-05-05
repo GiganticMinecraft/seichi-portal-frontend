@@ -2,42 +2,41 @@
 
 import { CssBaseline, Stack, ThemeProvider } from '@mui/material';
 import { use } from 'react';
-import useSWR from 'swr';
+import { useApiQuery } from '@/app/_swr/useApiQuery';
 import ErrorModal from '@/app/_components/ErrorModal';
 import LoadingCircular from '@/app/_components/LoadingCircular';
 import AnswerDetails from './_components/AnswerDetails';
 import Comments from './_components/Comments';
 import adminDashboardTheme from '../../theme/adminDashboardTheme';
-import type {
-  AnswerCommentType,
-  GetAnswerLabelsResponse,
-  GetAnswerResponse,
-  GetQuestionsResponse,
-} from '@/lib/api-types';
+import type { AnswerCommentType } from '@/lib/api-types';
 
 const Home = ({ params }: { params: Promise<{ answerId: number }> }) => {
   const { answerId } = use(params);
   const {
-    data: answers,
+    data: allAnswers,
     error: answersError,
     isLoading: isAnswersLoading,
-  } = useSWR<GetAnswerResponse>(`/api/proxy/forms/answers/${answerId}`, {
-    refreshInterval: 1000,
-  });
+  } = useApiQuery('/forms/answers', undefined, { refreshInterval: 1000 });
+
+  const answers = allAnswers?.find((a) => a.id === String(answerId));
 
   const {
-    data: formQuestions,
+    data: form,
     error: formQuestionsError,
     isLoading: isFormQuestionsLoading,
-  } = useSWR<GetQuestionsResponse>(
-    answers ? `/api/proxy/forms/${answers.form_id}/questions` : null
+  } = useApiQuery(
+    '/forms/{id}',
+    {
+      path: { id: answers?.form_id ?? '' },
+    },
+    { refreshInterval: 1000 }
   );
 
   const {
     data: labels,
     error: labelsError,
     isLoading: isLabelsLoading,
-  } = useSWR<GetAnswerLabelsResponse>('/api/proxy/forms/labels/answers');
+  } = useApiQuery('/labels/answers');
 
   if (answersError || formQuestionsError || labelsError) {
     return <ErrorModal />;
@@ -48,7 +47,7 @@ const Home = ({ params }: { params: Promise<{ answerId: number }> }) => {
     isFormQuestionsLoading ||
     isLabelsLoading ||
     !answers ||
-    !formQuestions ||
+    !form ||
     !labels
   ) {
     return <LoadingCircular />;
@@ -66,7 +65,7 @@ const Home = ({ params }: { params: Promise<{ answerId: number }> }) => {
       >
         <AnswerDetails
           answers={answers}
-          questions={formQuestions}
+          questions={form.questions}
           labels={labels}
         />
         <Comments

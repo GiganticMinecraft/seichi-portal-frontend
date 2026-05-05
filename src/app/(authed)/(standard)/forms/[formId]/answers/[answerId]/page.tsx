@@ -2,45 +2,49 @@
 
 import { Stack, Typography } from '@mui/material';
 import { use } from 'react';
-import useSWR from 'swr';
+import { useApiQuery } from '@/app/_swr/useApiQuery';
 import ErrorModal from '@/app/_components/ErrorModal';
 import LoadingCircular from '@/app/_components/LoadingCircular';
 import AnswerDetails from './_components/AnswerDetails';
 import AnswerMeta from './_components/AnswerMeta';
 import Comments from './_components/Comments';
-import type {
-  AnswerCommentType,
-  GetAnswerResponse,
-  GetQuestionsResponse,
-} from '@/lib/api-types';
+import type { AnswerCommentType } from '@/lib/api-types';
 
 const Home = ({
   params,
 }: {
   params: Promise<{ formId: number; answerId: number }>;
 }) => {
-  const { answerId } = use(params);
+  const { formId, answerId } = use(params);
   const {
     data: answer,
     error: answerError,
     isLoading: isLoadingAnswers,
-  } = useSWR<GetAnswerResponse>(`/api/proxy/forms/answers/${answerId}`, {
-    refreshInterval: 1000,
-  });
+  } = useApiQuery(
+    '/forms/{form_id}/answers/{answer_id}',
+    {
+      path: { form_id: String(formId), answer_id: String(answerId) },
+    },
+    { refreshInterval: 1000 }
+  );
 
   const {
-    data: formQuestions,
+    data: form,
     error: formQuestionsError,
     isLoading: isLoadingFormQuestions,
-  } = useSWR<GetQuestionsResponse>(
-    answer ? `/api/proxy/forms/${answer.form_id}/questions` : null
+  } = useApiQuery(
+    '/forms/{id}',
+    {
+      path: { id: answer?.form_id ?? '' },
+    },
+    { refreshInterval: 1000 }
   );
 
   if (answerError || formQuestionsError) {
     return <ErrorModal />;
   }
 
-  if (isLoadingAnswers || isLoadingFormQuestions || !answer || !formQuestions) {
+  if (isLoadingAnswers || isLoadingFormQuestions || !answer || !form) {
     return <LoadingCircular />;
   }
 
@@ -54,7 +58,7 @@ const Home = ({
     >
       <Typography variant="h4">{answer.title}</Typography>
       <AnswerMeta answer={answer} />
-      <AnswerDetails answer={answer} questions={formQuestions} />
+      <AnswerDetails answer={answer} questions={form.questions} />
       <Comments
         comments={answer.comments as AnswerCommentType[]}
         formId={answer.form_id}

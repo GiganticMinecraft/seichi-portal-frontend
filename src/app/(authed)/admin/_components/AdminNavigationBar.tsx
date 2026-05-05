@@ -14,10 +14,9 @@ import {
 } from '@mui/material';
 import Image from 'next/image';
 import { useState } from 'react';
-import useSWR from 'swr';
 import ErrorModal from '@/app/_components/ErrorModal';
+import { useApiQuery } from '@/app/_swr/useApiQuery';
 import SearchResult from './SearchResult';
-import type { GetUsersResponse } from '@/lib/api-types';
 
 const SearchField = () => {
   const [openSearchResultModal, setOpenSearchResultModal] = useState(false);
@@ -65,7 +64,7 @@ const SearchField = () => {
 };
 
 const NavBar = () => {
-  const { data, error } = useSWR<GetUsersResponse>('/api/proxy/users/me');
+  const { data, error } = useApiQuery('/users/me');
 
   if (error) {
     return <ErrorModal />;

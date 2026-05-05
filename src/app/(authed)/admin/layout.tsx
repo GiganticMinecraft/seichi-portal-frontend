@@ -4,24 +4,20 @@ import '../../globals.css';
 import { ThemeProvider } from '@emotion/react';
 import { CssBaseline } from '@mui/material';
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v16-appRouter';
-import useSWR, { SWRConfig } from 'swr';
+import { SWRConfig } from 'swr';
 import ErrorModal from '@/app/_components/ErrorModal';
 import LoadingCircular from '@/app/_components/LoadingCircular';
 import { MsalProvider } from '@/app/_components/MsalProvider';
 import { fetcher } from '@/app/_swr/fetcher';
+import { useApiQuery } from '@/app/_swr/useApiQuery';
 import AdminNavigationBar from './_components/AdminNavigationBar';
 import DashboardMenu from './_components/DashboardMenu';
 import adminDashboardTheme from './theme/adminDashboardTheme';
 import styles from '../../page.module.css';
-import type { GetUsersResponse } from '@/lib/api-types';
 import type { ReactNode } from 'react';
 
 const AdminContent = ({ children }: { children: ReactNode }) => {
-  const {
-    data: me,
-    error,
-    isLoading,
-  } = useSWR<GetUsersResponse>('/api/proxy/users/me', fetcher);
+  const { data: me, error, isLoading } = useApiQuery('/users/me');
 
   if (error) {
     return <ErrorModal error={error} />;

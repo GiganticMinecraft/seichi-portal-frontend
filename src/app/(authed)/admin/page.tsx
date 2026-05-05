@@ -1,25 +1,24 @@
 'use client';
 
 import { CssBaseline, ThemeProvider } from '@mui/material';
-import useSWR from 'swr';
+import { useApiQuery } from '@/app/_swr/useApiQuery';
 import LoadingCircular from '@/app/_components/LoadingCircular';
 import DataTable from './_components/Dashboard';
 import adminDashboardTheme from './theme/adminDashboardTheme';
 import ErrorModal from '../../_components/ErrorModal';
-import type { GetAnswersResponse, GetFormsResponse } from '@/lib/api-types';
 
 const Home = () => {
   const {
     data: answers,
     error: answersError,
     isLoading,
-  } = useSWR<GetAnswersResponse>('/api/proxy/forms/answers');
+  } = useApiQuery('/forms/answers');
 
   const {
     data: forms,
     error: formsError,
     isLoading: isLoadingForms,
-  } = useSWR<GetFormsResponse>('/api/proxy/forms');
+  } = useApiQuery('/forms');
 
   if (answersError || formsError) {
     return <ErrorModal />;

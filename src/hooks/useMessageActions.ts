@@ -1,26 +1,16 @@
 'use client';
 
-import { errorResponseSchema } from '@/lib/api-types';
 import { proxyClient } from '@/lib/proxyClient';
+import { handleMutationResponse } from '@/hooks/useApiMutation';
 
 type MessageActionResult = { success: boolean; forbidden?: boolean };
-
-const parseForbidden = async (response: Response): Promise<boolean> => {
-  try {
-    const json = await response.json();
-    const parseResult = errorResponseSchema.safeParse(json);
-    return parseResult.success && parseResult.data.errorCode === 'FORBIDDEN';
-  } catch {
-    return false;
-  }
-};
 
 export const useMessageActions = (formId: string, answerId: number) => {
   const updateMessage = async (
     messageId: string,
     body: string
   ): Promise<MessageActionResult> => {
-    const { response } = await proxyClient.PATCH(
+    const { data, response } = await proxyClient.PATCH(
       '/forms/{form_id}/answers/{answer_id}/messages/{message_id}',
       {
         params: {
@@ -34,18 +24,17 @@ export const useMessageActions = (formId: string, answerId: number) => {
       }
     );
 
-    if (response.ok) {
+    const result = await handleMutationResponse(response, data);
+    if (result.success) {
       return { success: true };
     }
-
-    const forbidden = await parseForbidden(response);
-    return { success: false, forbidden };
+    return { success: false, ...(result.forbidden ? { forbidden: true } : {}) };
   };
 
   const deleteMessage = async (
     messageId: string
   ): Promise<MessageActionResult> => {
-    const { response } = await proxyClient.DELETE(
+    const { data, response } = await proxyClient.DELETE(
       '/forms/{form_id}/answers/{answer_id}/messages/{message_id}',
       {
         params: {
@@ -58,12 +47,11 @@ export const useMessageActions = (formId: string, answerId: number) => {
       }
     );
 
-    if (response.ok) {
+    const result = await handleMutationResponse(response, data);
+    if (result.success) {
       return { success: true };
     }
-
-    const forbidden = await parseForbidden(response);
-    return { success: false, forbidden };
+    return { success: false, ...(result.forbidden ? { forbidden: true } : {}) };
   };
 
   return { updateMessage, deleteMessage };

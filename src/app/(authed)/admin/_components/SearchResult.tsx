@@ -4,7 +4,7 @@ import assert from 'assert';
 import { Box, Modal, Stack, Typography } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 import { useRouter } from 'next/navigation';
-import useSWR from 'swr';
+import { useApiQuery } from '@/app/_swr/useApiQuery';
 import ErrorModal from '@/app/_components/ErrorModal';
 import {
   searchAnswerItemSchema,
@@ -12,7 +12,6 @@ import {
   searchLabelItemSchema,
   searchUserItemSchema,
 } from '@/lib/api-types';
-import type { SearchResponse } from '@/lib/api-types';
 import type {
   GridColDef,
   GridEventListener,
@@ -25,9 +24,9 @@ const SearchResult = (props: {
   onClose: () => void;
 }) => {
   const router = useRouter();
-  const { data, isLoading, error } = useSWR<SearchResponse>(
-    encodeURI(`/api/proxy/search?query=${props.searchContent}`)
-  );
+  const { data, isLoading, error } = useApiQuery('/search', {
+    query: { query: props.searchContent },
+  });
 
   if (error) {
     return <ErrorModal />;

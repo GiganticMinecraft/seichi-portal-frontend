@@ -24,7 +24,7 @@ const UserList = (props: { users: GetUserListResponse }) => {
           sx={{ justifyContent: 'space-between', width: '100%' }}
         >
           <ListItemText sx={{ alignItems: 'center' }} primary={'ユーザー名'} />
-          <ListItemText sx={{ alignItems: 'center' }} primary={'UUID'} />
+          <ListItemText sx={{ alignItems: 'center' }} primary={'ID'} />
           <ListItemText sx={{ alignItems: 'center' }} primary={'権限'} />
         </Stack>
       </ListItem>
@@ -36,7 +36,7 @@ const UserList = (props: { users: GetUserListResponse }) => {
             <Select
               defaultValue={user.role}
               onChange={async (event) => {
-                await updateUserRole(user.uuid, event.target.value);
+                await updateUserRole(user.id, event.target.value);
               }}
             >
               <MenuItem value="STANDARD_USER">通常ユーザー</MenuItem>
@@ -50,7 +50,7 @@ const UserList = (props: { users: GetUserListResponse }) => {
             sx={{ justifyContent: 'space-between', width: '100%' }}
           >
             <ListItemText sx={{ alignItems: 'center' }} primary={user.name} />
-            <ListItemText sx={{ alignItems: 'center' }} primary={user.uuid} />
+            <ListItemText sx={{ alignItems: 'center' }} primary={user.id} />
           </Stack>
         </ListItem>
       ))}

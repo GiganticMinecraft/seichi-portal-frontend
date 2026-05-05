@@ -41,24 +41,23 @@ export type GetResponse<P extends GetPaths> = paths[P] extends {
   ? R
   : never;
 
-type TypedClient = {
-  GET<P extends GetPaths>(
-    path: P,
-    params?: GetParams<P>
-  ): Promise<{
-    data: GetResponse<P> | undefined;
-    response: Response;
-    error?: unknown;
-  }>;
-};
-
-const typedClient = proxyClient as unknown as TypedClient;
-
 export const typedFetcher = async <P extends GetPaths>(
   path: P,
   params?: GetParams<P>
 ): Promise<GetResponse<P>> => {
-  const result = await typedClient.GET(path, params);
+  const client = proxyClient as {
+    GET: (
+      path: string,
+      options?: { params?: unknown }
+    ) => Promise<{
+      data: GetResponse<P> | undefined;
+      response: Response;
+      error?: unknown;
+    }>;
+  };
+
+  const options = params === undefined ? undefined : { params };
+  const result = await client.GET(path, options);
 
   if (!result.response.ok || result.data === undefined) {
     throw new HttpError({
