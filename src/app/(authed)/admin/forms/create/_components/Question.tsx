@@ -87,7 +87,7 @@ const QuestionComponent = ({
         label="質問の種類"
         select
         required
-        defaultValue="TEXT"
+        defaultValue="Text"
         helperText="質問の種類を選択してください。"
         onChange={(event) => {
           // NOTE: 単純に onChange 書くと useWatchQuestionType が動作しないので field.onChangeを呼び出す必要がある

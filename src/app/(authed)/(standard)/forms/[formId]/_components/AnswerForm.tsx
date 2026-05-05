@@ -31,11 +31,11 @@ import type { NonEmptyArray } from '@/generic/Types';
 import { proxyClient } from '@/lib/proxyClient';
 
 type Question = {
-  id?: string | null | undefined;
+  id: string;
   title: string;
   description?: string | null | undefined;
   question_type: 'Text' | 'SingleChoice' | 'MultipleChoice';
-  choices: { id?: number | null; label: string; position: number }[];
+  choices?: { id?: number | null; label: string; position: number }[];
   is_required: boolean;
 };
 
@@ -179,7 +179,7 @@ const AnswerForm = ({ questions: questions, formId }: Props) => {
               marginTop: '1rem',
             }}
           >
-            {question.choices.map((choice, index) => {
+            {question.choices?.map((choice, index) => {
               return (
                 <MenuItem key={`q-${qId}.a-${index}`} value={choice.label}>
                   {choice.label}
@@ -201,7 +201,7 @@ const AnswerForm = ({ questions: questions, formId }: Props) => {
                 alignItems: 'center',
               }}
             >
-              {question.choices.map((choice, index) => (
+              {question.choices?.map((choice, index) => (
                 <FormControlLabel
                   key={`q-${qId}.a-${index}`}
                   sx={{ width: '24%', justifyContent: 'center' }}
@@ -308,7 +308,7 @@ const AnswerForm = ({ questions: questions, formId }: Props) => {
                       </Box>
                     )}
                     <Box width={'70%'}>
-                      {generateInputSpace(question as unknown as Question)}
+                      {generateInputSpace(question as Question)}
                     </Box>
                   </Box>
                 </Item>

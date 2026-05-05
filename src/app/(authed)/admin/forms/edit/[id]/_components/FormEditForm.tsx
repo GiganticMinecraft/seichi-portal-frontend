@@ -134,9 +134,9 @@ const FormEditForm = (props: {
         is_required: question.is_required,
         position: question.position,
         template_key: question.template_key,
-        choices: question.choices.map((choice) => ({
+        choices: question.choices.map((choice, index) => ({
           label: choice.choice,
-          position: 0,
+          position: index,
         })),
       })),
     });

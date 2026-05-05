@@ -18,9 +18,9 @@ export const toCreateFormBody = (data: Form): CreateFormBody => ({
     is_required: question.is_required,
     position: question.position,
     template_key: question.template_key,
-    choices: question.choices.map((choice) => ({
+    choices: question.choices.map((choice, index) => ({
       label: choice.choice,
-      position: 0,
+      position: index,
     })),
   })),
 });
@@ -32,7 +32,7 @@ export const toFormUpdateBody = (
   const start_at = data.settings.response_period.start_at;
   const end_at = data.settings.response_period.end_at;
 
-  return {
+  const body: FormUpdateBody = {
     title: data.title,
     description: data.description,
     settings: {
@@ -52,21 +52,24 @@ export const toFormUpdateBody = (
         visibility: data.settings.answer_visibility,
       },
     },
-    questions: includeQuestions
-      ? data.questions.map((question) => ({
-          title: question.title,
-          description: question.description,
-          question_type: question.question_type,
-          is_required: question.is_required,
-          position: question.position,
-          template_key: question.template_key,
-          choices: question.choices.map((choice) => ({
-            label: choice.choice,
-            position: 0,
-          })),
-        }))
-      : null,
   };
+
+  if (includeQuestions) {
+    body.questions = data.questions.map((question) => ({
+      title: question.title,
+      description: question.description,
+      question_type: question.question_type,
+      is_required: question.is_required,
+      position: question.position,
+      template_key: question.template_key,
+      choices: question.choices.map((choice, index) => ({
+        label: choice.choice,
+        position: index,
+      })),
+    }));
+  }
+
+  return body;
 };
 
 export const toFormLabelsUpdateBody = (data: Form): FormLabelsUpdateBody => ({
