@@ -28,9 +28,11 @@ const InputMessageField = (props: {
 
     const result = await sendMessage(data.body);
 
-    if (result.ok) {
+    if (result.success) {
       reset({ body: '' });
       setSendFailedMessage(undefined);
+    } else if (result.forbidden) {
+      setSendFailedMessage('このメッセージを送信する権限がありません。');
     } else {
       setSendFailedMessage('送信に失敗しました');
     }
