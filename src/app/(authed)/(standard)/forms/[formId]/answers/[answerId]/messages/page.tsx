@@ -2,12 +2,11 @@
 
 import { Container, Stack } from '@mui/material';
 import { use } from 'react';
-import useSWR from 'swr';
+import { useApiQuery } from '@/app/_swr/useApiQuery';
 import ErrorModal from '@/app/_components/ErrorModal';
 import LoadingCircular from '@/app/_components/LoadingCircular';
 import InputMessageField from './_components/InputMessageField';
 import Messages from './_components/Messages';
-import type { GetMessagesResponse } from '@/lib/api-types';
 
 const Home = ({
   params,
@@ -19,11 +18,12 @@ const Home = ({
     data: messages,
     error,
     isLoading: isMessagesLoading,
-  } = useSWR<GetMessagesResponse>(
-    `/api/proxy/forms/answers/${answerId}/messages`,
+  } = useApiQuery(
+    '/forms/{form_id}/answers/{answer_id}/messages',
     {
-      refreshInterval: 1000,
-    }
+      path: { form_id: String(formId), answer_id: String(answerId) },
+    },
+    { refreshInterval: 1000 }
   );
 
   if (error) {

@@ -1,30 +1,31 @@
 'use client';
 
 import { proxyClient } from '@/lib/proxyClient';
+import { handleMutationResponse } from '@/hooks/useApiMutation';
 
-export const useAnswerActions = (formId: string, answerId: number | string) => {
+export const useAnswerActions = (formId: string, answerId: string) => {
   const updateTitle = async (title: string): Promise<{ ok: boolean }> => {
-    const { response } = await proxyClient.PATCH(
+    const { data, error, response } = await proxyClient.PATCH(
       '/forms/{form_id}/answers/{answer_id}',
       {
-        params: { path: { form_id: formId, answer_id: String(answerId) } },
+        params: { path: { form_id: formId, answer_id: answerId } },
         body: { title },
       }
     );
-    return { ok: response.ok };
+    const result = handleMutationResponse(response, data, error);
+    return { ok: result.success };
   };
 
-  const updateLabels = async (
-    labelIds: (string | number)[]
-  ): Promise<{ ok: boolean }> => {
-    const { response } = await proxyClient.PUT(
+  const updateLabels = async (labelIds: string[]): Promise<{ ok: boolean }> => {
+    const { error, response } = await proxyClient.PUT(
       '/forms/answers/{answer_id}/labels',
       {
-        params: { path: { answer_id: String(answerId) } },
-        body: { labels: labelIds.map(String) },
+        params: { path: { answer_id: answerId } },
+        body: { labels: labelIds },
       }
     );
-    return { ok: response.ok };
+    const result = handleMutationResponse(response, undefined, error);
+    return { ok: result.success };
   };
 
   return { updateTitle, updateLabels };

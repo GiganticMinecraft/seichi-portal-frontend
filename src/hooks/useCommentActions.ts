@@ -1,38 +1,38 @@
 'use client';
 
 import { proxyClient } from '@/lib/proxyClient';
+import { handleMutationResponse } from '@/hooks/useApiMutation';
 
-export const useCommentActions = (
-  formId: string,
-  answerId: number | string
-) => {
+export const useCommentActions = (formId: string, answerId: string) => {
   const sendComment = async (content: string): Promise<{ ok: boolean }> => {
-    const { response } = await proxyClient.POST(
+    const { data, error, response } = await proxyClient.POST(
       '/forms/{form_id}/answers/{answer_id}/comments',
       {
         params: {
-          path: { form_id: formId, answer_id: String(answerId) },
+          path: { form_id: formId, answer_id: answerId },
         },
         body: { content },
       }
     );
-    return { ok: response.ok };
+    const result = handleMutationResponse(response, data, error);
+    return { ok: result.success };
   };
 
-  const deleteComment = async (commentId: number): Promise<{ ok: boolean }> => {
-    const { response } = await proxyClient.DELETE(
+  const deleteComment = async (commentId: string): Promise<{ ok: boolean }> => {
+    const { data, error, response } = await proxyClient.DELETE(
       '/forms/{form_id}/answers/{answer_id}/comments/{comment_id}',
       {
         params: {
           path: {
             form_id: formId,
-            answer_id: String(answerId),
-            comment_id: String(commentId),
+            answer_id: answerId,
+            comment_id: commentId,
           },
         },
       }
     );
-    return { ok: response.ok };
+    const result = handleMutationResponse(response, data, error);
+    return { ok: result.success };
   };
 
   return { sendComment, deleteComment };

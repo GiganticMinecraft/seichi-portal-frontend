@@ -45,7 +45,7 @@ export type GetMessagesResponse = z.infer<
   typeof schemas.MessageContentSchema
 >[];
 export type GetUsersResponse = z.infer<typeof schemas.UserInfoResponse>;
-export type GetUserListResponse = z.infer<typeof schemas.User>[];
+export type GetUserListResponse = z.infer<typeof schemas.UserSchema>[];
 export type SearchResponse = z.infer<typeof schemas.CrossSearchResult>;
 export type GetNotificationSettingsResponse = z.infer<
   typeof schemas.NotificationSettingsResponse

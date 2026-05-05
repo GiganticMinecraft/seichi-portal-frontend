@@ -2,11 +2,10 @@
 
 import { Box } from '@mui/material';
 import { use } from 'react';
-import useSWR from 'swr';
+import { useApiQuery } from '@/app/_swr/useApiQuery';
 import ErrorModal from '@/app/_components/ErrorModal';
 import LoadingCircular from '@/app/_components/LoadingCircular';
 import AnswerList from './_components/AnswerList';
-import type { GetFormAnswersResponse, GetFormsResponse } from '@/lib/api-types';
 
 const Home = ({ params }: { params: Promise<{ formId: number }> }) => {
   const { formId } = use(params);
@@ -14,12 +13,14 @@ const Home = ({ params }: { params: Promise<{ formId: number }> }) => {
     data: answers,
     error: answersError,
     isLoading: isLoadingAnswers,
-  } = useSWR<GetFormAnswersResponse>(`/api/proxy/forms/${formId}/answers`);
+  } = useApiQuery('/forms/{id}/answers', {
+    path: { id: String(formId) },
+  });
   const {
     data: forms,
     error: formsError,
     isLoading: isLoadingForms,
-  } = useSWR<GetFormsResponse>('/api/proxy/forms');
+  } = useApiQuery('/forms');
 
   if (answersError || formsError) {
     return <ErrorModal error={answersError ?? formsError} />;

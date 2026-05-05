@@ -1,17 +1,14 @@
 'use client';
 
 import { CssBaseline, ThemeProvider } from '@mui/material';
-import useSWR from 'swr';
+import { useApiQuery } from '@/app/_swr/useApiQuery';
 import ErrorModal from '@/app/_components/ErrorModal';
 import LoadingCircular from '@/app/_components/LoadingCircular';
 import UserList from './_components/UserList';
 import adminDashboardTheme from '../theme/adminDashboardTheme';
-import type { GetUserListResponse } from '@/lib/api-types';
 
 const Home = () => {
-  const { data, error, isLoading } = useSWR<GetUserListResponse>(
-    '/api/proxy/users/list'
-  );
+  const { data, error, isLoading } = useApiQuery('/users');
 
   if (error) {
     return <ErrorModal />;

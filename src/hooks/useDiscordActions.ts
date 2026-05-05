@@ -1,10 +1,15 @@
 'use client';
 
 import { proxyClient } from '@/lib/proxyClient';
+import { handleMutationResponse } from '@/hooks/useApiMutation';
 
 export const useDiscordActions = () => {
-  const unlinkDiscord = async () => {
-    await proxyClient.DELETE('/link-discord', {});
+  const unlinkDiscord = async (): Promise<void> => {
+    const { data, error, response } = await proxyClient.DELETE(
+      '/link-discord',
+      {}
+    );
+    handleMutationResponse(response, data, error);
   };
 
   return { unlinkDiscord };

@@ -37,10 +37,13 @@ const CommentItem = (props: {
   showDeleteButton: boolean;
 }) => {
   const { register, handleSubmit } = useForm<DeleteCommentSchema>();
-  const { deleteComment } = useCommentActions(props.formId, props.answerId);
+  const { deleteComment } = useCommentActions(
+    props.formId,
+    String(props.answerId)
+  );
 
   const onDelete = async (data: DeleteCommentSchema) => {
-    await deleteComment(data.comment_id);
+    await deleteComment(String(data.comment_id));
   };
 
   return (
@@ -108,7 +111,10 @@ const SendCommentForm = (props: {
   inputSx?: object;
 }) => {
   const { register, handleSubmit, reset } = useForm<SendCommentSchema>();
-  const { sendComment } = useCommentActions(props.formId, props.answerId);
+  const { sendComment } = useCommentActions(
+    props.formId,
+    String(props.answerId)
+  );
 
   const onSubmit = async (data: SendCommentSchema) => {
     await sendComment(data.content);

@@ -2,29 +2,35 @@
 
 import { Container, CssBaseline, Stack, ThemeProvider } from '@mui/material';
 import { use } from 'react';
-import useSWR from 'swr';
+import { useApiQuery } from '@/app/_swr/useApiQuery';
 import ErrorModal from '@/app/_components/ErrorModal';
 import LoadingCircular from '@/app/_components/LoadingCircular';
 import InputMessageField from './_components/InputMessageField';
 import Messages from './_components/Messages';
 import adminDashboardTheme from '../../../theme/adminDashboardTheme';
-import type { GetAnswerResponse, GetMessagesResponse } from '@/lib/api-types';
 
 const Home = ({ params }: { params: Promise<{ answerId: number }> }) => {
   const { answerId } = use(params);
   const {
-    data: answer,
+    data: allAnswers,
     error: answerError,
     isLoading: isAnswerLoading,
-  } = useSWR<GetAnswerResponse>(`/api/proxy/forms/answers/${answerId}`);
+  } = useApiQuery('/forms/answers');
+
+  const answer = allAnswers?.find((a) => a.id === String(answerId));
+
   const {
     data: messages,
     error: messagesError,
     isLoading: isMessagesLoading,
-  } = useSWR<GetMessagesResponse>(
-    answer
-      ? `/api/proxy/forms/${answer.form_id}/answers/${answerId}/messages`
-      : null,
+  } = useApiQuery(
+    '/forms/{form_id}/answers/{answer_id}/messages',
+    {
+      path: {
+        form_id: answer?.form_id ?? '',
+        answer_id: String(answerId),
+      },
+    },
     { refreshInterval: 1000 }
   );
 
