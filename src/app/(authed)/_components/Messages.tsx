@@ -34,7 +34,7 @@ type Message = {
 const MessageItem = (props: {
   message: Message;
   formId: string;
-  answerId: number;
+  answerId: string;
   edittingMessageId: string | undefined;
   handleEdit: () => void;
   handleCancelEditting: () => void;
@@ -172,7 +172,7 @@ const MessageItem = (props: {
 const Messages = (props: {
   messages: Message[];
   formId: string;
-  answerId: number;
+  answerId: string;
 }) => {
   const [edittingMessageId, setEdittingMessageId] = useState<
     string | undefined

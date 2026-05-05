@@ -12,7 +12,7 @@ type SendMessageSchema = {
 
 const InputMessageField = (props: {
   form_id: string;
-  answer_id: number;
+  answer_id: string;
   textFieldSx?: object;
 }) => {
   const { handleSubmit, register, reset } = useForm<SendMessageSchema>();
@@ -28,9 +28,11 @@ const InputMessageField = (props: {
 
     const result = await sendMessage(data.body);
 
-    if (result.ok) {
+    if (result.success) {
       reset({ body: '' });
       setSendFailedMessage(undefined);
+    } else if (result.forbidden) {
+      setSendFailedMessage('このメッセージを送信する権限がありません。');
     } else {
       setSendFailedMessage('送信に失敗しました');
     }
