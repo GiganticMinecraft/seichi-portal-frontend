@@ -10,7 +10,7 @@ import Comments from './_components/Comments';
 import adminDashboardTheme from '../../theme/adminDashboardTheme';
 import type { AnswerCommentType } from '@/lib/api-types';
 
-const Home = ({ params }: { params: Promise<{ answerId: number }> }) => {
+const Home = ({ params }: { params: Promise<{ answerId: string }> }) => {
   const { answerId } = use(params);
   const {
     data: allAnswers,
@@ -18,7 +18,7 @@ const Home = ({ params }: { params: Promise<{ answerId: number }> }) => {
     isLoading: isAnswersLoading,
   } = useApiQuery('/forms/answers', undefined, { refreshInterval: 1000 });
 
-  const answers = allAnswers?.find((a) => a.id === String(answerId));
+  const answers = allAnswers?.find((a) => a.id === answerId);
 
   const {
     data: form,

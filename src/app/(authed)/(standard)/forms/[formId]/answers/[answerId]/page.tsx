@@ -13,7 +13,7 @@ import type { AnswerCommentType } from '@/lib/api-types';
 const Home = ({
   params,
 }: {
-  params: Promise<{ formId: number; answerId: number }>;
+  params: Promise<{ formId: string; answerId: string }>;
 }) => {
   const { formId, answerId } = use(params);
   const {
@@ -23,7 +23,7 @@ const Home = ({
   } = useApiQuery(
     '/forms/{form_id}/answers/{answer_id}',
     {
-      path: { form_id: String(formId), answer_id: String(answerId) },
+      path: { form_id: formId, answer_id: answerId },
     },
     { refreshInterval: 1000 }
   );

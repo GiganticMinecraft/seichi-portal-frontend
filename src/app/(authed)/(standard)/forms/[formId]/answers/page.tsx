@@ -7,14 +7,14 @@ import ErrorModal from '@/app/_components/ErrorModal';
 import LoadingCircular from '@/app/_components/LoadingCircular';
 import AnswerList from './_components/AnswerList';
 
-const Home = ({ params }: { params: Promise<{ formId: number }> }) => {
+const Home = ({ params }: { params: Promise<{ formId: string }> }) => {
   const { formId } = use(params);
   const {
     data: answers,
     error: answersError,
     isLoading: isLoadingAnswers,
   } = useApiQuery('/forms/{id}/answers', {
-    path: { id: String(formId) },
+    path: { id: formId },
   });
   const {
     data: forms,

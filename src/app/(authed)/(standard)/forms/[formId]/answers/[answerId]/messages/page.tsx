@@ -11,7 +11,7 @@ import Messages from './_components/Messages';
 const Home = ({
   params,
 }: {
-  params: Promise<{ formId: string; answerId: number }>;
+  params: Promise<{ formId: string; answerId: string }>;
 }) => {
   const { formId, answerId } = use(params);
   const {
@@ -21,7 +21,7 @@ const Home = ({
   } = useApiQuery(
     '/forms/{form_id}/answers/{answer_id}/messages',
     {
-      path: { form_id: String(formId), answer_id: String(answerId) },
+      path: { form_id: formId, answer_id: answerId },
     },
     { refreshInterval: 1000 }
   );

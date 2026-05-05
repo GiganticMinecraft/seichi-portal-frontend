@@ -27,23 +27,20 @@ type SendCommentSchema = {
 };
 
 type DeleteCommentSchema = {
-  comment_id: number;
+  comment_id: string;
 };
 
 const CommentItem = (props: {
   comment: Comment;
   formId: string;
-  answerId: number | string;
+  answerId: string;
   showDeleteButton: boolean;
 }) => {
   const { register, handleSubmit } = useForm<DeleteCommentSchema>();
-  const { deleteComment } = useCommentActions(
-    props.formId,
-    String(props.answerId)
-  );
+  const { deleteComment } = useCommentActions(props.formId, props.answerId);
 
   const onDelete = async (data: DeleteCommentSchema) => {
-    await deleteComment(String(data.comment_id));
+    await deleteComment(data.comment_id);
   };
 
   return (
@@ -107,14 +104,11 @@ const CommentItem = (props: {
 
 const SendCommentForm = (props: {
   formId: string;
-  answerId: number | string;
+  answerId: string;
   inputSx?: object;
 }) => {
   const { register, handleSubmit, reset } = useForm<SendCommentSchema>();
-  const { sendComment } = useCommentActions(
-    props.formId,
-    String(props.answerId)
-  );
+  const { sendComment } = useCommentActions(props.formId, props.answerId);
 
   const onSubmit = async (data: SendCommentSchema) => {
     await sendComment(data.content);
@@ -156,7 +150,7 @@ const SendCommentForm = (props: {
 const Comments = (props: {
   comments: Comment[];
   formId: string;
-  answerId: number | string;
+  answerId: string;
   showDeleteButton?: boolean;
   inputSx?: object;
 }) => {

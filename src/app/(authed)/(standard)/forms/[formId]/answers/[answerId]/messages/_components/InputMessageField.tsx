@@ -4,7 +4,7 @@ import InputMessageField from '@/app/(authed)/_components/InputMessageField';
 
 const StandardInputMessageField = (props: {
   form_id: string;
-  answer_id: number;
+  answer_id: string;
 }) => (
   <InputMessageField
     form_id={props.form_id}

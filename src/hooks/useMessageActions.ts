@@ -5,7 +5,7 @@ import { handleMutationResponse } from '@/hooks/useApiMutation';
 
 type MessageActionResult = { success: boolean; forbidden?: boolean };
 
-export const useMessageActions = (formId: string, answerId: number) => {
+export const useMessageActions = (formId: string, answerId: string) => {
   const updateMessage = async (
     messageId: string,
     body: string
@@ -16,7 +16,7 @@ export const useMessageActions = (formId: string, answerId: number) => {
         params: {
           path: {
             form_id: formId,
-            answer_id: String(answerId),
+            answer_id: answerId,
             message_id: messageId,
           },
         },
@@ -40,7 +40,7 @@ export const useMessageActions = (formId: string, answerId: number) => {
         params: {
           path: {
             form_id: formId,
-            answer_id: String(answerId),
+            answer_id: answerId,
             message_id: messageId,
           },
         },

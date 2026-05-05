@@ -13,7 +13,7 @@ export type ErrorResponse = z.infer<typeof errorResponseSchema>;
 
 // AnswerComment の生成スキーマに comment_id が欠落しているため、拡張型を定義する
 export type AnswerCommentType = z.infer<typeof schemas.AnswerComment> & {
-  comment_id: number;
+  comment_id: string;
 };
 
 // CrossSearchResult の各フィールドは z.unknown() のため、実際の型を定義する

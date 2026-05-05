@@ -9,7 +9,7 @@ import InputMessageField from './_components/InputMessageField';
 import Messages from './_components/Messages';
 import adminDashboardTheme from '../../../theme/adminDashboardTheme';
 
-const Home = ({ params }: { params: Promise<{ answerId: number }> }) => {
+const Home = ({ params }: { params: Promise<{ answerId: string }> }) => {
   const { answerId } = use(params);
   const {
     data: allAnswers,
@@ -17,7 +17,7 @@ const Home = ({ params }: { params: Promise<{ answerId: number }> }) => {
     isLoading: isAnswerLoading,
   } = useApiQuery('/forms/answers');
 
-  const answer = allAnswers?.find((a) => a.id === String(answerId));
+  const answer = allAnswers?.find((a) => a.id === answerId);
 
   const {
     data: messages,
@@ -28,7 +28,7 @@ const Home = ({ params }: { params: Promise<{ answerId: number }> }) => {
     {
       path: {
         form_id: answer?.form_id ?? '',
-        answer_id: String(answerId),
+        answer_id: answerId,
       },
     },
     { refreshInterval: 1000 }

@@ -12,7 +12,7 @@ type SendMessageSchema = {
 
 const InputMessageField = (props: {
   form_id: string;
-  answer_id: number;
+  answer_id: string;
   textFieldSx?: object;
 }) => {
   const { handleSubmit, register, reset } = useForm<SendMessageSchema>();
