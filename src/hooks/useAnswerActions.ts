@@ -5,26 +5,26 @@ import { handleMutationResponse } from '@/hooks/useApiMutation';
 
 export const useAnswerActions = (formId: string, answerId: string) => {
   const updateTitle = async (title: string): Promise<{ ok: boolean }> => {
-    const { data, response } = await proxyClient.PATCH(
+    const { data, error, response } = await proxyClient.PATCH(
       '/forms/{form_id}/answers/{answer_id}',
       {
         params: { path: { form_id: formId, answer_id: answerId } },
         body: { title },
       }
     );
-    const result = await handleMutationResponse(response, data);
+    const result = handleMutationResponse(response, data, error);
     return { ok: result.success };
   };
 
   const updateLabels = async (labelIds: string[]): Promise<{ ok: boolean }> => {
-    const { response } = await proxyClient.PUT(
+    const { error, response } = await proxyClient.PUT(
       '/forms/answers/{answer_id}/labels',
       {
         params: { path: { answer_id: answerId } },
         body: { labels: labelIds },
       }
     );
-    const result = await handleMutationResponse(response, undefined);
+    const result = handleMutationResponse(response, undefined, error);
     return { ok: result.success };
   };
 

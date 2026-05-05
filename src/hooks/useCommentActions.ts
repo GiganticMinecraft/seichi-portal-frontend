@@ -5,7 +5,7 @@ import { handleMutationResponse } from '@/hooks/useApiMutation';
 
 export const useCommentActions = (formId: string, answerId: string) => {
   const sendComment = async (content: string): Promise<{ ok: boolean }> => {
-    const { data, response } = await proxyClient.POST(
+    const { data, error, response } = await proxyClient.POST(
       '/forms/{form_id}/answers/{answer_id}/comments',
       {
         params: {
@@ -14,12 +14,12 @@ export const useCommentActions = (formId: string, answerId: string) => {
         body: { content },
       }
     );
-    const result = await handleMutationResponse(response, data);
+    const result = handleMutationResponse(response, data, error);
     return { ok: result.success };
   };
 
   const deleteComment = async (commentId: string): Promise<{ ok: boolean }> => {
-    const { data, response } = await proxyClient.DELETE(
+    const { data, error, response } = await proxyClient.DELETE(
       '/forms/{form_id}/answers/{answer_id}/comments/{comment_id}',
       {
         params: {
@@ -31,7 +31,7 @@ export const useCommentActions = (formId: string, answerId: string) => {
         },
       }
     );
-    const result = await handleMutationResponse(response, data);
+    const result = handleMutationResponse(response, data, error);
     return { ok: result.success };
   };
 

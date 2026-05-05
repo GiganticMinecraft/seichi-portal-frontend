@@ -8,23 +8,23 @@ export type MutationResult<T> =
   | { success: true; data: T }
   | { success: false; error?: ErrorResponse; forbidden?: boolean };
 
-const parseForbidden = async (response: Response): Promise<boolean> => {
-  try {
-    const json = await response.json();
-    const parseResult = errorResponseSchema.safeParse(json);
-    return parseResult.success && parseResult.data.errorCode === 'FORBIDDEN';
-  } catch {
-    return false;
-  }
+const parseForbidden = (error: unknown): boolean => {
+  const parseResult = errorResponseSchema.safeParse(error);
+  return parseResult.success && parseResult.data.errorCode === 'FORBIDDEN';
 };
 
-export const handleMutationResponse = async <T>(
+export const handleMutationResponse = <T>(
   response: Response,
   data: unknown,
+  error: unknown,
   schema?: z.ZodType<T>
-): Promise<MutationResult<T>> => {
+): MutationResult<T> => {
   if (!response.ok) {
-    const forbidden = await parseForbidden(response);
+    const forbidden = parseForbidden(error);
+    const errorData = errorResponseSchema.safeParse(error).data;
+    if (errorData) {
+      return { success: false, forbidden, error: errorData };
+    }
     return { success: false, forbidden };
   }
 

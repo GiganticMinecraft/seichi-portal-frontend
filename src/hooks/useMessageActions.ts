@@ -10,7 +10,7 @@ export const useMessageActions = (formId: string, answerId: number) => {
     messageId: string,
     body: string
   ): Promise<MessageActionResult> => {
-    const { data, response } = await proxyClient.PATCH(
+    const { data, error, response } = await proxyClient.PATCH(
       '/forms/{form_id}/answers/{answer_id}/messages/{message_id}',
       {
         params: {
@@ -24,7 +24,7 @@ export const useMessageActions = (formId: string, answerId: number) => {
       }
     );
 
-    const result = await handleMutationResponse(response, data);
+    const result = handleMutationResponse(response, data, error);
     if (result.success) {
       return { success: true };
     }
@@ -34,7 +34,7 @@ export const useMessageActions = (formId: string, answerId: number) => {
   const deleteMessage = async (
     messageId: string
   ): Promise<MessageActionResult> => {
-    const { data, response } = await proxyClient.DELETE(
+    const { data, error, response } = await proxyClient.DELETE(
       '/forms/{form_id}/answers/{answer_id}/messages/{message_id}',
       {
         params: {
@@ -47,7 +47,7 @@ export const useMessageActions = (formId: string, answerId: number) => {
       }
     );
 
-    const result = await handleMutationResponse(response, data);
+    const result = handleMutationResponse(response, data, error);
     if (result.success) {
       return { success: true };
     }
