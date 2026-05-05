@@ -2,8 +2,11 @@ import { z } from 'zod';
 import { schemas } from '@/generated/api-client';
 
 export const errorResponseSchema = z.object({
+  detail: z.string(),
   errorCode: z.string(),
-  reason: z.string(),
+  status: z.number(),
+  title: z.string(),
+  type: z.string(),
 });
 
 export type ErrorResponse = z.infer<typeof errorResponseSchema>;
