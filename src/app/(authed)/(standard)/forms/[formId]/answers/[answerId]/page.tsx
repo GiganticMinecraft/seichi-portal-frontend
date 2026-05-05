@@ -40,11 +40,20 @@ const Home = ({
     { refreshInterval: 1000 }
   );
 
+  const { data: currentUser, isLoading: isLoadingCurrentUser } =
+    useApiQuery('/users/me');
+
   if (answerError || formQuestionsError) {
     return <ErrorModal />;
   }
 
-  if (isLoadingAnswers || isLoadingFormQuestions || !answer || !form) {
+  if (
+    isLoadingAnswers ||
+    isLoadingFormQuestions ||
+    isLoadingCurrentUser ||
+    !answer ||
+    !form
+  ) {
     return <LoadingCircular />;
   }
 
@@ -63,13 +72,8 @@ const Home = ({
         comments={answer.comments as AnswerCommentType[]}
         formId={answer.form_id}
         answerId={answer.id}
-        inputSx={{
-          '& .MuiInputBase-input': { color: 'white' },
-          '& label': { color: 'white' },
-          '& .MuiOutlinedInput-root': {
-            '& fieldset': { borderColor: 'white' },
-          },
-        }}
+        currentUserId={currentUser?.id}
+        showDeleteButton={undefined}
       />
     </Stack>
   );

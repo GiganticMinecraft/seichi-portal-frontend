@@ -1,6 +1,6 @@
 'use client';
 
-import { Stack, Typography } from '@mui/material';
+import { Paper, Stack, Typography } from '@mui/material';
 import type { GetAnswerResponse, GetQuestionsResponse } from '@/lib/api-types';
 
 const AnswerDetails = (props: {
@@ -25,12 +25,16 @@ const AnswerDetails = (props: {
     <Stack spacing={2}>
       {answerWithQuestionTitles.map((answerWithQuestionTitle, key) => {
         return (
-          <Stack key={key} spacing={1}>
-            <Typography variant="h5">
+          <Paper key={key} variant="outlined" sx={{ p: 2 }}>
+            <Typography variant="subtitle1" sx={{ fontWeight: 'bold', mb: 1 }}>
               {answerWithQuestionTitle.questionTitle}
             </Typography>
-            <Typography>{answerWithQuestionTitle.answers}</Typography>
-          </Stack>
+            <Typography
+              sx={{ wordBreak: 'break-word', whiteSpace: 'pre-wrap' }}
+            >
+              {answerWithQuestionTitle.answers}
+            </Typography>
+          </Paper>
         );
       })}
     </Stack>

@@ -10,10 +10,7 @@ import type {
   GridRowParams,
 } from '@mui/x-data-grid';
 
-const AnswerList = (props: {
-  formTitle: string;
-  answers: GetFormAnswersResponse;
-}) => {
+const AnswerList = (props: { answers: GetFormAnswersResponse }) => {
   const router = useRouter();
 
   const handleRowClick: GridEventListener<'rowClick'> = (
@@ -23,16 +20,14 @@ const AnswerList = (props: {
   };
 
   const columns: GridColDef[] = [
-    { field: 'formName', headerName: 'フォーム名', width: 200 },
-    { field: 'title', headerName: 'タイトル', width: 200 },
-    { field: 'date', headerName: '投稿日時', width: 200 },
+    { field: 'title', headerName: 'タイトル', minWidth: 240, flex: 1.5 },
+    { field: 'date', headerName: '投稿日時', minWidth: 200, flex: 0.8 },
   ];
 
   return (
     <DataGrid
       rows={props.answers.map((answer) => ({
         id: answer.id,
-        formName: props.formTitle,
         title: answer.title,
         date: formatString(answer.timestamp),
       }))}
@@ -45,11 +40,12 @@ const AnswerList = (props: {
       }}
       pageSizeOptions={[5, 10, 25, 50, 100]}
       sx={{
-        '& .MuiDataGrid-columnHeader, & .MuiDataGrid-cell': {
-          color: 'white',
+        border: 0,
+        '& .MuiDataGrid-columnHeaders': {
+          backgroundColor: 'action.hover',
         },
       }}
-      checkboxSelection
+      disableRowSelectionOnClick
     />
   );
 };

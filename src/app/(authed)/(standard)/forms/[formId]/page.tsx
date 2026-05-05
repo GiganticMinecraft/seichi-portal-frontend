@@ -24,7 +24,14 @@ const Home = ({ params }: { params: Promise<{ formId: string }> }) => {
     return <LoadingCircular />;
   }
 
-  return <AnswerForm questions={form.questions} formId={formId} />;
+  return (
+    <AnswerForm
+      questions={form.questions}
+      formId={formId}
+      title={form.title}
+      description={form.description}
+    />
+  );
 };
 
 export default Home;

@@ -29,7 +29,7 @@ const NavBar = () => {
 
   return (
     <MsalProvider>
-      <Box sx={{ flexGrow: 1 }}>
+      <Box>
         <AppBar position="fixed">
           <Toolbar>
             <IconButton

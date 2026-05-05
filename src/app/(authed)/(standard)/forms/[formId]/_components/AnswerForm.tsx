@@ -3,15 +3,6 @@
 import { ArrowBack, ArrowForward } from '@mui/icons-material';
 import SendIcon from '@mui/icons-material/Send';
 import {
-  styled,
-  Paper,
-  Input,
-  Select,
-  MenuItem,
-  FormGroup,
-  FormHelperText,
-  FormControlLabel,
-  Checkbox,
   Box,
   Alert,
   AlertTitle,
@@ -19,6 +10,17 @@ import {
   Button,
   Typography,
   Link,
+  Paper,
+  Input,
+  Select,
+  MenuItem,
+  FormHelperText,
+  FormControlLabel,
+  Checkbox,
+  Grid,
+  Chip,
+  FormControl,
+  InputLabel,
 } from '@mui/material';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -42,6 +44,8 @@ type Question = {
 interface Props {
   questions: GetQuestionsResponse;
   formId: string;
+  title: string;
+  description: string;
 }
 
 interface IFormInput {
@@ -51,16 +55,7 @@ interface IFormInput {
 type AnswerCreateBody =
   paths['/forms/{id}/answers']['post']['requestBody']['content']['application/json'];
 
-const Item = styled(Paper)(({ theme }) => ({
-  backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
-  ...theme.typography.body2,
-  padding: theme.spacing(1),
-  textAlign: 'center',
-  color: theme.palette.text.secondary,
-  width: '100%',
-}));
-
-const AnswerForm = ({ questions: questions, formId }: Props) => {
+const AnswerForm = ({ questions, formId, title, description }: Props) => {
   const [isSubmitted, toggleIsSubmitted] = useState(false);
   const [selectedValues, setSelectedValues] = useState<{ [x: string]: string }>(
     {}
@@ -78,14 +73,6 @@ const AnswerForm = ({ questions: questions, formId }: Props) => {
 
   const onSubmit = async (data: IFormInput) => {
     const formAnswers = Object.entries(data).flatMap(([key, values]) => {
-      // Note:
-      // ここで型をstringかどうか判定しているのは、valuesに複数の値が入っていた場合にmapを使って
-      // 一つのquestion_idとanswerに分離したいという理由がある。
-      // valuesは本来NonEmptyArray<string>であるはずだが、React-Hook-Formが渡してくるデータは、
-      // 以下のような仕様のため、仕方なく型によって処理を分離することになった。
-      // 単一の解答: string
-      // 複数選択可能で選択されているものがある回答: NonEmptyArray<string>
-      // 複数選択可能で選択されているものがない回答: boolean
       if (typeof values == 'string') {
         return {
           question_id: key,
@@ -151,86 +138,72 @@ const AnswerForm = ({ questions: questions, formId }: Props) => {
           />
         );
       case 'SingleChoice': {
-        // TODO: 選択をリセットできるようにする
-        // TODO: 何も選択されなかったとき、APIに送られる値は空文字になるが許容されるか？undefinedやnullでなくてよい？
         const questionId = qId;
         return (
-          <Select
-            {...register(questionId)}
-            required={question.is_required}
-            autoWidth
-            value={selectedValues[questionId] ?? ''}
-            onChange={(event) => {
-              setSelectedValues({
-                ...selectedValues,
-                [questionId]: event.target.value,
-              });
-            }}
-            renderValue={() =>
-              selectedValues[questionId] ? (
-                <p>{selectedValues[questionId]}</p>
-              ) : (
-                <p>（未選択）</p>
-              )
-            }
-            displayEmpty
-            style={{
-              paddingLeft: '1rem',
-              marginTop: '1rem',
-            }}
-          >
-            {question.choices?.map((choice, index) => {
-              return (
-                <MenuItem key={`q-${qId}.a-${index}`} value={choice.label}>
-                  {choice.label}
-                </MenuItem>
-              );
-            })}
-          </Select>
+          <FormControl fullWidth sx={{ mt: 2 }}>
+            <InputLabel id={`select-label-${questionId}`}>
+              選択してください
+            </InputLabel>
+            <Select
+              {...register(questionId)}
+              required={question.is_required}
+              fullWidth
+              labelId={`select-label-${questionId}`}
+              label="選択してください"
+              value={selectedValues[questionId] ?? ''}
+              onChange={(event) => {
+                setSelectedValues({
+                  ...selectedValues,
+                  [questionId]: event.target.value,
+                });
+              }}
+              displayEmpty
+            >
+              {question.choices?.map((choice, index) => {
+                return (
+                  <MenuItem key={`q-${qId}.a-${index}`} value={choice.label}>
+                    {choice.label}
+                  </MenuItem>
+                );
+              })}
+            </Select>
+          </FormControl>
         );
       }
       case 'MultipleChoice':
         return (
           <>
-            <FormGroup
-              sx={{
-                display: 'flex',
-                flexWrap: 'wrap',
-                flexDirection: 'row',
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}
-            >
+            <Grid container spacing={2} sx={{ mt: 1 }}>
               {question.choices?.map((choice, index) => (
-                <FormControlLabel
+                <Grid
+                  size={{ xs: 12, sm: 6, md: 4 }}
                   key={`q-${qId}.a-${index}`}
-                  sx={{ width: '24%', justifyContent: 'center' }}
-                  control={
-                    <Checkbox
-                      {...register(qId, {
-                        validate: {
-                          itemMustBeChecked: (v) => {
-                            if (!question.is_required) return true;
-                            const errorMessage =
-                              'この項目は必須です。少なくとも1つの項目にチェックを入れてください';
-                            if (typeof v === 'boolean') return errorMessage;
+                >
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        {...register(qId, {
+                          validate: {
+                            itemMustBeChecked: (v) => {
+                              if (!question.is_required) return true;
+                              const errorMessage =
+                                'この項目は必須です。少なくとも1つの項目にチェックを入れてください';
+                              if (typeof v === 'boolean') return errorMessage;
 
-                            return v.length >= 1 || errorMessage;
+                              return v.length >= 1 || errorMessage;
+                            },
                           },
-                        },
-                      })}
-                      value={choice.label}
-                      sx={{
-                        wordBreak: 'break-all',
-                      }}
-                    />
-                  }
-                  label={choice.label}
-                />
+                        })}
+                        value={choice.label}
+                      />
+                    }
+                    label={choice.label}
+                  />
+                </Grid>
               ))}
-            </FormGroup>
+            </Grid>
             {errors[qId] && (
-              <FormHelperText sx={{ color: 'red', textAlign: 'center' }}>
+              <FormHelperText sx={{ color: 'red' }}>
                 {errors[qId]?.message}
               </FormHelperText>
             )}
@@ -247,7 +220,7 @@ const AnswerForm = ({ questions: questions, formId }: Props) => {
         spacing={2}
         sx={{ width: '100%', justifyContent: 'center', alignItems: 'center' }}
       >
-        <Alert severity="success" sx={{ width: '20%' }}>
+        <Alert severity="success" sx={{ width: '100%', maxWidth: 600 }}>
           <AlertTitle>Success</AlertTitle>
           回答を送信しました
         </Alert>
@@ -274,49 +247,67 @@ const AnswerForm = ({ questions: questions, formId }: Props) => {
     );
   } else {
     return (
-      <Box sx={{ width: '100%' }}>
+      <Box
+        sx={{ width: '100%', maxWidth: 800, mx: 'auto', alignSelf: 'center' }}
+      >
+        <Typography variant="h4" gutterBottom>
+          {title}
+        </Typography>
+        {description && (
+          <Box sx={{ whiteSpace: 'pre-wrap', mb: 4 }}>
+            <Markdown remarkPlugins={[remarkGfm]}>{description}</Markdown>
+          </Box>
+        )}
         <form onSubmit={handleSubmit(onSubmit)}>
-          <Stack
-            spacing={4}
-            display={'flex'}
-            alignItems={'center'}
-            flexDirection={'column'}
-          >
+          <Stack spacing={3}>
             {questions.map((question) => {
               return (
-                <Item key={question.id}>
-                  <Box
-                    width="100%"
-                    padding="1rem"
-                    display={'flex'}
-                    alignItems={'center'}
-                    flexDirection={'column'}
-                  >
-                    <Typography variant="h5">
-                      {question.title}
-                      {question.is_required ? (
-                        <Typography display={'inline'} color={'red'}>
-                          {' *'}
-                        </Typography>
-                      ) : null}
-                    </Typography>
+                <Paper key={question.id} variant="outlined" sx={{ p: 3 }}>
+                  <Stack spacing={2}>
+                    <Box>
+                      <Typography variant="h6" component="span">
+                        {question.title}
+                      </Typography>
+                      {question.is_required && (
+                        <Chip
+                          size="small"
+                          color="error"
+                          label="必須"
+                          sx={{ ml: 1, verticalAlign: 'middle' }}
+                        />
+                      )}
+                    </Box>
                     {question.description && (
-                      <Box sx={{ whiteSpace: 'pre-wrap' }}>
+                      <Box
+                        sx={{ whiteSpace: 'pre-wrap', color: 'text.secondary' }}
+                      >
                         <Markdown remarkPlugins={[remarkGfm]}>
                           {question.description}
                         </Markdown>
                       </Box>
                     )}
-                    <Box width={'70%'}>
-                      {generateInputSpace(question as Question)}
-                    </Box>
-                  </Box>
-                </Item>
+                    {generateInputSpace(question as Question)}
+                  </Stack>
+                </Paper>
               );
             })}
-            <Button type="submit" variant="contained" endIcon={<SendIcon />}>
-              送信
-            </Button>
+            <Box
+              sx={{
+                width: '100%',
+                display: 'flex',
+                justifyContent: 'flex-end',
+                mt: 2,
+              }}
+            >
+              <Button
+                type="submit"
+                variant="contained"
+                size="large"
+                endIcon={<SendIcon />}
+              >
+                送信
+              </Button>
+            </Box>
           </Stack>
         </form>
       </Box>
