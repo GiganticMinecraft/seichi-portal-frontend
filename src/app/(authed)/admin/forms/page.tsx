@@ -2,26 +2,26 @@
 
 import { Grid, Stack } from '@mui/material';
 import { useMemo, useState } from 'react';
-import useSWR from 'swr';
 import ErrorModal from '@/app/_components/ErrorModal';
 import LoadingCircular from '@/app/_components/LoadingCircular';
 import { Forms } from './_components/DashboardFormList';
 import FormCreateButton from './_components/FormCreateButton';
 import FormLabelFilter from './_components/FormLabelFilter';
 import ToManageFormLabelButton from './_components/ToManageFormLabelButton';
-import type { GetFormLabelsResponse, GetFormsResponse } from '@/lib/api-types';
+import { useApiQuery } from '@/app/_swr/useApiQuery';
+import type { GetFormLabelsResponse } from '@/lib/api-types';
 
 const Home = () => {
   const {
     data: forms,
     error: formsError,
     isLoading: isLoadingForms,
-  } = useSWR<GetFormsResponse>('/api/proxy/forms');
+  } = useApiQuery('/forms');
   const {
     data: labels,
     error: labelsError,
     isLoading: isLoadingLabels,
-  } = useSWR<GetFormLabelsResponse>('/api/proxy/labels/forms');
+  } = useApiQuery('/labels/forms');
   const [labelFilter, setLabelFilter] = useState<GetFormLabelsResponse>([]);
 
   const filteredForms = useMemo(() => {

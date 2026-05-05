@@ -18,14 +18,13 @@ import {
   ListItemText,
 } from '@mui/material';
 import { useState } from 'react';
-import useSWR from 'swr';
 import { MsalProvider } from './MsalProvider';
 import { SigninButton } from './SigninButton';
 import { SignoutButton } from './SignoutButton';
-import type { GetUsersResponse } from '@/lib/api-types';
+import { useApiQuery } from '@/app/_swr/useApiQuery';
 
 const NavBar = () => {
-  const { data } = useSWR<GetUsersResponse>('/api/proxy/users/me');
+  const { data } = useApiQuery('/users/me');
   const [anchorEl, setAnchorEl] = useState<undefined | HTMLElement>(undefined);
 
   return (

@@ -1,17 +1,12 @@
 'use client';
 
-import useSWR from 'swr';
 import ErrorModal from '@/app/_components/ErrorModal';
 import LoadingCircular from '@/app/_components/LoadingCircular';
 import FormList from './_components/FormList';
-import type { GetFormsResponse } from '@/lib/api-types';
+import { useApiQuery } from '@/app/_swr/useApiQuery';
 
 const Home = () => {
-  const {
-    data: forms,
-    error,
-    isLoading,
-  } = useSWR<GetFormsResponse>('/api/proxy/forms');
+  const { data: forms, error, isLoading } = useApiQuery('/forms');
 
   if (error) {
     return <ErrorModal error={error} />;
