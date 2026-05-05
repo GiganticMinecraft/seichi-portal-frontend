@@ -4,7 +4,6 @@ import {
   toCreateFormBody,
   toFormLabelsUpdateBody,
   toFormUpdateBody,
-  toQuestionsUpdateBody,
 } from '../_lib/formRequestBuilders';
 import type { Form } from '../_schema/createFormSchema';
 
@@ -27,26 +26,15 @@ export const useCreateForm = () => {
       }
       const createdFormId = createdForm.id;
 
-      const { response: setFormMetadataResponse } = await proxyClient.PATCH(
+      const { response: setFormMetadataResponse } = await proxyClient.PUT(
         '/forms/{id}',
         {
           params: { path: { id: createdFormId } },
-          body: toFormUpdateBody(data),
+          body: toFormUpdateBody(data, false),
         }
       );
       if (!setFormMetadataResponse.ok) {
         throw new Error('フォームのメタデータの設定に失敗しました。');
-      }
-
-      const { response: addQuestionResponse } = await proxyClient.PUT(
-        '/forms/{id}/questions',
-        {
-          params: { path: { id: createdFormId } },
-          body: toQuestionsUpdateBody(data),
-        }
-      );
-      if (!addQuestionResponse.ok) {
-        throw new Error('質問の追加に失敗しました。');
       }
 
       const { response: putLabelsResponse } = await proxyClient.PUT(

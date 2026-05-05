@@ -7,9 +7,11 @@ const choiceSchema = z.object({
 export const questionSchema = z.object({
   title: z.string(),
   description: z.string(),
-  question_type: z.enum(['TEXT', 'SINGLE', 'MULTIPLE']),
+  question_type: z.enum(['Text', 'SingleChoice', 'MultipleChoice']),
   choices: choiceSchema.array(),
   is_required: z.boolean(),
+  position: z.number().int().gte(0),
+  template_key: z.string(),
 });
 
 const visibility = z.enum(['PUBLIC', 'PRIVATE']);

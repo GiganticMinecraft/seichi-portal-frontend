@@ -31,11 +31,11 @@ import type { NonEmptyArray } from '@/generic/Types';
 import { proxyClient } from '@/lib/proxyClient';
 
 type Question = {
-  id?: number | null | undefined;
+  id?: string | null | undefined;
   title: string;
   description?: string | null | undefined;
-  question_type: string;
-  choices: string[];
+  question_type: 'Text' | 'SingleChoice' | 'MultipleChoice';
+  choices: { id?: number | null; label: string; position: number }[];
   is_required: boolean;
 };
 
@@ -88,19 +88,19 @@ const AnswerForm = ({ questions: questions, formId }: Props) => {
       // 複数選択可能で選択されているものがない回答: boolean
       if (typeof values == 'string') {
         return {
-          question_id: Number(key),
+          question_id: key,
           answer: values,
         };
       } else if (typeof values === 'boolean') {
         return [
           {
-            question_id: Number(key),
+            question_id: key,
             answer: '',
           },
         ];
       } else {
         return values.map((value) => ({
-          question_id: Number(key),
+          question_id: key,
           answer: value,
         }));
       }
@@ -138,9 +138,9 @@ const AnswerForm = ({ questions: questions, formId }: Props) => {
   };
 
   const generateInputSpace = (question: Question) => {
-    const qId = (question.id ?? '').toString();
+    const qId = question.id ?? '';
     switch (question.question_type) {
-      case 'TEXT':
+      case 'Text':
         return (
           <Input
             {...register(qId)}
@@ -150,7 +150,7 @@ const AnswerForm = ({ questions: questions, formId }: Props) => {
             fullWidth
           />
         );
-      case 'SINGLE': {
+      case 'SingleChoice': {
         // TODO: 選択をリセットできるようにする
         // TODO: 何も選択されなかったとき、APIに送られる値は空文字になるが許容されるか？undefinedやnullでなくてよい？
         const questionId = qId;
@@ -181,15 +181,15 @@ const AnswerForm = ({ questions: questions, formId }: Props) => {
           >
             {question.choices.map((choice, index) => {
               return (
-                <MenuItem key={`q-${qId}.a-${index}`} value={choice}>
-                  {choice}
+                <MenuItem key={`q-${qId}.a-${index}`} value={choice.label}>
+                  {choice.label}
                 </MenuItem>
               );
             })}
           </Select>
         );
       }
-      case 'MULTIPLE':
+      case 'MultipleChoice':
         return (
           <>
             <FormGroup
@@ -213,20 +213,19 @@ const AnswerForm = ({ questions: questions, formId }: Props) => {
                             if (!question.is_required) return true;
                             const errorMessage =
                               'この項目は必須です。少なくとも1つの項目にチェックを入れてください';
-                            // valueがbooleanであることは、何も選択されている項目がないことを示しているので、エラーとしてよい
                             if (typeof v === 'boolean') return errorMessage;
 
                             return v.length >= 1 || errorMessage;
                           },
                         },
                       })}
-                      value={choice}
+                      value={choice.label}
                       sx={{
                         wordBreak: 'break-all',
                       }}
                     />
                   }
-                  label={choice}
+                  label={choice.label}
                 />
               ))}
             </FormGroup>
@@ -308,7 +307,9 @@ const AnswerForm = ({ questions: questions, formId }: Props) => {
                         </Markdown>
                       </Box>
                     )}
-                    <Box width={'70%'}>{generateInputSpace(question)}</Box>
+                    <Box width={'70%'}>
+                      {generateInputSpace(question as unknown as Question)}
+                    </Box>
                   </Box>
                 </Item>
               );

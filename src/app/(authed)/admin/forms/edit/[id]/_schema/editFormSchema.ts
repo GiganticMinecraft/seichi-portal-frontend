@@ -7,9 +7,11 @@ const choiceSchema = z.object({
 export const questionSchema = z.object({
   title: z.string(),
   description: z.string(),
-  question_type: z.enum(['TEXT', 'SINGLE', 'MULTIPLE']),
+  question_type: z.enum(['Text', 'SingleChoice', 'MultipleChoice']),
   choices: choiceSchema.array(),
   is_required: z.boolean(),
+  position: z.number().int().gte(0),
+  template_key: z.string(),
 });
 
 const _visibility = z.enum(['PUBLIC', 'PRIVATE']);
@@ -20,12 +22,14 @@ export const formSchema = z.object({
   description: z.string(),
   questions: z
     .object({
-      id: z.number().nullable(),
+      id: z.string().nullable(),
       title: z.string(),
       description: z.string(),
-      question_type: z.enum(['TEXT', 'SINGLE', 'MULTIPLE']),
+      question_type: z.enum(['Text', 'SingleChoice', 'MultipleChoice']),
       choices: z.object({ choice: z.string() }).array(),
       is_required: z.boolean(),
+      position: z.number().int().gte(0),
+      template_key: z.string(),
     })
     .array(),
   settings: z.object({

@@ -10,17 +10,38 @@ const FormMetaSchema = z
     updated_at: z.string().datetime({ offset: true }),
   })
   .passthrough();
-const QuestionResponseSchema = z
+const QuestionDefinitionResponseSchema = z
   .object({
-    choices: z.array(z.string()),
     description: z.union([z.string(), z.null()]).optional(),
-    form_id: z.string(),
-    id: z.union([z.number(), z.null()]).optional(),
+    id: z.string().uuid(),
     is_required: z.boolean(),
-    question_type: z.string(),
+    position: z.number().int().gte(0),
+    template_key: z.string(),
     title: z.string(),
   })
   .passthrough();
+const TextQuestionResponseSchema = QuestionDefinitionResponseSchema;
+const ChoiceResponseSchema = z
+  .object({
+    id: z.union([z.number(), z.null()]).optional(),
+    label: z.string(),
+    position: z.number().int().gte(0),
+  })
+  .passthrough();
+const SelectQuestionResponseSchema = QuestionDefinitionResponseSchema.and(
+  z.object({ choices: z.array(ChoiceResponseSchema) }).passthrough()
+);
+const QuestionResponseSchema = z.union([
+  TextQuestionResponseSchema.and(
+    z.object({ question_type: z.literal("Text") }).passthrough()
+  ),
+  SelectQuestionResponseSchema.and(
+    z.object({ question_type: z.literal("SingleChoice") }).passthrough()
+  ),
+  SelectQuestionResponseSchema.and(
+    z.object({ question_type: z.literal("MultipleChoice") }).passthrough()
+  ),
+]);
 const ResponsePeriodInput = z
   .object({
     end_at: z.union([z.string(), z.null()]),
@@ -55,11 +76,47 @@ const FormSchema = z
     title: z.string(),
   })
   .passthrough();
+const QuestionDefinitionSchema = z
+  .object({
+    description: z.union([z.string(), z.null()]).optional(),
+    id: z.union([z.string(), z.null()]).optional(),
+    is_required: z.boolean(),
+    position: z.number().int().gte(0),
+    template_key: z.string(),
+    title: z.string(),
+  })
+  .passthrough();
+const TextQuestionSchema = QuestionDefinitionSchema;
+const ChoiceSchema = z
+  .object({
+    id: z.union([z.number(), z.null()]).optional(),
+    label: z.string(),
+    position: z.number().int().gte(0),
+  })
+  .passthrough();
+const SelectQuestionSchema = QuestionDefinitionSchema.and(
+  z.object({ choices: z.array(ChoiceSchema) }).passthrough()
+);
+const QuestionSchema = z.union([
+  TextQuestionSchema.and(
+    z.object({ question_type: z.literal("Text") }).passthrough()
+  ),
+  SelectQuestionSchema.and(
+    z.object({ question_type: z.literal("SingleChoice") }).passthrough()
+  ),
+  SelectQuestionSchema.and(
+    z.object({ question_type: z.literal("MultipleChoice") }).passthrough()
+  ),
+]);
 const FormCreateSchema = z
-  .object({ description: z.string(), title: z.string() })
+  .object({
+    description: z.string(),
+    questions: z.array(QuestionSchema).min(1),
+    title: z.string(),
+  })
   .passthrough();
 const AnswerContent = z
-  .object({ answer: z.string(), question_id: z.number().int() })
+  .object({ answer: z.string(), question_id: z.string().uuid() })
   .passthrough();
 const Role = z.enum(["STANDARD_USER", "ADMINISTRATOR"]);
 const User = z
@@ -124,33 +181,17 @@ const ReplaceFormLabelSchema = z
 const FormUpdateSchema = z
   .object({
     description: z.union([z.string(), z.null()]),
+    questions: z.union([z.array(QuestionSchema), z.null()]),
     settings: z.union([z.null(), FormSettingsSchema]),
     title: z.union([z.string(), z.null()]),
   })
   .partial()
   .passthrough();
 const AnswerContentSchema = z
-  .object({ answer: z.string(), question_id: z.number().int() })
+  .object({ answer: z.string(), question_id: z.string().uuid() })
   .passthrough();
 const AnswerCreateSchema = z
   .object({ contents: z.array(AnswerContentSchema) })
-  .passthrough();
-const QuestionSchema = z
-  .object({
-    choices: z.array(z.string()).optional(),
-    description: z.union([z.string(), z.null()]).optional(),
-    id: z.union([z.number(), z.null()]).optional(),
-    is_required: z.boolean(),
-    question_type: z.string(),
-    title: z.string(),
-  })
-  .passthrough();
-const FormQuestionPutSchema = z
-  .object({ questions: z.array(QuestionSchema) })
-  .partial()
-  .passthrough();
-const PutQuestionsResponseSchema = z
-  .object({ questions: z.array(QuestionResponseSchema) })
   .passthrough();
 const AnswerLabelResponseSchema = z
   .object({ id: z.string(), name: z.string() })
@@ -222,11 +263,20 @@ const UserUpdateSchema = z
 export const schemas = {
   FormLabelResponseSchema,
   FormMetaSchema,
+  QuestionDefinitionResponseSchema,
+  TextQuestionResponseSchema,
+  ChoiceResponseSchema,
+  SelectQuestionResponseSchema,
   QuestionResponseSchema,
   ResponsePeriodInput,
   AnswerSettingsSchema,
   FormSettingsSchema,
   FormSchema,
+  QuestionDefinitionSchema,
+  TextQuestionSchema,
+  ChoiceSchema,
+  SelectQuestionSchema,
+  QuestionSchema,
   FormCreateSchema,
   AnswerContent,
   Role,
@@ -247,9 +297,6 @@ export const schemas = {
   FormUpdateSchema,
   AnswerContentSchema,
   AnswerCreateSchema,
-  QuestionSchema,
-  FormQuestionPutSchema,
-  PutQuestionsResponseSchema,
   AnswerLabelResponseSchema,
   AnswerLabelSchema,
   AnswerLabelUpdateSchema,
@@ -987,50 +1034,10 @@ const endpoints = makeApi([
     ],
   },
   {
-    method: "delete",
-    path: "/forms/:id",
-    alias: "delete_form_handler",
-    requestFormat: "json",
-    parameters: [
-      {
-        name: "id",
-        type: "Path",
-        schema: z.string(),
-      },
-    ],
-    response: z.void(),
-    errors: [
-      {
-        status: 400,
-        description: `The server could not understand the request due to invalid syntax.`,
-        schema: z.void(),
-      },
-      {
-        status: 401,
-        description: `Access is unauthorized.`,
-        schema: z.void(),
-      },
-      {
-        status: 403,
-        description: `Access is forbidden.`,
-        schema: z.void(),
-      },
-      {
-        status: 404,
-        description: `The server cannot find the requested resource.`,
-        schema: z.void(),
-      },
-      {
-        status: 500,
-        description: `Server error`,
-        schema: z.void(),
-      },
-    ],
-  },
-  {
-    method: "patch",
+    method: "put",
     path: "/forms/:id",
     alias: "update_form_handler",
+    description: `questions を含めた場合、その form 配下の question 定義全体を指定内容で置換します。questions を省略した場合は既存 question を保持します。`,
     requestFormat: "json",
     parameters: [
       {
@@ -1069,6 +1076,47 @@ const endpoints = makeApi([
       {
         status: 422,
         description: `Client error`,
+        schema: z.void(),
+      },
+      {
+        status: 500,
+        description: `Server error`,
+        schema: z.void(),
+      },
+    ],
+  },
+  {
+    method: "delete",
+    path: "/forms/:id",
+    alias: "delete_form_handler",
+    requestFormat: "json",
+    parameters: [
+      {
+        name: "id",
+        type: "Path",
+        schema: z.string(),
+      },
+    ],
+    response: z.void(),
+    errors: [
+      {
+        status: 400,
+        description: `The server could not understand the request due to invalid syntax.`,
+        schema: z.void(),
+      },
+      {
+        status: 401,
+        description: `Access is unauthorized.`,
+        schema: z.void(),
+      },
+      {
+        status: 403,
+        description: `Access is forbidden.`,
+        schema: z.void(),
+      },
+      {
+        status: 404,
+        description: `The server cannot find the requested resource.`,
         schema: z.void(),
       },
       {
@@ -1142,98 +1190,6 @@ const endpoints = makeApi([
       },
     ],
     response: z.void(),
-    errors: [
-      {
-        status: 400,
-        description: `The server could not understand the request due to invalid syntax.`,
-        schema: z.void(),
-      },
-      {
-        status: 401,
-        description: `Access is unauthorized.`,
-        schema: z.void(),
-      },
-      {
-        status: 403,
-        description: `Access is forbidden.`,
-        schema: z.void(),
-      },
-      {
-        status: 404,
-        description: `The server cannot find the requested resource.`,
-        schema: z.void(),
-      },
-      {
-        status: 422,
-        description: `Client error`,
-        schema: z.void(),
-      },
-      {
-        status: 500,
-        description: `Server error`,
-        schema: z.void(),
-      },
-    ],
-  },
-  {
-    method: "get",
-    path: "/forms/:id/questions",
-    alias: "get_questions_handler",
-    requestFormat: "json",
-    parameters: [
-      {
-        name: "id",
-        type: "Path",
-        schema: z.string(),
-      },
-    ],
-    response: z.array(QuestionResponseSchema),
-    errors: [
-      {
-        status: 400,
-        description: `The server could not understand the request due to invalid syntax.`,
-        schema: z.void(),
-      },
-      {
-        status: 401,
-        description: `Access is unauthorized.`,
-        schema: z.void(),
-      },
-      {
-        status: 403,
-        description: `Access is forbidden.`,
-        schema: z.void(),
-      },
-      {
-        status: 404,
-        description: `The server cannot find the requested resource.`,
-        schema: z.void(),
-      },
-      {
-        status: 500,
-        description: `Server error`,
-        schema: z.void(),
-      },
-    ],
-  },
-  {
-    method: "put",
-    path: "/forms/:id/questions",
-    alias: "put_question_handler",
-    requestFormat: "json",
-    parameters: [
-      {
-        name: "body",
-        type: "Body",
-        schema: FormQuestionPutSchema,
-      },
-      {
-        name: "id",
-        type: "Path",
-        schema: z.string(),
-      },
-    ],
-    response: PutQuestionsResponseSchema,
     errors: [
       {
         status: 400,

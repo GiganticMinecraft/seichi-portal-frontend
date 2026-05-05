@@ -4,18 +4,31 @@ import type { Form } from '../_schema/createFormSchema';
 type CreateFormBody =
   paths['/forms']['post']['requestBody']['content']['application/json'];
 type FormUpdateBody =
-  paths['/forms/{id}']['patch']['requestBody']['content']['application/json'];
-type QuestionsUpdateBody =
-  paths['/forms/{id}/questions']['put']['requestBody']['content']['application/json'];
+  paths['/forms/{id}']['put']['requestBody']['content']['application/json'];
 type FormLabelsUpdateBody =
   paths['/forms/{form_id}/labels']['put']['requestBody']['content']['application/json'];
 
 export const toCreateFormBody = (data: Form): CreateFormBody => ({
   title: data.title,
   description: data.description,
+  questions: data.questions.map((question) => ({
+    title: question.title,
+    description: question.description,
+    question_type: question.question_type,
+    is_required: question.is_required,
+    position: question.position,
+    template_key: question.template_key,
+    choices: question.choices.map((choice) => ({
+      label: choice.choice,
+      position: 0,
+    })),
+  })),
 });
 
-export const toFormUpdateBody = (data: Form): FormUpdateBody => {
+export const toFormUpdateBody = (
+  data: Form,
+  includeQuestions: boolean
+): FormUpdateBody => {
   const start_at = data.settings.response_period.start_at;
   const end_at = data.settings.response_period.end_at;
 
@@ -39,15 +52,22 @@ export const toFormUpdateBody = (data: Form): FormUpdateBody => {
         visibility: data.settings.answer_visibility,
       },
     },
+    questions: includeQuestions
+      ? data.questions.map((question) => ({
+          title: question.title,
+          description: question.description,
+          question_type: question.question_type,
+          is_required: question.is_required,
+          position: question.position,
+          template_key: question.template_key,
+          choices: question.choices.map((choice) => ({
+            label: choice.choice,
+            position: 0,
+          })),
+        }))
+      : null,
   };
 };
-
-export const toQuestionsUpdateBody = (data: Form): QuestionsUpdateBody => ({
-  questions: data.questions.map((question) => ({
-    ...question,
-    choices: question.choices.map((choice) => choice.choice),
-  })),
-});
 
 export const toFormLabelsUpdateBody = (data: Form): FormLabelsUpdateBody => ({
   labels: data.labels.map((label) => label.id),

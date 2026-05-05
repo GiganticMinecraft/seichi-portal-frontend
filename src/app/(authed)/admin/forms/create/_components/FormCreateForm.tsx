@@ -50,9 +50,11 @@ const FormCreateForm = (props: { labelOptions: GetFormLabelsResponse }) => {
     append({
       title: '',
       description: '',
-      question_type: 'TEXT',
+      question_type: 'Text',
       choices: [],
       is_required: false,
+      position: 0,
+      template_key: '',
     });
   };
 
