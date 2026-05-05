@@ -43,6 +43,7 @@ const AnswerList = (props: {
           paginationModel: { page: 0, pageSize: 5 },
         },
       }}
+      pageSizeOptions={[5, 10, 25, 50, 100]}
       sx={{
         '& .MuiDataGrid-columnHeader, & .MuiDataGrid-cell': {
           color: 'white',
