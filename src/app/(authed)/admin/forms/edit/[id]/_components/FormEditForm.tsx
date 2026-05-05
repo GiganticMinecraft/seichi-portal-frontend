@@ -17,7 +17,7 @@ import { useFieldArray, useForm, useWatch } from 'react-hook-form';
 import { fromStringToJSTDateTime } from '@/generic/DateFormatter';
 import { useFormEditActions } from '@/hooks/useFormEditActions';
 
-const questionTypeSchema = z.enum(['TEXT', 'SINGLE', 'MULTIPLE']);
+const questionTypeSchema = z.enum(['Text', 'SingleChoice', 'MultipleChoice']);
 const formVisibilitySchema = z.enum(['PUBLIC', 'PRIVATE']);
 import FormSettings from './FormSettings';
 import QuestionComponent from './Question';
@@ -49,10 +49,17 @@ const FormEditForm = (props: {
         description: question.description ?? '',
         question_type: (() => {
           const result = questionTypeSchema.safeParse(question.question_type);
-          return result.success ? result.data : 'TEXT';
+          return result.success ? result.data : 'Text';
         })(),
         is_required: question.is_required,
-        choices: question.choices.map((choice) => ({ choice })),
+        position: question.position,
+        template_key: question.template_key,
+        choices:
+          'choices' in question
+            ? (question as { choices: { label: string }[] }).choices.map(
+                (choice) => ({ choice: choice.label })
+              )
+            : [],
       })),
       settings: {
         has_response_period: start_at && end_at ? true : false,
@@ -92,13 +99,13 @@ const FormEditForm = (props: {
   });
 
   const [isSubmitted, setIsSubmitted] = useState(false);
-  const { updateFormMeta, updateQuestions } = useFormEditActions(props.form.id);
+  const { updateForm } = useFormEditActions(props.form.id);
 
   const onSubmit = async (data: Form) => {
     const start_at = data.settings.response_period?.start_at;
     const end_at = data.settings.response_period?.end_at;
 
-    const metaResult = await updateFormMeta({
+    const result = await updateForm({
       title: data.title,
       description: data.description,
       settings: {
@@ -115,38 +122,31 @@ const FormEditForm = (props: {
             : null,
         },
       },
-    });
-
-    if (!metaResult.ok) {
-      setError('root', {
-        type: 'manual',
-        message: 'フォームのメタデータの更新に失敗しました。',
-      });
-    }
-
-    const questionsResult = await updateQuestions({
       questions: data.questions.map((question) => ({
         id: props.form.questions.find(
-          (beforeQuestion) => beforeQuestion.id == question.id
+          (beforeQuestion) => beforeQuestion.id === question.id
         )
           ? question.id
           : null,
         title: question.title,
         description: question.description,
         question_type: question.question_type,
-        choices: question.choices.map((choice) => choice.choice),
         is_required: question.is_required,
+        position: question.position,
+        template_key: question.template_key,
+        choices: question.choices.map((choice, index) => ({
+          label: choice.choice,
+          position: index,
+        })),
       })),
     });
 
-    if (!questionsResult.ok) {
+    if (!result.ok) {
       setError('root', {
         type: 'manual',
-        message: 'フォームの質問の更新に失敗しました。',
+        message: 'フォームの更新に失敗しました。',
       });
-    }
-
-    if (metaResult.ok && questionsResult.ok) {
+    } else {
       setIsSubmitted(true);
     }
   };
@@ -180,6 +180,8 @@ const FormEditForm = (props: {
                       question_type: field.question_type,
                       is_required: field.is_required,
                       choices: field.choices.map((choice) => choice.choice),
+                      position: field.position,
+                      template_key: field.template_key,
                     }}
                     index={index}
                   />
@@ -209,9 +211,11 @@ const FormEditForm = (props: {
                   id: null,
                   title: '',
                   description: '',
-                  question_type: 'TEXT',
+                  question_type: 'Text',
                   choices: [],
                   is_required: false,
+                  position: 0,
+                  template_key: '',
                 });
               }}
               endIcon={<Add />}

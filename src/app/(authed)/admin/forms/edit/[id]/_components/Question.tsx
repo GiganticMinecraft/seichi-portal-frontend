@@ -18,12 +18,14 @@ import type { Form } from '../_schema/editFormSchema';
 import type { Control, UseFormRegister } from 'react-hook-form';
 
 interface Question {
-  id: number | null;
+  id: string | null;
   title: string;
   description: string;
-  question_type: 'TEXT' | 'SINGLE' | 'MULTIPLE';
+  question_type: 'Text' | 'SingleChoice' | 'MultipleChoice';
   choices: string[];
   is_required: boolean;
+  position: number;
+  template_key: string;
 }
 
 const QuestionComponent = ({
@@ -59,7 +61,7 @@ const QuestionComponent = ({
   });
 
   const addChoice = useCallback(() => {
-    if (useWatchQuestionType !== 'TEXT') {
+    if (useWatchQuestionType !== 'Text') {
       appendChoices({ choice: '' });
     }
   }, [useWatchQuestionType, appendChoices]);
@@ -108,7 +110,7 @@ const QuestionComponent = ({
         onChange={(event) => {
           field.onChange(event);
 
-          if (event.target.value === 'TEXT') {
+          if (event.target.value === 'Text') {
             removeChoices();
           } else if (choicesField.length === 0) {
             // NOTE: choicesField.lengthが0であることを確認しないと
@@ -117,11 +119,11 @@ const QuestionComponent = ({
           }
         }}
       >
-        <MenuItem onSelect={() => removeChoices()} value="TEXT">
+        <MenuItem onSelect={() => removeChoices()} value="Text">
           テキスト
         </MenuItem>
-        <MenuItem value="SINGLE">単一選択</MenuItem>
-        <MenuItem value="MULTIPLE">複数選択</MenuItem>
+        <MenuItem value="SingleChoice">単一選択</MenuItem>
+        <MenuItem value="MultipleChoice">複数選択</MenuItem>
       </TextField>
       <FormControlLabel
         label="この質問への回答を必須にする"
@@ -133,7 +135,7 @@ const QuestionComponent = ({
         variant="outlined"
         startIcon={<Add />}
         onClick={() => addChoice()}
-        disabled={useWatchQuestionType == 'TEXT'}
+        disabled={useWatchQuestionType === 'Text'}
       >
         選択肢の追加
       </Button>

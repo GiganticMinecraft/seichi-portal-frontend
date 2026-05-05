@@ -170,14 +170,17 @@ export interface paths {
         };
         /** フォームの取得 */
         get: operations["get_form_handler"];
-        put?: never;
+        /**
+         * フォームの更新
+         * @description questions を含めた場合、その form 配下の question 定義全体を指定内容で置換します。questions を省略した場合は既存 question を保持します。
+         */
+        put: operations["update_form_handler"];
         post?: never;
         /** フォームの削除 */
         delete: operations["delete_form_handler"];
         options?: never;
         head?: never;
-        /** フォームの更新 */
-        patch: operations["update_form_handler"];
+        patch?: never;
         trace?: never;
     };
     "/forms/{id}/answers": {
@@ -192,24 +195,6 @@ export interface paths {
         put?: never;
         /** 回答の作成 */
         post: operations["post_answer_handler"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/forms/{id}/questions": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** 質問の一覧取得 */
-        get: operations["get_questions_handler"];
-        /** 質問の上書き */
-        put: operations["put_question_handler"];
-        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -456,13 +441,13 @@ export interface components {
         };
         AnswerContent: {
             answer: string;
-            /** Format: int32 */
-            question_id: number;
+            /** Format: uuid */
+            question_id: string;
         };
         AnswerContentSchema: {
             answer: string;
-            /** Format: int32 */
-            question_id: number;
+            /** Format: uuid */
+            question_id: string;
         };
         AnswerCreateSchema: {
             contents: components["schemas"]["AnswerContentSchema"][];
@@ -492,6 +477,20 @@ export interface components {
         };
         /** @enum {string} */
         AnswerVisibility: "PUBLIC" | "PRIVATE";
+        ChoiceResponseSchema: {
+            /** Format: int32 */
+            id?: number | null;
+            label: string;
+            /** Format: int32 */
+            position: number;
+        };
+        ChoiceSchema: {
+            /** Format: int32 */
+            id?: number | null;
+            label: string;
+            /** Format: int32 */
+            position: number;
+        };
         CommentPostSchema: {
             content: components["schemas"]["NonEmptyString"];
         };
@@ -541,6 +540,7 @@ export interface components {
         };
         FormCreateSchema: {
             description: string;
+            questions: components["schemas"]["QuestionSchema"][];
             title: string;
         };
         FormLabelCreateSchema: {
@@ -559,9 +559,6 @@ export interface components {
             /** Format: date-time */
             updated_at: string;
         };
-        FormQuestionPutSchema: {
-            questions?: components["schemas"]["QuestionSchema"][];
-        };
         FormSchema: {
             description: string;
             /** Format: uuid */
@@ -579,6 +576,11 @@ export interface components {
         };
         FormUpdateSchema: {
             description?: string | null;
+            /**
+             * @description When provided, replaces the full set of question definitions under the form.
+             *     Omit this field to leave existing questions unchanged.
+             */
+            questions?: components["schemas"]["QuestionSchema"][] | null;
             settings?: null | components["schemas"]["FormSettingsSchema"];
             title?: string | null;
         };
@@ -603,28 +605,46 @@ export interface components {
         PostedMessageSchema: {
             body: string;
         };
-        PutQuestionsResponseSchema: {
-            questions: components["schemas"]["QuestionResponseSchema"][];
-        };
-        QuestionResponseSchema: {
-            choices: string[];
+        QuestionDefinitionResponseSchema: {
             description?: string | null;
-            form_id: string;
-            /** Format: int32 */
-            id?: number | null;
+            /** Format: uuid */
+            id: string;
             is_required: boolean;
-            question_type: string;
+            /** Format: int32 */
+            position: number;
+            template_key: string;
             title: string;
         };
-        QuestionSchema: {
-            choices?: string[];
+        QuestionDefinitionSchema: {
             description?: string | null;
-            /** Format: int32 */
-            id?: number | null;
+            /** Format: uuid */
+            id?: string | null;
             is_required: boolean;
-            question_type: string;
+            /** Format: int32 */
+            position: number;
+            template_key: string;
             title: string;
         };
+        QuestionResponseSchema: (components["schemas"]["TextQuestionResponseSchema"] & {
+            /** @enum {string} */
+            question_type: "Text";
+        }) | (components["schemas"]["SelectQuestionResponseSchema"] & {
+            /** @enum {string} */
+            question_type: "SingleChoice";
+        }) | (components["schemas"]["SelectQuestionResponseSchema"] & {
+            /** @enum {string} */
+            question_type: "MultipleChoice";
+        });
+        QuestionSchema: (components["schemas"]["TextQuestionSchema"] & {
+            /** @enum {string} */
+            question_type: "Text";
+        }) | (components["schemas"]["SelectQuestionSchema"] & {
+            /** @enum {string} */
+            question_type: "SingleChoice";
+        }) | (components["schemas"]["SelectQuestionSchema"] & {
+            /** @enum {string} */
+            question_type: "MultipleChoice";
+        });
         ReplaceAnswerLabelSchema: {
             labels: string[];
         };
@@ -643,6 +663,12 @@ export interface components {
         };
         /** @enum {string} */
         Role: "STANDARD_USER" | "ADMINISTRATOR";
+        SelectQuestionResponseSchema: components["schemas"]["QuestionDefinitionResponseSchema"] & {
+            choices: components["schemas"]["ChoiceResponseSchema"][];
+        };
+        SelectQuestionSchema: components["schemas"]["QuestionDefinitionSchema"] & {
+            choices: components["schemas"]["ChoiceSchema"][];
+        };
         SenderSchema: {
             name: string;
             role: string;
@@ -652,6 +678,8 @@ export interface components {
             /** Format: int32 */
             expires: number;
         };
+        TextQuestionResponseSchema: components["schemas"]["QuestionDefinitionResponseSchema"];
+        TextQuestionSchema: components["schemas"]["QuestionDefinitionSchema"];
         User: {
             name: string;
             role: components["schemas"]["Role"];
@@ -1875,72 +1903,6 @@ export interface operations {
             };
         };
     };
-    delete_form_handler: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @description Form ID */
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description There is no content to send for this request, but the headers may be useful. */
-            204: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description The server could not understand the request due to invalid syntax. */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/problem+json": components["schemas"]["ErrorResponse"];
-                };
-            };
-            /** @description Access is unauthorized. */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/problem+json": components["schemas"]["ErrorResponse"];
-                };
-            };
-            /** @description Access is forbidden. */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/problem+json": components["schemas"]["ErrorResponse"];
-                };
-            };
-            /** @description The server cannot find the requested resource. */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/problem+json": components["schemas"]["ErrorResponse"];
-                };
-            };
-            /** @description Server error */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/problem+json": components["schemas"]["ErrorResponse"];
-                };
-            };
-        };
-    };
     update_form_handler: {
         parameters: {
             query?: never;
@@ -2004,6 +1966,72 @@ export interface operations {
             };
             /** @description Client error */
             422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    delete_form_handler: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Form ID */
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description There is no content to send for this request, but the headers may be useful. */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description The server could not understand the request due to invalid syntax. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Access is unauthorized. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Access is forbidden. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description The server cannot find the requested resource. */
+            404: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -2121,155 +2149,6 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content?: never;
-            };
-            /** @description The server could not understand the request due to invalid syntax. */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/problem+json": components["schemas"]["ErrorResponse"];
-                };
-            };
-            /** @description Access is unauthorized. */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/problem+json": components["schemas"]["ErrorResponse"];
-                };
-            };
-            /** @description Access is forbidden. */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/problem+json": components["schemas"]["ErrorResponse"];
-                };
-            };
-            /** @description The server cannot find the requested resource. */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/problem+json": components["schemas"]["ErrorResponse"];
-                };
-            };
-            /** @description Client error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/problem+json": components["schemas"]["ErrorResponse"];
-                };
-            };
-            /** @description Server error */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/problem+json": components["schemas"]["ErrorResponse"];
-                };
-            };
-        };
-    };
-    get_questions_handler: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @description Form ID */
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description The request has succeeded. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["QuestionResponseSchema"][];
-                };
-            };
-            /** @description The server could not understand the request due to invalid syntax. */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/problem+json": components["schemas"]["ErrorResponse"];
-                };
-            };
-            /** @description Access is unauthorized. */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/problem+json": components["schemas"]["ErrorResponse"];
-                };
-            };
-            /** @description Access is forbidden. */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/problem+json": components["schemas"]["ErrorResponse"];
-                };
-            };
-            /** @description The server cannot find the requested resource. */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/problem+json": components["schemas"]["ErrorResponse"];
-                };
-            };
-            /** @description Server error */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/problem+json": components["schemas"]["ErrorResponse"];
-                };
-            };
-        };
-    };
-    put_question_handler: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @description Form ID */
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["FormQuestionPutSchema"];
-            };
-        };
-        responses: {
-            /** @description The request has succeeded. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["PutQuestionsResponseSchema"];
-                };
             };
             /** @description The server could not understand the request due to invalid syntax. */
             400: {
