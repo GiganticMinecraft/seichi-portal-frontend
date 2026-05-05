@@ -1,21 +1,26 @@
 'use client';
-import { Chip, Typography } from '@mui/material';
+import { Chip, Stack, Typography } from '@mui/material';
 import type { GetAnswerResponse } from '@/lib/api-types';
 
 const AnswerLabels = (props: { answers: GetAnswerResponse }) => {
   if (props.answers.labels.length === 0) {
-    return <Typography>ラベルが設定されていません</Typography>;
-  } else {
-    return props.answers.labels.map((label) => {
-      return (
+    return (
+      <Typography color="text.secondary">ラベルが設定されていません</Typography>
+    );
+  }
+
+  return (
+    <Stack direction="row" spacing={1} useFlexGap flexWrap="wrap">
+      {props.answers.labels.map((label) => (
         <Chip
           label={label.name}
-          sx={{ background: '#FFFFFF29' }}
           key={label.id}
+          size="small"
+          variant="outlined"
         />
-      );
-    });
-  }
+      ))}
+    </Stack>
+  );
 };
 
 export default AnswerLabels;

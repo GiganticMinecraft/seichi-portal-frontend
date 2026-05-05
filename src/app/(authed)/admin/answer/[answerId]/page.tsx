@@ -72,6 +72,7 @@ const Home = ({ params }: { params: Promise<{ answerId: string }> }) => {
           comments={answers.comments as AnswerCommentType[]}
           formId={answers.form_id}
           answerId={answerId}
+          currentUserId={undefined}
           showDeleteButton
         />
       </Stack>

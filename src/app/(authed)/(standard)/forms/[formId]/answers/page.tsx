@@ -1,6 +1,6 @@
 'use client';
 
-import { Box } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import { use } from 'react';
 import { useApiQuery } from '@/app/_swr/useApiQuery';
 import ErrorModal from '@/app/_components/ErrorModal';
@@ -30,15 +30,16 @@ const Home = ({ params }: { params: Promise<{ formId: string }> }) => {
     return <LoadingCircular />;
   }
 
+  const formTitle =
+    forms.find((form) => form.id === answers[0]?.form_id)?.title ??
+    'unknown form';
+
   return (
-    <Box sx={{ width: '100%', justifyContent: 'center', alignItems: 'center' }}>
-      <AnswerList
-        formTitle={
-          forms.find((form) => form.id === answers[0]?.form_id)?.title ??
-          'unknown form'
-        }
-        answers={answers}
-      />
+    <Box sx={{ width: '100%' }}>
+      <Typography variant="h5" sx={{ mb: 2 }}>
+        {formTitle}
+      </Typography>
+      <AnswerList answers={answers} />
     </Box>
   );
 };

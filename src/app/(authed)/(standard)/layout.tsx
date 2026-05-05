@@ -2,11 +2,13 @@
 
 import '../../globals.css';
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v16-appRouter';
+import { Box, CssBaseline, ThemeProvider, createTheme } from '@mui/material';
 import { SWRConfig } from 'swr';
 import NavBar from '@/app/_components/NavBar';
 import { fetcher } from '@/app/_swr/fetcher';
-import styles from '../../page.module.css';
 import type { ReactNode } from 'react';
+
+const theme = createTheme();
 
 const RootLayout = ({ children }: { children: ReactNode }) => {
   return (
@@ -17,16 +19,29 @@ const RootLayout = ({ children }: { children: ReactNode }) => {
       </head>
       <body>
         <AppRouterCacheProvider>
-          <main className={styles['main']}>
-            <SWRConfig
-              value={{
-                fetcher: fetcher,
+          <ThemeProvider theme={theme}>
+            <CssBaseline />
+            <Box
+              component="main"
+              sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                minHeight: '100vh',
+                pt: { xs: 'calc(56px + 1rem)', md: 'calc(64px + 2rem)' },
+                px: { xs: '1rem', md: '2rem' },
+                pb: { xs: '1rem', md: '2rem' },
               }}
             >
-              <NavBar />
-              {children}
-            </SWRConfig>
-          </main>
+              <SWRConfig
+                value={{
+                  fetcher: fetcher,
+                }}
+              >
+                <NavBar />
+                {children}
+              </SWRConfig>
+            </Box>
+          </ThemeProvider>
         </AppRouterCacheProvider>
       </body>
     </html>
