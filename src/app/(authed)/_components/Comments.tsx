@@ -16,6 +16,7 @@ import {
   Toolbar,
   Typography,
 } from '@mui/material';
+import { alpha } from '@mui/material/styles';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useCommentActions } from '@/hooks/useCommentActions';
@@ -124,11 +125,13 @@ const CommentItem = (props: {
         </Box>
         <Paper
           variant="outlined"
-          sx={{
+          sx={(theme) => ({
             p: 1.5,
-            backgroundColor: isAdmin ? 'success.50' : 'grey.50',
+            backgroundColor: isAdmin
+              ? alpha(theme.palette.success.main, 0.08)
+              : theme.palette.grey[50],
             borderRadius: 2,
-          }}
+          })}
         >
           <Typography
             variant="body2"
