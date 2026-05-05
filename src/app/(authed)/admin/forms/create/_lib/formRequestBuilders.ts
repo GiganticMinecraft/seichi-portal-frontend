@@ -8,10 +8,18 @@ type FormUpdateBody =
 type FormLabelsUpdateBody =
   paths['/forms/{form_id}/labels']['put']['requestBody']['content']['application/json'];
 
-export const toCreateFormBody = (data: Form): CreateFormBody => ({
-  title: data.title,
-  description: data.description,
-  questions: data.questions.map((question) => ({
+const mapQuestion = (question: Form['questions'][number]) => {
+  if (question.question_type === 'Text') {
+    return {
+      title: question.title,
+      description: question.description,
+      question_type: question.question_type,
+      is_required: question.is_required,
+      position: question.position,
+      template_key: question.template_key,
+    };
+  }
+  return {
     title: question.title,
     description: question.description,
     question_type: question.question_type,
@@ -22,7 +30,13 @@ export const toCreateFormBody = (data: Form): CreateFormBody => ({
       label: choice.choice,
       position: index,
     })),
-  })),
+  };
+};
+
+export const toCreateFormBody = (data: Form): CreateFormBody => ({
+  title: data.title,
+  description: data.description,
+  questions: data.questions.map(mapQuestion),
 });
 
 export const toFormUpdateBody = (
@@ -55,18 +69,7 @@ export const toFormUpdateBody = (
   };
 
   if (includeQuestions) {
-    body.questions = data.questions.map((question) => ({
-      title: question.title,
-      description: question.description,
-      question_type: question.question_type,
-      is_required: question.is_required,
-      position: question.position,
-      template_key: question.template_key,
-      choices: question.choices.map((choice, index) => ({
-        label: choice.choice,
-        position: index,
-      })),
-    }));
+    body.questions = data.questions.map(mapQuestion);
   }
 
   return body;
