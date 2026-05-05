@@ -4,6 +4,15 @@ import { createTheme } from '@mui/material';
 
 const theme = createTheme({
   components: {
+    MuiCssBaseline: {
+      styleOverrides: {
+        body: {
+          backgroundColor: '#081522',
+          backgroundImage:
+            'linear-gradient(180deg, rgba(255, 255, 255, 0.02) 0%, rgba(255, 255, 255, 0) 28%)',
+        },
+      },
+    },
     MuiInputLabel: {
       styleOverrides: {
         formControl: {
@@ -30,10 +39,11 @@ const theme = createTheme({
           paddingTop: '10px',
           paddingBottom: '8px',
           height: 'auto',
-          background: '#FFFFFF29',
+          background: 'rgba(255, 255, 255, 0.12)',
         },
         notchedOutline: {
           top: 0,
+          borderColor: 'rgba(255, 255, 255, 0.18)',
           legend: {
             display: 'none',
           },
@@ -53,8 +63,9 @@ const theme = createTheme({
         root: {
           display: 'flex',
           flexDirection: 'column',
-          background:
-            'linear-gradient(180deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.05) 100%), #121212',
+          backgroundColor: 'rgba(11, 24, 37, 0.92)',
+          backgroundImage: 'none',
+          border: '1px solid rgba(255, 255, 255, 0.06)',
           boxShadow:
             '0px 2px 1px -1px rgba(0, 0, 0, 0.2), 0px 1px 1px rgba(0, 0, 0, 0.14), 0px 1px 3px rgba(0, 0, 0, 0.12)',
         },
@@ -70,7 +81,8 @@ const theme = createTheme({
       main: '#001F38',
     },
     background: {
-      default: '#010020',
+      default: '#081522',
+      paper: '#0b1825',
     },
     text: {
       primary: '#FFFFFF',
