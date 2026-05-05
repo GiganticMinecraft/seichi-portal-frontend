@@ -2,31 +2,7 @@
 
 import useSWR from 'swr';
 import { typedFetcher } from './fetcher';
-import type { paths } from '@/generated/api-types';
-
-type GetPaths = {
-  [P in keyof paths]: paths[P] extends { get: unknown } ? P : never;
-}[keyof paths];
-
-type GetParams<P extends GetPaths> = paths[P] extends {
-  get: { parameters?: infer Params };
-}
-  ? Params
-  : never;
-
-type GetResponse<P extends GetPaths> = paths[P] extends {
-  get: {
-    responses: {
-      200: {
-        content: {
-          'application/json': infer R;
-        };
-      };
-    };
-  };
-}
-  ? R
-  : never;
+import type { GetPaths, GetParams, GetResponse } from './fetcher';
 
 export const useApiQuery = <P extends GetPaths>(
   path: P,
@@ -34,5 +10,5 @@ export const useApiQuery = <P extends GetPaths>(
 ) => {
   const key = params ? [path, params] : [path];
 
-  return useSWR<GetResponse<P>>(key, () => typedFetcher(path, params as never));
+  return useSWR<GetResponse<P>>(key, () => typedFetcher(path, params));
 };

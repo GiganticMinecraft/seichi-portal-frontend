@@ -17,17 +17,17 @@ export const fetcher = async (url: string) => {
   return res.json();
 };
 
-type GetPaths = {
+export type GetPaths = {
   [P in keyof paths]: paths[P] extends { get: unknown } ? P : never;
 }[keyof paths];
 
-type GetParams<P extends GetPaths> = paths[P] extends {
+export type GetParams<P extends GetPaths> = paths[P] extends {
   get: { parameters?: infer Params };
 }
   ? Params
   : never;
 
-type GetResponse<P extends GetPaths> = paths[P] extends {
+export type GetResponse<P extends GetPaths> = paths[P] extends {
   get: {
     responses: {
       200: {
@@ -41,19 +41,32 @@ type GetResponse<P extends GetPaths> = paths[P] extends {
   ? R
   : never;
 
+type TypedClient = {
+  GET<P extends GetPaths>(
+    path: P,
+    params?: GetParams<P>
+  ): Promise<{
+    data: GetResponse<P> | undefined;
+    response: Response;
+    error?: unknown;
+  }>;
+};
+
+const typedClient = proxyClient as unknown as TypedClient;
+
 export const typedFetcher = async <P extends GetPaths>(
   path: P,
   params?: GetParams<P>
 ): Promise<GetResponse<P>> => {
-  const { data, response } = await proxyClient.GET(path, params as never);
+  const result = await typedClient.GET(path, params);
 
-  if (!response.ok || data === undefined) {
+  if (!result.response.ok || result.data === undefined) {
     throw new HttpError({
-      message: `Request failed: ${response.status}`,
-      status: response.status,
+      message: `Request failed: ${result.response.status}`,
+      status: result.response.status,
       url: path,
     });
   }
 
-  return data;
+  return result.data;
 };
