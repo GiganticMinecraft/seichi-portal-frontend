@@ -147,7 +147,7 @@ const QuestionComponent = ({
   return (
     <Stack spacing={2}>
       <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
-        質問{questionId + 1} (question_id: {questionId})
+        質問{questionId + 1}
       </Typography>
       <Button
         variant="outlined"

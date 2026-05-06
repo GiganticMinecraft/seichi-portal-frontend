@@ -169,7 +169,7 @@ const QuestionComponent = ({
         type="hidden"
       />
       <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
-        質問{index + 1} (question_id: {question.id})
+        質問{index + 1}
       </Typography>
       <Button
         variant="outlined"
