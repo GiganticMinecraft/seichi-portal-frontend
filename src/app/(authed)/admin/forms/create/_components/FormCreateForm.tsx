@@ -29,6 +29,7 @@ import { useFieldArray, useForm, useWatch } from 'react-hook-form';
 import type { GetFormLabelsResponse } from '@/lib/api-types';
 import type { FormEditorValues } from '../../_schema/formEditorSchema';
 import { useCreateForm } from '../_hooks/useCreateForm';
+import { adminFormFieldSx } from '../../_components/adminFormFieldSx';
 import FormCreateLayout from './FormCreateLayout';
 import FormSettings from './FormSettings';
 import QuestionComponent from './Question';
@@ -128,7 +129,7 @@ const FormCreateForm = (props: { labelOptions: GetFormLabelsResponse }) => {
   const formContent = (
     <Container component="form" onSubmit={handleSubmit(createForm)}>
       <Stack spacing={2}>
-        <Card>
+        <Card sx={adminFormFieldSx}>
           <CardContent>
             <FormSettings
               control={control}

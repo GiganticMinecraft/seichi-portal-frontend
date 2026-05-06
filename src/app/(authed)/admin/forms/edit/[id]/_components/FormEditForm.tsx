@@ -34,6 +34,7 @@ import {
   fromFormResponseToEditorValues,
   toFormUpdateBody,
 } from '../../../_lib/formRequestBuilders';
+import { adminFormFieldSx } from '../../../_components/adminFormFieldSx';
 import FormSettings from './FormSettings';
 import QuestionComponent from './Question';
 import type { GetFormLabelsResponse, GetFormResponse } from '@/lib/api-types';
@@ -157,7 +158,7 @@ const FormEditForm = (props: {
       <Grid size={10}>
         <Container component="form" onSubmit={handleSubmit(onSubmit)}>
           <Stack spacing={2}>
-            <Card>
+            <Card sx={adminFormFieldSx}>
               <CardContent>
                 <FormSettings
                   register={register}

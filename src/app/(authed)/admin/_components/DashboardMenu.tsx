@@ -18,25 +18,17 @@ const DashboardMenu = () => {
   return (
     <Drawer
       variant="permanent"
-      PaperProps={{
-        sx: {
-          backgroundColor: '#102235',
-          backgroundImage:
-            'linear-gradient(180deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0) 22%)',
-          borderRight: '1px solid rgba(255, 255, 255, 0.08)',
-          boxShadow:
-            '0px 8px 10px -5px rgba(0, 0, 0, 0.2), 0px 16px 24px 2px rgba(0, 0, 0, 0.14), 0px 6px 30px 5px rgba(0, 0, 0, 0.12)',
-        },
-      }}
       sx={{
         width: drawerWidth,
         [`& .MuiDrawer-paper`]: {
           width: drawerWidth,
           boxSizing: 'border-box',
+          boxShadow:
+            '0px 8px 10px -5px rgba(0, 0, 0, 0.2), 0px 16px 24px 2px rgba(0, 0, 0, 0.14), 0px 6px 30px 5px rgba(0, 0, 0, 0.12)',
         },
       }}
     >
-      <Typography sx={{ mt: 4, mb: 2 }} variant="h6" component="div">
+      <Typography sx={{ mt: 4, mb: 2, px: 2 }} variant="h6" component="div">
         Menu
       </Typography>
       <MenuList>
@@ -59,10 +51,10 @@ const DashboardMenu = () => {
           },
         ].map((value, index) => {
           return (
-            <MenuItem key={index} sx={{ color: 'white' }}>
+            <MenuItem key={index} sx={{ color: 'text.primary' }}>
               <ListItemIcon
                 sx={{
-                  color: 'rgba(255, 255, 255, 0.56)',
+                  color: 'text.secondary',
                   paddingRight: '32px',
                 }}
               >
@@ -71,7 +63,7 @@ const DashboardMenu = () => {
               <Link
                 component={NextLink}
                 href={value.url}
-                color="#fff"
+                color="inherit"
                 sx={{ textDecoration: 'none' }}
               >
                 {value.label}

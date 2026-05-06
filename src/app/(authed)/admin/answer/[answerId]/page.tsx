@@ -1,13 +1,12 @@
 'use client';
 
-import { CssBaseline, Stack, ThemeProvider } from '@mui/material';
+import { Stack } from '@mui/material';
 import { use } from 'react';
 import { useApiQuery } from '@/app/_swr/useApiQuery';
 import ErrorModal from '@/app/_components/ErrorModal';
 import LoadingCircular from '@/app/_components/LoadingCircular';
 import AnswerDetails from './_components/AnswerDetails';
 import Comments from './_components/Comments';
-import adminDashboardTheme from '../../theme/adminDashboardTheme';
 import type { AnswerCommentType } from '@/lib/api-types';
 
 const Home = ({ params }: { params: Promise<{ answerId: string }> }) => {
@@ -54,29 +53,26 @@ const Home = ({ params }: { params: Promise<{ answerId: string }> }) => {
   }
 
   return (
-    <ThemeProvider theme={adminDashboardTheme}>
-      <CssBaseline />
-      <Stack
-        direction="column"
-        justifyContent="flex-start"
-        alignItems="space-between"
-        spacing={4}
-        sx={{ width: '100%' }}
-      >
-        <AnswerDetails
-          answers={answers}
-          questions={form.questions}
-          labels={labels}
-        />
-        <Comments
-          comments={answers.comments as AnswerCommentType[]}
-          formId={answers.form_id}
-          answerId={answerId}
-          currentUserId={undefined}
-          showDeleteButton
-        />
-      </Stack>
-    </ThemeProvider>
+    <Stack
+      direction="column"
+      justifyContent="flex-start"
+      alignItems="space-between"
+      spacing={4}
+      sx={{ width: '100%' }}
+    >
+      <AnswerDetails
+        answers={answers}
+        questions={form.questions}
+        labels={labels}
+      />
+      <Comments
+        comments={answers.comments as AnswerCommentType[]}
+        formId={answers.form_id}
+        answerId={answerId}
+        currentUserId={undefined}
+        showDeleteButton
+      />
+    </Stack>
   );
 };
 

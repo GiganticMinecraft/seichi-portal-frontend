@@ -46,7 +46,10 @@ export const Forms = ({ forms }: Props) => {
               <Typography variant="h5" component="div">
                 {form.title}
               </Typography>
-              <Typography variant="body2" sx={{ mb: 1.5, color: 'gray' }}>
+              <Typography
+                variant="body2"
+                sx={{ mb: 1.5, color: 'text.secondary' }}
+              >
                 {formatResponsePeriod(
                   form.settings.answer_settings?.response_period?.start_at ??
                     null,

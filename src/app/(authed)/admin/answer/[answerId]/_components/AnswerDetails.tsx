@@ -10,6 +10,7 @@ import Grid from '@mui/material/Grid';
 import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
+import { alpha } from '@mui/material/styles';
 import NextLink from 'next/link';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -92,7 +93,14 @@ const AnswerLabels = (props: {
         value.map((option: string, index: number) => (
           <Chip
             label={option}
-            sx={{ background: '#FFFFFF29' }}
+            sx={(theme) => ({
+              backgroundColor: alpha(
+                theme.palette.mode === 'dark'
+                  ? theme.palette.common.white
+                  : theme.palette.primary.main,
+                theme.palette.mode === 'dark' ? 0.16 : 0.12
+              ),
+            })}
             {...getTagProps({ index })}
             key={index}
           />
@@ -107,7 +115,7 @@ const AnswerLabels = (props: {
         <TextField
           {...params}
           variant="standard"
-          sx={{ borderBottom: '1px solid #FFFFFF6B' }}
+          sx={{ borderBottom: (theme) => `1px solid ${theme.palette.divider}` }}
         />
       )}
       onChange={async (_event, value) => {

@@ -64,7 +64,7 @@ const DataTable = (props: {
       pageSizeOptions={[5, 10, 25, 50, 100]}
       sx={{
         '& .MuiDataGrid-columnHeader, & .MuiDataGrid-cell': {
-          color: 'white',
+          color: 'text.primary',
         },
       }}
       checkboxSelection

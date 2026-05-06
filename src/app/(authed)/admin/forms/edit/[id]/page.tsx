@@ -1,13 +1,10 @@
 'use client';
 
-import { ThemeProvider } from '@emotion/react';
-import { CssBaseline } from '@mui/material';
 import { use } from 'react';
 import { useApiQuery } from '@/app/_swr/useApiQuery';
 import ErrorModal from '@/app/_components/ErrorModal';
 import LoadingCircular from '@/app/_components/LoadingCircular';
 import FormEditForm from './_components/FormEditForm';
-import adminDashboardTheme from '../../../theme/adminDashboardTheme';
 
 const Home = ({ params }: { params: Promise<{ id: number }> }) => {
   const { id } = use(params);
@@ -32,12 +29,7 @@ const Home = ({ params }: { params: Promise<{ id: number }> }) => {
     return <LoadingCircular />;
   }
 
-  return (
-    <ThemeProvider theme={adminDashboardTheme}>
-      <CssBaseline />
-      <FormEditForm form={form} labelOptions={labels} />
-    </ThemeProvider>
-  );
+  return <FormEditForm form={form} labelOptions={labels} />;
 };
 
 export default Home;

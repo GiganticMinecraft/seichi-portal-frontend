@@ -140,7 +140,8 @@ const SearchResult = (props: {
         sx={{
           p: 2,
           borderRadius: 2,
-          bgcolor: 'secondary',
+          bgcolor: 'background.paper',
+          boxShadow: 24,
           display: 'grid',
           gridTemplateColumns: { md: '1fr 1fr' },
           gap: 2,
@@ -164,7 +165,7 @@ const SearchResult = (props: {
             pageSizeOptions={[5, 10, 25, 50, 100]}
             sx={{
               '& .MuiDataGrid-columnHeader, & .MuiDataGrid-cell': {
-                color: 'white',
+                color: 'text.primary',
               },
             }}
             checkboxSelection
