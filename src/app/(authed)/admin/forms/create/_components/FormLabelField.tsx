@@ -36,12 +36,7 @@ const FormLabelField = (props: {
         ))
       }
       renderOption={(props, option) => (
-        <Box
-          {...props}
-          key={option.id}
-          component="span"
-          style={{ color: 'black' }}
-        >
+        <Box {...props} key={option.id} component="span">
           {option.name}
         </Box>
       )}

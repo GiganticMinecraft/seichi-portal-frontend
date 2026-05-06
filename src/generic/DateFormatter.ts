@@ -17,3 +17,11 @@ export const fromStringToJSTDateTime = (date: string) => {
 
   return dayjs(new Date(date)).tz('Asia/Tokyo').format(formatString);
 };
+
+export const toApiDateTime = (
+  dateStr: string | null | undefined
+): string | null => {
+  if (!dateStr) return null;
+
+  return dayjs.tz(dateStr, 'Asia/Tokyo').format('YYYY-MM-DDTHH:mm:ssZ');
+};
