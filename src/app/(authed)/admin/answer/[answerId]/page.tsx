@@ -58,10 +58,12 @@ const Home = ({ params }: { params: Promise<{ answerId: string }> }) => {
       <CssBaseline />
       <Stack
         direction="column"
-        justifyContent="flex-start"
-        alignItems="space-between"
+        sx={{
+          justifyContent: 'flex-start',
+          alignItems: 'space-between',
+          width: '100%',
+        }}
         spacing={4}
-        sx={{ width: '100%' }}
       >
         <AnswerDetails
           answers={answers}

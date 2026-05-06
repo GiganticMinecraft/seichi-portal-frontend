@@ -57,7 +57,11 @@ const InputMessageField = (props: {
             required
           />
         </Grid>
-        <Grid container alignItems="center" justifyContent="center" size={1}>
+        <Grid
+          container
+          sx={{ alignItems: 'center', justifyContent: 'center' }}
+          size={1}
+        >
           <Button variant="contained" endIcon={<SendIcon />} type="submit">
             送信
           </Button>

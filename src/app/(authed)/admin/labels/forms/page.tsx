@@ -25,8 +25,7 @@ const Home = () => {
       <Stack spacing={3} sx={{ width: '100%' }}>
         <Stack
           direction="row"
-          justifyContent="space-between"
-          alignItems="center"
+          sx={{ justifyContent: 'space-between', alignItems: 'center' }}
           spacing={2}
         >
           <Typography variant="h4">フォーム設定用ラベル管理</Typography>

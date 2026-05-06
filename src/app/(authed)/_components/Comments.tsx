@@ -165,7 +165,7 @@ const SendCommentForm = (props: { formId: string; answerId: string }) => {
         backgroundColor: 'background.paper',
       }}
     >
-      <Stack direction="row" spacing={1} alignItems="flex-end">
+      <Stack direction="row" spacing={1} sx={{ alignItems: 'flex-end' }}>
         <input
           {...register('answer_id')}
           value={props.answerId}
@@ -211,9 +211,7 @@ const Comments = (props: {
         anchor="right"
         open={open}
         onClose={() => setOpen(false)}
-        PaperProps={{
-          sx: { width: { xs: '100%', sm: 400 } },
-        }}
+        slotProps={{ paper: { sx: { width: { xs: '100%', sm: 400 } } } }}
       >
         <Toolbar
           sx={{

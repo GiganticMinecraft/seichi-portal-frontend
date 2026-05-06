@@ -5,7 +5,6 @@ import EditIcon from '@mui/icons-material/Edit';
 import Autocomplete from '@mui/material/Autocomplete';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
-import Chip from '@mui/material/Chip';
 import Grid from '@mui/material/Grid';
 import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
@@ -42,8 +41,7 @@ const AnswerTitleForm = (props: { answers: GetAnswerResponse }) => {
   return (
     <Stack
       direction="row"
-      justifyContent="space-between"
-      alignItems="flex-start"
+      sx={{ justifyContent: 'space-between', alignItems: 'flex-start' }}
       spacing={2}
     >
       {isEditing ? (
@@ -88,16 +86,7 @@ const AnswerLabels = (props: {
       options={props.labelOptions.map((label) => label.name)}
       getOptionLabel={(option) => option}
       defaultValue={props.answers.labels.map((label) => label.name)}
-      renderTags={(value: readonly string[], getTagProps) =>
-        value.map((option: string, index: number) => (
-          <Chip
-            label={option}
-            sx={{ background: '#FFFFFF29' }}
-            {...getTagProps({ index })}
-            key={index}
-          />
-        ))
-      }
+      slotProps={{ chip: { sx: { background: '#FFFFFF29' } } }}
       renderOption={(renderProps, option) => (
         <Box {...renderProps} key={option} component="span">
           {option}
