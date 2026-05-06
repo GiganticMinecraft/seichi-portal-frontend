@@ -1,3 +1,4 @@
+import { toApiDateTime } from '@/generic/DateFormatter';
 import type { components, paths } from '@/generated/api-types';
 
 type CreateFormBody =
@@ -34,7 +35,7 @@ const mapQuestion = (
   question: FormLike['questions'][number],
   index: number
 ): components['schemas']['QuestionSchema'] => {
-  const base = {
+  const base: components['schemas']['QuestionDefinitionSchema'] = {
     title: question.title,
     description: question.description,
     is_required: question.is_required,
@@ -44,19 +45,26 @@ const mapQuestion = (
   };
 
   if (question.question_type === 'Text') {
-    return {
+    const textQuestion: components['schemas']['TextQuestionSchema'] & {
+      question_type: 'Text';
+    } = {
       ...base,
       question_type: 'Text',
-    } as components['schemas']['QuestionSchema'];
+    };
+    return textQuestion;
   }
-  return {
+
+  const selectQuestion: components['schemas']['SelectQuestionSchema'] & {
+    question_type: 'SingleChoice' | 'MultipleChoice';
+  } = {
     ...base,
     question_type: question.question_type,
     choices: question.choices.map((choice, choiceIndex) => ({
       label: choice.choice,
       position: choiceIndex,
     })),
-  } as components['schemas']['QuestionSchema'];
+  };
+  return selectQuestion;
 };
 
 export const toCreateFormBody = (data: FormLike): CreateFormBody => ({
@@ -87,8 +95,8 @@ export const toFormUpdateBody = (
             : data.settings.default_answer_title,
         response_period: data.settings.has_response_period
           ? {
-              start_at: start_at ? `${start_at}:00+09:00` : null,
-              end_at: end_at ? `${end_at}:00+09:00` : null,
+              start_at: toApiDateTime(start_at),
+              end_at: toApiDateTime(end_at),
             }
           : null,
         visibility: data.settings.answer_visibility,

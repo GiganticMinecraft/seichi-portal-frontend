@@ -177,19 +177,10 @@ const FormEditForm = (props: {
 
     // edit 固有: 既存質問のみ id を保持、新規は null
     if (body.questions) {
-      body.questions = body.questions.map((question, index) => {
-        const originalQuestion = data.questions[index];
-        return {
-          ...question,
-          id:
-            originalQuestion &&
-            props.form.questions.find(
-              (beforeQuestion) => beforeQuestion.id === originalQuestion.id
-            )
-              ? originalQuestion.id
-              : null,
-        };
-      });
+      body.questions = body.questions.map((question, index) => ({
+        ...question,
+        id: data.questions[index]?.id ?? null,
+      }));
     }
 
     const result = await updateForm(body);
