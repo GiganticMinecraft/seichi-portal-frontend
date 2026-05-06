@@ -4,12 +4,10 @@ import {
   AuthenticatedTemplate,
   UnauthenticatedTemplate,
 } from '@azure/msal-react';
-import MenuIcon from '@mui/icons-material/Menu';
 import {
   Box,
   AppBar,
   Toolbar,
-  IconButton,
   Typography,
   Link,
   Avatar,
@@ -17,6 +15,7 @@ import {
   MenuItem,
   ListItemText,
 } from '@mui/material';
+import Image from 'next/image';
 import NextLink from 'next/link';
 import { useState } from 'react';
 import ThemeModeToggle from '@/app/(authed)/_components/ThemeModeToggle';
@@ -32,21 +31,18 @@ const NavBar = () => {
     <Box>
       <AppBar position="fixed">
         <Toolbar>
-          <IconButton
-            size="large"
-            edge="start"
-            color="inherit"
-            aria-label="menu"
-            sx={{ mr: 2 }}
-          >
-            <MenuIcon />
-          </IconButton>
+          <Image
+            src="/favicon.ico"
+            width={48}
+            height={48}
+            alt="seichi-portal logo"
+          />
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
             <Link
               component={NextLink}
               href="/"
               color="inherit"
-              sx={{ textDecoration: 'none' }}
+              sx={{ textDecoration: 'none', pl: '10px' }}
             >
               Seichi Portal
             </Link>
