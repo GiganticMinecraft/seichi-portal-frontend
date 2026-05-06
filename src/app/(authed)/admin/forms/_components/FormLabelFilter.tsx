@@ -27,12 +27,7 @@ const FormLabelFilter = (props: {
       }
       renderOption={(props, option) => {
         return (
-          <Box
-            {...props}
-            key={option}
-            component="span"
-            style={{ color: 'black' }}
-          >
+          <Box {...props} key={option} component="span">
             {option}
           </Box>
         );

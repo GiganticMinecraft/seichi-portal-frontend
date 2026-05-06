@@ -10,6 +10,7 @@ const theme = createTheme({
           backgroundColor: '#081522',
           backgroundImage:
             'linear-gradient(180deg, rgba(255, 255, 255, 0.02) 0%, rgba(255, 255, 255, 0) 28%)',
+          color: '#FFFFFF',
         },
       },
     },
@@ -29,7 +30,7 @@ const theme = createTheme({
     MuiMenuItem: {
       styleOverrides: {
         root: {
-          color: 'black',
+          color: 'white',
         },
       },
     },
@@ -75,7 +76,7 @@ const theme = createTheme({
   palette: {
     primary: {
       main: '#90CAF9',
-      contrastText: '#000000',
+      contrastText: '#FFFFFF',
     },
     secondary: {
       main: '#001F38',

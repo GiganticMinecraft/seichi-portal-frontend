@@ -99,12 +99,7 @@ const AnswerLabels = (props: {
         ))
       }
       renderOption={(renderProps, option) => (
-        <Box
-          {...renderProps}
-          key={option}
-          component="span"
-          style={{ color: 'black' }}
-        >
+        <Box {...renderProps} key={option} component="span">
           {option}
         </Box>
       )}
