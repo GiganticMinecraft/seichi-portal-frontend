@@ -138,7 +138,17 @@ const FormEditForm = (props: {
       return;
     }
 
-    await updateLabels(data.labels.map((label) => label.id));
+    const labelResult = await updateLabels(
+      data.labels.map((label) => label.id)
+    );
+    if (!labelResult.ok) {
+      setError('root', {
+        type: 'manual',
+        message: 'フォームラベルの更新に失敗しました。',
+      });
+      return;
+    }
+
     setIsSubmitted(true);
   };
 
