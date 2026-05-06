@@ -4,36 +4,42 @@ import Autocomplete from '@mui/material/Autocomplete';
 import Box from '@mui/material/Box';
 import Chip from '@mui/material/Chip';
 import TextField from '@mui/material/TextField';
-import { useFormLabelActions } from '@/hooks/useFormLabelActions';
 import type { GetFormLabelsResponse } from '@/lib/api-types';
+import type { FormEditorValues } from '../../../_schema/formEditorSchema';
+import { useController } from 'react-hook-form';
+import type { Control } from 'react-hook-form';
 
 const FormLabelField = (props: {
-  formId: string;
+  control: Control<FormEditorValues>;
   labelOptions: GetFormLabelsResponse;
-  currentLabels: GetFormLabelsResponse;
 }) => {
-  const { updateLabels } = useFormLabelActions(props.formId);
+  const { field } = useController({
+    control: props.control,
+    name: 'labels',
+    defaultValue: [],
+  });
 
   return (
     <Autocomplete
       multiple
       id="label"
-      options={props.labelOptions.map((label) => label.name)}
-      getOptionLabel={(option) => option}
-      defaultValue={props.currentLabels.map((label) => label.name)}
-      renderTags={(value: readonly string[], getTagProps) =>
-        value.map((option: string, index: number) => (
+      options={props.labelOptions}
+      getOptionLabel={(option) => option.name}
+      value={field.value}
+      isOptionEqualToValue={(option, value) => option.id === value.id}
+      renderTags={(value, getTagProps) =>
+        value.map((option, index) => (
           <Chip
-            label={option}
+            label={option.name}
             sx={{ background: '#FFFFFF29' }}
             {...getTagProps({ index })}
-            key={index}
+            key={option.id}
           />
         ))
       }
       renderOption={(renderProps, option) => (
-        <Box {...renderProps} key={option} component="span">
-          {option}
+        <Box {...renderProps} key={option.id} component="span">
+          {option.name}
         </Box>
       )}
       renderInput={(params) => (
@@ -44,12 +50,7 @@ const FormLabelField = (props: {
           sx={{ borderBottom: '1px solid #FFFFFF6B' }}
         />
       )}
-      onChange={async (_event, value) => {
-        const selectedIds = props.labelOptions
-          .filter((label) => value.includes(label.name))
-          .map((label) => label.id);
-        await updateLabels(selectedIds);
-      }}
+      onChange={(_event, value) => field.onChange(value)}
     />
   );
 };

@@ -2,12 +2,10 @@ import { NextResponse, type NextRequest } from 'next/server';
 import { z } from 'zod';
 import { getBackendServerUrl } from './env.server';
 import { getCachedToken } from './user-token/mcToken';
-import { schemas } from './generated/api-client';
-
-const getUsersResponseSchema = schemas.UserInfoResponse;
+import { userInfoResponseSchema } from '@/lib/api/schemas';
 
 type FetchUserResult =
-  | { kind: 'ok'; user: z.infer<typeof getUsersResponseSchema> }
+  | { kind: 'ok'; user: z.infer<typeof userInfoResponseSchema> }
   | { kind: 'unauthorized' }
   | { kind: 'error' };
 
@@ -47,7 +45,7 @@ const fetchUser = async (token: string) => {
     }
 
     const body: unknown = await response.json().catch(() => null);
-    const parsed = getUsersResponseSchema.safeParse(body);
+    const parsed = userInfoResponseSchema.safeParse(body);
 
     if (!parsed.success) {
       console.error('Failed to parse user response from backend');

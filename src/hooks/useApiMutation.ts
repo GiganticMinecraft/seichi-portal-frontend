@@ -1,8 +1,8 @@
 'use client';
 
 import { z } from 'zod';
-import { errorResponseSchema } from '@/lib/api-types';
-import type { ErrorResponse } from '@/lib/api-types';
+import { errorResponseSchema } from '@/lib/api/errors';
+import type { ErrorResponse } from '@/lib/api/errors';
 
 export type MutationResult<T> =
   | { success: true; data: T }

@@ -28,19 +28,10 @@ import { useForm } from 'react-hook-form';
 import Markdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import type { paths } from '@/generated/api-types';
-import { errorResponseSchema } from '@/lib/api-types';
+import { errorResponseSchema } from '@/lib/api/errors';
 import type { GetQuestionsResponse } from '@/lib/api-types';
 import type { NonEmptyArray } from '@/generic/Types';
 import { proxyClient } from '@/lib/proxyClient';
-
-type Question = {
-  id: string;
-  title: string;
-  description?: string | null | undefined;
-  question_type: 'Text' | 'SingleChoice' | 'MultipleChoice';
-  choices?: { id?: number | null; label: string; position: number }[];
-  is_required: boolean;
-};
 
 interface Props {
   questions: GetQuestionsResponse;
@@ -125,7 +116,7 @@ const AnswerForm = ({ questions, formId, title, description }: Props) => {
     }
   };
 
-  const generateInputSpace = (question: Question) => {
+  const generateInputSpace = (question: GetQuestionsResponse[number]) => {
     const qId = question.id ?? '';
     switch (question.question_type) {
       case 'Text':
@@ -287,7 +278,7 @@ const AnswerForm = ({ questions, formId, title, description }: Props) => {
                         </Markdown>
                       </Box>
                     )}
-                    {generateInputSpace(question as Question)}
+                    {generateInputSpace(question)}
                   </Stack>
                 </Paper>
               );

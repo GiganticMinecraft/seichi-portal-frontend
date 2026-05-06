@@ -4,7 +4,7 @@ import { proxyClient } from '@/lib/proxyClient';
 import { handleMutationResponse } from '@/hooks/useApiMutation';
 
 export const useFormLabelActions = (formId: string) => {
-  const updateLabels = async (labelIds: string[]): Promise<void> => {
+  const updateLabels = async (labelIds: string[]): Promise<{ ok: boolean }> => {
     const { data, error, response } = await proxyClient.PUT(
       '/forms/{form_id}/labels',
       {
@@ -12,7 +12,8 @@ export const useFormLabelActions = (formId: string) => {
         body: { labels: labelIds },
       }
     );
-    handleMutationResponse(response, data, error);
+    const result = handleMutationResponse(response, data, error);
+    return { ok: result.success };
   };
 
   return { updateLabels };

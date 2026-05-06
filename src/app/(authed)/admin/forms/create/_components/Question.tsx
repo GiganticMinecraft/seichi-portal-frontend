@@ -27,7 +27,7 @@ import {
 import { CSS } from '@dnd-kit/utilities';
 import { useCallback } from 'react';
 import { useController, useFieldArray, useWatch } from 'react-hook-form';
-import type { Form } from '../_schema/createFormSchema';
+import type { FormEditorValues } from '../../_schema/formEditorSchema';
 import type { Control, UseFormRegister } from 'react-hook-form';
 
 const SortableChoiceItem = ({
@@ -40,7 +40,7 @@ const SortableChoiceItem = ({
   id: string;
   index: number;
   questionId: number;
-  register: UseFormRegister<Form>;
+  register: UseFormRegister<FormEditorValues>;
   removeChoice: (index: number) => void;
 }) => {
   const {
@@ -88,8 +88,8 @@ const QuestionComponent = ({
   removeQuestion,
   questionId,
 }: {
-  control: Control<Form>;
-  register: UseFormRegister<Form>;
+  control: Control<FormEditorValues>;
+  register: UseFormRegister<FormEditorValues>;
   removeQuestion: (index: number) => void;
   questionId: number;
 }) => {

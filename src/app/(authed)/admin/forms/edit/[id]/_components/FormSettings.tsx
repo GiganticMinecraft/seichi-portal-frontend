@@ -10,17 +10,15 @@ import {
 } from '@mui/material';
 import { useController } from 'react-hook-form';
 import FormLabelField from './FormLabelField';
-import type { Form } from '../_schema/editFormSchema';
 import type { GetFormLabelsResponse } from '@/lib/api-types';
+import type { FormEditorValues } from '../../../_schema/formEditorSchema';
 import type { Control, UseFormRegister } from 'react-hook-form';
 
 const FormSettings = (props: {
-  register: UseFormRegister<Form>;
-  control: Control<Form>;
+  register: UseFormRegister<FormEditorValues>;
+  control: Control<FormEditorValues>;
   has_response_period: boolean;
-  formId: string;
   labelOptions: GetFormLabelsResponse;
-  currentLabels: GetFormLabelsResponse;
 }) => {
   const { field: visibilityField } = useController({
     control: props.control,
@@ -49,8 +47,7 @@ const FormSettings = (props: {
         multiline
       />
       <FormLabelField
-        currentLabels={props.currentLabels}
-        formId={props.formId}
+        control={props.control}
         labelOptions={props.labelOptions}
       />
       <FormControlLabel
