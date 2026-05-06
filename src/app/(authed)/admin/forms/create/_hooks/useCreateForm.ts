@@ -4,7 +4,7 @@ import {
   toCreateFormBody,
   toFormLabelsUpdateBody,
   toFormUpdateBody,
-} from '../_lib/formRequestBuilders';
+} from '../../_lib/formRequestBuilders';
 import type { Form } from '../_schema/createFormSchema';
 
 type SubmitError = { message: string };
@@ -41,7 +41,7 @@ export const useCreateForm = () => {
         '/forms/{form_id}/labels',
         {
           params: { path: { form_id: createdFormId } },
-          body: toFormLabelsUpdateBody(data),
+          body: toFormLabelsUpdateBody(data.labels),
         }
       );
       if (!putLabelsResponse.ok) {

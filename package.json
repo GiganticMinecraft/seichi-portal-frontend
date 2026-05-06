@@ -20,6 +20,9 @@
   "dependencies": {
     "@azure/msal-browser": "^4.28.1",
     "@azure/msal-react": "^3.0.0",
+    "@dnd-kit/core": "^6.3.1",
+    "@dnd-kit/sortable": "^10.0.0",
+    "@dnd-kit/utilities": "^3.2.2",
     "@emotion/cache": "^11.11.0",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
@@ -47,7 +50,12 @@
     "overrides": {
       "minimatch": "^10.2.2"
     },
-    "onlyBuiltDependencies": ["esbuild", "lefthook", "sharp", "unrs-resolver"]
+    "onlyBuiltDependencies": [
+      "esbuild",
+      "lefthook",
+      "sharp",
+      "unrs-resolver"
+    ]
   },
   "devDependencies": {
     "@eslint/compat": "^2.0.1",

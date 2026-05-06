@@ -1,21 +1,37 @@
 'use client';
 
-import { Add } from '@mui/icons-material';
+import { Add, DragIndicator } from '@mui/icons-material';
 import SendIcon from '@mui/icons-material/Send';
 import {
   Alert,
+  Box,
   Button,
   Card,
   CardContent,
   Container,
   Grid,
+  IconButton,
   Stack,
 } from '@mui/material';
+import {
+  DndContext,
+  type DragEndEvent,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from '@dnd-kit/core';
+import {
+  SortableContext,
+  useSortable,
+  verticalListSortingStrategy,
+} from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 import { useState } from 'react';
 import { z } from 'zod';
 import { useFieldArray, useForm, useWatch } from 'react-hook-form';
 import { fromStringToJSTDateTime } from '@/generic/DateFormatter';
 import { useFormEditActions } from '@/hooks/useFormEditActions';
+import { toFormUpdateBody } from '../../../_lib/formRequestBuilders';
 
 const questionTypeSchema = z.enum(['Text', 'SingleChoice', 'MultipleChoice']);
 const formVisibilitySchema = z.enum(['PUBLIC', 'PRIVATE']);
@@ -23,6 +39,40 @@ import FormSettings from './FormSettings';
 import QuestionComponent from './Question';
 import type { Form } from '../_schema/editFormSchema';
 import type { GetFormLabelsResponse, GetFormResponse } from '@/lib/api-types';
+
+const SortableQuestionWrapper = ({
+  id,
+  children,
+}: {
+  id: string;
+  children: React.ReactNode;
+}) => {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+  };
+
+  return (
+    <CardContent ref={setNodeRef} style={style}>
+      <Stack direction="row" spacing={1} alignItems="flex-start">
+        <IconButton size="small" {...attributes} {...listeners}>
+          <DragIndicator fontSize="small" />
+        </IconButton>
+        <Box sx={{ flex: 1 }}>{children}</Box>
+      </Stack>
+    </CardContent>
+  );
+};
 
 const FormEditForm = (props: {
   form: GetFormResponse;
@@ -86,11 +136,32 @@ const FormEditForm = (props: {
     },
   });
 
-  const { fields, append, remove } = useFieldArray({
+  const { fields, append, remove, move } = useFieldArray({
     control,
     keyName: 'reacthookform-id',
     name: 'questions',
   });
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 5,
+      },
+    })
+  );
+
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+    if (over && active.id !== over.id) {
+      const oldIndex = fields.findIndex(
+        (field) => field['reacthookform-id'] === active.id
+      );
+      const newIndex = fields.findIndex(
+        (field) => field['reacthookform-id'] === over.id
+      );
+      move(oldIndex, newIndex);
+    }
+  };
 
   const hasResponsePeriod = useWatch({
     control,
@@ -102,56 +173,26 @@ const FormEditForm = (props: {
   const { updateForm } = useFormEditActions(props.form.id);
 
   const onSubmit = async (data: Form) => {
-    const start_at = data.settings.response_period?.start_at;
-    const end_at = data.settings.response_period?.end_at;
+    const body = toFormUpdateBody(data, true);
 
-    const result = await updateForm({
-      title: data.title,
-      description: data.description,
-      settings: {
-        visibility: data.settings.visibility,
-        webhook_url: data.settings.webhook_url,
-        answer_settings: {
-          visibility: data.settings.answer_visibility,
-          default_answer_title: data.settings.default_answer_title,
-          response_period: data.settings.has_response_period
-            ? {
-                start_at: start_at ? `${start_at}:00+09:00` : null,
-                end_at: end_at ? `${end_at}:00+09:00` : null,
-              }
-            : null,
-        },
-      },
-      questions: data.questions.map((question) => {
-        const questionFields = {
-          id: props.form.questions.find(
-            (beforeQuestion) => beforeQuestion.id === question.id
-          )
-            ? question.id
-            : null,
-          title: question.title,
-          description: question.description,
-          is_required: question.is_required,
-          position: question.position,
-          template_key: question.template_key,
-        };
-
-        if (question.question_type === 'Text') {
-          return {
-            ...questionFields,
-            question_type: question.question_type,
-          };
-        }
+    // edit 固有: 既存質問のみ id を保持、新規は null
+    if (body.questions) {
+      body.questions = body.questions.map((question, index) => {
+        const originalQuestion = data.questions[index];
         return {
-          ...questionFields,
-          question_type: question.question_type,
-          choices: question.choices.map((choice, index) => ({
-            label: choice.choice,
-            position: index,
-          })),
+          ...question,
+          id:
+            originalQuestion &&
+            props.form.questions.find(
+              (beforeQuestion) => beforeQuestion.id === originalQuestion.id
+            )
+              ? originalQuestion.id
+              : null,
         };
-      }),
-    });
+      });
+    }
+
+    const result = await updateForm(body);
 
     if (!result.ok) {
       setError('root', {
@@ -179,26 +220,36 @@ const FormEditForm = (props: {
                   currentLabels={props.form.labels}
                 />
               </CardContent>
-              {fields.map((field, index) => (
-                <CardContent key={field['reacthookform-id']}>
-                  <QuestionComponent
-                    control={control}
-                    register={register}
-                    removeQuestion={remove}
-                    question={{
-                      id: field.id,
-                      title: field.title,
-                      description: field.description,
-                      question_type: field.question_type,
-                      is_required: field.is_required,
-                      choices: field.choices.map((choice) => choice.choice),
-                      position: field.position,
-                      template_key: field.template_key,
-                    }}
-                    index={index}
-                  />
-                </CardContent>
-              ))}
+              <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
+                <SortableContext
+                  items={fields.map((field) => field['reacthookform-id'])}
+                  strategy={verticalListSortingStrategy}
+                >
+                  {fields.map((field, index) => (
+                    <SortableQuestionWrapper
+                      key={field['reacthookform-id']}
+                      id={field['reacthookform-id']}
+                    >
+                      <QuestionComponent
+                        control={control}
+                        register={register}
+                        removeQuestion={remove}
+                        question={{
+                          id: field.id,
+                          title: field.title,
+                          description: field.description,
+                          question_type: field.question_type,
+                          is_required: field.is_required,
+                          choices: field.choices.map((choice) => choice.choice),
+                          position: field.position,
+                          template_key: field.template_key,
+                        }}
+                        index={index}
+                      />
+                    </SortableQuestionWrapper>
+                  ))}
+                </SortableContext>
+              </DndContext>
             </Card>
             {errors.root && (
               <Alert severity="error">{errors.root.message}</Alert>

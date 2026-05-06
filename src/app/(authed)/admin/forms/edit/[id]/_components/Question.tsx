@@ -1,6 +1,6 @@
 'use client';
 
-import { Add } from '@mui/icons-material';
+import { Add, DragIndicator } from '@mui/icons-material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import {
   Button,
@@ -12,6 +12,19 @@ import {
   Typography,
 } from '@mui/material';
 import Checkbox from '@mui/material/Checkbox';
+import {
+  DndContext,
+  type DragEndEvent,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from '@dnd-kit/core';
+import {
+  SortableContext,
+  useSortable,
+  verticalListSortingStrategy,
+} from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 import { useCallback } from 'react';
 import { useController, useFieldArray, useWatch } from 'react-hook-form';
 import type { Form } from '../_schema/editFormSchema';
@@ -27,6 +40,63 @@ interface Question {
   position: number;
   template_key: string;
 }
+
+const SortableChoiceItem = ({
+  id,
+  index,
+  questionIndex,
+  register,
+  removeChoice,
+  defaultValue,
+}: {
+  id: string;
+  index: number;
+  questionIndex: number;
+  register: UseFormRegister<Form>;
+  removeChoice: (index: number) => void;
+  defaultValue: string;
+}) => {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+  };
+
+  return (
+    <Stack
+      direction="row"
+      ref={setNodeRef}
+      style={style}
+      spacing={1}
+      alignItems="center"
+    >
+      <IconButton size="small" {...attributes} {...listeners}>
+        <DragIndicator fontSize="small" />
+      </IconButton>
+      <TextField
+        {...register(
+          `questions.${questionIndex}.choices.${index}.choice` as const
+        )}
+        label={`選択肢${index + 1}`}
+        defaultValue={defaultValue}
+        required
+        fullWidth
+      />
+      <IconButton size="small" onClick={() => removeChoice(index)}>
+        <DeleteIcon fontSize="small" />
+      </IconButton>
+    </Stack>
+  );
+};
 
 const QuestionComponent = ({
   control,
@@ -45,10 +115,30 @@ const QuestionComponent = ({
     fields: choicesField,
     append: appendChoices,
     remove: removeChoices,
+    move: moveChoices,
   } = useFieldArray({
     control: control,
     name: `questions.${index}.choices`,
   });
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 5,
+      },
+    })
+  );
+
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+    if (over && active.id !== over.id) {
+      const oldIndex = choicesField.findIndex(
+        (field) => field.id === active.id
+      );
+      const newIndex = choicesField.findIndex((field) => field.id === over.id);
+      moveChoices(oldIndex, newIndex);
+    }
+  };
 
   const { field } = useController({
     control,
@@ -66,9 +156,9 @@ const QuestionComponent = ({
     }
   }, [useWatchQuestionType, appendChoices]);
 
-  const removeChoice = (index: number) => {
+  const removeChoice = (choiceIndex: number) => {
     if (choicesField.length > 1) {
-      removeChoices(index);
+      removeChoices(choiceIndex);
     }
   };
 
@@ -100,6 +190,12 @@ const QuestionComponent = ({
         defaultValue={question ? question.description : ''}
         multiline
         helperText="Markdown に対応しています。"
+      />
+      <TextField
+        {...register(`questions.${index}.template_key` as const)}
+        label="テンプレートキー"
+        defaultValue={question ? question.template_key : ''}
+        helperText="テンプレートで識別するためのキーです。空欄のままでも構いません。"
       />
       <TextField
         {...field}
@@ -139,27 +235,24 @@ const QuestionComponent = ({
       >
         選択肢の追加
       </Button>
-      {choicesField.map((field, choiceFieldIndex) => {
-        return (
-          <Stack direction="row" key={field.id}>
-            <TextField
-              {...register(
-                `questions.${index}.choices.${choiceFieldIndex}.choice` as const
-              )}
+      <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
+        <SortableContext
+          items={choicesField.map((field) => field.id)}
+          strategy={verticalListSortingStrategy}
+        >
+          {choicesField.map((field, choiceFieldIndex) => (
+            <SortableChoiceItem
               key={field.id}
-              label={`選択肢${choiceFieldIndex + 1}`}
+              id={field.id}
+              index={choiceFieldIndex}
+              questionIndex={index}
+              register={register}
+              removeChoice={removeChoice}
               defaultValue={field.choice}
-              required
             />
-            <IconButton
-              size="small"
-              onClick={() => removeChoice(choiceFieldIndex)}
-            >
-              <DeleteIcon fontSize="small" />
-            </IconButton>
-          </Stack>
-        );
-      })}
+          ))}
+        </SortableContext>
+      </DndContext>
     </Stack>
   );
 };
