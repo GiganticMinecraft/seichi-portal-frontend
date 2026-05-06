@@ -61,7 +61,11 @@ const Home = ({
     <Stack
       direction="column"
       spacing={4}
-      sx={{ width: '100%', justifyContent: 'flex-start', alignItems: 'space-between' }}
+      sx={{
+        width: '100%',
+        justifyContent: 'flex-start',
+        alignItems: 'space-between',
+      }}
     >
       <Typography variant="h4">{answer.title}</Typography>
       <AnswerMeta answer={answer} />

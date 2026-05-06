@@ -56,7 +56,11 @@ const Home = ({ params }: { params: Promise<{ answerId: string }> }) => {
     <Stack
       direction="column"
       spacing={4}
-      sx={{ width: '100%', justifyContent: 'flex-start', alignItems: 'space-between' }}
+      sx={{
+        width: '100%',
+        justifyContent: 'flex-start',
+        alignItems: 'space-between',
+      }}
     >
       <AnswerDetails
         answers={answers}
