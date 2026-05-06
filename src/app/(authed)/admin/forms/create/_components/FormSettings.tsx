@@ -9,14 +9,17 @@ import {
   Typography,
 } from '@mui/material';
 import FormLabelField from './FormLabelField';
-import type { Form, Visibility } from '../_schema/createFormSchema';
 import type { GetFormLabelsResponse } from '@/lib/api-types';
+import type {
+  FormEditorValues,
+  FormVisibility,
+} from '../../_schema/formEditorSchema';
 import type { Control, UseFormRegister } from 'react-hook-form';
 
 const FormSettings = (props: {
-  control: Control<Form>;
-  register: UseFormRegister<Form>;
-  visibility: Visibility;
+  control: Control<FormEditorValues>;
+  register: UseFormRegister<FormEditorValues>;
+  visibility: FormVisibility;
   has_response_period: boolean;
   labelOptions: GetFormLabelsResponse;
 }) => {

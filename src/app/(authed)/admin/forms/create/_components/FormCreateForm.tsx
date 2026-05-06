@@ -27,8 +27,8 @@ import {
 import { CSS } from '@dnd-kit/utilities';
 import { useFieldArray, useForm, useWatch } from 'react-hook-form';
 import type { GetFormLabelsResponse } from '@/lib/api-types';
+import type { FormEditorValues } from '../../_schema/formEditorSchema';
 import { useCreateForm } from '../_hooks/useCreateForm';
-import type { Form } from '../_schema/createFormSchema';
 import FormCreateLayout from './FormCreateLayout';
 import FormSettings from './FormSettings';
 import QuestionComponent from './Question';
@@ -73,7 +73,7 @@ const FormCreateForm = (props: { labelOptions: GetFormLabelsResponse }) => {
     handleSubmit,
     register,
     formState: { errors, isSubmitting },
-  } = useForm<Form>({
+  } = useForm<FormEditorValues>({
     mode: 'onSubmit',
   });
 

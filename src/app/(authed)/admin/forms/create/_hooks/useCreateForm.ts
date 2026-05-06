@@ -5,7 +5,7 @@ import {
   toFormLabelsUpdateBody,
   toFormUpdateBody,
 } from '../../_lib/formRequestBuilders';
-import type { Form } from '../_schema/createFormSchema';
+import type { FormEditorValues } from '../../_schema/formEditorSchema';
 
 type SubmitError = { message: string };
 
@@ -13,7 +13,7 @@ export const useCreateForm = () => {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [submitError, setSubmitError] = useState<SubmitError | null>(null);
 
-  const createForm = async (data: Form) => {
+  const createForm = async (data: FormEditorValues) => {
     setSubmitError(null);
     setIsSubmitted(false);
 

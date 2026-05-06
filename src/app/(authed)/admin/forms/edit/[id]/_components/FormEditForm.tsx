@@ -27,18 +27,17 @@ import {
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { useState } from 'react';
-import { z } from 'zod';
 import { useFieldArray, useForm, useWatch } from 'react-hook-form';
-import { fromStringToJSTDateTime } from '@/generic/DateFormatter';
 import { useFormEditActions } from '@/hooks/useFormEditActions';
-import { toFormUpdateBody } from '../../../_lib/formRequestBuilders';
-
-const questionTypeSchema = z.enum(['Text', 'SingleChoice', 'MultipleChoice']);
-const formVisibilitySchema = z.enum(['PUBLIC', 'PRIVATE']);
+import { useFormLabelActions } from '@/hooks/useFormLabelActions';
+import {
+  fromFormResponseToEditorValues,
+  toFormUpdateBody,
+} from '../../../_lib/formRequestBuilders';
 import FormSettings from './FormSettings';
 import QuestionComponent from './Question';
-import type { Form } from '../_schema/editFormSchema';
 import type { GetFormLabelsResponse, GetFormResponse } from '@/lib/api-types';
+import type { FormEditorValues } from '../../../_schema/formEditorSchema';
 
 const SortableQuestionWrapper = ({
   id,
@@ -78,62 +77,16 @@ const FormEditForm = (props: {
   form: GetFormResponse;
   labelOptions: GetFormLabelsResponse;
 }) => {
-  const start_at =
-    props.form.settings.answer_settings?.response_period?.start_at;
-  const end_at = props.form.settings.answer_settings?.response_period?.end_at;
-
   const {
     control,
     handleSubmit,
     register,
     setError,
     formState: { errors },
-  } = useForm<Form>({
+  } = useForm<FormEditorValues>({
     mode: 'onSubmit',
     reValidateMode: 'onBlur',
-    defaultValues: {
-      ...props.form,
-      questions: props.form.questions.map((question) => ({
-        id: question.id ?? null,
-        title: question.title,
-        description: question.description ?? '',
-        question_type: (() => {
-          const result = questionTypeSchema.safeParse(question.question_type);
-          return result.success ? result.data : 'Text';
-        })(),
-        is_required: question.is_required,
-        position: question.position,
-        template_key: question.template_key,
-        choices:
-          'choices' in question
-            ? (question as { choices: { label: string }[] }).choices.map(
-                (choice) => ({ choice: choice.label })
-              )
-            : [],
-      })),
-      settings: {
-        has_response_period: start_at && end_at ? true : false,
-        response_period: {
-          start_at: start_at ? fromStringToJSTDateTime(start_at) : null,
-          end_at: end_at ? fromStringToJSTDateTime(end_at) : null,
-        },
-        webhook_url: props.form.settings.webhook_url ?? null,
-        visibility: (() => {
-          const result = formVisibilitySchema.safeParse(
-            props.form.settings.visibility
-          );
-          return result.success ? result.data : 'PUBLIC';
-        })(),
-        default_answer_title:
-          props.form.settings.answer_settings?.default_answer_title ?? null,
-        answer_visibility: (() => {
-          const result = formVisibilitySchema.safeParse(
-            props.form.settings.answer_settings?.visibility
-          );
-          return result.success ? result.data : 'PUBLIC';
-        })(),
-      },
-    },
+    defaultValues: fromFormResponseToEditorValues(props.form),
   });
 
   const { fields, append, remove, move } = useFieldArray({
@@ -166,23 +119,15 @@ const FormEditForm = (props: {
   const hasResponsePeriod = useWatch({
     control,
     name: 'settings.has_response_period',
-    defaultValue: start_at && end_at ? true : false,
+    defaultValue: false,
   });
 
   const [isSubmitted, setIsSubmitted] = useState(false);
   const { updateForm } = useFormEditActions(props.form.id);
+  const { updateLabels } = useFormLabelActions(props.form.id);
 
-  const onSubmit = async (data: Form) => {
+  const onSubmit = async (data: FormEditorValues) => {
     const body = toFormUpdateBody(data, true);
-
-    // edit 固有: 既存質問のみ id を保持、新規は null
-    if (body.questions) {
-      body.questions = body.questions.map((question, index) => ({
-        ...question,
-        id: data.questions[index]?.id ?? null,
-      }));
-    }
-
     const result = await updateForm(body);
 
     if (!result.ok) {
@@ -190,9 +135,11 @@ const FormEditForm = (props: {
         type: 'manual',
         message: 'フォームの更新に失敗しました。',
       });
-    } else {
-      setIsSubmitted(true);
+      return;
     }
+
+    await updateLabels(data.labels.map((label) => label.id));
+    setIsSubmitted(true);
   };
 
   return (
@@ -206,9 +153,7 @@ const FormEditForm = (props: {
                   register={register}
                   control={control}
                   has_response_period={hasResponsePeriod}
-                  formId={props.form.id}
                   labelOptions={props.labelOptions}
-                  currentLabels={props.form.labels}
                 />
               </CardContent>
               <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
@@ -231,7 +176,7 @@ const FormEditForm = (props: {
                           description: field.description,
                           question_type: field.question_type,
                           is_required: field.is_required,
-                          choices: field.choices.map((choice) => choice.choice),
+                          choices: field.choices,
                           position: field.position,
                           template_key: field.template_key,
                         }}

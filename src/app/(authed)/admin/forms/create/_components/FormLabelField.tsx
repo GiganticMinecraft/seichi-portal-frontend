@@ -4,11 +4,11 @@ import Chip from '@mui/material/Chip';
 import TextField from '@mui/material/TextField';
 import { useController } from 'react-hook-form';
 import type { GetFormLabelsResponse } from '@/lib/api-types';
+import type { FormEditorValues } from '../../_schema/formEditorSchema';
 import type { Control } from 'react-hook-form';
-import type { Form } from '../_schema/createFormSchema';
 
 const FormLabelField = (props: {
-  control: Control<Form>;
+  control: Control<FormEditorValues>;
   labelOptions: GetFormLabelsResponse;
 }) => {
   const { field } = useController({

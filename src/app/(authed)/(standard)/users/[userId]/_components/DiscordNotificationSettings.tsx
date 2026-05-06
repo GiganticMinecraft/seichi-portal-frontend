@@ -21,14 +21,12 @@ const DiscordNotificationSettings = (props: {
   currentSettings: GetNotificationSettingsResponse;
   userId: string;
 }) => {
-  const { handleSubmit, register, control } =
-    useForm<UpdateNotificationSettingsSchema>({
-      defaultValues: {
-        recipient_id: props.userId,
-        is_send_message_notification:
-          props.currentSettings.is_send_message_notification,
-      },
-    });
+  const { handleSubmit, control } = useForm<UpdateNotificationSettingsSchema>({
+    defaultValues: {
+      is_send_message_notification:
+        props.currentSettings.is_send_message_notification,
+    },
+  });
 
   const { updateSettings } = useNotificationSettings();
 
@@ -45,7 +43,6 @@ const DiscordNotificationSettings = (props: {
 
   return (
     <CardContent component="form" onSubmit={handleSubmit(onSubmit)}>
-      <input type="hidden" {...register('recipient_id')} />
       <Typography variant="h6" gutterBottom>
         通知設定
       </Typography>
