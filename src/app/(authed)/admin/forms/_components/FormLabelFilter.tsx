@@ -2,7 +2,6 @@ import Autocomplete from '@mui/material/Autocomplete';
 import Box from '@mui/material/Box';
 import Chip from '@mui/material/Chip';
 import TextField from '@mui/material/TextField';
-import { alpha } from '@mui/material/styles';
 import type { GetFormLabelsResponse } from '@/lib/api-types';
 import type { Dispatch, SetStateAction } from 'react';
 
@@ -18,19 +17,7 @@ const FormLabelFilter = (props: {
       getOptionLabel={(option) => option}
       renderTags={(value: readonly string[], getTagProps) =>
         value.map((option: string, index: number) => (
-          <Chip
-            label={option}
-            sx={(theme) => ({
-              backgroundColor: alpha(
-                theme.palette.mode === 'dark'
-                  ? theme.palette.common.white
-                  : theme.palette.primary.main,
-                theme.palette.mode === 'dark' ? 0.16 : 0.12
-              ),
-            })}
-            {...getTagProps({ index })}
-            key={index}
-          />
+          <Chip label={option} {...getTagProps({ index })} key={index} />
         ))
       }
       renderOption={(props, option) => {

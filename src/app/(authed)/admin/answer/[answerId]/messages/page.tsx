@@ -5,6 +5,11 @@ import { use } from 'react';
 import { useApiQuery } from '@/app/_swr/useApiQuery';
 import ErrorModal from '@/app/_components/ErrorModal';
 import LoadingCircular from '@/app/_components/LoadingCircular';
+import {
+  AUTCHED_APP_BAR_HEIGHT_PX,
+  AUTCHED_DRAWER_WIDTH_PX,
+  AUTCHED_MESSAGE_CONTAINER_OFFSET_PX,
+} from '@/app/(authed)/layoutConstants';
 import InputMessageField from './_components/InputMessageField';
 import Messages from './_components/Messages';
 
@@ -44,32 +49,29 @@ const Home = ({ params }: { params: Promise<{ answerId: string }> }) => {
   return (
     <Stack
       sx={{
-        width: 'calc(100% - 240px)',
-        height: 'calc(100vh - 64px)',
+        width: `calc(100% - ${AUTCHED_DRAWER_WIDTH_PX}px)`,
+        height: `calc(100vh - ${AUTCHED_APP_BAR_HEIGHT_PX}px)`,
         overflow: 'hidden',
         position: 'fixed',
-        top: '64px',
-        left: '240px',
+        top: `${AUTCHED_APP_BAR_HEIGHT_PX}px`,
+        left: `${AUTCHED_DRAWER_WIDTH_PX}px`,
         margin: 0,
       }}
     >
       <Container
-        style={{
+        sx={{
           width: '100%',
-          height: 'calc(100vh - 100px)',
+          height: `calc(100vh - ${AUTCHED_MESSAGE_CONTAINER_OFFSET_PX}px)`,
           overflow: 'auto',
-          paddingBottom: '20px',
-          marginLeft: 'auto',
-          marginRight: 'auto',
+          pb: '20px',
+          mx: 'auto',
+          flexGrow: 1,
+          px: { xs: 2, sm: 3 },
         }}
         ref={(el) => {
           if (el) {
             el.scrollTop = el.scrollHeight;
           }
-        }}
-        sx={{
-          flexGrow: 1,
-          px: { xs: 2, sm: 3 },
         }}
       >
         <Messages

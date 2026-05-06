@@ -17,7 +17,7 @@ export const getAuthedTheme = (mode: ThemeMode) =>
         contrastText: '#FFFFFF',
       },
       secondary: {
-        main: mode === 'dark' ? '#0F5D8C' : '#0F5D8C',
+        main: '#0F5D8C',
         contrastText: '#FFFFFF',
       },
       background: {
@@ -128,30 +128,6 @@ export const getAuthedTheme = (mode: ThemeMode) =>
                 ? '0px 2px 1px -1px rgba(0, 0, 0, 0.2), 0px 1px 1px rgba(0, 0, 0, 0.14), 0px 1px 3px rgba(0, 0, 0, 0.12)'
                 : '0px 6px 18px rgba(19, 32, 43, 0.08)',
           },
-        },
-      },
-      MuiButton: {
-        styleOverrides: {
-          containedPrimary:
-            mode === 'dark'
-              ? {
-                  backgroundColor: '#1976D2',
-                  color: '#FFFFFF',
-                  '&:hover': {
-                    backgroundColor: '#1565C0',
-                  },
-                }
-              : undefined,
-          containedSecondary:
-            mode === 'dark'
-              ? {
-                  backgroundColor: '#0F5D8C',
-                  color: '#FFFFFF',
-                  '&:hover': {
-                    backgroundColor: '#0B4E77',
-                  },
-                }
-              : undefined,
         },
       },
       MuiChip: {
