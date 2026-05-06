@@ -13,7 +13,7 @@ const LinkDiscordButton = () => {
     <Card variant="outlined">
       <CardContent>
         <Stack spacing={2}>
-          <Stack direction="row" alignItems="center" spacing={1}>
+          <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
             <Typography variant="h6">Discord 連携</Typography>
             <Chip label="未連携" color="default" size="small" />
           </Stack>

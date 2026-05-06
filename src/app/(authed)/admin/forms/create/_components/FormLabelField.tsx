@@ -1,6 +1,5 @@
 import Autocomplete from '@mui/material/Autocomplete';
 import Box from '@mui/material/Box';
-import Chip from '@mui/material/Chip';
 import TextField from '@mui/material/TextField';
 import { useController } from 'react-hook-form';
 import type { GetFormLabelsResponse } from '@/lib/api-types';
@@ -25,15 +24,6 @@ const FormLabelField = (props: {
       getOptionLabel={(option) => option.name}
       value={field.value}
       isOptionEqualToValue={(option, value) => option.id === value.id}
-      renderTags={(value, getTagProps) =>
-        value.map((option, index) => (
-          <Chip
-            label={option.name}
-            {...getTagProps({ index })}
-            key={option.id}
-          />
-        ))
-      }
       renderOption={(props, option) => (
         <Box {...props} key={option.id} component="span">
           {option.name}

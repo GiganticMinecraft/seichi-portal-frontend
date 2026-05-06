@@ -22,9 +22,8 @@ const Home = () => {
     <Stack spacing={3} sx={{ width: '100%' }}>
       <Stack
         direction="row"
-        justifyContent="space-between"
-        alignItems="center"
         spacing={2}
+        sx={{ justifyContent: 'space-between', alignItems: 'center' }}
       >
         <Typography variant="h4">回答設定用ラベル管理</Typography>
         <CreateLabelField />

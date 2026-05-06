@@ -58,7 +58,7 @@ const SortableQuestionWrapper = ({
 
   return (
     <CardContent ref={setNodeRef} style={style}>
-      <Stack direction="row" spacing={1} alignItems="flex-start">
+      <Stack direction="row" spacing={1} sx={{ alignItems: 'flex-start' }}>
         <IconButton size="small" {...attributes} {...listeners}>
           <DragIndicator fontSize="small" />
         </IconButton>

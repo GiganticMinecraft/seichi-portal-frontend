@@ -69,7 +69,7 @@ const SortableChoiceItem = ({
       ref={setNodeRef}
       style={style}
       spacing={1}
-      alignItems="center"
+      sx={{ alignItems: 'center' }}
     >
       <IconButton size="small" {...attributes} {...listeners}>
         <DragIndicator fontSize="small" />

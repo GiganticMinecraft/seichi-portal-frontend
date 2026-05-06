@@ -219,8 +219,7 @@ const AnswerForm = ({ questions, formId, title, description }: Props) => {
         <Stack
           spacing={2}
           direction="row"
-          justifyContent="space-between"
-          alignItems="center"
+          sx={{ justifyContent: 'space-between', alignItems: 'center' }}
         >
           <Button
             variant="contained"

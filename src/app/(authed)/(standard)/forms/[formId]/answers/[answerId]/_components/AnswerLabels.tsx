@@ -10,7 +10,7 @@ const AnswerLabels = (props: { answers: GetAnswerResponse }) => {
   }
 
   return (
-    <Stack direction="row" spacing={1} useFlexGap flexWrap="wrap">
+    <Stack direction="row" spacing={1} useFlexGap sx={{ flexWrap: 'wrap' }}>
       {props.answers.labels.map((label) => (
         <Chip
           label={label.name}

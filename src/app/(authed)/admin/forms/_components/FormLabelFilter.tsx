@@ -1,6 +1,5 @@
 import Autocomplete from '@mui/material/Autocomplete';
 import Box from '@mui/material/Box';
-import Chip from '@mui/material/Chip';
 import TextField from '@mui/material/TextField';
 import type { GetFormLabelsResponse } from '@/lib/api-types';
 import type { Dispatch, SetStateAction } from 'react';
@@ -15,11 +14,6 @@ const FormLabelFilter = (props: {
       id="label"
       options={props.labelOptions.map((label) => label.name)}
       getOptionLabel={(option) => option}
-      renderTags={(value: readonly string[], getTagProps) =>
-        value.map((option: string, index: number) => (
-          <Chip label={option} {...getTagProps({ index })} key={index} />
-        ))
-      }
       renderOption={(props, option) => {
         return (
           <Box {...props} key={option} component="span">

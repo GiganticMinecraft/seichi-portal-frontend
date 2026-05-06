@@ -13,8 +13,8 @@ const UnlinkDiscordButton = () => {
   };
 
   return (
-    <Stack direction="row" alignItems="center" justifyContent="space-between">
-      <Stack direction="row" alignItems="center" spacing={1}>
+    <Stack direction="row" sx={{ alignItems: 'center', justifyContent: 'space-between' }}>
+      <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
         <Typography variant="h6">Discord 連携</Typography>
         <Chip label="連携済み" color="success" size="small" />
       </Stack>
