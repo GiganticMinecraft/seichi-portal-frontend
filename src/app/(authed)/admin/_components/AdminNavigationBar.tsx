@@ -13,6 +13,7 @@ import {
   Avatar,
 } from '@mui/material';
 import Image from 'next/image';
+import NextLink from 'next/link';
 import { useState } from 'react';
 import ErrorModal from '@/app/_components/ErrorModal';
 import { useApiQuery } from '@/app/_swr/useApiQuery';
@@ -91,7 +92,12 @@ const NavBar = () => {
             component="div"
             sx={{ flexGrow: 1, paddingLeft: '10px' }}
           >
-            <Link href="/admin" color="#fff" sx={{ textDecoration: 'none' }}>
+            <Link
+              component={NextLink}
+              href="/admin"
+              color="#fff"
+              sx={{ textDecoration: 'none' }}
+            >
               Seichi Portal Admin
             </Link>
           </Typography>

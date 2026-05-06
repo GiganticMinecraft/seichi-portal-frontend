@@ -1,9 +1,11 @@
 import { Add } from '@mui/icons-material';
 import Button from '@mui/material/Button';
+import NextLink from 'next/link';
 
 const FormCreateButton = () => {
   return (
     <Button
+      component={NextLink}
       variant="contained"
       startIcon={<Add />}
       href="/admin/forms/create"

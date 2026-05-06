@@ -6,6 +6,7 @@ import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
+import NextLink from 'next/link';
 import { useFormActions } from '@/hooks/useFormActions';
 import { formatString } from '../../../../../generic/DateFormatter';
 import type { GetFormsResponse } from '@/lib/api-types';
@@ -54,7 +55,11 @@ export const Forms = ({ forms }: Props) => {
               </Typography>
             </CardContent>
             <CardActions sx={{ marginTop: 'auto' }}>
-              <Button size="small" href={`/admin/forms/edit/${form.id}`}>
+              <Button
+                component={NextLink}
+                size="small"
+                href={`/admin/forms/edit/${form.id}`}
+              >
                 EDIT
               </Button>
               <Button size="small" onClick={() => handleDelete(form.id)}>

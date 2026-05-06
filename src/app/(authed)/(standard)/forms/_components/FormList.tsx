@@ -14,6 +14,7 @@ import {
   AlertTitle,
 } from '@mui/material';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
+import NextLink from 'next/link';
 import { formatString } from '@/generic/DateFormatter';
 import type { GetFormsResponse } from '@/lib/api-types';
 
@@ -36,6 +37,7 @@ const EachForm = ({ form }: { form: FormItem }) => {
     >
       <CardContent sx={{ flexGrow: 1 }}>
         <Link
+          component={NextLink}
           href={`/forms/${form.id}`}
           sx={{ textDecoration: 'none', color: 'inherit' }}
         >
@@ -69,7 +71,11 @@ const EachForm = ({ form }: { form: FormItem }) => {
         )}
       </CardContent>
       <CardActions>
-        <Button size="small" href={`/forms/${form.id}/answers/`}>
+        <Button
+          component={NextLink}
+          size="small"
+          href={`/forms/${form.id}/answers/`}
+        >
           回答一覧
         </Button>
       </CardActions>
