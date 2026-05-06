@@ -7,7 +7,6 @@ import {
 } from '@azure/msal-react';
 import { InteractionStatus } from '@azure/msal-browser';
 import { useState } from 'react';
-import { MsalProvider } from '@/app/_components/MsalProvider';
 import { DEBUG_MODE } from '@/env.client';
 import MainMenu from './_components/MainMenu';
 import { NeedToSignin } from './_components/NeedToSignin';
@@ -40,11 +39,7 @@ const Home = () => {
   if (isDebugMode) {
     return <MainMenu />;
   } else {
-    return (
-      <MsalProvider>
-        <HomeContent />
-      </MsalProvider>
-    );
+    return <HomeContent />;
   }
 };
 

@@ -90,12 +90,7 @@ const AnswerLabels = (props: {
       defaultValue={props.answers.labels.map((label) => label.name)}
       renderTags={(value: readonly string[], getTagProps) =>
         value.map((option: string, index: number) => (
-          <Chip
-            label={option}
-            sx={{ background: '#FFFFFF29' }}
-            {...getTagProps({ index })}
-            key={index}
-          />
+          <Chip label={option} {...getTagProps({ index })} key={index} />
         ))
       }
       renderOption={(renderProps, option) => (
@@ -107,7 +102,7 @@ const AnswerLabels = (props: {
         <TextField
           {...params}
           variant="standard"
-          sx={{ borderBottom: '1px solid #FFFFFF6B' }}
+          sx={{ borderBottom: (theme) => `1px solid ${theme.palette.divider}` }}
         />
       )}
       onChange={async (_event, value) => {

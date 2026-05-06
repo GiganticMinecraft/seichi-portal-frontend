@@ -31,7 +31,6 @@ const FormLabelField = (props: {
         value.map((option, index) => (
           <Chip
             label={option.name}
-            sx={{ background: '#FFFFFF29' }}
             {...getTagProps({ index })}
             key={option.id}
           />
@@ -47,7 +46,7 @@ const FormLabelField = (props: {
           {...params}
           variant="standard"
           label="フォームラベル設定"
-          sx={{ borderBottom: '1px solid #FFFFFF6B' }}
+          sx={{ borderBottom: (theme) => `1px solid ${theme.palette.divider}` }}
         />
       )}
       onChange={(_event, value) => field.onChange(value)}

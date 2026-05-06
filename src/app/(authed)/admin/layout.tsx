@@ -1,18 +1,10 @@
 'use client';
 
-import '../../globals.css';
-import { ThemeProvider } from '@emotion/react';
-import { CssBaseline } from '@mui/material';
-import { AppRouterCacheProvider } from '@mui/material-nextjs/v16-appRouter';
-import { SWRConfig } from 'swr';
 import ErrorModal from '@/app/_components/ErrorModal';
 import LoadingCircular from '@/app/_components/LoadingCircular';
-import { MsalProvider } from '@/app/_components/MsalProvider';
-import { fetcher } from '@/app/_swr/fetcher';
 import { useApiQuery } from '@/app/_swr/useApiQuery';
 import AdminNavigationBar from './_components/AdminNavigationBar';
 import DashboardMenu from './_components/DashboardMenu';
-import adminDashboardTheme from './theme/adminDashboardTheme';
 import styles from '../../page.module.css';
 import type { ReactNode } from 'react';
 
@@ -49,29 +41,7 @@ const AdminContent = ({ children }: { children: ReactNode }) => {
 };
 
 const RootLayout = ({ children }: { children: ReactNode }) => {
-  return (
-    <html lang="ja">
-      <head>
-        <title>Seichi Portal Admin</title>
-      </head>
-      <body>
-        <AppRouterCacheProvider>
-          <ThemeProvider theme={adminDashboardTheme}>
-            <CssBaseline />
-            <SWRConfig
-              value={{
-                fetcher: fetcher,
-              }}
-            >
-              <MsalProvider>
-                <AdminContent>{children}</AdminContent>
-              </MsalProvider>
-            </SWRConfig>
-          </ThemeProvider>
-        </AppRouterCacheProvider>
-      </body>
-    </html>
-  );
+  return <AdminContent>{children}</AdminContent>;
 };
 
 export default RootLayout;

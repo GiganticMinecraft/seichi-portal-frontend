@@ -1,13 +1,17 @@
 'use client';
 
-import { Container, CssBaseline, Stack, ThemeProvider } from '@mui/material';
+import { Container, Stack } from '@mui/material';
 import { use } from 'react';
 import { useApiQuery } from '@/app/_swr/useApiQuery';
 import ErrorModal from '@/app/_components/ErrorModal';
 import LoadingCircular from '@/app/_components/LoadingCircular';
+import {
+  AUTCHED_APP_BAR_HEIGHT_PX,
+  AUTCHED_DRAWER_WIDTH_PX,
+  AUTCHED_MESSAGE_CONTAINER_OFFSET_PX,
+} from '@/app/(authed)/layoutConstants';
 import InputMessageField from './_components/InputMessageField';
 import Messages from './_components/Messages';
-import adminDashboardTheme from '../../../theme/adminDashboardTheme';
 
 const Home = ({ params }: { params: Promise<{ answerId: string }> }) => {
   const { answerId } = use(params);
@@ -43,47 +47,41 @@ const Home = ({ params }: { params: Promise<{ answerId: string }> }) => {
   }
 
   return (
-    <ThemeProvider theme={adminDashboardTheme}>
-      <CssBaseline />
-      <Stack
+    <Stack
+      sx={{
+        width: `calc(100% - ${AUTCHED_DRAWER_WIDTH_PX}px)`,
+        height: `calc(100vh - ${AUTCHED_APP_BAR_HEIGHT_PX}px)`,
+        overflow: 'hidden',
+        position: 'fixed',
+        top: `${AUTCHED_APP_BAR_HEIGHT_PX}px`,
+        left: `${AUTCHED_DRAWER_WIDTH_PX}px`,
+        margin: 0,
+      }}
+    >
+      <Container
         sx={{
-          width: 'calc(100% - 240px)', // Subtract Drawer width
-          height: 'calc(100vh - 64px)', // Subtract AppBar height
-          overflow: 'hidden',
-          position: 'fixed',
-          top: '64px', // Add AppBar height
-          left: '240px', // Add Drawer width
-          margin: 0,
+          width: '100%',
+          height: `calc(100vh - ${AUTCHED_MESSAGE_CONTAINER_OFFSET_PX}px)`,
+          overflow: 'auto',
+          pb: '20px',
+          mx: 'auto',
+          flexGrow: 1,
+          px: { xs: 2, sm: 3 },
+        }}
+        ref={(el) => {
+          if (el) {
+            el.scrollTop = el.scrollHeight;
+          }
         }}
       >
-        <Container
-          style={{
-            width: '100%',
-            height: 'calc(100vh - 100px)',
-            overflow: 'auto',
-            paddingBottom: '20px',
-            marginLeft: 'auto',
-            marginRight: 'auto',
-          }}
-          ref={(el) => {
-            if (el) {
-              el.scrollTop = el.scrollHeight;
-            }
-          }}
-          sx={{
-            flexGrow: 1,
-            px: { xs: 2, sm: 3 },
-          }}
-        >
-          <Messages
-            messages={messages}
-            formId={answer.form_id}
-            answerId={answerId}
-          />
-        </Container>
-        <InputMessageField form_id={answer.form_id} answer_id={answerId} />
-      </Stack>
-    </ThemeProvider>
+        <Messages
+          messages={messages}
+          formId={answer.form_id}
+          answerId={answerId}
+        />
+      </Container>
+      <InputMessageField form_id={answer.form_id} answer_id={answerId} />
+    </Stack>
   );
 };
 

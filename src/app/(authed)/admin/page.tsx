@@ -1,10 +1,8 @@
 'use client';
 
-import { CssBaseline, ThemeProvider } from '@mui/material';
 import { useApiQuery } from '@/app/_swr/useApiQuery';
 import LoadingCircular from '@/app/_components/LoadingCircular';
 import DataTable from './_components/Dashboard';
-import adminDashboardTheme from './theme/adminDashboardTheme';
 import ErrorModal from '../../_components/ErrorModal';
 
 const Home = () => {
@@ -29,19 +27,16 @@ const Home = () => {
   }
 
   return (
-    <ThemeProvider theme={adminDashboardTheme}>
-      <CssBaseline />
-      <DataTable
-        answerResponseWithFormTitle={answers.map((answer) => {
-          return {
-            ...answer,
-            form_title:
-              forms.find((form) => form.id === answer.form_id)?.title ??
-              'unknown form',
-          };
-        })}
-      />
-    </ThemeProvider>
+    <DataTable
+      answerResponseWithFormTitle={answers.map((answer) => {
+        return {
+          ...answer,
+          form_title:
+            forms.find((form) => form.id === answer.form_id)?.title ??
+            'unknown form',
+        };
+      })}
+    />
   );
 };
 

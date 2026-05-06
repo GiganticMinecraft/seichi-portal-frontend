@@ -17,12 +17,7 @@ const FormLabelFilter = (props: {
       getOptionLabel={(option) => option}
       renderTags={(value: readonly string[], getTagProps) =>
         value.map((option: string, index: number) => (
-          <Chip
-            label={option}
-            sx={{ background: '#FFFFFF29' }}
-            {...getTagProps({ index })}
-            key={index}
-          />
+          <Chip label={option} {...getTagProps({ index })} key={index} />
         ))
       }
       renderOption={(props, option) => {
@@ -37,7 +32,7 @@ const FormLabelFilter = (props: {
           {...params}
           variant="standard"
           label="Filter"
-          sx={{ borderBottom: '1px solid #FFFFFF6B' }}
+          sx={{ borderBottom: (theme) => `1px solid ${theme.palette.divider}` }}
         />
       )}
       onChange={(_event, value) => {

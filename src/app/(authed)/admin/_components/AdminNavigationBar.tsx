@@ -12,9 +12,11 @@ import {
   InputBase,
   Avatar,
 } from '@mui/material';
+import { alpha } from '@mui/material/styles';
 import Image from 'next/image';
 import NextLink from 'next/link';
 import { useState } from 'react';
+import ThemeModeToggle from '@/app/(authed)/_components/ThemeModeToggle';
 import ErrorModal from '@/app/_components/ErrorModal';
 import { useApiQuery } from '@/app/_swr/useApiQuery';
 import SearchResult from './SearchResult';
@@ -31,11 +33,17 @@ const SearchField = () => {
         display: 'flex',
         alignItems: 'center',
         width: 400,
-        background: 'rgba(255, 255, 255, 0.15)',
+        backgroundColor: (theme) =>
+          alpha(
+            theme.palette.mode === 'dark'
+              ? theme.palette.common.white
+              : theme.palette.common.black,
+            theme.palette.mode === 'dark' ? 0.15 : 0.06
+          ),
       }}
     >
       <IconButton
-        sx={{ p: '10px', color: '#FFFFFF' }}
+        sx={{ p: '10px', color: 'text.primary' }}
         aria-label="search"
         onClick={() => setOpenSearchResultModal(true)}
       >
@@ -95,13 +103,14 @@ const NavBar = () => {
             <Link
               component={NextLink}
               href="/admin"
-              color="#fff"
+              color="inherit"
               sx={{ textDecoration: 'none' }}
             >
               Seichi Portal Admin
             </Link>
           </Typography>
           <SearchField />
+          <ThemeModeToggle />
           <Avatar
             alt="PlayerHead"
             src={data ? `https://mc-heads.net/avatar/${data.id}` : ''}
