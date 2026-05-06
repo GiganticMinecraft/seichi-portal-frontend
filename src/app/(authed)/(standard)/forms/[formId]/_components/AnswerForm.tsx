@@ -22,6 +22,7 @@ import {
   FormControl,
   InputLabel,
 } from '@mui/material';
+import NextLink from 'next/link';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import Markdown from 'react-markdown';
@@ -237,7 +238,7 @@ const AnswerForm = ({ questions, formId, title, description }: Props) => {
           >
             別の回答をする
           </Button>
-          <Link href="/forms">
+          <Link component={NextLink} href="/forms">
             <Button variant="contained" endIcon={<ArrowForward />}>
               フォーム一覧へ
             </Button>

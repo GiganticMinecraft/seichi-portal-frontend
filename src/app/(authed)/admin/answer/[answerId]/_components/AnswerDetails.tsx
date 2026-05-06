@@ -10,6 +10,7 @@ import Grid from '@mui/material/Grid';
 import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
+import NextLink from 'next/link';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useAnswerActions } from '@/hooks/useAnswerActions';
@@ -144,6 +145,7 @@ const AnswerMeta = (props: {
     <Grid size={6}>
       <Stack spacing={2} direction="row">
         <Button
+          component={NextLink}
           variant="contained"
           href="/admin/labels/answers"
           startIcon={<Label />}
@@ -151,6 +153,7 @@ const AnswerMeta = (props: {
           ラベルの管理
         </Button>
         <Button
+          component={NextLink}
           variant="contained"
           href={`/admin/answer/${props.answers.id}/messages`}
           startIcon={<Message />}

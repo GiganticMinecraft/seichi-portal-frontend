@@ -10,6 +10,7 @@ import {
   Link,
 } from '@mui/material';
 import Drawer from '@mui/material/Drawer';
+import NextLink from 'next/link';
 
 const drawerWidth = 240;
 
@@ -68,6 +69,7 @@ const DashboardMenu = () => {
                 <Star />
               </ListItemIcon>
               <Link
+                component={NextLink}
                 href={value.url}
                 color="#fff"
                 sx={{ textDecoration: 'none' }}

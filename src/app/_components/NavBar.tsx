@@ -17,6 +17,7 @@ import {
   MenuItem,
   ListItemText,
 } from '@mui/material';
+import NextLink from 'next/link';
 import { useState } from 'react';
 import { MsalProvider } from './MsalProvider';
 import { SigninButton } from './SigninButton';
@@ -42,7 +43,12 @@ const NavBar = () => {
               <MenuIcon />
             </IconButton>
             <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-              <Link href="/" color="#fff" sx={{ textDecoration: 'none' }}>
+              <Link
+                component={NextLink}
+                href="/"
+                color="#fff"
+                sx={{ textDecoration: 'none' }}
+              >
                 Seichi Portal
               </Link>
             </Typography>
@@ -67,6 +73,7 @@ const NavBar = () => {
                     </MenuItem>
                     <MenuItem>
                       <Link
+                        component={NextLink}
                         href={`/users/${data.id}`}
                         color="inherit"
                         sx={{ textDecoration: 'none' }}
