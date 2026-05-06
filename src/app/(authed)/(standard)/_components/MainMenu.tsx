@@ -48,7 +48,12 @@ const MainMenu = () => {
   return (
     <Container maxWidth="md" sx={{ py: 5 }}>
       <Box sx={{ mb: 5, textAlign: 'center' }}>
-        <Typography variant="h5" component="h1" sx={{ fontWeight: 700 }} gutterBottom>
+        <Typography
+          variant="h5"
+          component="h1"
+          sx={{ fontWeight: 700 }}
+          gutterBottom
+        >
           {userName ? `ようこそ、${userName} さん` : 'ようこそ'}
         </Typography>
         <Typography variant="body1" color="text.secondary">
