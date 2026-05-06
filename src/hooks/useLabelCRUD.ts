@@ -1,13 +1,25 @@
 'use client';
 
+import { useSWRConfig } from 'swr';
 import { proxyClient } from '@/lib/proxyClient';
 
 export const useLabelCRUD = (labelType: 'answers' | 'forms') => {
-  const createLabel = async (name: string) => {
+  const { mutate } = useSWRConfig();
+  const key = labelType === 'answers' ? ['/labels/answers'] : ['/labels/forms'];
+
+  const createLabel = async (name: string): Promise<{ ok: boolean }> => {
     if (labelType === 'answers') {
-      await proxyClient.POST('/labels/answers', { body: { name } });
+      const { response } = await proxyClient.POST('/labels/answers', {
+        body: { name },
+      });
+      if (response.ok) await mutate(key);
+      return { ok: response.ok };
     } else {
-      await proxyClient.POST('/labels/forms', { body: { name } });
+      const { response } = await proxyClient.POST('/labels/forms', {
+        body: { name },
+      });
+      if (response.ok) await mutate(key);
+      return { ok: response.ok };
     }
   };
 
@@ -17,6 +29,7 @@ export const useLabelCRUD = (labelType: 'answers' | 'forms') => {
         '/labels/answers/{label_id}',
         { params: { path: { label_id: String(id) } } }
       );
+      if (response.ok) await mutate(key);
       return { ok: response.ok };
     } else {
       const { response } = await proxyClient.DELETE(
@@ -25,6 +38,7 @@ export const useLabelCRUD = (labelType: 'answers' | 'forms') => {
           params: { path: { label_id: String(id) } },
         }
       );
+      if (response.ok) await mutate(key);
       return { ok: response.ok };
     }
   };
@@ -41,12 +55,14 @@ export const useLabelCRUD = (labelType: 'answers' | 'forms') => {
           body: { name },
         }
       );
+      if (response.ok) await mutate(key);
       return { ok: response.ok };
     } else {
       const { response } = await proxyClient.PATCH('/labels/forms/{label_id}', {
         params: { path: { label_id: String(id) } },
         body: { name },
       });
+      if (response.ok) await mutate(key);
       return { ok: response.ok };
     }
   };

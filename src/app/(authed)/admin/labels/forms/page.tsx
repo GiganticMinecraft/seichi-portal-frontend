@@ -22,9 +22,16 @@ const Home = () => {
   return (
     <ThemeProvider theme={adminDashboardTheme}>
       <CssBaseline />
-      <Stack spacing={2} sx={{ width: '100%' }}>
-        <Typography variant="h4">フォーム設定用ラベル管理</Typography>
-        <CreateLabelField />
+      <Stack spacing={3} sx={{ width: '100%' }}>
+        <Stack
+          direction="row"
+          justifyContent="space-between"
+          alignItems="center"
+          spacing={2}
+        >
+          <Typography variant="h4">フォーム設定用ラベル管理</Typography>
+          <CreateLabelField />
+        </Stack>
         <Labels labels={data} />
       </Stack>
     </ThemeProvider>
