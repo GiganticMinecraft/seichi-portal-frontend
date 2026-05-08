@@ -59,7 +59,7 @@ const Home = ({ params }: { params: Promise<{ answerId: string }> }) => {
       sx={{
         width: '100%',
         justifyContent: 'flex-start',
-        alignItems: 'space-between',
+        alignItems: 'stretch',
       }}
     >
       <AnswerDetails
