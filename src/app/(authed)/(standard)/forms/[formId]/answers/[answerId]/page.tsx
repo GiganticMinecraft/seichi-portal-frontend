@@ -64,7 +64,7 @@ const Home = ({
       sx={{
         width: '100%',
         justifyContent: 'flex-start',
-        alignItems: 'space-between',
+        alignItems: 'stretch',
       }}
     >
       <Typography variant="h4">{answer.title}</Typography>
