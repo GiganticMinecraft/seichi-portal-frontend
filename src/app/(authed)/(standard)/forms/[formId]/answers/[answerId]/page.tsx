@@ -60,10 +60,12 @@ const Home = ({
   return (
     <Stack
       direction="column"
-      justifyContent="flex-start"
-      alignItems="space-between"
       spacing={4}
-      sx={{ width: '100%' }}
+      sx={{
+        width: '100%',
+        justifyContent: 'flex-start',
+        alignItems: 'stretch',
+      }}
     >
       <Typography variant="h4">{answer.title}</Typography>
       <AnswerMeta answer={answer} />

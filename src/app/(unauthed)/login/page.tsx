@@ -110,7 +110,7 @@ const LoginContent = () => {
 
   if (errorMessage) {
     return (
-      <Stack spacing={2} alignItems="flex-start">
+      <Stack spacing={2} sx={{ alignItems: 'flex-start' }}>
         <Alert severity="error">{errorMessage}</Alert>
         <Typography variant="body2">
           時間を置いて再試行するか、設定を確認してください。

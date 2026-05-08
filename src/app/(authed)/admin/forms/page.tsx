@@ -43,13 +43,17 @@ const Home = () => {
   }
 
   return (
-    <Grid container direction="column" justifyContent="flex-start" spacing={4}>
+    <Grid
+      container
+      spacing={4}
+      sx={{ flexDirection: 'column', justifyContent: 'flex-start' }}
+    >
       <Grid>
         <Grid
           container
           spacing={2}
           direction="row"
-          justifyContent="space-between"
+          sx={{ justifyContent: 'space-between' }}
         >
           <Grid size="auto">
             <Stack direction="row">
