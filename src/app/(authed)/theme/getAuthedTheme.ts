@@ -134,19 +134,6 @@ export const getAuthedTheme = (mode: ThemeMode) =>
           },
         },
       },
-      MuiButton: {
-        styleOverrides: {
-          containedPrimary:
-            mode === 'dark'
-              ? {
-                  color: darkPrimaryText,
-                  '&:hover': {
-                    backgroundColor: darkPrimaryHover,
-                  },
-                }
-              : undefined,
-        },
-      },
       MuiChip: {
         styleOverrides: {
           root: ({ ownerState, theme }) => {
