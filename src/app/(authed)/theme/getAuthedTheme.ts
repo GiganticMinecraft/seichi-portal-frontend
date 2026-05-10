@@ -7,14 +7,18 @@ export type ThemeMode = 'light' | 'dark';
 
 const lightSurface = '#F4F7FB';
 const darkSurface = '#081522';
+const darkPrimaryMain = '#90CAF9';
+const darkPrimaryHover = '#7EBFEF';
+const darkPrimaryText = '#102235';
 
 export const getAuthedTheme = (mode: ThemeMode) =>
   createTheme({
     palette: {
       mode,
       primary: {
-        main: mode === 'dark' ? '#90CAF9' : '#1976D2',
-        contrastText: '#FFFFFF',
+        main: mode === 'dark' ? darkPrimaryMain : '#1976D2',
+        dark: mode === 'dark' ? darkPrimaryHover : undefined,
+        contrastText: mode === 'dark' ? darkPrimaryText : '#FFFFFF',
       },
       secondary: {
         main: '#0F5D8C',
@@ -128,6 +132,19 @@ export const getAuthedTheme = (mode: ThemeMode) =>
                 ? '0px 2px 1px -1px rgba(0, 0, 0, 0.2), 0px 1px 1px rgba(0, 0, 0, 0.14), 0px 1px 3px rgba(0, 0, 0, 0.12)'
                 : '0px 6px 18px rgba(19, 32, 43, 0.08)',
           },
+        },
+      },
+      MuiButton: {
+        styleOverrides: {
+          containedPrimary:
+            mode === 'dark'
+              ? {
+                  color: darkPrimaryText,
+                  '&:hover': {
+                    backgroundColor: darkPrimaryHover,
+                  },
+                }
+              : undefined,
         },
       },
       MuiChip: {
