@@ -7,14 +7,18 @@ export type ThemeMode = 'light' | 'dark';
 
 const lightSurface = '#F4F7FB';
 const darkSurface = '#081522';
+const darkPrimaryMain = '#90CAF9';
+const darkPrimaryHover = '#7EBFEF';
+const darkPrimaryText = '#102235';
 
 export const getAuthedTheme = (mode: ThemeMode) =>
   createTheme({
     palette: {
       mode,
       primary: {
-        main: mode === 'dark' ? '#90CAF9' : '#1976D2',
-        contrastText: '#FFFFFF',
+        main: mode === 'dark' ? darkPrimaryMain : '#1976D2',
+        dark: mode === 'dark' ? darkPrimaryHover : undefined,
+        contrastText: mode === 'dark' ? darkPrimaryText : '#FFFFFF',
       },
       secondary: {
         main: '#0F5D8C',
