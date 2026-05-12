@@ -60,7 +60,7 @@ const Messages = (props: {
       triggerStartIcon={<MessageIcon />}
       entries={entries}
       capabilities={capabilities}
-      composer={
+      inputForm={
         <InputMessageField
           form_id={props.formId}
           answer_id={props.answerId}

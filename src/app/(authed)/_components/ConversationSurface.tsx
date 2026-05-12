@@ -27,7 +27,7 @@ type Props = {
   triggerStartIcon?: ReactNode | undefined;
   entries: ConversationEntryViewModel[];
   capabilities: ConversationCapabilities;
-  composer?: ReactNode | undefined;
+  inputForm?: ReactNode | undefined;
   onUpdate?:
     | ((entryId: string, body: string) => Promise<ConversationActionResult>)
     | undefined;
@@ -38,7 +38,7 @@ type Props = {
 
 /**
  * 投稿一覧系 UI の配置責務を持つ上位 component。
- * drawer / inline のレイアウト差分と空状態、composer の配置をここへ集約する。
+ * drawer / inline のレイアウト差分と空状態、入力フォームの配置をここへ集約する。
  */
 const ConversationList = ({
   entries,
@@ -85,7 +85,7 @@ const ConversationSurface = ({
   triggerStartIcon,
   entries,
   capabilities,
-  composer,
+  inputForm,
   onUpdate,
   onDelete,
 }: Props) => {
@@ -155,7 +155,7 @@ const ConversationSurface = ({
           />
         </Box>
 
-        {composer}
+        {inputForm}
       </Drawer>
     </>
   );

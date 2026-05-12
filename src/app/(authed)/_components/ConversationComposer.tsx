@@ -19,7 +19,7 @@ type Props = {
 };
 
 /**
- * 投稿入力欄を共通化する composer。
+ * 投稿入力フォームを共通化する component。
  * Enter / Shift+Enter の送信体験と送信エラー表示をここで統一する。
  */
 const ConversationComposer = ({

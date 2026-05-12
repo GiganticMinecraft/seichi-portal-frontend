@@ -56,7 +56,7 @@ const Comments = (props: {
         triggerStartIcon={<Typography component="span">💬</Typography>}
         entries={entries}
         capabilities={capabilities}
-        composer={
+        inputForm={
           capabilities.canCompose ? (
             <Box
               sx={{
