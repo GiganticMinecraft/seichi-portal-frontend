@@ -1,9 +1,10 @@
-'use client';
+import type { Metadata } from 'next';
 
-import { usePageTitle } from '@/hooks/usePageTitle';
+export const metadata: Metadata = {
+  title: '不正なリクエスト | Seichi Portal',
+};
 
 const Home = () => {
-  usePageTitle('不正なリクエスト');
   return <p>不正なリクエストです</p>;
 };
 
