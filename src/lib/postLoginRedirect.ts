@@ -1,5 +1,6 @@
 import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
+import { normalizeRedirectTarget } from './redirect';
 import type { NextRequest } from 'next/server';
 import type { RequestCookies } from 'next/dist/compiled/@edge-runtime/cookies';
 
@@ -13,19 +14,7 @@ const getCookieOptions = () => ({
   path: '/',
 });
 
-export const normalizePostLoginRedirect = (
-  redirectTo: string | null | undefined
-) => {
-  if (
-    !redirectTo ||
-    !redirectTo.startsWith('/') ||
-    redirectTo.startsWith('//')
-  ) {
-    return '/';
-  }
-
-  return redirectTo;
-};
+export const normalizePostLoginRedirect = normalizeRedirectTarget;
 
 export const getPostLoginRedirectFromRequest = (request: NextRequest) =>
   normalizePostLoginRedirect(
