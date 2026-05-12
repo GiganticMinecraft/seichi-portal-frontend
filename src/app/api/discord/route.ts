@@ -1,5 +1,9 @@
 import { NextResponse } from 'next/server';
 import { getBackendServerUrl, getDiscordConfig } from '@/env.server';
+import {
+  getPostLoginRedirectFromRequest,
+  setPostLoginRedirectCookie,
+} from '@/lib/postLoginRedirect';
 import { getCachedToken } from '@/user-token/mcToken';
 import { discordTokenSchema } from '../_schemas/External';
 import type { NextRequest } from 'next/server';
@@ -33,9 +37,9 @@ export async function GET(req: NextRequest) {
   const seichiPortalToken = await getCachedToken(req.cookies);
 
   if (!seichiPortalToken) {
-    return NextResponse.redirect(
-      `${req.nextUrl.origin}/login?callbackUrl=${req.nextUrl.pathname}`
-    );
+    const response = NextResponse.redirect(`${req.nextUrl.origin}/login`);
+    setPostLoginRedirectCookie(response, getPostLoginRedirectFromRequest(req));
+    return response;
   }
 
   const searchParams = req.nextUrl.searchParams;

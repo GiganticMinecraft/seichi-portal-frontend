@@ -2,6 +2,10 @@ import { NextResponse, type NextRequest } from 'next/server';
 import { z } from 'zod';
 import { getBackendServerUrl } from './env.server';
 import { getCachedToken } from './user-token/mcToken';
+import {
+  getPostLoginRedirectFromRequest,
+  setPostLoginRedirectCookie,
+} from '@/lib/postLoginRedirect';
 import { userInfoResponseSchema } from '@/lib/api/schemas';
 
 type FetchUserResult =
@@ -66,9 +70,12 @@ const fetchUser = async (token: string) => {
 export const proxy = async (request: NextRequest) => {
   const token = await getCachedToken(request.cookies);
   if (!token) {
-    return NextResponse.redirect(
-      `${request.nextUrl.origin}/login?callbackUrl=${request.nextUrl.pathname}`
+    const response = NextResponse.redirect(`${request.nextUrl.origin}/login`);
+    setPostLoginRedirectCookie(
+      response,
+      getPostLoginRedirectFromRequest(request)
     );
+    return response;
   }
 
   if (request.nextUrl.pathname.startsWith('/api/proxy')) {
@@ -78,13 +85,15 @@ export const proxy = async (request: NextRequest) => {
   const me = await fetchUser(token);
 
   if (me.kind === 'unauthorized') {
-    const response = NextResponse.redirect(
-      `${request.nextUrl.origin}/login?callbackUrl=${request.nextUrl.pathname}`
-    );
+    const response = NextResponse.redirect(`${request.nextUrl.origin}/login`);
     response.cookies.set('SEICHI_PORTAL__SESSION_ID', '', {
       maxAge: 0,
       path: '/',
     });
+    setPostLoginRedirectCookie(
+      response,
+      getPostLoginRedirectFromRequest(request)
+    );
     return response;
   }
 
