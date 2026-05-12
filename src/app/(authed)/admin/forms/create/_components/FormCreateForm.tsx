@@ -1,72 +1,27 @@
 'use client';
 
-import { DragIndicator } from '@mui/icons-material';
 import SendIcon from '@mui/icons-material/Send';
 import {
   Alert,
-  Box,
   Button,
   Card,
   CardContent,
   Container,
-  IconButton,
   Stack,
 } from '@mui/material';
-import {
-  DndContext,
-  type DragEndEvent,
-  PointerSensor,
-  useSensor,
-  useSensors,
-} from '@dnd-kit/core';
-import {
-  SortableContext,
-  useSortable,
-  verticalListSortingStrategy,
-} from '@dnd-kit/sortable';
-import { CSS } from '@dnd-kit/utilities';
 import { useFieldArray, useForm, useWatch } from 'react-hook-form';
 import type { GetFormLabelsResponse } from '@/lib/api-types';
+import FormEditorLayout from '../../_components/FormEditorLayout';
+import FormSettings from '../../_components/FormSettings';
+import QuestionEditor from '../../_components/QuestionEditor';
+import QuestionList from '../../_components/QuestionList';
 import type { FormEditorValues } from '../../_schema/formEditorSchema';
+import {
+  createEmptyFormEditorQuestion,
+  createEmptyFormEditorValues,
+} from '../../_lib/formEditorDefaults';
 import { useCreateForm } from '../_hooks/useCreateForm';
 import { adminFormFieldSx } from '../../_components/adminFormFieldSx';
-import FormCreateLayout from './FormCreateLayout';
-import FormSettings from './FormSettings';
-import QuestionComponent from './Question';
-
-const SortableQuestionWrapper = ({
-  id,
-  children,
-}: {
-  id: string;
-  children: React.ReactNode;
-}) => {
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-    isDragging,
-  } = useSortable({ id });
-
-  const style = {
-    transform: CSS.Transform.toString(transform),
-    transition,
-    opacity: isDragging ? 0.5 : 1,
-  };
-
-  return (
-    <CardContent ref={setNodeRef} style={style}>
-      <Stack direction="row" spacing={1} sx={{ alignItems: 'flex-start' }}>
-        <IconButton size="small" {...attributes} {...listeners}>
-          <DragIndicator fontSize="small" />
-        </IconButton>
-        <Box sx={{ flex: 1 }}>{children}</Box>
-      </Stack>
-    </CardContent>
-  );
-};
 
 const FormCreateForm = (props: { labelOptions: GetFormLabelsResponse }) => {
   const {
@@ -76,6 +31,7 @@ const FormCreateForm = (props: { labelOptions: GetFormLabelsResponse }) => {
     formState: { errors, isSubmitting },
   } = useForm<FormEditorValues>({
     mode: 'onSubmit',
+    defaultValues: createEmptyFormEditorValues(),
   });
 
   const { fields, append, remove, move } = useFieldArray({
@@ -83,30 +39,7 @@ const FormCreateForm = (props: { labelOptions: GetFormLabelsResponse }) => {
     name: 'questions',
   });
 
-  const sensors = useSensors(
-    useSensor(PointerSensor, {
-      activationConstraint: {
-        distance: 5,
-      },
-    })
-  );
-
-  const handleDragEnd = (event: DragEndEvent) => {
-    const { active, over } = event;
-    if (over && active.id !== over.id) {
-      const oldIndex = fields.findIndex((field) => field.id === active.id);
-      const newIndex = fields.findIndex((field) => field.id === over.id);
-      move(oldIndex, newIndex);
-    }
-  };
-
-  const visibility = useWatch({
-    control,
-    name: 'settings.visibility',
-    defaultValue: 'PUBLIC',
-  });
-
-  const has_response_period = useWatch({
+  const hasResponsePeriod = useWatch({
     control,
     name: 'settings.has_response_period',
     defaultValue: false,
@@ -115,15 +48,7 @@ const FormCreateForm = (props: { labelOptions: GetFormLabelsResponse }) => {
   const { createForm, isSubmitted, submitError } = useCreateForm();
 
   const addQuestion = () => {
-    append({
-      title: '',
-      description: '',
-      question_type: 'Text',
-      choices: [],
-      is_required: false,
-      position: 0,
-      template_key: '',
-    });
+    append(createEmptyFormEditorQuestion());
   };
 
   const formContent = (
@@ -134,28 +59,24 @@ const FormCreateForm = (props: { labelOptions: GetFormLabelsResponse }) => {
             <FormSettings
               control={control}
               register={register}
-              visibility={visibility}
-              has_response_period={has_response_period}
+              hasResponsePeriod={hasResponsePeriod}
               labelOptions={props.labelOptions}
             />
           </CardContent>
-          <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
-            <SortableContext
-              items={fields.map((field) => field.id)}
-              strategy={verticalListSortingStrategy}
-            >
-              {fields.map((field, index) => (
-                <SortableQuestionWrapper key={field.id} id={field.id}>
-                  <QuestionComponent
-                    control={control}
-                    register={register}
-                    removeQuestion={remove}
-                    questionId={index}
-                  />
-                </SortableQuestionWrapper>
-              ))}
-            </SortableContext>
-          </DndContext>
+          <QuestionList
+            items={fields.map((field, index) => ({
+              dndId: field.id,
+              content: (
+                <QuestionEditor
+                  control={control}
+                  register={register}
+                  removeQuestion={remove}
+                  questionIndex={index}
+                />
+              ),
+            }))}
+            onMove={move}
+          />
         </Card>
         {(errors.root || submitError) && (
           <Alert severity="error">
@@ -178,7 +99,9 @@ const FormCreateForm = (props: { labelOptions: GetFormLabelsResponse }) => {
   );
 
   return (
-    <FormCreateLayout formContent={formContent} onAddQuestion={addQuestion} />
+    <FormEditorLayout onAddQuestion={addQuestion}>
+      {formContent}
+    </FormEditorLayout>
   );
 };
 
