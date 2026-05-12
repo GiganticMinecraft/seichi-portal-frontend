@@ -1,6 +1,8 @@
 'use client';
 
+import { Message } from '@mui/icons-material';
 import ConversationSurface from './ConversationSurface';
+import InputMessageField from './InputMessageField';
 import type {
   ConversationCapabilities,
   ConversationEntryViewModel,
@@ -22,8 +24,12 @@ const Messages = (props: {
   messages: Message[];
   formId: string;
   answerId: string;
+  variant?: 'drawer' | 'inline';
+  title?: string;
+  triggerLabel?: string;
 }) => {
   const actions = useMessageConversationActions(props.formId, props.answerId);
+  const variant = props.variant ?? 'inline';
 
   const entries: ConversationEntryViewModel[] = props.messages.map(
     (message) => ({
@@ -40,7 +46,7 @@ const Messages = (props: {
   );
 
   const capabilities: ConversationCapabilities = {
-    canCompose: false,
+    canCompose: variant === 'drawer',
     composeLabel: 'メッセージを入力してください',
     composeHelperText: 'Shift + Enter で改行、Enter で送信することができます。',
     emptyMessage: 'メッセージはまだありません',
@@ -50,9 +56,23 @@ const Messages = (props: {
 
   return (
     <ConversationSurface
-      variant="inline"
+      variant={variant}
+      {...(props.title ? { title: props.title } : {})}
+      {...(props.triggerLabel ? { triggerLabel: props.triggerLabel } : {})}
+      {...(variant === 'drawer' ? { triggerStartIcon: <Message /> } : {})}
       entries={entries}
       capabilities={capabilities}
+      {...(capabilities.canCompose
+        ? {
+            composer: (
+              <InputMessageField
+                form_id={props.formId}
+                answer_id={props.answerId}
+                textFieldSx={{ mt: 1 }}
+              />
+            ),
+          }
+        : {})}
       onUpdate={actions.update}
       onDelete={actions.deleteEntry}
     />

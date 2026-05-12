@@ -1,6 +1,6 @@
 'use client';
 
-import { Label, Message, Send } from '@mui/icons-material';
+import { Label, Send } from '@mui/icons-material';
 import EditIcon from '@mui/icons-material/Edit';
 import Autocomplete from '@mui/material/Autocomplete';
 import Box from '@mui/material/Box';
@@ -10,6 +10,7 @@ import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import NextLink from 'next/link';
+import type { ReactNode } from 'react';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useAnswerActions } from '@/hooks/useAnswerActions';
@@ -111,6 +112,7 @@ const AnswerLabels = (props: {
 const AnswerMeta = (props: {
   answers: GetAnswerResponse;
   labels: GetAnswerLabelsResponse;
+  messageAction: ReactNode;
 }) => (
   <Grid container spacing={2}>
     <Grid size={6}>
@@ -135,14 +137,7 @@ const AnswerMeta = (props: {
         >
           ラベルの管理
         </Button>
-        <Button
-          component={NextLink}
-          variant="contained"
-          href={`/admin/answer/${props.answers.id}/messages`}
-          startIcon={<Message />}
-        >
-          回答者にメッセージを送信
-        </Button>
+        {props.messageAction}
       </Stack>
     </Grid>
   </Grid>
@@ -166,6 +161,7 @@ const AnswerDetails = (props: {
   answers: GetAnswerResponse;
   questions: GetQuestionsResponse;
   labels: GetAnswerLabelsResponse;
+  messageAction: ReactNode;
 }) => {
   const answerWithQuestionInfo = removeDuplicates(
     props.answers.answers.map((answer) => answer.question_id)
@@ -184,7 +180,11 @@ const AnswerDetails = (props: {
   return (
     <Stack spacing={2}>
       <AnswerTitleForm answers={props.answers} />
-      <AnswerMeta answers={props.answers} labels={props.labels} />
+      <AnswerMeta
+        answers={props.answers}
+        labels={props.labels}
+        messageAction={props.messageAction}
+      />
       {answerWithQuestionInfo.length === 0 ? (
         <Typography>回答がありません</Typography>
       ) : (
