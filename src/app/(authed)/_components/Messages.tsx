@@ -1,13 +1,15 @@
 'use client';
 
+import { Message as MessageIcon } from '@mui/icons-material';
 import ConversationSurface from './ConversationSurface';
+import InputMessageField from './InputMessageField';
 import type {
   ConversationCapabilities,
   ConversationEntryViewModel,
 } from './conversationTypes';
 import { useMessageConversationActions } from './useConversationActions';
 
-type Message = {
+type ConversationMessage = {
   id: string;
   body: string;
   sender: {
@@ -19,9 +21,11 @@ type Message = {
 };
 
 const Messages = (props: {
-  messages: Message[];
+  messages: ConversationMessage[];
   formId: string;
   answerId: string;
+  title: string;
+  triggerLabel: string;
 }) => {
   const actions = useMessageConversationActions(props.formId, props.answerId);
 
@@ -40,7 +44,7 @@ const Messages = (props: {
   );
 
   const capabilities: ConversationCapabilities = {
-    canCompose: false,
+    canCompose: true,
     composeLabel: 'メッセージを入力してください',
     composeHelperText: 'Shift + Enter で改行、Enter で送信することができます。',
     emptyMessage: 'メッセージはまだありません',
@@ -50,9 +54,19 @@ const Messages = (props: {
 
   return (
     <ConversationSurface
-      variant="inline"
+      variant="drawer"
+      title={props.title}
+      triggerLabel={props.triggerLabel}
+      triggerStartIcon={<MessageIcon />}
       entries={entries}
       capabilities={capabilities}
+      inputForm={
+        <InputMessageField
+          form_id={props.formId}
+          answer_id={props.answerId}
+          textFieldSx={{ mt: 1 }}
+        />
+      }
       onUpdate={actions.update}
       onDelete={actions.deleteEntry}
     />

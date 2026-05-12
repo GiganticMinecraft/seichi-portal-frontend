@@ -5,6 +5,7 @@ import { use } from 'react';
 import { useApiQuery } from '@/app/_swr/useApiQuery';
 import ErrorModal from '@/app/_components/ErrorModal';
 import LoadingCircular from '@/app/_components/LoadingCircular';
+import Messages from '@/app/(authed)/_components/Messages';
 import AnswerDetails from './_components/AnswerDetails';
 import Comments from './_components/Comments';
 import { usePageTitle } from '@/hooks/usePageTitle';
@@ -39,7 +40,22 @@ const Home = ({ params }: { params: Promise<{ answerId: string }> }) => {
     isLoading: isLabelsLoading,
   } = useApiQuery('/labels/answers');
 
-  if (answersError || formQuestionsError || labelsError) {
+  const {
+    data: messages,
+    error: messagesError,
+    isLoading: isMessagesLoading,
+  } = useApiQuery(
+    '/forms/{form_id}/answers/{answer_id}/messages',
+    {
+      path: {
+        form_id: answers?.form_id ?? '',
+        answer_id: answerId,
+      },
+    },
+    { refreshInterval: 1000 }
+  );
+
+  if (answersError || formQuestionsError || labelsError || messagesError) {
     return <ErrorModal />;
   }
 
@@ -47,9 +63,11 @@ const Home = ({ params }: { params: Promise<{ answerId: string }> }) => {
     isAnswersLoading ||
     isFormQuestionsLoading ||
     isLabelsLoading ||
+    isMessagesLoading ||
     !answers ||
     !form ||
-    !labels
+    !labels ||
+    !messages
   ) {
     return <LoadingCircular />;
   }
@@ -68,6 +86,15 @@ const Home = ({ params }: { params: Promise<{ answerId: string }> }) => {
         answers={answers}
         questions={form.questions}
         labels={labels}
+        messageAction={
+          <Messages
+            messages={messages}
+            formId={answers.form_id}
+            answerId={answerId}
+            title="メッセージ"
+            triggerLabel={`回答者にメッセージを送信 (${messages.length})`}
+          />
+        }
       />
       <Comments
         comments={answers.comments as AnswerCommentType[]}

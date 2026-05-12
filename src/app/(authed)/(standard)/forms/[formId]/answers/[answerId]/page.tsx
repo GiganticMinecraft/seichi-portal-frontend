@@ -5,6 +5,7 @@ import { use } from 'react';
 import { useApiQuery } from '@/app/_swr/useApiQuery';
 import ErrorModal from '@/app/_components/ErrorModal';
 import LoadingCircular from '@/app/_components/LoadingCircular';
+import Messages from '@/app/(authed)/_components/Messages';
 import AnswerDetails from './_components/AnswerDetails';
 import AnswerMeta from './_components/AnswerMeta';
 import Comments from './_components/Comments';
@@ -45,7 +46,19 @@ const Home = ({
   const { data: currentUser, isLoading: isLoadingCurrentUser } =
     useApiQuery('/users/me');
 
-  if (answerError || formQuestionsError) {
+  const {
+    data: messages,
+    error: messagesError,
+    isLoading: isLoadingMessages,
+  } = useApiQuery(
+    '/forms/{form_id}/answers/{answer_id}/messages',
+    {
+      path: { form_id: formId, answer_id: answerId },
+    },
+    { refreshInterval: 1000 }
+  );
+
+  if (answerError || formQuestionsError || messagesError) {
     return <ErrorModal />;
   }
 
@@ -53,8 +66,10 @@ const Home = ({
     isLoadingAnswers ||
     isLoadingFormQuestions ||
     isLoadingCurrentUser ||
+    isLoadingMessages ||
     !answer ||
-    !form
+    !form ||
+    !messages
   ) {
     return <LoadingCircular />;
   }
@@ -70,7 +85,18 @@ const Home = ({
       }}
     >
       <Typography variant="h4">{answer.title}</Typography>
-      <AnswerMeta answer={answer} />
+      <AnswerMeta
+        answer={answer}
+        messageAction={
+          <Messages
+            messages={messages}
+            formId={formId}
+            answerId={answerId}
+            title="メッセージ"
+            triggerLabel={`メッセージ (${messages.length})`}
+          />
+        }
+      />
       <AnswerDetails answer={answer} questions={form.questions} />
       <Comments
         comments={answer.comments as AnswerCommentType[]}
