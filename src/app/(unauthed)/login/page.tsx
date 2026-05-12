@@ -9,6 +9,7 @@ import { Alert, Button, Stack, Typography } from '@mui/material';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { usePageTitle } from '@/hooks/usePageTitle';
+import { normalizeRedirectTarget } from '@/lib/redirect';
 import type { SilentRequest } from '@azure/msal-browser';
 
 const loginRequest = {
@@ -16,6 +17,14 @@ const loginRequest = {
 };
 
 const fetchPostLoginRedirect = async (): Promise<string> => {
+  const redirectTo = normalizeRedirectTarget(
+    new URLSearchParams(window.location.search).get('redirectTo')
+  );
+
+  if (redirectTo !== '/') {
+    return redirectTo;
+  }
+
   const response = await fetch('/api/post-login-redirect', {
     method: 'POST',
   });

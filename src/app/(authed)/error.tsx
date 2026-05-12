@@ -1,6 +1,6 @@
 'use client';
 
-import AuthErrorBoundary from '@/app/(authed)/_components/AuthErrorBoundary';
+import AuthErrorBoundary from './_components/AuthErrorBoundary';
 
 type ErrorPageProps = {
   error: Error & { digest?: string };

@@ -14,7 +14,7 @@ import AssignmentIcon from '@mui/icons-material/Assignment';
 import GavelIcon from '@mui/icons-material/Gavel';
 import CampaignIcon from '@mui/icons-material/Campaign';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
-import { useApiQuery } from '@/app/_swr/useApiQuery';
+import { useCurrentUser } from '@/app/(authed)/theme/themeMode';
 
 const menuItems = [
   {
@@ -42,8 +42,8 @@ const menuItems = [
 
 const MainMenu = () => {
   const theme = useTheme();
-  const { data: user } = useApiQuery('/users/me');
-  const userName = user?.name;
+  const user = useCurrentUser();
+  const userName = user.name;
 
   return (
     <Container maxWidth="md" sx={{ py: 5 }}>

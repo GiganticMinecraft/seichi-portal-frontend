@@ -10,18 +10,49 @@ import {
   Menu,
   MenuItem,
   ListItemText,
-  CircularProgress,
+  IconButton,
+  Tooltip,
 } from '@mui/material';
 import Image from 'next/image';
 import NextLink from 'next/link';
 import { useState } from 'react';
-import ThemeModeToggle from '@/app/(authed)/_components/ThemeModeToggle';
+import {
+  useOptionalCurrentUser,
+  useOptionalThemeMode,
+} from '@/app/(authed)/theme/themeMode';
 import { SigninButton } from './SigninButton';
 import { SignoutButton } from './SignoutButton';
-import { useSession } from '@/hooks/useSession';
+import DarkModeIcon from '@mui/icons-material/DarkMode';
+import LightModeIcon from '@mui/icons-material/LightMode';
+
+const ThemeModeToggle = () => {
+  const themeMode = useOptionalThemeMode();
+
+  if (!themeMode) {
+    return null;
+  }
+
+  const { mode, toggleMode } = themeMode;
+
+  return (
+    <Tooltip
+      title={
+        mode === 'light' ? 'ダークテーマに切り替え' : 'ライトテーマに切り替え'
+      }
+    >
+      <IconButton
+        color="inherit"
+        onClick={toggleMode}
+        aria-label="toggle theme"
+      >
+        {mode === 'light' ? <DarkModeIcon /> : <LightModeIcon />}
+      </IconButton>
+    </Tooltip>
+  );
+};
 
 const NavBar = () => {
-  const { state, user } = useSession();
+  const user = useOptionalCurrentUser();
   const [anchorEl, setAnchorEl] = useState<undefined | HTMLElement>(undefined);
 
   return (
@@ -45,12 +76,9 @@ const NavBar = () => {
             </Link>
           </Typography>
           <ThemeModeToggle />
-          {state === 'loading' ? (
-            <Box sx={{ display: 'flex', alignItems: 'center', ml: 2 }}>
-              <CircularProgress color="inherit" size={24} />
-            </Box>
-          ) : null}
-          {state === 'authenticated' && user ? (
+          {!user ? (
+            <SigninButton />
+          ) : (
             <Box>
               <Avatar
                 alt="PlayerHead"
@@ -80,8 +108,7 @@ const NavBar = () => {
                 </MenuItem>
               </Menu>
             </Box>
-          ) : null}
-          {state === 'unauthenticated' ? <SigninButton /> : null}
+          )}
         </Toolbar>
       </AppBar>
     </Box>
