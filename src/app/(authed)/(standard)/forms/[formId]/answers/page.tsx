@@ -25,7 +25,7 @@ const Home = async ({ params }: { params: Promise<{ formId: string }> }) => {
 
   return (
     <Box sx={{ width: '100%' }}>
-      <Typography variant="h5" sx={{ mb: 2 }}>
+      <Typography variant="h5" component="h1" sx={{ mb: 2 }}>
         {form.title}
       </Typography>
       <AnswerList answers={answers} />

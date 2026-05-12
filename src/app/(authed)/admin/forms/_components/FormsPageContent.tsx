@@ -21,7 +21,7 @@ const FormsPageContent = ({
     if (labelFilter.length === 0) return forms;
     return forms.filter((form) =>
       labelFilter.every((label) =>
-        form.labels.map((formLabel) => formLabel.id).includes(label.id)
+        form.labels.some((formLabel) => formLabel.id === label.id)
       )
     );
   }, [forms, labelFilter]);

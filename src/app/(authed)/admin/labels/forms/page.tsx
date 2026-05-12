@@ -27,7 +27,9 @@ const Home = async () => {
         spacing={2}
         sx={{ justifyContent: 'space-between', alignItems: 'center' }}
       >
-        <Typography variant="h4">フォーム設定用ラベル管理</Typography>
+        <Typography variant="h4" component="h1">
+          フォーム設定用ラベル管理
+        </Typography>
         <CreateLabelField />
       </Stack>
       <Labels labels={labels} />
