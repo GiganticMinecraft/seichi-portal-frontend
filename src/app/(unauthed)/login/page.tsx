@@ -15,6 +15,29 @@ const loginRequest = {
   scopes: ['XboxLive.signin offline_access'],
 };
 
+const fetchPostLoginRedirect = async (): Promise<string> => {
+  const response = await fetch('/api/post-login-redirect', {
+    method: 'POST',
+  });
+
+  if (!response.ok) {
+    return '/';
+  }
+
+  const body: unknown = await response.json().catch(() => null);
+
+  if (
+    typeof body === 'object' &&
+    body !== null &&
+    'redirectTo' in body &&
+    typeof body.redirectTo === 'string'
+  ) {
+    return body.redirectTo;
+  }
+
+  return '/';
+};
+
 const LoginContent = () => {
   usePageTitle('ログイン');
   const { instance, inProgress, accounts } = useMsal();
@@ -25,29 +48,6 @@ const LoginContent = () => {
   const handleFailure = (message: string, error: unknown) => {
     console.error(message, error);
     setErrorMessage(message);
-  };
-
-  const fetchPostLoginRedirect = async () => {
-    const response = await fetch('/api/post-login-redirect', {
-      method: 'POST',
-    });
-
-    if (!response.ok) {
-      return '/';
-    }
-
-    const body: unknown = await response.json().catch(() => null);
-
-    if (
-      typeof body === 'object' &&
-      body !== null &&
-      'redirectTo' in body &&
-      typeof body.redirectTo === 'string'
-    ) {
-      return body.redirectTo;
-    }
-
-    return '/';
   };
 
   useEffect(() => {
