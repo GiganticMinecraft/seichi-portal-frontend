@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test';
 
-test('redirects unauthenticated /forms access to login', async ({
+test('未認証で /forms にアクセスした場合はログイン画面へリダイレクトする', async ({
   request,
 }) => {
   const response = await request.get('/forms', {
@@ -15,7 +15,7 @@ test('redirects unauthenticated /forms access to login', async ({
   );
 });
 
-test('redirects unauthenticated /admin access to login', async ({
+test('未認証で /admin にアクセスした場合はログイン画面へリダイレクトする', async ({
   request,
 }) => {
   const response = await request.get('/admin', {

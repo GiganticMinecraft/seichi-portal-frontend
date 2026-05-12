@@ -34,11 +34,11 @@ vi.mock('@/lib/server/backend', async () => {
 const loadSessionModule = async () => import('@/lib/server/session');
 
 describe('normalizeRedirectTarget', () => {
-  it('accepts internal paths', () => {
+  it('内部パスは許可する', () => {
     expect(normalizeRedirectTarget('/forms')).toBe('/forms');
   });
 
-  it('rejects external-like paths', () => {
+  it('外部 URL のようなパスは拒否する', () => {
     expect(normalizeRedirectTarget('//evil.example')).toBe('/');
     expect(normalizeRedirectTarget('https://evil.example')).toBe('/');
   });
@@ -52,14 +52,14 @@ describe('server session helpers', () => {
     });
   });
 
-  it('returns unauthenticated when session cookie is absent', async () => {
+  it('セッション Cookie がない場合は未認証を返す', async () => {
     getCachedTokenMock.mockResolvedValue(undefined);
     const { getSession } = await loadSessionModule();
 
     await expect(getSession()).resolves.toEqual({ state: 'unauthenticated' });
   });
 
-  it('returns authenticated when backend user lookup succeeds', async () => {
+  it('バックエンドのユーザー取得に成功した場合は認証済みを返す', async () => {
     getCachedTokenMock.mockResolvedValue('token-123');
     backendFetchMock.mockResolvedValue(
       new Response(
@@ -87,7 +87,7 @@ describe('server session helpers', () => {
     });
   });
 
-  it('returns unavailable when backend response body is invalid', async () => {
+  it('バックエンドのレスポンスボディが不正な場合は unavailable を返す', async () => {
     getCachedTokenMock.mockResolvedValue('token-123');
     backendFetchMock.mockResolvedValue(
       new Response(JSON.stringify({ id: 'user-id' }), {
@@ -104,7 +104,7 @@ describe('server session helpers', () => {
     });
   });
 
-  it('redirects unauthenticated access to login with current path', async () => {
+  it('未認証アクセス時は現在のパス付きでログイン画面へリダイレクトする', async () => {
     getCachedTokenMock.mockResolvedValue(undefined);
     headersMock.mockResolvedValue(
       new Headers({ 'x-current-path': '/admin?tab=users' })
@@ -116,7 +116,7 @@ describe('server session helpers', () => {
     );
   });
 
-  it('throws forbidden when authenticated user is not administrator', async () => {
+  it('認証済みでも管理者でない場合は forbidden を送出する', async () => {
     getCachedTokenMock.mockResolvedValue('token-123');
     backendFetchMock.mockResolvedValue(
       new Response(
@@ -142,7 +142,7 @@ describe('server session helpers', () => {
     );
   });
 
-  it('returns unavailable when backend is unreachable', async () => {
+  it('バックエンドに到達できない場合は unavailable を返す', async () => {
     getCachedTokenMock.mockResolvedValue('token-123');
     backendFetchMock.mockRejectedValue(
       new BackendError({
