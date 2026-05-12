@@ -10,3 +10,9 @@ pre-commit:
 
     - name: fmt
       run: pnpm fmt
+
+pre-push:
+  parallel: false
+  jobs:
+    - name: unit-test
+      run: pnpm test:unit
