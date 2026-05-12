@@ -14,6 +14,7 @@ import { useRouter } from 'next/navigation';
 import * as React from 'react';
 import { formatString } from '@/generic/DateFormatter';
 import type { GetAnswerResponse } from '@/lib/api-types';
+import { usePaginatedRows } from './usePaginatedRows';
 
 interface Row {
   id: string;
@@ -46,29 +47,16 @@ const DataTable = (props: {
     () => prepareRows(props.answerResponseWithFormTitle),
     [props.answerResponseWithFormTitle]
   );
-  const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
-  const paginatedRows = React.useMemo(
-    () => rows.slice(page * rowsPerPage, (page + 1) * rowsPerPage),
-    [page, rows, rowsPerPage]
-  );
+  const {
+    page,
+    paginatedRows,
+    rowsPerPage,
+    handleChangePage,
+    handleChangeRowsPerPage,
+  } = usePaginatedRows(rows);
 
   const handleRowClick = (rowId: string) => {
     router.push(`/admin/answer/${rowId}`);
-  };
-
-  const handleChangePage = (
-    _event: React.MouseEvent<HTMLButtonElement> | null,
-    nextPage: number
-  ) => {
-    setPage(nextPage);
-  };
-
-  const handleChangeRowsPerPage = (
-    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    setRowsPerPage(Number(event.target.value));
-    setPage(0);
   };
 
   return (
