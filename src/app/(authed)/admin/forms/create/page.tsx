@@ -4,8 +4,10 @@ import { useApiQuery } from '@/app/_swr/useApiQuery';
 import ErrorModal from '@/app/_components/ErrorModal';
 import LoadingCircular from '@/app/_components/LoadingCircular';
 import FormCreateForm from './_components/FormCreateForm';
+import { usePageTitle } from '@/hooks/usePageTitle';
 
 const Home = () => {
+  usePageTitle('フォーム作成');
   const {
     data: labels,
     error,

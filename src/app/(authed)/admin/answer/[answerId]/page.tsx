@@ -7,9 +7,11 @@ import ErrorModal from '@/app/_components/ErrorModal';
 import LoadingCircular from '@/app/_components/LoadingCircular';
 import AnswerDetails from './_components/AnswerDetails';
 import Comments from './_components/Comments';
+import { usePageTitle } from '@/hooks/usePageTitle';
 import type { AnswerCommentType } from '@/lib/api-types';
 
 const Home = ({ params }: { params: Promise<{ answerId: string }> }) => {
+  usePageTitle('回答管理');
   const { answerId } = use(params);
   const {
     data: allAnswers,

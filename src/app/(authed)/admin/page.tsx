@@ -4,8 +4,10 @@ import { useApiQuery } from '@/app/_swr/useApiQuery';
 import LoadingCircular from '@/app/_components/LoadingCircular';
 import DataTable from './_components/Dashboard';
 import ErrorModal from '../../_components/ErrorModal';
+import { usePageTitle } from '@/hooks/usePageTitle';
 
 const Home = () => {
+  usePageTitle('管理ダッシュボード');
   const {
     data: answers,
     error: answersError,

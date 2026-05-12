@@ -8,6 +8,7 @@ import LoadingCircular from '@/app/_components/LoadingCircular';
 import AnswerDetails from './_components/AnswerDetails';
 import AnswerMeta from './_components/AnswerMeta';
 import Comments from './_components/Comments';
+import { usePageTitle } from '@/hooks/usePageTitle';
 import type { AnswerCommentType } from '@/lib/api-types';
 
 const Home = ({
@@ -15,6 +16,7 @@ const Home = ({
 }: {
   params: Promise<{ formId: string; answerId: string }>;
 }) => {
+  usePageTitle('回答詳細');
   const { formId, answerId } = use(params);
   const {
     data: answer,

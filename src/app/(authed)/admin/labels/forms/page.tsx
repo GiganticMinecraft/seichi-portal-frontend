@@ -6,8 +6,10 @@ import ErrorModal from '@/app/_components/ErrorModal';
 import LoadingCircular from '@/app/_components/LoadingCircular';
 import CreateLabelField from './_components/CreateLabelField';
 import Labels from './_components/Labels';
+import { usePageTitle } from '@/hooks/usePageTitle';
 
 const Home = () => {
+  usePageTitle('フォーム設定用ラベル管理');
   const { data, error, isLoading } = useApiQuery('/labels/forms');
 
   if (error) {

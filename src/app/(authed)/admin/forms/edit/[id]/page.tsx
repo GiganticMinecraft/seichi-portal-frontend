@@ -5,8 +5,10 @@ import { useApiQuery } from '@/app/_swr/useApiQuery';
 import ErrorModal from '@/app/_components/ErrorModal';
 import LoadingCircular from '@/app/_components/LoadingCircular';
 import FormEditForm from './_components/FormEditForm';
+import { usePageTitle } from '@/hooks/usePageTitle';
 
 const Home = ({ params }: { params: Promise<{ id: number }> }) => {
+  usePageTitle('フォーム編集');
   const { id } = use(params);
   const {
     data: form,

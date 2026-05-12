@@ -9,8 +9,10 @@ import DiscordNotificationSettings from './_components/DiscordNotificationSettin
 import LinkDiscordButton from './_components/LinkDiscordButton';
 import UnlinkDiscordButton from './_components/UnlinkDiscordButton';
 import UserInformation from './_components/UserInformation';
+import { usePageTitle } from '@/hooks/usePageTitle';
 
 const Home = ({ params }: { params: Promise<{ userId: string }> }) => {
+  usePageTitle('ユーザー情報');
   const { userId } = use(params);
   const { data, error, isLoading } = useApiQuery('/users/{uuid}', {
     path: { uuid: userId },

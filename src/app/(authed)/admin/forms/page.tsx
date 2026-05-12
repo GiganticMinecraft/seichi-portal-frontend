@@ -9,9 +9,11 @@ import FormCreateButton from './_components/FormCreateButton';
 import FormLabelFilter from './_components/FormLabelFilter';
 import ToManageFormLabelButton from './_components/ToManageFormLabelButton';
 import { useApiQuery } from '@/app/_swr/useApiQuery';
+import { usePageTitle } from '@/hooks/usePageTitle';
 import type { GetFormLabelsResponse } from '@/lib/api-types';
 
 const Home = () => {
+  usePageTitle('フォーム管理');
   const {
     data: forms,
     error: formsError,

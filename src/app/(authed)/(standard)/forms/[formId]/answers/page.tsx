@@ -6,8 +6,10 @@ import { useApiQuery } from '@/app/_swr/useApiQuery';
 import ErrorModal from '@/app/_components/ErrorModal';
 import LoadingCircular from '@/app/_components/LoadingCircular';
 import AnswerList from './_components/AnswerList';
+import { usePageTitle } from '@/hooks/usePageTitle';
 
 const Home = ({ params }: { params: Promise<{ formId: string }> }) => {
+  usePageTitle('回答一覧');
   const { formId } = use(params);
   const {
     data: answers,
