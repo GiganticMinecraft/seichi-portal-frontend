@@ -91,7 +91,6 @@ const Home = ({ params }: { params: Promise<{ answerId: string }> }) => {
             messages={messages}
             formId={answers.form_id}
             answerId={answerId}
-            variant="drawer"
             title="メッセージ"
             triggerLabel={`回答者にメッセージを送信 (${messages.length})`}
           />

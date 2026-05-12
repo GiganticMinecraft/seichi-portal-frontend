@@ -24,12 +24,10 @@ const Messages = (props: {
   messages: ConversationMessage[];
   formId: string;
   answerId: string;
-  variant?: 'drawer' | 'inline';
-  title?: string;
-  triggerLabel?: string;
+  title: string;
+  triggerLabel: string;
 }) => {
   const actions = useMessageConversationActions(props.formId, props.answerId);
-  const variant = props.variant ?? 'inline';
 
   const entries: ConversationEntryViewModel[] = props.messages.map(
     (message) => ({
@@ -46,7 +44,7 @@ const Messages = (props: {
   );
 
   const capabilities: ConversationCapabilities = {
-    canCompose: variant === 'drawer',
+    canCompose: true,
     composeLabel: 'メッセージを入力してください',
     composeHelperText: 'Shift + Enter で改行、Enter で送信することができます。',
     emptyMessage: 'メッセージはまだありません',
@@ -56,20 +54,18 @@ const Messages = (props: {
 
   return (
     <ConversationSurface
-      variant={variant}
+      variant="drawer"
       title={props.title}
       triggerLabel={props.triggerLabel}
-      triggerStartIcon={variant === 'drawer' ? <MessageIcon /> : undefined}
+      triggerStartIcon={<MessageIcon />}
       entries={entries}
       capabilities={capabilities}
       composer={
-        capabilities.canCompose ? (
-          <InputMessageField
-            form_id={props.formId}
-            answer_id={props.answerId}
-            textFieldSx={{ mt: 1 }}
-          />
-        ) : undefined
+        <InputMessageField
+          form_id={props.formId}
+          answer_id={props.answerId}
+          textFieldSx={{ mt: 1 }}
+        />
       }
       onUpdate={actions.update}
       onDelete={actions.deleteEntry}
