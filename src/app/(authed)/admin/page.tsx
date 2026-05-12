@@ -1,32 +1,25 @@
-'use client';
-
-import { useApiQuery } from '@/app/_swr/useApiQuery';
-import LoadingCircular from '@/app/_components/LoadingCircular';
 import DataTable from './_components/Dashboard';
-import ErrorModal from '../../_components/ErrorModal';
-import { usePageTitle } from '@/hooks/usePageTitle';
+import { backendFetchJson } from '@/lib/server/backend';
+import { requireAdmin } from '@/lib/server/session';
+import type { GetAnswersResponse, GetFormsResponse } from '@/lib/api-types';
+import type { Metadata } from 'next';
 
-const Home = () => {
-  usePageTitle('管理ダッシュボード');
-  const {
-    data: answers,
-    error: answersError,
-    isLoading,
-  } = useApiQuery('/forms/answers');
+export const metadata: Metadata = {
+  title: '管理ダッシュボード | Seichi Portal',
+};
 
-  const {
-    data: forms,
-    error: formsError,
-    isLoading: isLoadingForms,
-  } = useApiQuery('/forms');
-
-  if (answersError || formsError) {
-    return <ErrorModal />;
-  }
-
-  if (isLoading || isLoadingForms || !answers || !forms) {
-    return <LoadingCircular />;
-  }
+const Home = async () => {
+  const session = await requireAdmin();
+  const [answers, forms] = await Promise.all([
+    backendFetchJson<GetAnswersResponse>('/forms/answers', {
+      method: 'GET',
+      token: session.token,
+    }),
+    backendFetchJson<GetFormsResponse>('/forms', {
+      method: 'GET',
+      token: session.token,
+    }),
+  ]);
 
   return (
     <DataTable

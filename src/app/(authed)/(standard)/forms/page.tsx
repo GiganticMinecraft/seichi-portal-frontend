@@ -1,23 +1,20 @@
-'use client';
-
 import { Box, Typography } from '@mui/material';
-import ErrorModal from '@/app/_components/ErrorModal';
-import LoadingCircular from '@/app/_components/LoadingCircular';
 import FormList from './_components/FormList';
-import { useApiQuery } from '@/app/_swr/useApiQuery';
-import { usePageTitle } from '@/hooks/usePageTitle';
+import { backendFetchJson } from '@/lib/server/backend';
+import { requireUser } from '@/lib/server/session';
+import type { Metadata } from 'next';
+import type { GetFormsResponse } from '@/lib/api-types';
 
-const Home = () => {
-  usePageTitle('フォーム一覧');
-  const { data: forms, error, isLoading } = useApiQuery('/forms');
+export const metadata: Metadata = {
+  title: 'フォーム一覧 | Seichi Portal',
+};
 
-  if (error) {
-    return <ErrorModal error={error} />;
-  }
-
-  if (isLoading || !forms) {
-    return <LoadingCircular />;
-  }
+const Home = async () => {
+  const session = await requireUser();
+  const forms = await backendFetchJson<GetFormsResponse>('/forms', {
+    method: 'GET',
+    token: session.token,
+  });
 
   return (
     <Box sx={{ width: '100%' }}>
