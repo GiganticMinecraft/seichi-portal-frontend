@@ -29,6 +29,7 @@ const SortableChoiceItem = (props: {
   questionIndex: number;
   register: UseFormRegister<FormEditorValues>;
   removeChoice: (index: number) => void;
+  canRemove: boolean;
 }) => {
   const {
     attributes,
@@ -64,7 +65,11 @@ const SortableChoiceItem = (props: {
         required
         fullWidth
       />
-      <IconButton size="small" onClick={() => props.removeChoice(props.index)}>
+      <IconButton
+        size="small"
+        onClick={() => props.removeChoice(props.index)}
+        disabled={!props.canRemove}
+      >
         <DeleteIcon fontSize="small" />
       </IconButton>
     </Stack>
@@ -191,6 +196,7 @@ const ChoiceEditor = (props: {
                 questionIndex={props.questionIndex}
                 register={props.register}
                 removeChoice={removeChoice}
+                canRemove={choiceFields.length > 1}
               />
             ))}
           </Stack>

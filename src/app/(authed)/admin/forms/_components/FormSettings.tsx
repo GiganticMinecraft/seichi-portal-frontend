@@ -32,7 +32,7 @@ const FormSettings = (props: {
 
   return (
     <Stack spacing={2}>
-      <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
+      <Typography variant="h6" component="h2" sx={{ fontWeight: 'bold' }}>
         フォーム設定
       </Typography>
       <TextField
