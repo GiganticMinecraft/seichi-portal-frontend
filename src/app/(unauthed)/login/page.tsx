@@ -6,13 +6,36 @@ import {
 } from '@azure/msal-browser';
 import { useMsal } from '@azure/msal-react';
 import { Alert, Button, Stack, Typography } from '@mui/material';
-import { useRouter, useSearchParams } from 'next/navigation';
-import { useEffect, useState, Suspense } from 'react';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
 import { usePageTitle } from '@/hooks/usePageTitle';
 import type { SilentRequest } from '@azure/msal-browser';
 
 const loginRequest = {
   scopes: ['XboxLive.signin offline_access'],
+};
+
+const fetchPostLoginRedirect = async (): Promise<string> => {
+  const response = await fetch('/api/post-login-redirect', {
+    method: 'POST',
+  });
+
+  if (!response.ok) {
+    return '/';
+  }
+
+  const body: unknown = await response.json().catch(() => null);
+
+  if (
+    typeof body === 'object' &&
+    body !== null &&
+    'redirectTo' in body &&
+    typeof body.redirectTo === 'string'
+  ) {
+    return body.redirectTo;
+  }
+
+  return '/';
 };
 
 const LoginContent = () => {
@@ -21,8 +44,6 @@ const LoginContent = () => {
   const [isInitialized, setState] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const callbackUrl = searchParams.get('callbackUrl');
 
   const handleFailure = (message: string, error: unknown) => {
     console.error(message, error);
@@ -49,10 +70,6 @@ const LoginContent = () => {
           ...loginRequest,
         };
 
-        const callbackQuery = new URLSearchParams({
-          callbackUrl: callbackUrl ?? '/',
-        }).toString();
-
         try {
           const r = await instance.acquireTokenSilent(requestWithAccount);
 
@@ -72,12 +89,12 @@ const LoginContent = () => {
             return;
           }
 
-          router.push(callbackUrl ?? '/');
+          router.push(await fetchPostLoginRedirect());
         } catch (e) {
           if (e instanceof InteractionRequiredAuthError) {
             await instance.loginRedirect({
               ...loginRequest,
-              redirectStartPage: `/login?${callbackQuery}`,
+              redirectStartPage: '/login',
             });
           } else {
             handleFailure(
@@ -87,28 +104,17 @@ const LoginContent = () => {
           }
         }
       } else if (isInitialized && inProgress === InteractionStatus.None) {
-        const callbackQuery = new URLSearchParams({
-          callbackUrl: callbackUrl ?? '/',
-        }).toString();
         instance
           .loginRedirect({
             ...loginRequest,
-            redirectStartPage: `/login?${callbackQuery}`,
+            redirectStartPage: '/login',
           })
           .catch((error) =>
             handleFailure('ログイン画面への遷移に失敗しました。', error)
           );
       }
     })().catch((error) => handleFailure('ログイン処理に失敗しました。', error));
-  }, [
-    inProgress,
-    accounts,
-    isInitialized,
-    instance,
-    router,
-    callbackUrl,
-    errorMessage,
-  ]);
+  }, [inProgress, accounts, isInitialized, instance, router, errorMessage]);
 
   if (errorMessage) {
     return (
@@ -127,14 +133,4 @@ const LoginContent = () => {
   return <></>;
 };
 
-const Home = () => {
-  return (
-    // useSearchParams は Suspense で囲われている必要がある
-    // https://nextjs.org/docs/messages/missing-suspense-with-csr-bailout
-    <Suspense fallback={<></>}>
-      <LoginContent />
-    </Suspense>
-  );
-};
-
-export default Home;
+export default LoginContent;

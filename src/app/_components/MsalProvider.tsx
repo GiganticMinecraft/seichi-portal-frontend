@@ -18,7 +18,7 @@ const msalConfig: Configuration = {
   },
 };
 
-const msalInstance = new PublicClientApplication(msalConfig);
+export const msalInstance = new PublicClientApplication(msalConfig);
 
 type Props = {
   children: ReactNode;

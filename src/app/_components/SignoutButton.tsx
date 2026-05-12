@@ -1,28 +1,28 @@
 'use client';
 
-import { InteractionStatus } from '@azure/msal-browser';
-import { useMsal } from '@azure/msal-react';
 import { Button } from '@mui/material';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
+import { msalInstance } from './MsalProvider';
 
 export const SignoutButton = () => {
-  const { instance, accounts, inProgress } = useMsal();
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleClick = async () => {
-    if (isSubmitting || inProgress !== InteractionStatus.None) return;
+    if (isSubmitting) return;
 
     setIsSubmitting(true);
 
     try {
       await fetch('/api/logout', { method: 'DELETE' });
 
-      if (accounts[0]) {
-        await instance.initialize();
-        await instance.logoutRedirect({
-          account: instance.getAccountByHomeId(accounts[0].homeAccountId),
+      await msalInstance.initialize();
+      const [account] = msalInstance.getAllAccounts();
+
+      if (account) {
+        await msalInstance.logoutRedirect({
+          account,
           postLogoutRedirectUri: '/',
         });
         return;
