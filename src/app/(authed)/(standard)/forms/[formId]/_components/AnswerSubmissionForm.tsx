@@ -31,6 +31,7 @@ const AnswerSubmissionForm = ({
     {}
   );
   const {
+    control,
     register,
     handleSubmit,
     reset,
@@ -49,7 +50,7 @@ const AnswerSubmissionForm = ({
 
   return (
     <Box sx={{ width: '100%', maxWidth: 800, mx: 'auto', alignSelf: 'center' }}>
-      <Typography variant="h4" gutterBottom>
+      <Typography variant="h4" component="h1" gutterBottom>
         {title}
       </Typography>
       {description && (
@@ -84,6 +85,7 @@ const AnswerSubmissionForm = ({
                 )}
                 <QuestionFieldRenderer
                   question={question}
+                  control={control}
                   register={register}
                   errors={errors}
                   selectedValues={selectedValues}

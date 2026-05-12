@@ -157,6 +157,7 @@ const ConversationEntry = ({
         <Grid size={2}>
           <IconButton
             color="primary"
+            aria-label="その他の操作"
             onClick={(event: MouseEvent<HTMLElement>) =>
               setAnchorEl(event.currentTarget)
             }
@@ -195,7 +196,11 @@ const ConversationEntry = ({
             fullWidth
             onChange={(event) => setDraftBody(event.target.value)}
             onKeyDown={async (event) => {
-              if (event.key === 'Enter' && !event.shiftKey) {
+              if (
+                event.key === 'Enter' &&
+                !event.shiftKey &&
+                !event.nativeEvent.isComposing
+              ) {
                 event.preventDefault();
                 await handleUpdate();
               } else if (event.key === 'Escape') {
@@ -240,7 +245,9 @@ const ConversationEntry = ({
           <Grid size={1}></Grid>
           <Grid size={11}>
             <Typography
-              sx={{ color: '#FF2D2D', fontSize: '12px', marginTop: '10px' }}
+              variant="caption"
+              component="p"
+              sx={{ color: 'error.main', marginTop: '10px' }}
             >
               {operationResultMessage}
             </Typography>

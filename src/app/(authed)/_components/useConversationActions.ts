@@ -17,11 +17,17 @@ export const useCommentConversationActions = (
   return {
     send: async (body: string): Promise<ConversationActionResult> => {
       const result = await sendComment(body);
-      return { success: result.ok };
+      return {
+        success: result.ok,
+        ...(result.forbidden ? { forbidden: true } : {}),
+      };
     },
     deleteEntry: async (entryId: string): Promise<ConversationActionResult> => {
       const result = await deleteComment(entryId);
-      return { success: result.ok };
+      return {
+        success: result.ok,
+        ...(result.forbidden ? { forbidden: true } : {}),
+      };
     },
   };
 };

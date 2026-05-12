@@ -12,11 +12,13 @@ import {
   Select,
 } from '@mui/material';
 import type { Dispatch, SetStateAction } from 'react';
-import type { FieldErrors, UseFormRegister } from 'react-hook-form';
+import { Controller } from 'react-hook-form';
+import type { Control, FieldErrors, UseFormRegister } from 'react-hook-form';
 import type { AnswerFormInput, AnswerQuestion } from './answerFormTypes';
 
 type Props = {
   question: AnswerQuestion;
+  control: Control<AnswerFormInput>;
   register: UseFormRegister<AnswerFormInput>;
   errors: FieldErrors<AnswerFormInput>;
   selectedValues: Record<string, string>;
@@ -32,6 +34,7 @@ const requiredMultiSelectMessage =
  */
 const QuestionFieldRenderer = ({
   question,
+  control,
   register,
   errors,
   selectedValues,
@@ -56,27 +59,42 @@ const QuestionFieldRenderer = ({
           <InputLabel id={`select-label-${questionId}`}>
             選択してください
           </InputLabel>
-          <Select
-            {...register(questionId)}
-            required={question.is_required}
-            fullWidth
-            labelId={`select-label-${questionId}`}
-            label="選択してください"
-            value={selectedValues[questionId] ?? ''}
-            onChange={(event) =>
-              setSelectedValues((current) => ({
-                ...current,
-                [questionId]: event.target.value,
-              }))
-            }
-            displayEmpty
-          >
-            {question.choices?.map((choice, index) => (
-              <MenuItem key={`q-${questionId}.a-${index}`} value={choice.label}>
-                {choice.label}
-              </MenuItem>
-            ))}
-          </Select>
+          <Controller
+            control={control}
+            name={questionId}
+            render={({ field }) => (
+              <Select
+                {...field}
+                required={question.is_required}
+                fullWidth
+                labelId={`select-label-${questionId}`}
+                label="選択してください"
+                value={field.value ?? selectedValues[questionId] ?? ''}
+                onChange={(event) => {
+                  const nextValue = event.target.value;
+                  if (typeof nextValue !== 'string') {
+                    return;
+                  }
+
+                  field.onChange(nextValue);
+                  setSelectedValues((current) => ({
+                    ...current,
+                    [questionId]: nextValue,
+                  }));
+                }}
+                displayEmpty
+              >
+                {question.choices?.map((choice, index) => (
+                  <MenuItem
+                    key={`q-${questionId}.a-${index}`}
+                    value={choice.label}
+                  >
+                    {choice.label}
+                  </MenuItem>
+                ))}
+              </Select>
+            )}
+          />
         </FormControl>
       );
     case 'MultipleChoice':
@@ -114,7 +132,7 @@ const QuestionFieldRenderer = ({
             ))}
           </Grid>
           {errors[questionId] && (
-            <FormHelperText sx={{ color: 'red' }}>
+            <FormHelperText sx={{ color: 'error.main' }}>
               {errors[questionId]?.message}
             </FormHelperText>
           )}

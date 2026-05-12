@@ -127,7 +127,9 @@ const ConversationSurface = ({
             borderColor: 'divider',
           }}
         >
-          <Typography variant="h6">{title}</Typography>
+          <Typography variant="h6" component="h2">
+            {title}
+          </Typography>
           <IconButton onClick={() => setOpen(false)}>
             <CloseIcon />
           </IconButton>

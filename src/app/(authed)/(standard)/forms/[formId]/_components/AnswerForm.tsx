@@ -39,6 +39,14 @@ const AnswerForm = ({ questions, formId, title, description }: Props) => {
           回答期間が終了しています
         </Alert>
       )}
+      {submissionErrorCode === 'UNKNOWN' && (
+        <Alert
+          severity="error"
+          sx={{ width: '100%', maxWidth: 800, mx: 'auto', mb: 2 }}
+        >
+          回答の送信に失敗しました。時間をおいて再度お試しください。
+        </Alert>
+      )}
       <AnswerSubmissionForm
         questions={questions}
         title={title}

@@ -9,7 +9,7 @@ import type { AnswerFormInput } from './answerFormTypes';
 type AnswerCreateBody =
   paths['/forms/{id}/answers']['post']['requestBody']['content']['application/json'];
 
-type SubmissionErrorCode = 'OUT_OF_PERIOD';
+type SubmissionErrorCode = 'OUT_OF_PERIOD' | 'UNKNOWN';
 
 const toAnswerCreateBody = (data: AnswerFormInput): AnswerCreateBody => ({
   contents: Object.entries(data).flatMap(([key, values]) => {
@@ -77,7 +77,7 @@ export const useAnswerSubmission = (formId: string) => {
       return { ok: true as const };
     }
 
-    const errorCode = parseSubmissionErrorCode(error);
+    const errorCode = parseSubmissionErrorCode(error) ?? 'UNKNOWN';
     setSubmissionErrorCode(errorCode);
 
     return { ok: false as const, errorCode };
