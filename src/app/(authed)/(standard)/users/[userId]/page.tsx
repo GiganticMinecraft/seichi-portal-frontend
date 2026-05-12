@@ -1,46 +1,42 @@
-'use client';
-
 import { Box, Card, CardContent, Divider, Stack } from '@mui/material';
-import { use } from 'react';
-import { useApiQuery } from '@/app/_swr/useApiQuery';
-import ErrorModal from '@/app/_components/ErrorModal';
-import LoadingCircular from '@/app/_components/LoadingCircular';
 import DiscordNotificationSettings from './_components/DiscordNotificationSettings';
 import LinkDiscordButton from './_components/LinkDiscordButton';
 import UnlinkDiscordButton from './_components/UnlinkDiscordButton';
 import UserInformation from './_components/UserInformation';
-import { usePageTitle } from '@/hooks/usePageTitle';
+import { backendFetchJson } from '@/lib/server/backend';
+import { requireUser } from '@/lib/server/session';
+import type {
+  GetUserNotificationSettingsResponse,
+  GetUserResponse,
+} from '@/lib/api-types';
+import type { Metadata } from 'next';
 
-const Home = ({ params }: { params: Promise<{ userId: string }> }) => {
-  usePageTitle('ユーザー情報');
-  const { userId } = use(params);
-  const { data, error, isLoading } = useApiQuery('/users/{uuid}', {
-    path: { uuid: userId },
-  });
+export const metadata: Metadata = {
+  title: 'ユーザー情報 | Seichi Portal',
+};
 
-  const {
-    data: notificationSettings,
-    error: notificationError,
-    isLoading: isNotificationSettingsLoading,
-  } = useApiQuery('/notifications/settings/{uuid}', {
-    path: { uuid: userId },
-  });
-
-  if (isLoading || isNotificationSettingsLoading) {
-    return <LoadingCircular />;
-  } else if (error || notificationError) {
-    return <ErrorModal />;
-  }
-
-  if (!data || !notificationSettings) {
-    return <LoadingCircular />;
-  }
+const Home = async ({ params }: { params: Promise<{ userId: string }> }) => {
+  const session = await requireUser();
+  const { userId } = await params;
+  const [user, notificationSettings] = await Promise.all([
+    backendFetchJson<GetUserResponse>(`/users/${userId}`, {
+      method: 'GET',
+      token: session.token,
+    }),
+    backendFetchJson<GetUserNotificationSettingsResponse>(
+      `/notifications/settings/${userId}`,
+      {
+        method: 'GET',
+        token: session.token,
+      }
+    ),
+  ]);
 
   return (
     <Box sx={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
       <Stack spacing={3} sx={{ maxWidth: 640, width: '100%' }}>
-        <UserInformation user={data} />
-        {data['discord_user_id'] ? (
+        <UserInformation user={user} />
+        {user['discord_user_id'] ? (
           <Card variant="outlined">
             <CardContent>
               <UnlinkDiscordButton />

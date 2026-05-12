@@ -1,19 +1,14 @@
 'use client';
 
-import { useEffect } from 'react';
-import ErrorModal from '@/app/_components/ErrorModal';
+import AuthErrorBoundary from '@/app/(authed)/_components/AuthErrorBoundary';
 
 type ErrorPageProps = {
   error: Error & { digest?: string };
   reset: () => void;
 };
 
-const ErrorPage = ({ error, reset }: ErrorPageProps) => {
-  useEffect(() => {
-    console.error(error);
-  }, [error]);
-
-  return <ErrorModal error={error} onRetry={reset} />;
-};
+const ErrorPage = ({ error, reset }: ErrorPageProps) => (
+  <AuthErrorBoundary error={error} reset={reset} />
+);
 
 export default ErrorPage;

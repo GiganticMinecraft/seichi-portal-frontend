@@ -1,21 +1,20 @@
 'use client';
 
 import {
-  DataGrid,
-  type GridColDef,
-  type GridEventListener,
-  type GridRowParams,
-} from '@mui/x-data-grid';
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TablePagination,
+  TableRow,
+} from '@mui/material';
 import { useRouter } from 'next/navigation';
 import * as React from 'react';
 import { formatString } from '@/generic/DateFormatter';
 import type { GetAnswerResponse } from '@/lib/api-types';
-
-const columns: GridColDef[] = [
-  { field: 'category', headerName: '種別', width: 200 },
-  { field: 'title', headerName: 'タイトル', width: 200 },
-  { field: 'date', headerName: '日付', width: 200 },
-];
+import { usePaginatedRows } from './usePaginatedRows';
 
 interface Row {
   id: string;
@@ -44,31 +43,57 @@ const DataTable = (props: {
   answerResponseWithFormTitle: AnswerResponseWithFormTitle[];
 }) => {
   const router = useRouter();
+  const rows = React.useMemo(
+    () => prepareRows(props.answerResponseWithFormTitle),
+    [props.answerResponseWithFormTitle]
+  );
+  const {
+    page,
+    paginatedRows,
+    rowsPerPage,
+    handleChangePage,
+    handleChangeRowsPerPage,
+  } = usePaginatedRows(rows);
 
-  const handleRowClick: GridEventListener<'rowClick'> = (
-    params: GridRowParams
-  ) => {
-    router.push(`/admin/answer/${params.id}`);
+  const handleRowClick = (rowId: string) => {
+    router.push(`/admin/answer/${rowId}`);
   };
 
   return (
-    <DataGrid
-      rows={prepareRows(props.answerResponseWithFormTitle)}
-      columns={columns}
-      onRowClick={handleRowClick}
-      initialState={{
-        pagination: {
-          paginationModel: { page: 0, pageSize: 5 },
-        },
-      }}
-      pageSizeOptions={[5, 10, 25, 50, 100]}
-      sx={{
-        '& .MuiDataGrid-columnHeader, & .MuiDataGrid-cell': {
-          color: 'text.primary',
-        },
-      }}
-      checkboxSelection
-    />
+    <TableContainer component={Paper}>
+      <Table>
+        <TableHead>
+          <TableRow>
+            <TableCell>種別</TableCell>
+            <TableCell>タイトル</TableCell>
+            <TableCell>日付</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {paginatedRows.map((row) => (
+            <TableRow
+              key={row.id}
+              hover
+              onClick={() => handleRowClick(row.id)}
+              sx={{ cursor: 'pointer' }}
+            >
+              <TableCell>{row.category}</TableCell>
+              <TableCell>{row.title}</TableCell>
+              <TableCell>{row.date}</TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+      <TablePagination
+        component="div"
+        count={rows.length}
+        page={page}
+        onPageChange={handleChangePage}
+        rowsPerPage={rowsPerPage}
+        onRowsPerPageChange={handleChangeRowsPerPage}
+        rowsPerPageOptions={[5, 10, 25, 50, 100]}
+      />
+    </TableContainer>
   );
 };
 

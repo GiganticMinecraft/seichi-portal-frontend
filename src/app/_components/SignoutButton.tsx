@@ -3,7 +3,7 @@
 import { Button } from '@mui/material';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import { msalInstance } from './MsalProvider';
+import { getMsalInstance } from './MsalProvider';
 
 export const SignoutButton = () => {
   const router = useRouter();
@@ -17,6 +17,7 @@ export const SignoutButton = () => {
     try {
       await fetch('/api/logout', { method: 'DELETE' });
 
+      const msalInstance = getMsalInstance();
       await msalInstance.initialize();
       const [account] = msalInstance.getAllAccounts();
 

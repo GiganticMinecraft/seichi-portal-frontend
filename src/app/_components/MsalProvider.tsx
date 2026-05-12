@@ -2,6 +2,7 @@
 
 import { PublicClientApplication } from '@azure/msal-browser';
 import { MsalProvider as MsalLibProvider } from '@azure/msal-react';
+import { useState } from 'react';
 import { MS_APP_CLIENT_ID, MS_APP_REDIRECT_URL } from '@/env.client';
 import type { Configuration } from '@azure/msal-browser';
 import type { ReactNode } from 'react';
@@ -18,12 +19,23 @@ const msalConfig: Configuration = {
   },
 };
 
-export const msalInstance = new PublicClientApplication(msalConfig);
+let msalInstance: PublicClientApplication | null = null;
+
+export const getMsalInstance = () => {
+  if (msalInstance) {
+    return msalInstance;
+  }
+
+  msalInstance = new PublicClientApplication(msalConfig);
+  return msalInstance;
+};
 
 type Props = {
   children: ReactNode;
 };
 
-export const MsalProvider = ({ children }: Props) => (
-  <MsalLibProvider instance={msalInstance}>{children}</MsalLibProvider>
-);
+export const MsalProvider = ({ children }: Props) => {
+  const [instance] = useState(() => getMsalInstance());
+
+  return <MsalLibProvider instance={instance}>{children}</MsalLibProvider>;
+};

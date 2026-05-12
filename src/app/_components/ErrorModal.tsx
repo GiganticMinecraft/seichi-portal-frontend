@@ -6,6 +6,7 @@ import Modal from '@mui/material/Modal';
 import Typography from '@mui/material/Typography';
 import dayjs from 'dayjs';
 import { useState } from 'react';
+import { isAccessError } from '@/lib/accessError';
 import { isHttpError } from '@/lib/httpError';
 
 type ErrorModalProps = {
@@ -29,7 +30,11 @@ const ErrorModal = ({
   const [path] = useState(() =>
     typeof window !== 'undefined' ? window.location.href : ''
   );
-  const status = isHttpError(error) ? error.status : null;
+  const status = isHttpError(error)
+    ? error.status
+    : isAccessError(error)
+      ? error.status
+      : null;
 
   const resolvedTitle =
     title ??
@@ -37,14 +42,18 @@ const ErrorModal = ({
       ? 'セッションの有効期限が切れました。'
       : status === 403
         ? 'このページを表示する権限がありません。'
-        : 'データ取得中にエラーが発生しました。');
+        : status === 503
+          ? '現在このページを表示できません。'
+          : 'データ取得中にエラーが発生しました。');
   const resolvedMessage =
     message ??
     (status === 401
       ? '再度サインインしてから操作をやり直してください。'
       : status === 403
         ? '権限のあるアカウントでサインインしてください。'
-        : '連続して発生する場合は管理者に問い合わせてください。');
+        : status === 503
+          ? 'バックエンドに接続できないため、保護された画面を表示できません。'
+          : '連続して発生する場合は管理者に問い合わせてください。');
 
   return (
     <Modal open={true}>

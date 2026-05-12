@@ -17,9 +17,8 @@ import Image from 'next/image';
 import NextLink from 'next/link';
 import { useState } from 'react';
 import ThemeModeToggle from '@/app/(authed)/_components/ThemeModeToggle';
-import ErrorModal from '@/app/_components/ErrorModal';
-import { useApiQuery } from '@/app/_swr/useApiQuery';
 import SearchResult from './SearchResult';
+import type { CurrentUser } from '@/lib/currentUser';
 
 const SearchField = () => {
   const [openSearchResultModal, setOpenSearchResultModal] = useState(false);
@@ -72,13 +71,7 @@ const SearchField = () => {
   );
 };
 
-const NavBar = () => {
-  const { data, error } = useApiQuery('/users/me');
-
-  if (error) {
-    return <ErrorModal />;
-  }
-
+const NavBar = ({ currentUser }: { currentUser: CurrentUser }) => {
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar
@@ -113,7 +106,7 @@ const NavBar = () => {
           <ThemeModeToggle />
           <Avatar
             alt="PlayerHead"
-            src={data ? `https://mc-heads.net/avatar/${data.id}` : ''}
+            src={`https://mc-heads.net/avatar/${currentUser.id}`}
             sx={{ marginLeft: '20px' }}
           />
         </Toolbar>

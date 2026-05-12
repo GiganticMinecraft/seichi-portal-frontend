@@ -1,24 +1,21 @@
-'use client';
-
-import { useApiQuery } from '@/app/_swr/useApiQuery';
-import ErrorModal from '@/app/_components/ErrorModal';
-import LoadingCircular from '@/app/_components/LoadingCircular';
 import UserList from './_components/UserList';
-import { usePageTitle } from '@/hooks/usePageTitle';
+import { backendFetchJson } from '@/lib/server/backend';
+import { requireAdmin } from '@/lib/server/session';
+import type { GetUserListResponse } from '@/lib/api-types';
+import type { Metadata } from 'next';
 
-const Home = () => {
-  usePageTitle('ユーザー管理');
-  const { data, error, isLoading } = useApiQuery('/users');
+export const metadata: Metadata = {
+  title: 'ユーザー管理 | Seichi Portal',
+};
 
-  if (error) {
-    return <ErrorModal />;
-  }
+const Home = async () => {
+  const session = await requireAdmin();
+  const users = await backendFetchJson<GetUserListResponse>('/users', {
+    method: 'GET',
+    token: session.token,
+  });
 
-  if (isLoading || !data) {
-    return <LoadingCircular />;
-  }
-
-  return <UserList users={data} />;
+  return <UserList users={users} />;
 };
 
 export default Home;
