@@ -1,6 +1,6 @@
 'use client';
 
-import { Message } from '@mui/icons-material';
+import { Message as MessageIcon } from '@mui/icons-material';
 import ConversationSurface from './ConversationSurface';
 import InputMessageField from './InputMessageField';
 import type {
@@ -9,7 +9,7 @@ import type {
 } from './conversationTypes';
 import { useMessageConversationActions } from './useConversationActions';
 
-type Message = {
+type ConversationMessage = {
   id: string;
   body: string;
   sender: {
@@ -21,7 +21,7 @@ type Message = {
 };
 
 const Messages = (props: {
-  messages: Message[];
+  messages: ConversationMessage[];
   formId: string;
   answerId: string;
   variant?: 'drawer' | 'inline';
@@ -57,22 +57,20 @@ const Messages = (props: {
   return (
     <ConversationSurface
       variant={variant}
-      {...(props.title ? { title: props.title } : {})}
-      {...(props.triggerLabel ? { triggerLabel: props.triggerLabel } : {})}
-      {...(variant === 'drawer' ? { triggerStartIcon: <Message /> } : {})}
+      title={props.title}
+      triggerLabel={props.triggerLabel}
+      triggerStartIcon={variant === 'drawer' ? <MessageIcon /> : undefined}
       entries={entries}
       capabilities={capabilities}
-      {...(capabilities.canCompose
-        ? {
-            composer: (
-              <InputMessageField
-                form_id={props.formId}
-                answer_id={props.answerId}
-                textFieldSx={{ mt: 1 }}
-              />
-            ),
-          }
-        : {})}
+      composer={
+        capabilities.canCompose ? (
+          <InputMessageField
+            form_id={props.formId}
+            answer_id={props.answerId}
+            textFieldSx={{ mt: 1 }}
+          />
+        ) : undefined
+      }
       onUpdate={actions.update}
       onDelete={actions.deleteEntry}
     />

@@ -22,17 +22,18 @@ import type {
 
 type Props = {
   variant: 'drawer' | 'inline';
-  title?: string;
-  triggerLabel?: string;
-  triggerStartIcon?: ReactNode;
+  title?: string | undefined;
+  triggerLabel?: string | undefined;
+  triggerStartIcon?: ReactNode | undefined;
   entries: ConversationEntryViewModel[];
   capabilities: ConversationCapabilities;
-  composer?: ReactNode;
-  onUpdate?: (
-    entryId: string,
-    body: string
-  ) => Promise<ConversationActionResult>;
-  onDelete?: (entryId: string) => Promise<ConversationActionResult>;
+  composer?: ReactNode | undefined;
+  onUpdate?:
+    | ((entryId: string, body: string) => Promise<ConversationActionResult>)
+    | undefined;
+  onDelete?:
+    | ((entryId: string) => Promise<ConversationActionResult>)
+    | undefined;
 };
 
 /**
@@ -47,11 +48,12 @@ const ConversationList = ({
 }: {
   entries: ConversationEntryViewModel[];
   capabilities: ConversationCapabilities;
-  onUpdate?: (
-    entryId: string,
-    body: string
-  ) => Promise<ConversationActionResult>;
-  onDelete?: (entryId: string) => Promise<ConversationActionResult>;
+  onUpdate?:
+    | ((entryId: string, body: string) => Promise<ConversationActionResult>)
+    | undefined;
+  onDelete?:
+    | ((entryId: string) => Promise<ConversationActionResult>)
+    | undefined;
 }) => (
   <Stack spacing={2}>
     {entries.length === 0 && (
