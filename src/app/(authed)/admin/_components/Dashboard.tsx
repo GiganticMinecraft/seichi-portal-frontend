@@ -1,5 +1,6 @@
 'use client';
 
+import { NoSsr } from '@mui/material';
 import {
   DataGrid,
   type GridColDef,
@@ -44,6 +45,10 @@ const DataTable = (props: {
   answerResponseWithFormTitle: AnswerResponseWithFormTitle[];
 }) => {
   const router = useRouter();
+  const rows = React.useMemo(
+    () => prepareRows(props.answerResponseWithFormTitle),
+    [props.answerResponseWithFormTitle]
+  );
 
   const handleRowClick: GridEventListener<'rowClick'> = (
     params: GridRowParams
@@ -52,23 +57,25 @@ const DataTable = (props: {
   };
 
   return (
-    <DataGrid
-      rows={prepareRows(props.answerResponseWithFormTitle)}
-      columns={columns}
-      onRowClick={handleRowClick}
-      initialState={{
-        pagination: {
-          paginationModel: { page: 0, pageSize: 5 },
-        },
-      }}
-      pageSizeOptions={[5, 10, 25, 50, 100]}
-      sx={{
-        '& .MuiDataGrid-columnHeader, & .MuiDataGrid-cell': {
-          color: 'text.primary',
-        },
-      }}
-      checkboxSelection
-    />
+    <NoSsr>
+      <DataGrid
+        rows={rows}
+        columns={columns}
+        onRowClick={handleRowClick}
+        initialState={{
+          pagination: {
+            paginationModel: { page: 0, pageSize: 5 },
+          },
+        }}
+        pageSizeOptions={[5, 10, 25, 50, 100]}
+        sx={{
+          '& .MuiDataGrid-columnHeader, & .MuiDataGrid-cell': {
+            color: 'text.primary',
+          },
+        }}
+        checkboxSelection
+      />
+    </NoSsr>
   );
 };
 
