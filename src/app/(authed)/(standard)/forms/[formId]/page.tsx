@@ -1,30 +1,20 @@
-'use client';
-
-import { use } from 'react';
-import { useApiQuery } from '@/app/_swr/useApiQuery';
-import ErrorModal from '@/app/_components/ErrorModal';
-import LoadingCircular from '@/app/_components/LoadingCircular';
 import AnswerForm from './_components/AnswerForm';
-import { usePageTitle } from '@/hooks/usePageTitle';
+import { backendFetchJson } from '@/lib/server/backend';
+import { requireUser } from '@/lib/server/session';
+import type { GetFormResponse } from '@/lib/api-types';
+import type { Metadata } from 'next';
 
-const Home = ({ params }: { params: Promise<{ formId: string }> }) => {
-  usePageTitle('フォーム回答');
-  const { formId } = use(params);
-  const {
-    data: form,
-    error,
-    isLoading,
-  } = useApiQuery('/forms/{id}', {
-    path: { id: formId },
+export const metadata: Metadata = {
+  title: 'フォーム回答 | Seichi Portal',
+};
+
+const Home = async ({ params }: { params: Promise<{ formId: string }> }) => {
+  const session = await requireUser();
+  const { formId } = await params;
+  const form = await backendFetchJson<GetFormResponse>(`/forms/${formId}`, {
+    method: 'GET',
+    token: session.token,
   });
-
-  if (error) {
-    return <ErrorModal error={error} />;
-  }
-
-  if (isLoading || !form) {
-    return <LoadingCircular />;
-  }
 
   return (
     <AnswerForm

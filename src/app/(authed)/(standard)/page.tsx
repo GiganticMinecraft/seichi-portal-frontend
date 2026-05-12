@@ -1,12 +1,10 @@
-'use client';
-
-import { usePageTitle } from '@/hooks/usePageTitle';
 import MainMenu from './_components/MainMenu';
+import type { Metadata } from 'next';
 
-const Home = () => {
-  usePageTitle('ホーム');
-
-  return <MainMenu />;
+export const metadata: Metadata = {
+  title: 'ホーム | Seichi Portal',
 };
+
+const Home = () => <MainMenu />;
 
 export default Home;

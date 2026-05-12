@@ -1,26 +1,22 @@
-'use client';
-
-import { useApiQuery } from '@/app/_swr/useApiQuery';
-import ErrorModal from '@/app/_components/ErrorModal';
-import LoadingCircular from '@/app/_components/LoadingCircular';
 import FormCreateForm from './_components/FormCreateForm';
-import { usePageTitle } from '@/hooks/usePageTitle';
+import { backendFetchJson } from '@/lib/server/backend';
+import { requireAdmin } from '@/lib/server/session';
+import type { GetFormLabelsResponse } from '@/lib/api-types';
+import type { Metadata } from 'next';
 
-const Home = () => {
-  usePageTitle('フォーム作成');
-  const {
-    data: labels,
-    error,
-    isLoading: isLoadingLabels,
-  } = useApiQuery('/labels/forms');
+export const metadata: Metadata = {
+  title: 'フォーム作成 | Seichi Portal',
+};
 
-  if (error) {
-    return <ErrorModal />;
-  }
-
-  if (isLoadingLabels || !labels) {
-    return <LoadingCircular />;
-  }
+const Home = async () => {
+  const session = await requireAdmin();
+  const labels = await backendFetchJson<GetFormLabelsResponse>(
+    '/labels/forms',
+    {
+      method: 'GET',
+      token: session.token,
+    }
+  );
 
   return <FormCreateForm labelOptions={labels} />;
 };
