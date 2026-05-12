@@ -1,22 +1,19 @@
 'use client';
 
-import { NoSsr } from '@mui/material';
 import {
-  DataGrid,
-  type GridColDef,
-  type GridEventListener,
-  type GridRowParams,
-} from '@mui/x-data-grid';
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TablePagination,
+  TableRow,
+} from '@mui/material';
 import { useRouter } from 'next/navigation';
 import * as React from 'react';
 import { formatString } from '@/generic/DateFormatter';
 import type { GetAnswerResponse } from '@/lib/api-types';
-
-const columns: GridColDef[] = [
-  { field: 'category', headerName: '種別', width: 200 },
-  { field: 'title', headerName: 'タイトル', width: 200 },
-  { field: 'date', headerName: '日付', width: 200 },
-];
 
 interface Row {
   id: string;
@@ -49,33 +46,66 @@ const DataTable = (props: {
     () => prepareRows(props.answerResponseWithFormTitle),
     [props.answerResponseWithFormTitle]
   );
+  const [page, setPage] = React.useState(0);
+  const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  const paginatedRows = React.useMemo(
+    () => rows.slice(page * rowsPerPage, (page + 1) * rowsPerPage),
+    [page, rows, rowsPerPage]
+  );
 
-  const handleRowClick: GridEventListener<'rowClick'> = (
-    params: GridRowParams
+  const handleRowClick = (rowId: string) => {
+    router.push(`/admin/answer/${rowId}`);
+  };
+
+  const handleChangePage = (
+    _event: React.MouseEvent<HTMLButtonElement> | null,
+    nextPage: number
   ) => {
-    router.push(`/admin/answer/${params.id}`);
+    setPage(nextPage);
+  };
+
+  const handleChangeRowsPerPage = (
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    setRowsPerPage(Number(event.target.value));
+    setPage(0);
   };
 
   return (
-    <NoSsr>
-      <DataGrid
-        rows={rows}
-        columns={columns}
-        onRowClick={handleRowClick}
-        initialState={{
-          pagination: {
-            paginationModel: { page: 0, pageSize: 5 },
-          },
-        }}
-        pageSizeOptions={[5, 10, 25, 50, 100]}
-        sx={{
-          '& .MuiDataGrid-columnHeader, & .MuiDataGrid-cell': {
-            color: 'text.primary',
-          },
-        }}
-        checkboxSelection
+    <TableContainer component={Paper}>
+      <Table>
+        <TableHead>
+          <TableRow>
+            <TableCell>種別</TableCell>
+            <TableCell>タイトル</TableCell>
+            <TableCell>日付</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {paginatedRows.map((row) => (
+            <TableRow
+              key={row.id}
+              hover
+              onClick={() => handleRowClick(row.id)}
+              sx={{ cursor: 'pointer' }}
+            >
+              <TableCell>{row.category}</TableCell>
+              <TableCell>{row.title}</TableCell>
+              <TableCell>{row.date}</TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+      <TablePagination
+        component="div"
+        count={rows.length}
+        page={page}
+        onPageChange={handleChangePage}
+        rowsPerPage={rowsPerPage}
+        onRowsPerPageChange={handleChangeRowsPerPage}
+        rowsPerPageOptions={[5, 10, 25, 50, 100]}
       />
-    </NoSsr>
+    </TableContainer>
   );
 };
 

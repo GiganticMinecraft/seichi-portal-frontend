@@ -13,12 +13,12 @@ import Checkbox from '@mui/material/Checkbox';
 import { Controller, useForm } from 'react-hook-form';
 import { useNotificationSettings } from '@/hooks/useNotificationSettings';
 import type {
-  GetNotificationSettingsResponse,
+  GetUserNotificationSettingsResponse,
   UpdateNotificationSettingsSchema,
 } from '@/lib/api-types';
 
 const DiscordNotificationSettings = (props: {
-  currentSettings: GetNotificationSettingsResponse;
+  currentSettings: GetUserNotificationSettingsResponse;
   userId: string;
 }) => {
   const { handleSubmit, control } = useForm<UpdateNotificationSettingsSchema>({

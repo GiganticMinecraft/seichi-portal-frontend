@@ -29,12 +29,16 @@ export type GetMessagesResponse =
   paths['/forms/{form_id}/answers/{answer_id}/messages']['get']['responses'][200]['content']['application/json'];
 export type GetUsersResponse =
   paths['/users/me']['get']['responses'][200]['content']['application/json'];
+export type GetUserResponse =
+  paths['/users/{uuid}']['get']['responses'][200]['content']['application/json'];
 export type GetUserListResponse =
   paths['/users']['get']['responses'][200]['content']['application/json'];
 export type SearchResponse =
   paths['/search']['get']['responses'][200]['content']['application/json'];
 export type GetNotificationSettingsResponse =
   paths['/notifications/settings/me']['get']['responses'][200]['content']['application/json'];
+export type GetUserNotificationSettingsResponse =
+  paths['/notifications/settings/{uuid}']['get']['responses'][200]['content']['application/json'];
 export type CreateFormSchema =
   paths['/forms']['post']['requestBody']['content']['application/json'];
 export type UpdateNotificationSettingsSchema =

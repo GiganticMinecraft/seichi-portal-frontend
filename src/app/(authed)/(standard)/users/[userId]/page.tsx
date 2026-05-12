@@ -6,14 +6,10 @@ import UserInformation from './_components/UserInformation';
 import { backendFetchJson } from '@/lib/server/backend';
 import { requireUser } from '@/lib/server/session';
 import type {
-  GetNotificationSettingsResponse,
-  GetUsersResponse,
+  GetUserNotificationSettingsResponse,
+  GetUserResponse,
 } from '@/lib/api-types';
-import type { paths } from '@/generated/api-types';
 import type { Metadata } from 'next';
-
-type UserNotificationSettingsResponse =
-  paths['/notifications/settings/{uuid}']['get']['responses'][200]['content']['application/json'];
 
 export const metadata: Metadata = {
   title: 'ユーザー情報 | Seichi Portal',
@@ -23,11 +19,11 @@ const Home = async ({ params }: { params: Promise<{ userId: string }> }) => {
   const session = await requireUser();
   const { userId } = await params;
   const [user, notificationSettings] = await Promise.all([
-    backendFetchJson<GetUsersResponse>(`/users/${userId}`, {
+    backendFetchJson<GetUserResponse>(`/users/${userId}`, {
       method: 'GET',
       token: session.token,
     }),
-    backendFetchJson<UserNotificationSettingsResponse>(
+    backendFetchJson<GetUserNotificationSettingsResponse>(
       `/notifications/settings/${userId}`,
       {
         method: 'GET',
@@ -48,9 +44,7 @@ const Home = async ({ params }: { params: Promise<{ userId: string }> }) => {
             <Divider />
             <DiscordNotificationSettings
               userId={userId}
-              currentSettings={
-                notificationSettings as GetNotificationSettingsResponse
-              }
+              currentSettings={notificationSettings}
             />
           </Card>
         ) : (

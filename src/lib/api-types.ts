@@ -19,6 +19,8 @@ export type {
   GetFormsResponse,
   GetMessagesResponse,
   GetNotificationSettingsResponse,
+  GetUserNotificationSettingsResponse,
+  GetUserResponse,
   GetQuestionsResponse,
   GetUserListResponse,
   GetUsersResponse,
