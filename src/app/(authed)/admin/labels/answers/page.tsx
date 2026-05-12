@@ -1,24 +1,24 @@
-'use client';
-
 import { Stack, Typography } from '@mui/material';
-import { useApiQuery } from '@/app/_swr/useApiQuery';
-import ErrorModal from '@/app/_components/ErrorModal';
-import LoadingCircular from '@/app/_components/LoadingCircular';
 import CreateLabelField from '../_components/CreateLabelField';
 import Labels from '../_components/Labels';
-import { usePageTitle } from '@/hooks/usePageTitle';
+import { backendFetchJson } from '@/lib/server/backend';
+import { requireAdmin } from '@/lib/server/session';
+import type { GetAnswerLabelsResponse } from '@/lib/api-types';
+import type { Metadata } from 'next';
 
-const Home = () => {
-  usePageTitle('回答設定用ラベル管理');
-  const { data, error, isLoading } = useApiQuery('/labels/answers');
+export const metadata: Metadata = {
+  title: '回答設定用ラベル管理 | Seichi Portal',
+};
 
-  if (error) {
-    return <ErrorModal />;
-  }
-
-  if (isLoading || !data) {
-    return <LoadingCircular />;
-  }
+const Home = async () => {
+  const session = await requireAdmin();
+  const labels = await backendFetchJson<GetAnswerLabelsResponse>(
+    '/labels/answers',
+    {
+      method: 'GET',
+      token: session.token,
+    }
+  );
 
   return (
     <Stack spacing={3} sx={{ width: '100%' }}>
@@ -30,7 +30,7 @@ const Home = () => {
         <Typography variant="h4">回答設定用ラベル管理</Typography>
         <CreateLabelField />
       </Stack>
-      <Labels labels={data} />
+      <Labels labels={labels} />
     </Stack>
   );
 };
