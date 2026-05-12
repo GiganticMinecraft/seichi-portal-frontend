@@ -8,6 +8,7 @@ import { useMsal } from '@azure/msal-react';
 import { Alert, Button, Stack, Typography } from '@mui/material';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState, Suspense } from 'react';
+import { usePageTitle } from '@/hooks/usePageTitle';
 import type { SilentRequest } from '@azure/msal-browser';
 
 const loginRequest = {
@@ -15,6 +16,7 @@ const loginRequest = {
 };
 
 const LoginContent = () => {
+  usePageTitle('ログイン');
   const { instance, inProgress, accounts } = useMsal();
   const [isInitialized, setState] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);

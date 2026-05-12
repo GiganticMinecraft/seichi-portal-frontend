@@ -5,8 +5,10 @@ import ErrorModal from '@/app/_components/ErrorModal';
 import LoadingCircular from '@/app/_components/LoadingCircular';
 import FormList from './_components/FormList';
 import { useApiQuery } from '@/app/_swr/useApiQuery';
+import { usePageTitle } from '@/hooks/usePageTitle';
 
 const Home = () => {
+  usePageTitle('フォーム一覧');
   const { data: forms, error, isLoading } = useApiQuery('/forms');
 
   if (error) {

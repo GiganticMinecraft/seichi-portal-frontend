@@ -10,6 +10,7 @@ import {
   AUTCHED_DRAWER_WIDTH_PX,
   AUTCHED_MESSAGE_CONTAINER_OFFSET_PX,
 } from '@/app/(authed)/layoutConstants';
+import { usePageTitle } from '@/hooks/usePageTitle';
 import InputMessageField from './_components/InputMessageField';
 import Messages from './_components/Messages';
 
@@ -18,6 +19,7 @@ const Home = ({
 }: {
   params: Promise<{ formId: string; answerId: string }>;
 }) => {
+  usePageTitle('メッセージ');
   const { formId, answerId } = use(params);
   const {
     data: messages,

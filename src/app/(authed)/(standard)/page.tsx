@@ -8,6 +8,7 @@ import {
 import { InteractionStatus } from '@azure/msal-browser';
 import { useState } from 'react';
 import { DEBUG_MODE } from '@/env.client';
+import { usePageTitle } from '@/hooks/usePageTitle';
 import MainMenu from './_components/MainMenu';
 import { NeedToSignin } from './_components/NeedToSignin';
 import LoadingCircular from '@/app/_components/LoadingCircular';
@@ -32,6 +33,7 @@ const HomeContent = () => {
 };
 
 const Home = () => {
+  usePageTitle('ホーム');
   const [isDebugMode] = useState(
     () => process.env.NODE_ENV === 'development' && DEBUG_MODE
   );
