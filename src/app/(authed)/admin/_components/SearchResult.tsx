@@ -100,7 +100,7 @@ const SearchResult = (props: {
               {
                 category: 'フォーム用ラベル' as const,
                 title: result.data.name,
-                url: `/admin/labels/forms`,
+                url: `/admin/labels?tab=forms`,
               },
             ]
           : [];
@@ -112,7 +112,7 @@ const SearchResult = (props: {
               {
                 category: '回答用ラベル' as const,
                 title: result.data.name,
-                url: `/admin/labels/answers`,
+                url: `/admin/labels?tab=answers`,
               },
             ]
           : [];
