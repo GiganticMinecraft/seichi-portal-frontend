@@ -8,7 +8,7 @@ const ToManageFormLabelButton = () => {
       component={NextLink}
       variant="contained"
       startIcon={<Label />}
-      href="/admin/labels/forms"
+      href="/admin/labels?tab=forms"
       sx={{
         width: '150px',
         height: '36px',

@@ -119,7 +119,7 @@ export const AdminAnswerLabelManagementButton = () => (
   <Button
     component={NextLink}
     variant="contained"
-    href="/admin/labels/answers"
+    href="/admin/labels?tab=answers"
     startIcon={<Label />}
   >
     ラベルの管理
