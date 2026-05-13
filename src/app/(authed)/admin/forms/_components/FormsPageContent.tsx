@@ -1,11 +1,9 @@
 'use client';
 
-import { Grid, Stack } from '@mui/material';
+import { Stack } from '@mui/material';
 import { useMemo, useState } from 'react';
-import { Forms } from './DashboardFormList';
-import FormCreateButton from './FormCreateButton';
-import FormLabelFilter from './FormLabelFilter';
-import ToManageFormLabelButton from './ToManageFormLabelButton';
+import FormsTable from './FormsTable';
+import FormsToolbar from './FormsToolbar';
 import type { GetFormLabelsResponse, GetFormsResponse } from '@/lib/api-types';
 
 const FormsPageContent = ({
@@ -15,48 +13,34 @@ const FormsPageContent = ({
   forms: GetFormsResponse;
   labels: GetFormLabelsResponse;
 }) => {
+  const [titleSearch, setTitleSearch] = useState('');
   const [labelFilter, setLabelFilter] = useState<GetFormLabelsResponse>([]);
 
   const filteredForms = useMemo(() => {
-    if (labelFilter.length === 0) return forms;
-    return forms.filter((form) =>
-      labelFilter.every((label) =>
-        form.labels.some((formLabel) => formLabel.id === label.id)
-      )
-    );
-  }, [forms, labelFilter]);
+    const normalizedSearch = titleSearch.trim().toLowerCase();
+    return forms.filter((form) => {
+      const matchesTitle =
+        normalizedSearch.length === 0 ||
+        form.title.toLowerCase().includes(normalizedSearch);
+      const matchesLabels =
+        labelFilter.length === 0 ||
+        labelFilter.every((label) =>
+          form.labels.some((formLabel) => formLabel.id === label.id)
+        );
+      return matchesTitle && matchesLabels;
+    });
+  }, [forms, titleSearch, labelFilter]);
 
   return (
-    <Grid
-      container
-      spacing={4}
-      sx={{ flexDirection: 'column', justifyContent: 'flex-start' }}
-    >
-      <Grid>
-        <Grid
-          container
-          spacing={2}
-          direction="row"
-          sx={{ justifyContent: 'space-between' }}
-        >
-          <Grid size="auto">
-            <Stack direction="row">
-              <FormLabelFilter
-                labelOptions={labels}
-                setLabelFilter={setLabelFilter}
-              />
-              <ToManageFormLabelButton />
-            </Stack>
-          </Grid>
-          <Grid size={2}>
-            <FormCreateButton />
-          </Grid>
-        </Grid>
-      </Grid>
-      <Grid>
-        <Forms forms={filteredForms} />
-      </Grid>
-    </Grid>
+    <Stack spacing={3}>
+      <FormsToolbar
+        labels={labels}
+        titleSearch={titleSearch}
+        onTitleSearchChange={setTitleSearch}
+        onLabelFilterChange={setLabelFilter}
+      />
+      <FormsTable forms={filteredForms} />
+    </Stack>
   );
 };
 
