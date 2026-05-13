@@ -20,3 +20,14 @@ export const getDiscordConfig = () =>
 
 export const getDebugMode = () =>
   debugModeSchema.parse(process.env['NEXT_PUBLIC_DEBUG_MODE']) === 'true';
+
+const msalConfigSchema = z.object({
+  clientId: z.string().min(1),
+  redirectUri: z.string().url(),
+});
+
+export const getMsalConfig = () =>
+  msalConfigSchema.parse({
+    clientId: process.env['MS_APP_CLIENT_ID'],
+    redirectUri: process.env['MS_APP_REDIRECT_URL'],
+  });
