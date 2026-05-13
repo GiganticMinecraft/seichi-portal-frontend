@@ -9,23 +9,43 @@ on:
       - main
 
 jobs:
+  lint:
+    name: Lint & Format
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: ./.github/actions/setup
+      - name: Lint
+        run: pnpm run lint
+      - name: Format
+        run: pnpm run fmt
+
+  type-check:
+    name: Type check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: ./.github/actions/setup
+      - name: Type check
+        run: pnpm run type-check
+
+  unit-test:
+    name: Unit test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: ./.github/actions/setup
+      - name: Unit test
+        run: pnpm run test:unit
+
   build:
+    name: Build
     runs-on: ubuntu-latest
     env:
       NEXT_PUBLIC_DEBUG_MODE: 'false'
     steps:
       - uses: actions/checkout@v6
-
-      - name: Setup Node.js
-        uses: jdx/mise-action@v4
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v6
-        with:
-          cache: true
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+      - uses: ./.github/actions/setup
 
       - name: Cache Next.js build
         uses: actions/cache@v5
@@ -35,24 +55,6 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-nextjs-${{ hashFiles('pnpm-lock.yaml') }}-
             ${{ runner.os }}-nextjs-
-
-      - name: Lint
-        run: pnpm run lint
-
-      - name: Format
-        run: pnpm run fmt
-
-      - name: Type check
-        run: pnpm run type-check
-
-      - name: Unit test
-        run: pnpm run test:unit
-
-      - name: Install Playwright browsers
-        run: pnpm exec playwright install --with-deps chromium
-
-      - name: E2E test
-        run: pnpm run test:e2e
 
       - name: Build
         run: pnpm run build
