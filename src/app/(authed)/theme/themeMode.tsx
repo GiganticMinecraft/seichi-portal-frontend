@@ -55,9 +55,13 @@ const getThemeModeServerSnapshot = (): ThemeMode => 'light';
 export const AuthedProviders = ({
   children,
   currentUser,
+  msalClientId,
+  msalRedirectUri,
 }: {
   children: ReactNode;
   currentUser: CurrentUser;
+  msalClientId: string;
+  msalRedirectUri: string;
 }) => {
   const mode = useSyncExternalStore(
     subscribeThemeMode,
@@ -92,7 +96,12 @@ export const AuthedProviders = ({
                 fetcher,
               }}
             >
-              <MsalProvider>{children}</MsalProvider>
+              <MsalProvider
+                clientId={msalClientId}
+                redirectUri={msalRedirectUri}
+              >
+                {children}
+              </MsalProvider>
             </SWRConfig>
           </ThemeProvider>
         </ThemeModeContext.Provider>
