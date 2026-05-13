@@ -21,7 +21,6 @@ import {
   createEmptyFormEditorValues,
 } from '../../_lib/formEditorDefaults';
 import { useCreateForm } from '../_hooks/useCreateForm';
-import { adminFormFieldSx } from '../../_components/adminFormFieldSx';
 
 const FormCreateForm = (props: { labelOptions: GetFormLabelsResponse }) => {
   const {
@@ -54,7 +53,7 @@ const FormCreateForm = (props: { labelOptions: GetFormLabelsResponse }) => {
   const formContent = (
     <Container component="form" onSubmit={handleSubmit(createForm)}>
       <Stack spacing={2}>
-        <Card sx={adminFormFieldSx}>
+        <Card>
           <CardContent>
             <FormSettings
               control={control}

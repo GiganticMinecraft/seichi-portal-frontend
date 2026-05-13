@@ -15,7 +15,6 @@ import FormEditorLayout from '../../../_components/FormEditorLayout';
 import FormSettings from '../../../_components/FormSettings';
 import QuestionEditor from '../../../_components/QuestionEditor';
 import QuestionList from '../../../_components/QuestionList';
-import { adminFormFieldSx } from '../../../_components/adminFormFieldSx';
 import { createEmptyFormEditorQuestion } from '../../../_lib/formEditorDefaults';
 import { fromFormResponseToEditorValues } from '../../../_lib/formRequestBuilders';
 import type { FormEditorValues } from '../../../_schema/formEditorSchema';
@@ -67,7 +66,7 @@ const FormEditForm = (props: {
     >
       <Container component="form" onSubmit={handleSubmit(onSubmit)}>
         <Stack spacing={2}>
-          <Card sx={adminFormFieldSx}>
+          <Card>
             <CardContent>
               <FormSettings
                 register={register}

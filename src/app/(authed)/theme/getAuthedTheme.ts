@@ -63,57 +63,46 @@ export const getAuthedTheme = (mode: ThemeMode) =>
       },
       MuiInputLabel: {
         styleOverrides: {
-          formControl:
-            mode === 'dark'
-              ? {
-                  position: 'static',
-                  transform: 'none',
-                  transition: 'none',
-                  cursor: 'pointer',
-                  fontSize: '1.1rem',
-                  color: '#FFFFFF',
-                }
-              : undefined,
-        },
-      },
-      MuiMenuItem: {
-        styleOverrides: {
-          root: {
-            color: mode === 'dark' ? '#FFFFFF' : undefined,
-          },
+          formControl: ({ theme }) => ({
+            position: 'static',
+            transform: 'none',
+            transition: 'none',
+            cursor: 'pointer',
+            fontSize: '1.1rem',
+            marginBottom: '4px',
+            color: theme.palette.text.primary,
+          }),
         },
       },
       MuiOutlinedInput: {
         styleOverrides: {
-          root:
-            mode === 'dark'
-              ? {
-                  background: 'rgba(255, 255, 255, 0.12)',
-                }
-              : undefined,
-          input:
-            mode === 'dark'
-              ? {
-                  height: 'auto',
-                }
-              : undefined,
-          notchedOutline:
-            mode === 'dark'
-              ? {
-                  top: 0,
-                  borderColor: 'rgba(255, 255, 255, 0.18)',
-                  legend: {
-                    display: 'none',
-                  },
-                }
-              : undefined,
+          root: ({ theme }) => ({
+            backgroundColor:
+              theme.palette.mode === 'dark'
+                ? alpha(theme.palette.common.white, 0.12)
+                : alpha(theme.palette.common.white, 0.92),
+          }),
+          input: {
+            height: 'auto',
+            paddingTop: '10px',
+            paddingBottom: '8px',
+          },
+          notchedOutline: ({ theme }) => ({
+            top: 0,
+            borderColor:
+              theme.palette.mode === 'dark'
+                ? 'rgba(255, 255, 255, 0.18)'
+                : alpha(theme.palette.text.primary, 0.2),
+            legend: {
+              display: 'none',
+            },
+          }),
         },
       },
       MuiFormHelperText: {
         styleOverrides: {
           root: {
             marginLeft: 0,
-            color: mode === 'dark' ? '#FFFFFF' : undefined,
           },
         },
       },
