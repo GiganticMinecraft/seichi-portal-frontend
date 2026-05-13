@@ -9,7 +9,11 @@ const UserNameCell = ({ id, name }: { id: string; name: string }) => (
       sx={{ width: 32, height: 32 }}
     />
     <Box sx={{ display: 'flex', alignItems: 'center' }}>
-      <Typography variant="body2" sx={{ fontWeight: 'medium' }}>
+      <Typography
+        variant="body2"
+        component="span"
+        sx={{ fontWeight: 'medium' }}
+      >
         {name}
       </Typography>
       <CopyButton value={name} />

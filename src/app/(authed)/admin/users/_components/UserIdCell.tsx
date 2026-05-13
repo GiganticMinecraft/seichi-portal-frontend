@@ -8,6 +8,7 @@ const UserIdCell = ({ id }: { id: string }) => (
     <Tooltip title={id} placement="top">
       <Typography
         variant="body2"
+        component="span"
         sx={{
           fontFamily: 'monospace',
           color: 'text.secondary',
