@@ -113,13 +113,9 @@ const ConversationEntry = ({
         />
       </Grid>
       <Grid size={showMenuTrigger ? 9 : 11}>
-        <Stack>
-          <Stack
-            direction="row"
-            spacing={1}
-            sx={{ display: 'flex', alignItems: 'center' }}
-          >
-            <Typography variant="subtitle2" noWrap>
+        <Stack spacing={0.25}>
+          <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
+            <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
               {entry.authorName}
             </Typography>
             {isAdmin && (
@@ -136,9 +132,6 @@ const ConversationEntry = ({
                 sx={{ height: 20 }}
               />
             )}
-            <Typography variant="caption" color="text.secondary">
-              {formatString(entry.timestamp)}
-            </Typography>
             {showDeleteTrigger && (
               <IconButton
                 size="small"
@@ -151,6 +144,9 @@ const ConversationEntry = ({
               </IconButton>
             )}
           </Stack>
+          <Typography variant="caption" color="text.secondary">
+            {formatString(entry.timestamp)}
+          </Typography>
         </Stack>
       </Grid>
       {showMenuTrigger && (
