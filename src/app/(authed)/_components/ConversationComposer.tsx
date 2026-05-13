@@ -1,7 +1,13 @@
 'use client';
 
 import SendIcon from '@mui/icons-material/Send';
-import { Box, Button, Stack, TextField, Typography } from '@mui/material';
+import {
+  IconButton,
+  InputAdornment,
+  Stack,
+  TextField,
+  Typography,
+} from '@mui/material';
 import type { SxProps, Theme } from '@mui/material/styles';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -66,14 +72,20 @@ const ConversationComposer = ({
               await handleSubmit(onSubmit)();
             }
           }}
+          slotProps={{
+            input: {
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton type="submit" aria-label="送信">
+                    <SendIcon />
+                  </IconButton>
+                </InputAdornment>
+              ),
+            },
+          }}
           multiline
           required
         />
-        <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-          <Button variant="contained" endIcon={<SendIcon />} type="submit">
-            送信
-          </Button>
-        </Box>
         {submitError && (
           <Typography sx={{ fontSize: '12px' }}>{submitError}</Typography>
         )}
