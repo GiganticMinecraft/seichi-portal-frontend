@@ -52,7 +52,9 @@ export const AdminAnswerTitle = (props: { answer: GetAnswerResponse }) => {
           sx={{ minWidth: 280, flexGrow: 1 }}
         />
       ) : (
-        <Typography variant="h4">{title}</Typography>
+        <Typography variant="h4" component="h1">
+          {title}
+        </Typography>
       )}
       {isEditing ? (
         <Button

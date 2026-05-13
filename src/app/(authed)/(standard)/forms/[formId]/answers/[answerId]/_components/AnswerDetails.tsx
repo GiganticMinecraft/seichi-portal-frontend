@@ -32,6 +32,7 @@ const AnswerDetails = (props: {
             <Paper key={key} variant="outlined" sx={{ p: 2 }}>
               <Typography
                 variant="subtitle1"
+                component="h2"
                 sx={{ fontWeight: 'bold', mb: 1 }}
               >
                 {answerWithQuestionTitle.questionTitle}
