@@ -5,30 +5,25 @@ import EditIcon from '@mui/icons-material/Edit';
 import Autocomplete from '@mui/material/Autocomplete';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
-import Grid from '@mui/material/Grid';
 import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import NextLink from 'next/link';
-import type { ReactNode } from 'react';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useAnswerActions } from '@/hooks/useAnswerActions';
-import { removeDuplicates } from '@/generic/ArrayExtra';
-import { formatString } from '@/generic/DateFormatter';
 import type {
   GetAnswerLabelsResponse,
   GetAnswerResponse,
-  GetQuestionsResponse,
 } from '@/lib/api-types';
 
-const AnswerTitleForm = (props: { answers: GetAnswerResponse }) => {
+export const AdminAnswerTitle = (props: { answer: GetAnswerResponse }) => {
   const { handleSubmit, register } = useForm<{ title: string }>();
   const [isEditing, setIsEditing] = useState(false);
-  const [title, setTitle] = useState(props.answers.title);
+  const [title, setTitle] = useState(props.answer.title);
   const { updateTitle } = useAnswerActions(
-    props.answers.form_id,
-    props.answers.id
+    props.answer.form_id,
+    props.answer.id
   );
 
   const onSubmit = async (data: { title: string }) => {
@@ -43,10 +38,19 @@ const AnswerTitleForm = (props: { answers: GetAnswerResponse }) => {
     <Stack
       direction="row"
       spacing={2}
-      sx={{ justifyContent: 'space-between', alignItems: 'flex-start' }}
+      sx={{
+        justifyContent: 'space-between',
+        alignItems: 'flex-start',
+        flexWrap: 'wrap',
+      }}
     >
       {isEditing ? (
-        <TextField {...register('title')} defaultValue={title} required />
+        <TextField
+          {...register('title')}
+          defaultValue={title}
+          required
+          sx={{ minWidth: 280, flexGrow: 1 }}
+        />
       ) : (
         <Typography variant="h4">{title}</Typography>
       )}
@@ -71,13 +75,13 @@ const AnswerTitleForm = (props: { answers: GetAnswerResponse }) => {
   );
 };
 
-const AnswerLabels = (props: {
+export const AdminAnswerLabels = (props: {
   labelOptions: GetAnswerLabelsResponse;
-  answers: GetAnswerResponse;
+  answer: GetAnswerResponse;
 }) => {
   const { updateLabels } = useAnswerActions(
-    props.answers.form_id,
-    props.answers.id
+    props.answer.form_id,
+    props.answer.id
   );
 
   return (
@@ -86,7 +90,7 @@ const AnswerLabels = (props: {
       id="label"
       options={props.labelOptions.map((label) => label.name)}
       getOptionLabel={(option) => option}
-      defaultValue={props.answers.labels.map((label) => label.name)}
+      defaultValue={props.answer.labels.map((label) => label.name)}
       renderOption={(renderProps, option) => (
         <Box {...renderProps} key={option} component="span">
           {option}
@@ -109,91 +113,13 @@ const AnswerLabels = (props: {
   );
 };
 
-const AnswerMeta = (props: {
-  answers: GetAnswerResponse;
-  labels: GetAnswerLabelsResponse;
-  messageAction: ReactNode;
-}) => (
-  <Grid container spacing={2}>
-    <Grid size={6}>
-      <Typography sx={{ fontWeight: 'bold' }}>回答者</Typography>
-      {props.answers.user.name}
-    </Grid>
-    <Grid size={6}>
-      <Typography sx={{ fontWeight: 'bold' }}>回答日時</Typography>
-      {formatString(props.answers.timestamp)}
-    </Grid>
-    <Grid size={6}>
-      <Typography sx={{ fontWeight: 'bold' }}>ラベル</Typography>
-      <AnswerLabels labelOptions={props.labels} answers={props.answers} />
-    </Grid>
-    <Grid size={6}>
-      <Stack spacing={2} direction="row">
-        <Button
-          component={NextLink}
-          variant="contained"
-          href="/admin/labels/answers"
-          startIcon={<Label />}
-        >
-          ラベルの管理
-        </Button>
-        {props.messageAction}
-      </Stack>
-    </Grid>
-  </Grid>
+export const AdminAnswerLabelManagementButton = () => (
+  <Button
+    component={NextLink}
+    variant="contained"
+    href="/admin/labels/answers"
+    startIcon={<Label />}
+  >
+    ラベルの管理
+  </Button>
 );
-
-type AnswerWithQuestionInfo = {
-  questionTitle: string;
-  answers: string[];
-};
-
-const Answers = (props: { answers: AnswerWithQuestionInfo }) => (
-  <Stack>
-    <Typography sx={{ fontWeight: 'bold' }}>
-      {props.answers.questionTitle}
-    </Typography>
-    {props.answers.answers.join(', ')}
-  </Stack>
-);
-
-const AnswerDetails = (props: {
-  answers: GetAnswerResponse;
-  questions: GetQuestionsResponse;
-  labels: GetAnswerLabelsResponse;
-  messageAction: ReactNode;
-}) => {
-  const answerWithQuestionInfo = removeDuplicates(
-    props.answers.answers.map((answer) => answer.question_id)
-  ).map((questionId) => {
-    const info: AnswerWithQuestionInfo = {
-      questionTitle:
-        props.questions.find((question) => question.id == questionId)?.title ||
-        '',
-      answers: props.answers.answers
-        .filter((answer) => answer.question_id == questionId)
-        .map((answer) => answer.answer),
-    };
-    return info;
-  });
-
-  return (
-    <Stack spacing={2}>
-      <AnswerTitleForm answers={props.answers} />
-      <AnswerMeta
-        answers={props.answers}
-        labels={props.labels}
-        messageAction={props.messageAction}
-      />
-      {answerWithQuestionInfo.length === 0 ? (
-        <Typography>回答がありません</Typography>
-      ) : (
-        answerWithQuestionInfo.map((answer, index) => (
-          <Answers key={index} answers={answer} />
-        ))
-      )}
-    </Stack>
-  );
-};
-
-export default AnswerDetails;

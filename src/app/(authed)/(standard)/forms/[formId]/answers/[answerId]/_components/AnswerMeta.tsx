@@ -9,6 +9,8 @@ import type { GetAnswerResponse } from '@/lib/api-types';
 const AnswerMeta = (props: {
   answer: GetAnswerResponse;
   messageAction: ReactNode;
+  labelsSlot?: ReactNode;
+  extraActions?: ReactNode;
 }) => (
   <Paper variant="outlined" sx={{ p: 2 }}>
     <Grid container spacing={2}>
@@ -28,16 +30,20 @@ const AnswerMeta = (props: {
         <Typography variant="caption" color="text.secondary">
           ラベル
         </Typography>
-        <Box>
-          <AnswerLabels answers={props.answer} />
-        </Box>
+        <Box>{props.labelsSlot ?? <AnswerLabels answers={props.answer} />}</Box>
       </Grid>
       <Grid size={{ xs: 12, sm: 6 }}>
         <Stack
           direction="row"
           spacing={2}
-          sx={{ justifyContent: 'flex-start', alignItems: 'center' }}
+          useFlexGap
+          sx={{
+            justifyContent: 'flex-start',
+            alignItems: 'center',
+            flexWrap: 'wrap',
+          }}
         >
+          {props.extraActions}
           {props.messageAction}
         </Stack>
       </Grid>
