@@ -6,8 +6,14 @@ import { useApiQuery } from '@/app/_swr/useApiQuery';
 import ErrorModal from '@/app/_components/ErrorModal';
 import LoadingCircular from '@/app/_components/LoadingCircular';
 import Messages from '@/app/(authed)/_components/Messages';
-import AnswerDetails from './_components/AnswerDetails';
+import StandardAnswerDetails from '@/app/(authed)/(standard)/forms/[formId]/answers/[answerId]/_components/AnswerDetails';
+import StandardAnswerMeta from '@/app/(authed)/(standard)/forms/[formId]/answers/[answerId]/_components/AnswerMeta';
 import Comments from './_components/Comments';
+import {
+  AdminAnswerLabelManagementButton,
+  AdminAnswerLabels,
+  AdminAnswerTitle,
+} from './_components/AnswerDetails';
 import { usePageTitle } from '@/hooks/usePageTitle';
 import type { AnswerCommentType } from '@/lib/api-types';
 
@@ -82,10 +88,13 @@ const Home = ({ params }: { params: Promise<{ answerId: string }> }) => {
         alignItems: 'stretch',
       }}
     >
-      <AnswerDetails
-        answers={answers}
-        questions={form.questions}
-        labels={labels}
+      <AdminAnswerTitle answer={answers} />
+      <StandardAnswerMeta
+        answer={answers}
+        labelsSlot={
+          <AdminAnswerLabels labelOptions={labels} answer={answers} />
+        }
+        extraActions={<AdminAnswerLabelManagementButton />}
         messageAction={
           <Messages
             messages={messages}
@@ -96,6 +105,7 @@ const Home = ({ params }: { params: Promise<{ answerId: string }> }) => {
           />
         }
       />
+      <StandardAnswerDetails answer={answers} questions={form.questions} />
       <Comments
         comments={answers.comments as AnswerCommentType[]}
         formId={answers.form_id}
