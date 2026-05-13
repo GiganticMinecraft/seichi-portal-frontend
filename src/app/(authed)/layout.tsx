@@ -5,10 +5,8 @@ import { getMsalConfig } from '@/env.server';
 import type { ReactNode } from 'react';
 
 const RootLayout = async ({ children }: { children: ReactNode }) => {
-  const [session, msalConfig] = await Promise.all([
-    requireUser(),
-    Promise.resolve(getMsalConfig()),
-  ]);
+  const session = await requireUser();
+  const msalConfig = getMsalConfig();
 
   return (
     <html lang="ja">
