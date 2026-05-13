@@ -1,61 +1,48 @@
-'use client';
-
 import {
-  Divider,
-  List,
-  ListItem,
-  ListItemText,
-  MenuItem,
-  Select,
-  Stack,
+  Box,
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
 } from '@mui/material';
-import { useUserRoleActions } from '@/hooks/useUserRoleActions';
+import UserListHeader from './UserListHeader';
+import UserRow from './UserRow';
 import type { GetUserListResponse } from '@/lib/api-types';
 
-const UserList = (props: { users: GetUserListResponse }) => {
-  const { updateUserRole } = useUserRoleActions();
-
-  return (
-    <List sx={{ width: '100%' }}>
-      <ListItem>
-        <Stack
-          direction="row"
-          spacing={2}
-          sx={{ justifyContent: 'space-between', width: '100%' }}
-        >
-          <ListItemText sx={{ alignItems: 'center' }} primary={'ユーザー名'} />
-          <ListItemText sx={{ alignItems: 'center' }} primary={'ID'} />
-          <ListItemText sx={{ alignItems: 'center' }} primary={'権限'} />
-        </Stack>
-      </ListItem>
-      <Divider />
-      {props.users.map((user, index) => (
-        <ListItem
-          key={index}
-          secondaryAction={
-            <Select
-              defaultValue={user.role}
-              onChange={async (event) => {
-                await updateUserRole(user.id, event.target.value);
-              }}
-            >
-              <MenuItem value="STANDARD_USER">通常ユーザー</MenuItem>
-              <MenuItem value="ADMINISTRATOR">管理者</MenuItem>
-            </Select>
-          }
-        >
-          <Stack
-            direction="row"
-            spacing={2}
-            sx={{ justifyContent: 'space-between', width: '100%' }}
-          >
-            <ListItemText sx={{ alignItems: 'center' }} primary={user.name} />
-            <ListItemText sx={{ alignItems: 'center' }} primary={user.id} />
-          </Stack>
-        </ListItem>
-      ))}
-    </List>
-  );
-};
+const UserList = ({
+  users,
+  currentUserId,
+}: {
+  users: GetUserListResponse;
+  currentUserId: string;
+}) => (
+  <Box sx={{ p: 3 }}>
+    <UserListHeader count={users.length} />
+    <TableContainer component={Paper} variant="outlined">
+      <Table>
+        <TableHead>
+          <TableRow sx={{ '& th': { fontWeight: 'bold' } }}>
+            <TableCell>ユーザー</TableCell>
+            <TableCell>UUID</TableCell>
+            <TableCell>現在の権限</TableCell>
+            <TableCell>権限の変更</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {users.map((user) => (
+            <UserRow
+              key={user.id}
+              user={user}
+              isSelf={user.id === currentUserId}
+            />
+          ))}
+        </TableBody>
+      </Table>
+    </TableContainer>
+  </Box>
+);
 
 export default UserList;
