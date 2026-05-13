@@ -1,5 +1,4 @@
 import Autocomplete from '@mui/material/Autocomplete';
-import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import type { GetFormLabelsResponse } from '@/lib/api-types';
 import type { Dispatch, SetStateAction } from 'react';
@@ -14,12 +13,18 @@ const FormLabelFilter = (props: {
       id="label"
       options={props.labelOptions.map((label) => label.name)}
       getOptionLabel={(option) => option}
-      renderOption={(props, option) => {
-        return (
-          <Box {...props} key={option} component="span">
-            {option}
-          </Box>
-        );
+      sx={{ minWidth: 280, flexGrow: 1 }}
+      slotProps={{
+        listbox: {
+          sx: {
+            '& .MuiAutocomplete-option': {
+              whiteSpace: 'nowrap',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+            },
+          },
+        },
+        popper: { sx: { minWidth: 280 } },
       }}
       renderInput={(params) => (
         <TextField
