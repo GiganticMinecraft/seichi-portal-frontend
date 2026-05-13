@@ -46,21 +46,17 @@ const LabelsTabs = (props: {
           <Tab label="回答用" value="answers" />
         </Tabs>
       </Box>
-      {currentTab === 'forms' ? (
-        <Stack spacing={2}>
-          <Stack direction="row" sx={{ justifyContent: 'flex-end' }}>
-            <CreateLabelField labelType="forms" />
-          </Stack>
-          <Labels labels={props.formLabels} labelType="forms" />
+      <Stack spacing={2}>
+        <Stack direction="row" sx={{ justifyContent: 'flex-end' }}>
+          <CreateLabelField labelType={currentTab} />
         </Stack>
-      ) : (
-        <Stack spacing={2}>
-          <Stack direction="row" sx={{ justifyContent: 'flex-end' }}>
-            <CreateLabelField labelType="answers" />
-          </Stack>
-          <Labels labels={props.answerLabels} labelType="answers" />
-        </Stack>
-      )}
+        <Labels
+          labels={
+            currentTab === 'forms' ? props.formLabels : props.answerLabels
+          }
+          labelType={currentTab}
+        />
+      </Stack>
     </Stack>
   );
 };
