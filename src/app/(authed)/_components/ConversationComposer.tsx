@@ -59,7 +59,6 @@ const ConversationComposer = ({
       <Stack spacing={1}>
         <TextField
           {...register('body')}
-          label={label}
           helperText={helperText}
           sx={{ width: '100%', ...textFieldSx }}
           onKeyDown={async (event) => {
@@ -74,6 +73,7 @@ const ConversationComposer = ({
           }}
           slotProps={{
             input: {
+              inputProps: { placeholder: label },
               endAdornment: (
                 <InputAdornment position="end">
                   <IconButton type="submit" aria-label="送信">
@@ -84,7 +84,6 @@ const ConversationComposer = ({
             },
           }}
           multiline
-          required
         />
         {submitError && (
           <Typography sx={{ fontSize: '12px' }}>{submitError}</Typography>
