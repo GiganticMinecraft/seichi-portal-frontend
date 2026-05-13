@@ -1,7 +1,13 @@
 'use client';
 
 import SendIcon from '@mui/icons-material/Send';
-import { Button, Grid, TextField, Typography } from '@mui/material';
+import {
+  IconButton,
+  InputAdornment,
+  Stack,
+  TextField,
+  Typography,
+} from '@mui/material';
 import type { SxProps, Theme } from '@mui/material/styles';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -50,44 +56,39 @@ const ConversationComposer = ({
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <Grid container>
-        <Grid size={{ xs: 12, sm: 11 }}>
-          <TextField
-            {...register('body')}
-            label={label}
-            helperText={helperText}
-            sx={{ width: '100%', ...textFieldSx }}
-            onKeyDown={async (event) => {
-              if (
-                event.key === 'Enter' &&
-                !event.shiftKey &&
-                !event.nativeEvent.isComposing
-              ) {
-                event.preventDefault();
-                await handleSubmit(onSubmit)();
-              }
-            }}
-            multiline
-            required
-          />
-        </Grid>
-        <Grid
-          container
-          size={{ xs: 12, sm: 1 }}
-          sx={{ alignItems: 'center', justifyContent: 'center' }}
-        >
-          <Button variant="contained" endIcon={<SendIcon />} type="submit">
-            送信
-          </Button>
-        </Grid>
+      <Stack spacing={1}>
+        <TextField
+          {...register('body')}
+          helperText={helperText}
+          sx={{ width: '100%', ...textFieldSx }}
+          onKeyDown={async (event) => {
+            if (
+              event.key === 'Enter' &&
+              !event.shiftKey &&
+              !event.nativeEvent.isComposing
+            ) {
+              event.preventDefault();
+              await handleSubmit(onSubmit)();
+            }
+          }}
+          slotProps={{
+            input: {
+              inputProps: { placeholder: label },
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton type="submit" aria-label="送信">
+                    <SendIcon />
+                  </IconButton>
+                </InputAdornment>
+              ),
+            },
+          }}
+          multiline
+        />
         {submitError && (
-          <Grid size={12}>
-            <Typography sx={{ fontSize: '12px', marginTop: '10px' }}>
-              {submitError}
-            </Typography>
-          </Grid>
+          <Typography sx={{ fontSize: '12px' }}>{submitError}</Typography>
         )}
-      </Grid>
+      </Stack>
     </form>
   );
 };

@@ -6,7 +6,6 @@ import {
   Avatar,
   Box,
   Chip,
-  Grid,
   IconButton,
   Menu,
   MenuItem,
@@ -98,8 +97,8 @@ const ConversationEntry = ({
   };
 
   return (
-    <Grid container spacing={2}>
-      <Grid size={1}>
+    <Box>
+      <Stack direction="row" spacing={1} sx={{ alignItems: 'flex-start' }}>
         <Avatar
           alt="PlayerHead"
           src={`https://mc-heads.net/avatar/${entry.authorName}`}
@@ -107,19 +106,14 @@ const ConversationEntry = ({
             width: 36,
             height: 36,
             mt: 0.5,
+            flexShrink: 0,
             border: isAdmin ? 2 : 0,
             borderColor: 'success.main',
           }}
         />
-      </Grid>
-      <Grid size={showMenuTrigger ? 9 : 11}>
-        <Stack>
-          <Stack
-            direction="row"
-            spacing={1}
-            sx={{ display: 'flex', alignItems: 'center' }}
-          >
-            <Typography variant="subtitle2" noWrap>
+        <Stack sx={{ flex: 1 }} spacing={0.25}>
+          <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
+            <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
               {entry.authorName}
             </Typography>
             {isAdmin && (
@@ -136,9 +130,6 @@ const ConversationEntry = ({
                 sx={{ height: 20 }}
               />
             )}
-            <Typography variant="caption" color="text.secondary">
-              {formatString(entry.timestamp)}
-            </Typography>
             {showDeleteTrigger && (
               <IconButton
                 size="small"
@@ -151,43 +142,46 @@ const ConversationEntry = ({
               </IconButton>
             )}
           </Stack>
+          <Typography variant="caption" color="text.secondary">
+            {formatString(entry.timestamp)}
+          </Typography>
         </Stack>
-      </Grid>
-      {showMenuTrigger && (
-        <Grid size={2}>
-          <IconButton
-            color="primary"
-            aria-label="その他の操作"
-            onClick={(event: MouseEvent<HTMLElement>) =>
-              setAnchorEl(event.currentTarget)
-            }
-          >
-            <MoreVert />
-          </IconButton>
-          <Menu
-            anchorEl={anchorEl}
-            open={anchorEl !== undefined}
-            onClose={() => setAnchorEl(undefined)}
-          >
-            {entry.canEdit && (
-              <MenuItem
-                onClick={() => {
-                  setOperationResultMessage(undefined);
-                  setIsEditing(true);
-                  setAnchorEl(undefined);
-                }}
-              >
-                編集
-              </MenuItem>
-            )}
-            {entry.canDelete && (
-              <MenuItem onClick={handleDelete}>削除</MenuItem>
-            )}
-          </Menu>
-        </Grid>
-      )}
-      <Grid size={1}></Grid>
-      <Grid size={11}>
+        {showMenuTrigger && (
+          <>
+            <IconButton
+              color="primary"
+              aria-label="その他の操作"
+              onClick={(event: MouseEvent<HTMLElement>) =>
+                setAnchorEl(event.currentTarget)
+              }
+            >
+              <MoreVert />
+            </IconButton>
+            <Menu
+              anchorEl={anchorEl}
+              open={anchorEl !== undefined}
+              onClose={() => setAnchorEl(undefined)}
+            >
+              {entry.canEdit && (
+                <MenuItem
+                  onClick={() => {
+                    setOperationResultMessage(undefined);
+                    setIsEditing(true);
+                    setAnchorEl(undefined);
+                  }}
+                >
+                  編集
+                </MenuItem>
+              )}
+              {entry.canDelete && (
+                <MenuItem onClick={handleDelete}>削除</MenuItem>
+              )}
+            </Menu>
+          </>
+        )}
+      </Stack>
+
+      <Box sx={{ pl: '44px', mt: 0.5 }}>
         {isEditing ? (
           <TextField
             defaultValue={entry.body}
@@ -239,22 +233,17 @@ const ConversationEntry = ({
             )}
           </Paper>
         )}
-      </Grid>
-      {operationResultMessage && (
-        <Grid container size={12}>
-          <Grid size={1}></Grid>
-          <Grid size={11}>
-            <Typography
-              variant="caption"
-              component="p"
-              sx={{ color: 'error.main', marginTop: '10px' }}
-            >
-              {operationResultMessage}
-            </Typography>
-          </Grid>
-        </Grid>
-      )}
-    </Grid>
+        {operationResultMessage && (
+          <Typography
+            variant="caption"
+            component="p"
+            sx={{ color: 'error.main', mt: 1 }}
+          >
+            {operationResultMessage}
+          </Typography>
+        )}
+      </Box>
+    </Box>
   );
 };
 

@@ -85,13 +85,16 @@ export const getAuthedTheme = (mode: ThemeMode) =>
       },
       MuiOutlinedInput: {
         styleOverrides: {
+          root:
+            mode === 'dark'
+              ? {
+                  background: 'rgba(255, 255, 255, 0.12)',
+                }
+              : undefined,
           input:
             mode === 'dark'
               ? {
-                  paddingTop: '10px',
-                  paddingBottom: '8px',
                   height: 'auto',
-                  background: 'rgba(255, 255, 255, 0.12)',
                 }
               : undefined,
           notchedOutline:
