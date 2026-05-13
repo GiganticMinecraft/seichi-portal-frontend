@@ -63,13 +63,15 @@ export const getAuthedTheme = (mode: ThemeMode) =>
       },
       MuiInputLabel: {
         styleOverrides: {
-          formControl: {
+          formControl: ({ theme }) => ({
             position: 'static',
             transform: 'none',
             transition: 'none',
             cursor: 'pointer',
             fontSize: '1.1rem',
-          },
+            marginBottom: '4px',
+            color: theme.palette.text.primary,
+          }),
         },
       },
       MuiOutlinedInput: {
