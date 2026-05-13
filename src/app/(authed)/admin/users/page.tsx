@@ -15,7 +15,7 @@ const Home = async () => {
     token: session.token,
   });
 
-  return <UserList users={users} />;
+  return <UserList users={users} currentUserId={session.user.id} />;
 };
 
 export default Home;
