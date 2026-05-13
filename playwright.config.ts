@@ -14,8 +14,8 @@ export default defineConfig({
     reuseExistingServer: true,
     env: {
       BACKEND_SERVER_URL: 'http://127.0.0.1:9',
-      NEXT_PUBLIC_MS_APP_CLIENT_ID: 'test-client-id',
-      NEXT_PUBLIC_MS_APP_REDIRECT_URL: `http://127.0.0.1:${port}/login`,
+      MS_APP_CLIENT_ID: 'test-client-id',
+      MS_APP_REDIRECT_URL: `http://127.0.0.1:${port}/login`,
       NEXT_PUBLIC_DEBUG_MODE: 'false',
     },
   },
