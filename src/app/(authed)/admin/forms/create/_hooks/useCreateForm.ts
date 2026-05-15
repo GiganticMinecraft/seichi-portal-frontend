@@ -22,7 +22,8 @@ export const useCreateForm = () => {
         body: toCreateFormBody(data),
       });
       if (!response.ok || !createdForm) {
-        throw new Error('フォームの作成に失敗しました。');
+        setSubmitError({ message: 'フォームの作成に失敗しました。' });
+        return;
       }
       const createdFormId = createdForm.id;
 
@@ -34,7 +35,10 @@ export const useCreateForm = () => {
         }
       );
       if (!setFormMetadataResponse.ok) {
-        throw new Error('フォームのメタデータの設定に失敗しました。');
+        setSubmitError({
+          message: 'フォームのメタデータの設定に失敗しました。',
+        });
+        return;
       }
 
       const { response: putLabelsResponse } = await proxyClient.PUT(
@@ -45,17 +49,13 @@ export const useCreateForm = () => {
         }
       );
       if (!putLabelsResponse.ok) {
-        throw new Error('ラベルの設定に失敗しました。');
+        setSubmitError({ message: 'ラベルの設定に失敗しました。' });
+        return;
       }
 
       setIsSubmitted(true);
-    } catch (error) {
-      setSubmitError({
-        message:
-          error instanceof Error
-            ? error.message
-            : '予期せぬエラーが発生しました。',
-      });
+    } catch {
+      setSubmitError({ message: '予期せぬエラーが発生しました。' });
     }
   };
 

@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect } from 'react';
-import ErrorModal from '@/app/_components/ErrorModal';
+import ErrorDialog from '@/app/_components/ErrorDialog';
 
 type AuthErrorBoundaryProps = {
   error: Error & { digest?: string };
@@ -13,7 +13,7 @@ const AuthErrorBoundary = ({ error, reset }: AuthErrorBoundaryProps) => {
     console.error(error);
   }, [error]);
 
-  return <ErrorModal error={error} onRetry={reset} />;
+  return <ErrorDialog error={error} onRetry={reset} />;
 };
 
 export default AuthErrorBoundary;
