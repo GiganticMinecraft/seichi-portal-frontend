@@ -2,6 +2,8 @@
 
 import PersonIcon from '@mui/icons-material/Person';
 import LogoutIcon from '@mui/icons-material/Logout';
+import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
+import HomeIcon from '@mui/icons-material/Home';
 import {
   Box,
   AppBar,
@@ -30,9 +32,10 @@ import ThemeModeToggle from '@/app/(authed)/_components/ThemeModeToggle';
 
 type UserMenuProps = {
   user: NonNullable<ReturnType<typeof useOptionalCurrentUser>>;
+  isAdminPage: boolean;
 };
 
-const UserMenu = ({ user }: UserMenuProps) => {
+const UserMenu = ({ user, isAdminPage }: UserMenuProps) => {
   const router = useRouter();
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const [isSigningOut, setIsSigningOut] = useState(false);
@@ -117,6 +120,24 @@ const UserMenu = ({ user }: UserMenuProps) => {
           </ListItemIcon>
           <ListItemText>ユーザー情報・設定変更</ListItemText>
         </MenuItem>
+        {user.role === 'ADMINISTRATOR' && (
+          <MenuItem
+            component={NextLink}
+            href={isAdminPage ? '/' : '/admin'}
+            onClick={() => setAnchorEl(null)}
+          >
+            <ListItemIcon>
+              {isAdminPage ? (
+                <HomeIcon fontSize="small" />
+              ) : (
+                <AdminPanelSettingsIcon fontSize="small" />
+              )}
+            </ListItemIcon>
+            <ListItemText>
+              {isAdminPage ? '通常ページへ' : '管理者ページへ'}
+            </ListItemText>
+          </MenuItem>
+        )}
         <MenuItem onClick={handleSignout} disabled={isSigningOut}>
           <ListItemIcon>
             <LogoutIcon fontSize="small" />
@@ -170,7 +191,11 @@ const NavBar = ({
           </Typography>
           {searchSlot}
           <ThemeModeToggle />
-          {!user ? <SigninButton /> : <UserMenu user={user} />}
+          {!user ? (
+            <SigninButton />
+          ) : (
+            <UserMenu user={user} isAdminPage={homeHref === '/admin'} />
+          )}
         </Toolbar>
       </AppBar>
     </Box>
