@@ -47,10 +47,10 @@ const DashboardMenu = () => {
             label: 'Users',
             url: '/admin/users',
           },
-        ].map((value, index) => {
+        ].map((value) => {
           return (
             <MenuItem
-              key={index}
+              key={value.url}
               component={NextLink}
               href={value.url}
               sx={{ color: 'text.primary', textDecoration: 'none' }}
