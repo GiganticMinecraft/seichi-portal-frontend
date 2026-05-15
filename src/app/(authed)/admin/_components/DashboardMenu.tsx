@@ -7,7 +7,6 @@ import {
   MenuItem,
   ListItemIcon,
   Divider,
-  Link,
 } from '@mui/material';
 import Drawer from '@mui/material/Drawer';
 import NextLink from 'next/link';
@@ -48,9 +47,14 @@ const DashboardMenu = () => {
             label: 'Users',
             url: '/admin/users',
           },
-        ].map((value, index) => {
+        ].map((value) => {
           return (
-            <MenuItem key={index} sx={{ color: 'text.primary' }}>
+            <MenuItem
+              key={value.url}
+              component={NextLink}
+              href={value.url}
+              sx={{ color: 'text.primary', textDecoration: 'none' }}
+            >
               <ListItemIcon
                 sx={{
                   color: 'text.secondary',
@@ -59,14 +63,7 @@ const DashboardMenu = () => {
               >
                 <Star />
               </ListItemIcon>
-              <Link
-                component={NextLink}
-                href={value.url}
-                color="inherit"
-                sx={{ textDecoration: 'none' }}
-              >
-                {value.label}
-              </Link>
+              {value.label}
             </MenuItem>
           );
         })}
