@@ -3,7 +3,7 @@
 import { Stack, Typography } from '@mui/material';
 import { use } from 'react';
 import { useApiQuery } from '@/app/_swr/useApiQuery';
-import ErrorModal from '@/app/_components/ErrorModal';
+import ErrorDialog from '@/app/_components/ErrorDialog';
 import LoadingCircular from '@/app/_components/LoadingCircular';
 import Messages from '@/app/(authed)/_components/Messages';
 import AnswerDetails from './_components/AnswerDetails';
@@ -59,7 +59,7 @@ const Home = ({
   );
 
   if (answerError || formQuestionsError || messagesError) {
-    return <ErrorModal />;
+    return <ErrorDialog />;
   }
 
   if (

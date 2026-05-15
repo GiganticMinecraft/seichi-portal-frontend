@@ -5,7 +5,7 @@ import { Box, Modal, Stack, Typography } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 import { useRouter } from 'next/navigation';
 import { useApiQuery } from '@/app/_swr/useApiQuery';
-import ErrorModal from '@/app/_components/ErrorModal';
+import ErrorDialog from '@/app/_components/ErrorDialog';
 import {
   searchAnswerItemSchema,
   searchFormItemSchema,
@@ -29,7 +29,7 @@ const SearchResult = (props: {
   });
 
   if (error) {
-    return <ErrorModal />;
+    return <ErrorDialog />;
   }
 
   if (isLoading || !data) {

@@ -2,11 +2,12 @@
 
 import SendIcon from '@mui/icons-material/Send';
 import {
+  Alert,
   IconButton,
   InputAdornment,
+  Snackbar,
   Stack,
   TextField,
-  Typography,
 } from '@mui/material';
 import type { SxProps, Theme } from '@mui/material/styles';
 import { useState } from 'react';
@@ -35,7 +36,10 @@ const ConversationComposer = ({
   textFieldSx,
 }: Props) => {
   const { handleSubmit, register, reset } = useForm<ComposerForm>();
-  const [submitError, setSubmitError] = useState<string>();
+  const [snackbar, setSnackbar] = useState<{
+    open: boolean;
+    message: string;
+  }>({ open: false, message: '' });
 
   const onSubmit = async (data: ComposerForm) => {
     if (data.body === '') {
@@ -46,50 +50,64 @@ const ConversationComposer = ({
 
     if (result.success) {
       reset({ body: '' });
-      setSubmitError(undefined);
     } else if (result.forbidden) {
-      setSubmitError('このメッセージを送信する権限がありません。');
+      setSnackbar({
+        open: true,
+        message: 'このメッセージを送信する権限がありません。',
+      });
     } else {
-      setSubmitError('送信に失敗しました');
+      setSnackbar({ open: true, message: '送信に失敗しました。' });
     }
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
-      <Stack spacing={1}>
-        <TextField
-          {...register('body')}
-          helperText={helperText}
-          sx={{ width: '100%', ...textFieldSx }}
-          onKeyDown={async (event) => {
-            if (
-              event.key === 'Enter' &&
-              !event.shiftKey &&
-              !event.nativeEvent.isComposing
-            ) {
-              event.preventDefault();
-              await handleSubmit(onSubmit)();
-            }
-          }}
-          slotProps={{
-            input: {
-              inputProps: { placeholder: label },
-              endAdornment: (
-                <InputAdornment position="end">
-                  <IconButton type="submit" aria-label="送信">
-                    <SendIcon />
-                  </IconButton>
-                </InputAdornment>
-              ),
-            },
-          }}
-          multiline
-        />
-        {submitError && (
-          <Typography sx={{ fontSize: '12px' }}>{submitError}</Typography>
-        )}
-      </Stack>
-    </form>
+    <>
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <Stack spacing={1}>
+          <TextField
+            {...register('body')}
+            helperText={helperText}
+            sx={{ width: '100%', ...textFieldSx }}
+            onKeyDown={async (event) => {
+              if (
+                event.key === 'Enter' &&
+                !event.shiftKey &&
+                !event.nativeEvent.isComposing
+              ) {
+                event.preventDefault();
+                await handleSubmit(onSubmit)();
+              }
+            }}
+            slotProps={{
+              input: {
+                inputProps: { placeholder: label },
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton type="submit" aria-label="送信">
+                      <SendIcon />
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              },
+            }}
+            multiline
+          />
+        </Stack>
+      </form>
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={6000}
+        onClose={() => setSnackbar((prev) => ({ ...prev, open: false }))}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      >
+        <Alert
+          severity="error"
+          onClose={() => setSnackbar((prev) => ({ ...prev, open: false }))}
+        >
+          {snackbar.message}
+        </Alert>
+      </Snackbar>
+    </>
   );
 };
 
