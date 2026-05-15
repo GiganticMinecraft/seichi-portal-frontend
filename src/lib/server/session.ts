@@ -139,7 +139,11 @@ export const requireAdmin = async (cookie?: RequestCookies) => {
   const session = await requireUser(cookie);
 
   if (session.user.role !== 'ADMINISTRATOR') {
-    redirect('/?error=403');
+    throw new AccessError({
+      message: 'Administrator role is required',
+      status: 403,
+      code: 'FORBIDDEN',
+    });
   }
 
   return session;

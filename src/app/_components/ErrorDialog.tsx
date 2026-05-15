@@ -25,6 +25,7 @@ import { isHttpError } from '@/lib/httpError';
 
 type ErrorDialogProps = {
   error?: unknown;
+  status?: number;
   message?: string;
   title?: string;
   onRetry?: () => void;
@@ -34,6 +35,7 @@ type ErrorDialogProps = {
 
 const ErrorDialog = ({
   error,
+  status: statusProp,
   message,
   title,
   onRetry,
@@ -44,11 +46,13 @@ const ErrorDialog = ({
   const [path] = useState(() =>
     typeof window !== 'undefined' ? window.location.href : ''
   );
-  const status = isHttpError(error)
-    ? error.status
-    : isAccessError(error)
+  const status =
+    statusProp ??
+    (isHttpError(error)
       ? error.status
-      : null;
+      : isAccessError(error)
+        ? error.status
+        : null);
 
   const resolvedTitle =
     title ??
