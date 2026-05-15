@@ -1,7 +1,9 @@
 'use client';
 
 import { Box } from '@mui/material';
+import { Suspense } from 'react';
 import NavBar from '@/app/_components/NavBar';
+import AccessErrorOverlay from './_components/AccessErrorOverlay';
 import type { ReactNode } from 'react';
 
 const RootLayout = ({ children }: { children: ReactNode }) => {
@@ -18,6 +20,9 @@ const RootLayout = ({ children }: { children: ReactNode }) => {
       }}
     >
       <NavBar />
+      <Suspense>
+        <AccessErrorOverlay />
+      </Suspense>
       {children}
     </Box>
   );

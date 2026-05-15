@@ -1,4 +1,4 @@
-import { forbidden, redirect } from 'next/navigation';
+import { redirect } from 'next/navigation';
 import { headers } from 'next/headers';
 import { cache } from 'react';
 import { backendFetch, BackendError } from './backend';
@@ -139,7 +139,7 @@ export const requireAdmin = async (cookie?: RequestCookies) => {
   const session = await requireUser(cookie);
 
   if (session.user.role !== 'ADMINISTRATOR') {
-    forbidden();
+    redirect('/?error=403');
   }
 
   return session;
