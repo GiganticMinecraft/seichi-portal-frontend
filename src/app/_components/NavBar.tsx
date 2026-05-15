@@ -12,6 +12,7 @@ import {
   ListItemText,
   ListItemIcon,
   ListItemAvatar,
+  ListItem,
   Divider,
   IconButton,
   Tooltip,
@@ -123,6 +124,7 @@ const NavBar = () => {
                   aria-expanded={anchorEl ? 'true' : undefined}
                   color="inherit"
                   sx={{ p: 0.5 }}
+                  disabled={isSigningOut}
                 >
                   <Avatar
                     alt="PlayerHead"
@@ -138,12 +140,22 @@ const NavBar = () => {
                 transformOrigin={{ horizontal: 'right', vertical: 'top' }}
                 anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
               >
-                <MenuItem disabled sx={{ opacity: '1 !important' }}>
+                <ListItem sx={{ py: 1, px: 2 }}>
                   <ListItemAvatar>
                     <Avatar src={`https://mc-heads.net/avatar/${user.id}`} />
                   </ListItemAvatar>
-                  <ListItemText primary={user.name} />
-                </MenuItem>
+                  <ListItemText
+                    primary={user.name}
+                    slotProps={{
+                      primary: {
+                        variant: 'body2',
+                        noWrap: true,
+                        component: 'span',
+                        sx: { fontWeight: 'bold' },
+                      },
+                    }}
+                  />
+                </ListItem>
                 <Divider />
                 <MenuItem
                   component={NextLink}
