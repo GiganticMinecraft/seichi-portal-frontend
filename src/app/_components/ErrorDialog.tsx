@@ -107,7 +107,11 @@ const ErrorDialog = ({
             }}
           >
             <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-              <Typography variant="caption" color="text.secondary">
+              <Typography
+                variant="caption"
+                component="span"
+                color="text.secondary"
+              >
                 詳細情報
               </Typography>
             </AccordionSummary>

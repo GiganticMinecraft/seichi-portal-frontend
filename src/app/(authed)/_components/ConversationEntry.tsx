@@ -128,7 +128,11 @@ const ConversationEntry = ({
           />
           <Stack sx={{ flex: 1 }} spacing={0.25}>
             <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
-              <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
+              <Typography
+                variant="subtitle2"
+                component="span"
+                sx={{ fontWeight: 600 }}
+              >
                 {entry.authorName}
               </Typography>
               {isAdmin && (
@@ -157,7 +161,11 @@ const ConversationEntry = ({
                 </IconButton>
               )}
             </Stack>
-            <Typography variant="caption" color="text.secondary">
+            <Typography
+              variant="caption"
+              component="span"
+              color="text.secondary"
+            >
               {formatString(entry.timestamp)}
             </Typography>
           </Stack>
@@ -239,6 +247,7 @@ const ConversationEntry = ({
               ) : (
                 <Typography
                   variant="body2"
+                  component="p"
                   sx={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}
                 >
                   {entry.body}
