@@ -58,8 +58,11 @@ const ThemeModeToggle = () => {
   );
 };
 
-const NavBar = () => {
-  const user = useOptionalCurrentUser();
+type UserMenuProps = {
+  user: NonNullable<ReturnType<typeof useOptionalCurrentUser>>;
+};
+
+const UserMenu = ({ user }: UserMenuProps) => {
   const router = useRouter();
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const [isSigningOut, setIsSigningOut] = useState(false);
@@ -92,6 +95,73 @@ const NavBar = () => {
   };
 
   return (
+    <Box sx={{ ml: '20px' }}>
+      <Tooltip title="メニューを開く">
+        <IconButton
+          onClick={(event) => setAnchorEl(event.currentTarget)}
+          aria-controls={anchorEl ? 'user-menu' : undefined}
+          aria-haspopup="true"
+          aria-expanded={anchorEl ? 'true' : undefined}
+          color="inherit"
+          sx={{ p: 0.5 }}
+          disabled={isSigningOut}
+        >
+          <Avatar
+            alt="PlayerHead"
+            src={`https://mc-heads.net/avatar/${user.id}`}
+          />
+        </IconButton>
+      </Tooltip>
+      <Menu
+        id="user-menu"
+        anchorEl={anchorEl}
+        open={Boolean(anchorEl)}
+        onClose={() => setAnchorEl(null)}
+        transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+        anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+      >
+        <ListItem sx={{ py: 1, px: 2 }}>
+          <ListItemAvatar>
+            <Avatar src={`https://mc-heads.net/avatar/${user.id}`} />
+          </ListItemAvatar>
+          <ListItemText
+            primary={user.name}
+            slotProps={{
+              primary: {
+                variant: 'body2',
+                noWrap: true,
+                component: 'span',
+                sx: { fontWeight: 'bold' },
+              },
+            }}
+          />
+        </ListItem>
+        <Divider />
+        <MenuItem
+          component={NextLink}
+          href={`/users/${user.id}`}
+          onClick={() => setAnchorEl(null)}
+        >
+          <ListItemIcon>
+            <PersonIcon fontSize="small" />
+          </ListItemIcon>
+          <ListItemText>ユーザー情報・設定変更</ListItemText>
+        </MenuItem>
+        <MenuItem onClick={handleSignout} disabled={isSigningOut}>
+          <ListItemIcon>
+            <LogoutIcon fontSize="small" />
+          </ListItemIcon>
+          <ListItemText>サインアウト</ListItemText>
+        </MenuItem>
+      </Menu>
+    </Box>
+  );
+};
+
+const NavBar = () => {
+  const user = useOptionalCurrentUser();
+
+  return (
     <Box>
       <AppBar position="fixed">
         <Toolbar>
@@ -112,70 +182,7 @@ const NavBar = () => {
             </Link>
           </Typography>
           <ThemeModeToggle />
-          {!user ? (
-            <SigninButton />
-          ) : (
-            <Box sx={{ ml: '20px' }}>
-              <Tooltip title="メニューを開く">
-                <IconButton
-                  onClick={(event) => setAnchorEl(event.currentTarget)}
-                  aria-controls={anchorEl ? 'user-menu' : undefined}
-                  aria-haspopup="true"
-                  aria-expanded={anchorEl ? 'true' : undefined}
-                  color="inherit"
-                  sx={{ p: 0.5 }}
-                  disabled={isSigningOut}
-                >
-                  <Avatar
-                    alt="PlayerHead"
-                    src={`https://mc-heads.net/avatar/${user.id}`}
-                  />
-                </IconButton>
-              </Tooltip>
-              <Menu
-                id="user-menu"
-                anchorEl={anchorEl}
-                open={Boolean(anchorEl)}
-                onClose={() => setAnchorEl(null)}
-                transformOrigin={{ horizontal: 'right', vertical: 'top' }}
-                anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
-              >
-                <ListItem sx={{ py: 1, px: 2 }}>
-                  <ListItemAvatar>
-                    <Avatar src={`https://mc-heads.net/avatar/${user.id}`} />
-                  </ListItemAvatar>
-                  <ListItemText
-                    primary={user.name}
-                    slotProps={{
-                      primary: {
-                        variant: 'body2',
-                        noWrap: true,
-                        component: 'span',
-                        sx: { fontWeight: 'bold' },
-                      },
-                    }}
-                  />
-                </ListItem>
-                <Divider />
-                <MenuItem
-                  component={NextLink}
-                  href={`/users/${user.id}`}
-                  onClick={() => setAnchorEl(null)}
-                >
-                  <ListItemIcon>
-                    <PersonIcon fontSize="small" />
-                  </ListItemIcon>
-                  <ListItemText>ユーザー情報・設定変更</ListItemText>
-                </MenuItem>
-                <MenuItem onClick={handleSignout} disabled={isSigningOut}>
-                  <ListItemIcon>
-                    <LogoutIcon fontSize="small" />
-                  </ListItemIcon>
-                  <ListItemText>サインアウト</ListItemText>
-                </MenuItem>
-              </Menu>
-            </Box>
-          )}
+          {!user ? <SigninButton /> : <UserMenu user={user} />}
         </Toolbar>
       </AppBar>
     </Box>
