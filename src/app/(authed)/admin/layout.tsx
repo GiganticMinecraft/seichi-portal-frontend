@@ -1,15 +1,16 @@
 import { requireAdmin } from '@/lib/server/session';
-import AdminNavigationBar from './_components/AdminNavigationBar';
+import NavBar from '@/app/_components/NavBar';
+import SearchField from './_components/SearchField';
 import DashboardMenu from './_components/DashboardMenu';
 import styles from '../../page.module.css';
 import type { ReactNode } from 'react';
 
 const RootLayout = async ({ children }: { children: ReactNode }) => {
-  const session = await requireAdmin();
+  await requireAdmin();
 
   return (
     <>
-      <AdminNavigationBar currentUser={session.user} />
+      <NavBar homeHref="/admin" searchSlot={<SearchField />} withDrawerZIndex />
       <main className={styles['main']}>
         <DashboardMenu />
         {children}
