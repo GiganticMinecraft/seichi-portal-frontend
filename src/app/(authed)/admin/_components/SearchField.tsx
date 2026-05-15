@@ -1,24 +1,10 @@
 'use client';
 
 import SearchIcon from '@mui/icons-material/Search';
-import {
-  Typography,
-  Box,
-  AppBar,
-  Toolbar,
-  Link,
-  Paper,
-  IconButton,
-  InputBase,
-  Avatar,
-} from '@mui/material';
+import { Paper, IconButton, InputBase } from '@mui/material';
 import { alpha } from '@mui/material/styles';
-import Image from 'next/image';
-import NextLink from 'next/link';
 import { useState } from 'react';
-import ThemeModeToggle from '@/app/(authed)/_components/ThemeModeToggle';
 import SearchResult from './SearchResult';
-import type { CurrentUser } from '@/lib/currentUser';
 
 const SearchField = () => {
   const [openSearchResultModal, setOpenSearchResultModal] = useState(false);
@@ -71,48 +57,4 @@ const SearchField = () => {
   );
 };
 
-const NavBar = ({ currentUser }: { currentUser: CurrentUser }) => {
-  return (
-    <Box sx={{ flexGrow: 1 }}>
-      <AppBar
-        position="fixed"
-        sx={{
-          zIndex: (theme) => theme.zIndex.drawer + 1,
-          backgroundColor: (theme) => theme.palette.secondary.main,
-        }}
-      >
-        <Toolbar>
-          <Image
-            src="/favicon.ico"
-            width={48}
-            height={48}
-            alt={'seichi-portal logo'}
-          />
-          <Typography
-            variant="h6"
-            component="div"
-            sx={{ flexGrow: 1, paddingLeft: '10px' }}
-          >
-            <Link
-              component={NextLink}
-              href="/admin"
-              color="inherit"
-              sx={{ textDecoration: 'none' }}
-            >
-              Seichi Portal Admin
-            </Link>
-          </Typography>
-          <SearchField />
-          <ThemeModeToggle />
-          <Avatar
-            alt="PlayerHead"
-            src={`https://mc-heads.net/avatar/${currentUser.id}`}
-            sx={{ marginLeft: '20px' }}
-          />
-        </Toolbar>
-      </AppBar>
-    </Box>
-  );
-};
-
-export default NavBar;
+export default SearchField;

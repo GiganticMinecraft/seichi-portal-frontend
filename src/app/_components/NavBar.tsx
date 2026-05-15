@@ -1,5 +1,7 @@
 'use client';
 
+import PersonIcon from '@mui/icons-material/Person';
+import LogoutIcon from '@mui/icons-material/Logout';
 import {
   Box,
   AppBar,
@@ -19,44 +21,12 @@ import {
 } from '@mui/material';
 import Image from 'next/image';
 import NextLink from 'next/link';
-import { useState } from 'react';
+import { useState, type ReactNode } from 'react';
 import { useRouter } from 'next/navigation';
-import {
-  useOptionalCurrentUser,
-  useOptionalThemeMode,
-} from '@/app/(authed)/theme/themeMode';
+import { useOptionalCurrentUser } from '@/app/(authed)/theme/themeMode';
 import { SigninButton } from './SigninButton';
 import { getMsalInstance } from './MsalProvider';
-import DarkModeIcon from '@mui/icons-material/DarkMode';
-import LightModeIcon from '@mui/icons-material/LightMode';
-import PersonIcon from '@mui/icons-material/Person';
-import LogoutIcon from '@mui/icons-material/Logout';
-
-const ThemeModeToggle = () => {
-  const themeMode = useOptionalThemeMode();
-
-  if (!themeMode) {
-    return null;
-  }
-
-  const { mode, toggleMode } = themeMode;
-
-  return (
-    <Tooltip
-      title={
-        mode === 'light' ? 'ダークテーマに切り替え' : 'ライトテーマに切り替え'
-      }
-    >
-      <IconButton
-        color="inherit"
-        onClick={toggleMode}
-        aria-label="toggle theme"
-      >
-        {mode === 'light' ? <DarkModeIcon /> : <LightModeIcon />}
-      </IconButton>
-    </Tooltip>
-  );
-};
+import ThemeModeToggle from '@/app/(authed)/_components/ThemeModeToggle';
 
 type UserMenuProps = {
   user: NonNullable<ReturnType<typeof useOptionalCurrentUser>>;
@@ -158,12 +128,29 @@ const UserMenu = ({ user }: UserMenuProps) => {
   );
 };
 
-const NavBar = () => {
+type NavBarProps = {
+  homeHref?: string;
+  searchSlot?: ReactNode;
+  withDrawerZIndex?: boolean;
+};
+
+const NavBar = ({
+  homeHref = '/',
+  searchSlot,
+  withDrawerZIndex = false,
+}: NavBarProps) => {
   const user = useOptionalCurrentUser();
 
   return (
     <Box>
-      <AppBar position="fixed">
+      <AppBar
+        position="fixed"
+        sx={
+          withDrawerZIndex
+            ? { zIndex: (theme) => theme.zIndex.drawer + 1 }
+            : undefined
+        }
+      >
         <Toolbar>
           <Image
             src="/favicon.ico"
@@ -174,13 +161,14 @@ const NavBar = () => {
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
             <Link
               component={NextLink}
-              href="/"
+              href={homeHref}
               color="inherit"
               sx={{ textDecoration: 'none', pl: '10px' }}
             >
               Seichi Portal
             </Link>
           </Typography>
+          {searchSlot}
           <ThemeModeToggle />
           {!user ? <SigninButton /> : <UserMenu user={user} />}
         </Toolbar>
