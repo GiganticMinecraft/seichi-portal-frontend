@@ -19,13 +19,14 @@ const SearchField = () => {
         alignItems: 'center',
         width: 400,
         backgroundColor: (theme) =>
-          theme.palette.mode === 'dark'
-            ? alpha(theme.palette.common.white, 0.15)
-            : alpha(theme.palette.common.white, 0.85),
+          alpha(
+            theme.palette.common.white,
+            theme.palette.mode === 'dark' ? 0.15 : 0.85
+          ),
         border: (theme) =>
           theme.palette.mode === 'dark'
             ? `1px solid ${alpha(theme.palette.common.white, 0.2)}`
-            : `1px solid ${alpha(theme.palette.common.white, 0.4)}`,
+            : `1px solid ${alpha(theme.palette.text.primary, 0.2)}`,
       }}
     >
       <IconButton
