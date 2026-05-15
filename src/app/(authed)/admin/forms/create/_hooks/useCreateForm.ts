@@ -17,46 +17,40 @@ export const useCreateForm = () => {
     setSubmitError(null);
     setIsSubmitted(false);
 
-    try {
-      const { data: createdForm, response } = await proxyClient.POST('/forms', {
-        body: toCreateFormBody(data),
-      });
-      if (!response.ok || !createdForm) {
-        throw new Error('フォームの作成に失敗しました。');
-      }
-      const createdFormId = createdForm.id;
-
-      const { response: setFormMetadataResponse } = await proxyClient.PUT(
-        '/forms/{id}',
-        {
-          params: { path: { id: createdFormId } },
-          body: toFormUpdateBody(data, false),
-        }
-      );
-      if (!setFormMetadataResponse.ok) {
-        throw new Error('フォームのメタデータの設定に失敗しました。');
-      }
-
-      const { response: putLabelsResponse } = await proxyClient.PUT(
-        '/forms/{form_id}/labels',
-        {
-          params: { path: { form_id: createdFormId } },
-          body: toFormLabelsUpdateBody(data.labels),
-        }
-      );
-      if (!putLabelsResponse.ok) {
-        throw new Error('ラベルの設定に失敗しました。');
-      }
-
-      setIsSubmitted(true);
-    } catch (error) {
-      setSubmitError({
-        message:
-          error instanceof Error
-            ? error.message
-            : '予期せぬエラーが発生しました。',
-      });
+    const { data: createdForm, response } = await proxyClient.POST('/forms', {
+      body: toCreateFormBody(data),
+    });
+    if (!response.ok || !createdForm) {
+      setSubmitError({ message: 'フォームの作成に失敗しました。' });
+      return;
     }
+    const createdFormId = createdForm.id;
+
+    const { response: setFormMetadataResponse } = await proxyClient.PUT(
+      '/forms/{id}',
+      {
+        params: { path: { id: createdFormId } },
+        body: toFormUpdateBody(data, false),
+      }
+    );
+    if (!setFormMetadataResponse.ok) {
+      setSubmitError({ message: 'フォームのメタデータの設定に失敗しました。' });
+      return;
+    }
+
+    const { response: putLabelsResponse } = await proxyClient.PUT(
+      '/forms/{form_id}/labels',
+      {
+        params: { path: { form_id: createdFormId } },
+        body: toFormLabelsUpdateBody(data.labels),
+      }
+    );
+    if (!putLabelsResponse.ok) {
+      setSubmitError({ message: 'ラベルの設定に失敗しました。' });
+      return;
+    }
+
+    setIsSubmitted(true);
   };
 
   return { createForm, isSubmitted, submitError };
