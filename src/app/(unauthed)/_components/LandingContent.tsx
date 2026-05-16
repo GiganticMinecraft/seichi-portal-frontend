@@ -46,7 +46,6 @@ const fetchPostLoginRedirect = async (): Promise<string> => {
 
 export const LandingContent = () => {
   const { instance, accounts } = useMsal();
-  const [isInitialized, setIsInitialized] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const router = useRouter();
@@ -57,22 +56,18 @@ export const LandingContent = () => {
     setIsProcessing(false);
   };
 
+  // loginRedirect 直前に MSAL が sessionStorage に書く interaction.status ロックは、
+  // ユーザーが MS ログイン画面でブラウザバックしたときも残り続け、次回 loginRedirect が
+  // BrowserAuthError: interaction_in_progress で弾かれる原因になる。
+  // URL に hash が無い（= MS からの正規リダイレクト応答ではない）場合は、安全に掃除する。
   useEffect(() => {
-    (async () => {
-      await instance.initialize();
-      // handleRedirectPromise hangs indefinitely when called without a redirect hash,
-      // because MSAL waits for an auth response that never arrives (e.g. user pressed
-      // back before completing MS login, leaving a stale interaction lock in sessionStorage).
-      // Only call it when there is actually a redirect response to process.
-      if (window.location.hash.length > 1) {
-        await instance.handleRedirectPromise();
-      }
-      setIsInitialized(true);
-    })().catch((error) => handleFailure('初期化に失敗しました。', error));
+    if (window.location.hash.length > 1) return;
+    const { clientId } = instance.getConfiguration().auth;
+    window.sessionStorage.removeItem(`msal.${clientId}.interaction.status`);
   }, [instance]);
 
   useEffect(() => {
-    if (!isInitialized || errorMessage) return;
+    if (errorMessage) return;
     if (accounts.length === 0 || !accounts[0]) return;
 
     (async () => {
@@ -111,7 +106,7 @@ export const LandingContent = () => {
         }
       }
     })().catch((error) => handleFailure('ログイン処理に失敗しました。', error));
-  }, [isInitialized, accounts, instance, router, errorMessage]);
+  }, [accounts, instance, router, errorMessage]);
 
   const handleLogin = () => {
     instance
@@ -124,14 +119,6 @@ export const LandingContent = () => {
       );
   };
 
-  if ((!isInitialized || isProcessing) && !errorMessage) {
-    return (
-      <Container maxWidth="sm" sx={{ py: 10, textAlign: 'center' }}>
-        <CircularProgress />
-      </Container>
-    );
-  }
-
   if (errorMessage) {
     return (
       <Container maxWidth="sm" sx={{ py: 10 }}>
@@ -141,6 +128,16 @@ export const LandingContent = () => {
             再試行
           </Button>
         </Stack>
+      </Container>
+    );
+  }
+
+  // MS からのコールバック処理中（accounts が埋まり、Minecraft アクセストークン交換中）
+  // のときだけスピナーを表示。初回表示や戻り遷移時はランディングそのものを即出す。
+  if (isProcessing) {
+    return (
+      <Container maxWidth="sm" sx={{ py: 10, textAlign: 'center' }}>
+        <CircularProgress />
       </Container>
     );
   }
