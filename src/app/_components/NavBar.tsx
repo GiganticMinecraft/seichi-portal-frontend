@@ -68,7 +68,7 @@ const UserMenu = ({ user, isAdminPage }: UserMenuProps) => {
   };
 
   return (
-    <Box sx={{ ml: '20px' }}>
+    <Box sx={{ ml: 2.5 }}>
       <Tooltip title="メニューを開く">
         <IconButton
           onClick={(event) => setAnchorEl(event.currentTarget)}
@@ -190,12 +190,20 @@ const NavBar = ({
             </Link>
           </Typography>
           {searchSlot}
-          <ThemeModeToggle />
-          {!user ? (
-            <SigninButton />
-          ) : (
-            <UserMenu user={user} isAdminPage={homeHref === '/admin'} />
-          )}
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              ml: searchSlot ? 3 : 0,
+            }}
+          >
+            <ThemeModeToggle />
+            {!user ? (
+              <SigninButton />
+            ) : (
+              <UserMenu user={user} isAdminPage={homeHref === '/admin'} />
+            )}
+          </Box>
         </Toolbar>
       </AppBar>
     </Box>
