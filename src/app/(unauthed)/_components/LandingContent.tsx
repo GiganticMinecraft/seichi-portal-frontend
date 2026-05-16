@@ -28,7 +28,7 @@ const fetchPostLoginRedirect = async (): Promise<string> => {
   if (redirectTo !== '/') return redirectTo;
 
   const response = await fetch('/api/post-login-redirect', { method: 'POST' });
-  if (!response.ok) return '/forms';
+  if (!response.ok) return '/';
 
   const body: unknown = await response.json().catch(() => null);
   if (
@@ -41,7 +41,7 @@ const fetchPostLoginRedirect = async (): Promise<string> => {
     return body.redirectTo;
   }
 
-  return '/forms';
+  return '/';
 };
 
 export const LandingContent = () => {
@@ -154,7 +154,7 @@ export const LandingContent = () => {
           >
             Seichi Portal
           </Typography>
-          <Typography variant="body1" color="text.secondary">
+          <Typography variant="body1" component="p" color="text.secondary">
             整地鯖（GiganticMinecraft）公式のポータルサイトです。
             <br />
             フォームへの回答や各種設定をここから行えます。
