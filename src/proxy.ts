@@ -24,7 +24,7 @@ export const proxy = async (request: NextRequest) => {
   const currentPath = `${request.nextUrl.pathname}${request.nextUrl.search}`;
   const token = await getCachedToken(request.cookies);
   if (!token) {
-    const response = NextResponse.redirect(`${request.nextUrl.origin}/login`);
+    const response = NextResponse.redirect(`${request.nextUrl.origin}/`);
     setPostLoginRedirectCookie(
       response,
       getPostLoginRedirectFromRequest(request)

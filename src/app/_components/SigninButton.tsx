@@ -1,11 +1,22 @@
 'use client';
 
 import { Button } from '@mui/material';
-import NextLink from 'next/link';
+import { useMsal } from '@azure/msal-react';
+
+const loginRequest = {
+  scopes: ['XboxLive.signin offline_access'],
+  redirectStartPage: '/',
+};
 
 export const SigninButton = () => {
+  const { instance } = useMsal();
+
+  const handleLogin = () => {
+    instance.loginRedirect(loginRequest).catch(console.error);
+  };
+
   return (
-    <Button component={NextLink} color="inherit" href="/login">
+    <Button color="inherit" onClick={handleLogin}>
       サインイン
     </Button>
   );

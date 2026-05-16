@@ -17,7 +17,7 @@ const RootLayout = ({ children }: { children: ReactNode }) => {
         pb: { xs: '1rem', md: '2rem' },
       }}
     >
-      <NavBar />
+      <NavBar homeHref="/forms" />
       {children}
     </Box>
   );

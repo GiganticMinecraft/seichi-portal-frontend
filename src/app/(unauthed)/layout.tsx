@@ -20,15 +20,13 @@ const RootLayout = async ({ children }: { children: ReactNode }) => {
     <html lang="ja">
       <body>
         <AppRouterCacheProvider>
-          <NavBar />
-          <main className={styles['main']}>
-            <MsalProvider
-              clientId={msalConfig.clientId}
-              redirectUri={msalConfig.redirectUri}
-            >
-              {children}
-            </MsalProvider>
-          </main>
+          <MsalProvider
+            clientId={msalConfig.clientId}
+            redirectUri={msalConfig.redirectUri}
+          >
+            <NavBar />
+            <main className={styles['main']}>{children}</main>
+          </MsalProvider>
         </AppRouterCacheProvider>
       </body>
     </html>
