@@ -1,23 +1,25 @@
 'use client';
 
-import { Button } from '@mui/material';
-import { useMsal } from '@azure/msal-react';
-
-const loginRequest = {
-  scopes: ['XboxLive.signin offline_access'],
-  redirectStartPage: '/',
-};
+import { Alert, Button, Snackbar } from '@mui/material';
+import { useRedirectLogin } from './useRedirectLogin';
 
 export const SigninButton = () => {
-  const { instance } = useMsal();
-
-  const handleLogin = () => {
-    instance.loginRedirect(loginRequest).catch(console.error);
-  };
+  const { errorMessage, handleLogin, resetError } = useRedirectLogin();
 
   return (
-    <Button color="inherit" onClick={handleLogin}>
-      サインイン
-    </Button>
+    <>
+      <Button color="inherit" onClick={handleLogin}>
+        サインイン
+      </Button>
+      <Snackbar
+        open={errorMessage !== null}
+        autoHideDuration={6000}
+        onClose={resetError}
+      >
+        <Alert onClose={resetError} severity="error" variant="filled">
+          {errorMessage}
+        </Alert>
+      </Snackbar>
+    </>
   );
 };

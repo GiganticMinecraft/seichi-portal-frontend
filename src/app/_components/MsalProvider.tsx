@@ -1,8 +1,9 @@
 'use client';
 
-import { PublicClientApplication } from '@azure/msal-browser';
+import { EventType, PublicClientApplication } from '@azure/msal-browser';
 import { MsalProvider as MsalLibProvider } from '@azure/msal-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { shouldReloadForMsalRedirectRecovery } from './msalRedirectState';
 import type { Configuration } from '@azure/msal-browser';
 import type { ReactNode } from 'react';
 
@@ -46,6 +47,20 @@ export const MsalProvider = ({ clientId, redirectUri, children }: Props) => {
   const [instance] = useState(() =>
     initMsalInstance({ clientId, redirectUri })
   );
+
+  useEffect(() => {
+    const callbackId = instance.addEventCallback((message) => {
+      if (message.eventType !== EventType.RESTORE_FROM_BFCACHE) return;
+      if (!shouldReloadForMsalRedirectRecovery()) return;
+      window.location.reload();
+    });
+
+    return () => {
+      if (callbackId) {
+        instance.removeEventCallback(callbackId);
+      }
+    };
+  }, [instance]);
 
   return <MsalLibProvider instance={instance}>{children}</MsalLibProvider>;
 };

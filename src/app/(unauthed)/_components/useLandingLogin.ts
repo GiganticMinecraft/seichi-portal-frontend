@@ -8,6 +8,7 @@ import {
 import { useMsal } from '@azure/msal-react';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import { useRedirectLogin } from '@/app/_components/useRedirectLogin';
 import { normalizeRedirectTarget } from '@/lib/redirect';
 
 const LOGIN_ERROR_MESSAGE =
@@ -16,7 +17,6 @@ const RETRY_ERROR_MESSAGE =
   'ログインに失敗しました。時間を置いて再試行してください。';
 const LOGIN_PROCESSING_ERROR_MESSAGE = 'ログイン処理に失敗しました。';
 const LOGIN_REDIRECT_ERROR_MESSAGE = 'サインイン画面への遷移に失敗しました。';
-
 const loginRequest = {
   scopes: ['XboxLive.signin offline_access'],
 };
@@ -85,24 +85,24 @@ const completeLogin = async ({
 export const useLandingLogin = () => {
   const { instance, accounts } = useMsal();
   const [isProcessing, setIsProcessing] = useState(false);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const {
+    errorMessage: redirectErrorMessage,
+    handleLogin,
+    resetError,
+  } = useRedirectLogin({
+    errorMessage: LOGIN_REDIRECT_ERROR_MESSAGE,
+  });
+  const [processingErrorMessage, setProcessingErrorMessage] = useState<
+    string | null
+  >(null);
   const router = useRouter();
+  const errorMessage = processingErrorMessage ?? redirectErrorMessage;
 
   const handleFailure = (message: string, error: unknown) => {
     console.error(message, error);
-    setErrorMessage(message);
+    setProcessingErrorMessage(message);
     setIsProcessing(false);
   };
-
-  // loginRedirect 直前に MSAL が sessionStorage に書く interaction.status ロックは、
-  // ユーザーが MS ログイン画面でブラウザバックしたときも残り続け、次回 loginRedirect が
-  // BrowserAuthError: interaction_in_progress で弾かれる原因になる。
-  // URL に hash が無い（= MS からの正規リダイレクト応答ではない）場合は、安全に掃除する。
-  useEffect(() => {
-    if (window.location.hash.length > 1) return;
-    const { clientId } = instance.getConfiguration().auth;
-    window.sessionStorage.removeItem(`msal.${clientId}.interaction.status`);
-  }, [instance]);
 
   useEffect(() => {
     if (errorMessage) return;
@@ -130,18 +130,13 @@ export const useLandingLogin = () => {
     })().catch((error) => handleFailure(LOGIN_PROCESSING_ERROR_MESSAGE, error));
   }, [accounts, errorMessage, instance, router]);
 
-  const handleLogin = () => {
-    instance
-      .loginRedirect({
-        ...loginRequest,
-        redirectStartPage: '/',
-      })
-      .catch((error) => handleFailure(LOGIN_REDIRECT_ERROR_MESSAGE, error));
-  };
-
   return {
     errorMessage,
     isProcessing,
-    handleLogin,
+    handleLogin: () => {
+      resetError();
+      setProcessingErrorMessage(null);
+      handleLogin();
+    },
   };
 };
