@@ -112,7 +112,7 @@ describe('server session helpers', () => {
     const { requireUser } = await loadSessionModule();
 
     await expect(requireUser()).rejects.toThrow(
-      'redirect:/login?redirectTo=%2Fadmin%3Ftab%3Dusers'
+      'redirect:/?redirectTo=%2Fadmin%3Ftab%3Dusers'
     );
   });
 

@@ -121,8 +121,8 @@ export const requireUser = async (
     );
     redirect(
       redirectTo && redirectTo !== '/'
-        ? `/login?redirectTo=${encodeURIComponent(redirectTo)}`
-        : '/login'
+        ? `/?redirectTo=${encodeURIComponent(redirectTo)}`
+        : '/'
     );
   }
 

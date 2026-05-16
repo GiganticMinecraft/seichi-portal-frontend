@@ -1,0 +1,37 @@
+'use client';
+
+import { useState } from 'react';
+import { useMsal } from '@azure/msal-react';
+
+const DEFAULT_REDIRECT_ERROR_MESSAGE = 'サインイン画面への遷移に失敗しました。';
+
+type UseRedirectLoginOptions = {
+  errorMessage?: string;
+};
+
+const loginRequest = {
+  scopes: ['XboxLive.signin offline_access'],
+  redirectStartPage: '/',
+};
+
+export const useRedirectLogin = (options?: UseRedirectLoginOptions) => {
+  const { instance } = useMsal();
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  const handleLogin = () => {
+    setErrorMessage(null);
+    instance.loginRedirect(loginRequest).catch((error) => {
+      console.error(
+        options?.errorMessage ?? DEFAULT_REDIRECT_ERROR_MESSAGE,
+        error
+      );
+      setErrorMessage(options?.errorMessage ?? DEFAULT_REDIRECT_ERROR_MESSAGE);
+    });
+  };
+
+  return {
+    errorMessage,
+    handleLogin,
+    resetError: () => setErrorMessage(null),
+  };
+};

@@ -1,4 +1,4 @@
-import MainMenu from './_components/MainMenu';
+import MainMenu from '../_components/MainMenu';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {

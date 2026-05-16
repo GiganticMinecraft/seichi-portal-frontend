@@ -147,7 +147,7 @@ const ErrorDialog = ({
       </DialogContent>
       <DialogActions>
         {status === 401 && (
-          <Button variant="contained" component={Link} href="/login">
+          <Button variant="contained" component={Link} href="/">
             サインインページへ
           </Button>
         )}
