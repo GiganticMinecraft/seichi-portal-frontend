@@ -5,7 +5,7 @@ import { LandingContent } from './_components/LandingContent';
 const LandingPage = async () => {
   const session = await getSession();
   if (session.state === 'authenticated') {
-    redirect('/forms');
+    redirect('/home');
   }
 
   return <LandingContent />;
