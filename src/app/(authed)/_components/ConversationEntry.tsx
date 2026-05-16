@@ -8,6 +8,10 @@ import type {
   ConversationCapabilities,
   ConversationEntryViewModel,
 } from './conversationTypes';
+import {
+  CONVERSATION_ENTRY_AVATAR_SIZE,
+  CONVERSATION_ENTRY_HEADER_SPACING,
+} from './conversationEntryLayout';
 import ConversationEntryBody from './ConversationEntryBody';
 import ConversationEntryEditor from './ConversationEntryEditor';
 import ConversationEntryHeader from './ConversationEntryHeader';
@@ -111,7 +115,14 @@ const ConversationEntry = ({
           onDelete={handleDelete}
         />
 
-        <Box sx={{ pl: '44px', mt: 0.5 }}>
+        <Box
+          sx={(theme) => ({
+            pl: `calc(${CONVERSATION_ENTRY_AVATAR_SIZE}px + ${theme.spacing(
+              CONVERSATION_ENTRY_HEADER_SPACING
+            )})`,
+            mt: 0.5,
+          })}
+        >
           {isEditing ? (
             <ConversationEntryEditor
               value={draftBody}

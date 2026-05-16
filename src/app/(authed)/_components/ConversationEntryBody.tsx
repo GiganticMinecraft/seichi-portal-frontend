@@ -29,7 +29,7 @@ const ConversationEntryBody = ({ entry }: Props) => {
       })}
     >
       {entry.renderMode === 'markdown' ? (
-        <Box sx={{ whiteSpace: 'pre-wrap' }}>
+        <Box sx={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>
           <Markdown remarkPlugins={[remarkGfm]}>{entry.body}</Markdown>
         </Box>
       ) : (

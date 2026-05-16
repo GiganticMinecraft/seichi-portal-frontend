@@ -17,6 +17,10 @@ import type {
   ConversationCapabilities,
   ConversationEntryViewModel,
 } from './conversationTypes';
+import {
+  CONVERSATION_ENTRY_AVATAR_SIZE,
+  CONVERSATION_ENTRY_HEADER_SPACING,
+} from './conversationEntryLayout';
 
 type Props = {
   entry: ConversationEntryViewModel;
@@ -44,13 +48,17 @@ const ConversationEntryHeader = ({
     capabilities.actionTrigger === 'icon' && entry.canDelete;
 
   return (
-    <Stack direction="row" spacing={1} sx={{ alignItems: 'flex-start' }}>
+    <Stack
+      direction="row"
+      spacing={CONVERSATION_ENTRY_HEADER_SPACING}
+      sx={{ alignItems: 'flex-start' }}
+    >
       <Avatar
         alt="PlayerHead"
         src={`https://mc-heads.net/avatar/${entry.authorName}`}
         sx={{
-          width: 36,
-          height: 36,
+          width: CONVERSATION_ENTRY_AVATAR_SIZE,
+          height: CONVERSATION_ENTRY_AVATAR_SIZE,
           mt: 0.5,
           flexShrink: 0,
           border: isAdmin ? 2 : 0,

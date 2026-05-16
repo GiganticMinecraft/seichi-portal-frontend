@@ -16,6 +16,7 @@ const ConversationEntryEditor = ({
   onCancel,
 }: Props) => (
   <TextField
+    autoFocus
     value={value}
     helperText="編集を確定するには Enter キー、キャンセルするには Esc キーを入力してください。"
     multiline
