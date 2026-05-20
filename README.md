@@ -6,7 +6,17 @@
 
 ## API定義
 
-Seichi Portalではフロントエンドとバックエンド間の通信に REST APIを使っています。詳細については、[seichi-portal-backend](https://github.com/GiganticMinecraft/seichi-portal-backend)および[seichi-portal-api-schema](https://github.com/GiganticMinecraft/seichi-portal-api-schema)を参照してください。
+Seichi Portalではフロントエンドとバックエンド間の通信に REST APIを使っています。API型定義は、[seichi-portal-backend](https://github.com/GiganticMinecraft/seichi-portal-backend) の `docs/openapi.json` から生成します。
+
+```sh
+pnpm codegen
+```
+
+通常は backend の `main` ブランチで管理される OpenAPI スキーマを使います。ローカル backend や別ブランチのスキーマで一時的に生成したい場合は、`OPENAPI_URL` を指定してください。
+
+```sh
+OPENAPI_URL=http://localhost:9000/api-docs/openapi.json pnpm codegen
+```
 
 ## 開発環境とミドルウェア
 

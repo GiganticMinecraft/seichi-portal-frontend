@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { proxyClient } from '@/lib/proxyClient';
 import {
   toCreateFormBody,
-  toFormLabelsUpdateBody,
   toFormUpdateBody,
 } from '../../_lib/formRequestBuilders';
 import type { FormEditorValues } from '../../_schema/formEditorSchema';
@@ -38,18 +37,6 @@ export const useCreateForm = () => {
         setSubmitError({
           message: 'フォームのメタデータの設定に失敗しました。',
         });
-        return;
-      }
-
-      const { response: putLabelsResponse } = await proxyClient.PUT(
-        '/forms/{form_id}/labels',
-        {
-          params: { path: { form_id: createdFormId } },
-          body: toFormLabelsUpdateBody(data.labels),
-        }
-      );
-      if (!putLabelsResponse.ok) {
-        setSubmitError({ message: 'ラベルの設定に失敗しました。' });
         return;
       }
 

@@ -2,12 +2,12 @@
 
 import { proxyClient } from '@/lib/proxyClient';
 import { handleMutationResponse } from '@/hooks/useApiMutation';
-import type { paths } from '@/generated/api-types';
+import type { ApiPaths } from '@/lib/api/types';
 
 type FormUpdateBody =
-  paths['/forms/{id}']['put']['requestBody']['content']['application/json'];
+  ApiPaths['/forms/{id}']['put']['requestBody']['content']['application/json'];
 type FormUpdateResponse =
-  paths['/forms/{id}']['put']['responses'][200]['content']['application/json'];
+  ApiPaths['/forms/{id}']['put']['responses'][200]['content']['application/json'];
 
 export const useFormEditActions = (formId: string) => {
   const updateForm = async (body: FormUpdateBody): Promise<{ ok: boolean }> => {
