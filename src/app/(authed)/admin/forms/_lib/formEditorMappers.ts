@@ -2,8 +2,7 @@ import {
   fromStringToJSTDateTime,
   toApiDateTime,
 } from '@/generic/DateFormatter';
-import type { components, paths } from '@/generated/api-types';
-import type { GetFormResponse } from '@/lib/api/types';
+import type { ApiComponents, ApiPaths, GetFormResponse } from '@/lib/api/types';
 import type {
   FormEditorQuestion,
   FormEditorValues,
@@ -11,11 +10,9 @@ import type {
 } from '../_schema/formEditorSchema';
 
 type CreateFormBody =
-  paths['/forms']['post']['requestBody']['content']['application/json'];
+  ApiPaths['/forms']['post']['requestBody']['content']['application/json'];
 type FormUpdateBody =
-  paths['/forms/{id}']['put']['requestBody']['content']['application/json'];
-type FormLabelsUpdateBody =
-  paths['/forms/{form_id}/labels']['put']['requestBody']['content']['application/json'];
+  ApiPaths['/forms/{id}']['put']['requestBody']['content']['application/json'];
 
 const toVisibility = (value: string | null | undefined): FormVisibility =>
   value === 'PRIVATE' ? 'PRIVATE' : 'PUBLIC';
@@ -39,8 +36,8 @@ const toEditorQuestion = (
 const toApiQuestion = (
   question: FormEditorQuestion,
   index: number
-): components['schemas']['QuestionSchema'] => {
-  const base: components['schemas']['QuestionDefinitionSchema'] = {
+): ApiComponents['schemas']['QuestionSchema'] => {
+  const base: ApiComponents['schemas']['QuestionDefinitionSchema'] = {
     title: question.title,
     description: question.description,
     is_required: question.is_required,
@@ -112,6 +109,7 @@ export const toFormUpdateBody = (
   const body: FormUpdateBody = {
     title: data.title,
     description: data.description,
+    labels: data.labels.map((label) => label.id),
     settings: {
       visibility: data.settings.visibility,
       webhook_url: data.settings.webhook_url,
@@ -125,7 +123,10 @@ export const toFormUpdateBody = (
               start_at: toApiDateTime(startAt),
               end_at: toApiDateTime(endAt),
             }
-          : null,
+          : {
+              start_at: null,
+              end_at: null,
+            },
         visibility: data.settings.answer_visibility,
       },
     },
@@ -139,9 +140,3 @@ export const toFormUpdateBody = (
 
   return body;
 };
-
-export const toFormLabelsUpdateBody = (
-  labels: FormEditorValues['labels']
-): FormLabelsUpdateBody => ({
-  labels: labels.map((label) => label.id),
-});

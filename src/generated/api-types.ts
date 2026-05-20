@@ -4,7 +4,58 @@
  */
 
 export interface paths {
-    "/forms": {
+    "/api/v1/archived-forms": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** アーカイブ済みフォームの一覧取得 */
+        get: operations["archived_form_list_handler"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/archived-forms/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** アーカイブ済みフォームの取得 */
+        get: operations["get_archived_form_handler"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/archived-forms/{id}/restore": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** アーカイブ済みフォームの復元 */
+        post: operations["restore_archived_form_handler"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/forms": {
         parameters: {
             query?: never;
             header?: never;
@@ -22,7 +73,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/forms/answers": {
+    "/api/v1/forms/answers": {
         parameters: {
             query?: never;
             header?: never;
@@ -39,7 +90,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/forms/answers/{answer_id}/labels": {
+    "/api/v1/forms/answers/{answer_id}/labels": {
         parameters: {
             query?: never;
             header?: never;
@@ -55,7 +106,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/forms/{form_id}/answers/{answer_id}": {
+    "/api/v1/forms/{form_id}/answers/{answer_id}": {
         parameters: {
             query?: never;
             header?: never;
@@ -73,7 +124,7 @@ export interface paths {
         patch: operations["update_answer_handler"];
         trace?: never;
     };
-    "/forms/{form_id}/answers/{answer_id}/comments": {
+    "/api/v1/forms/{form_id}/answers/{answer_id}/comments": {
         parameters: {
             query?: never;
             header?: never;
@@ -91,7 +142,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/forms/{form_id}/answers/{answer_id}/comments/{comment_id}": {
+    "/api/v1/forms/{form_id}/answers/{answer_id}/comments/{comment_id}": {
         parameters: {
             query?: never;
             header?: never;
@@ -109,7 +160,7 @@ export interface paths {
         patch: operations["update_form_comment"];
         trace?: never;
     };
-    "/forms/{form_id}/answers/{answer_id}/messages": {
+    "/api/v1/forms/{form_id}/answers/{answer_id}/messages": {
         parameters: {
             query?: never;
             header?: never;
@@ -127,7 +178,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/forms/{form_id}/answers/{answer_id}/messages/{message_id}": {
+    "/api/v1/forms/{form_id}/answers/{answer_id}/messages/{message_id}": {
         parameters: {
             query?: never;
             header?: never;
@@ -145,23 +196,7 @@ export interface paths {
         patch: operations["update_message_handler"];
         trace?: never;
     };
-    "/forms/{form_id}/labels": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put: operations["replace_form_labels"];
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/forms/{id}": {
+    "/api/v1/forms/{id}": {
         parameters: {
             query?: never;
             header?: never;
@@ -172,18 +207,17 @@ export interface paths {
         get: operations["get_form_handler"];
         /**
          * フォームの更新
-         * @description questions を含めた場合、その form 配下の question 定義全体を指定内容で置換します。questions を省略した場合は既存 question を保持します。
+         * @description questions または labels を含めた場合、その form 配下の値全体を指定内容で置換します。省略した場合は既存値を保持します。
          */
         put: operations["update_form_handler"];
         post?: never;
-        /** フォームの削除 */
-        delete: operations["delete_form_handler"];
+        delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/forms/{id}/answers": {
+    "/api/v1/forms/{id}/answers": {
         parameters: {
             query?: never;
             header?: never;
@@ -201,23 +235,24 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/health": {
+    "/api/v1/forms/{id}/archive": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        get: operations["health_check"];
+        get?: never;
         put?: never;
-        post?: never;
+        /** フォームのアーカイブ */
+        post: operations["archive_form_handler"];
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/labels/answers": {
+    "/api/v1/labels/answers": {
         parameters: {
             query?: never;
             header?: never;
@@ -235,7 +270,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/labels/answers/{label_id}": {
+    "/api/v1/labels/answers/{label_id}": {
         parameters: {
             query?: never;
             header?: never;
@@ -253,7 +288,7 @@ export interface paths {
         patch: operations["edit_label_for_answers"];
         trace?: never;
     };
-    "/labels/forms": {
+    "/api/v1/labels/forms": {
         parameters: {
             query?: never;
             header?: never;
@@ -271,7 +306,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/labels/forms/{label_id}": {
+    "/api/v1/labels/forms/{label_id}": {
         parameters: {
             query?: never;
             header?: never;
@@ -289,7 +324,7 @@ export interface paths {
         patch: operations["edit_label_for_forms"];
         trace?: never;
     };
-    "/link-discord": {
+    "/api/v1/link-discord": {
         parameters: {
             query?: never;
             header?: never;
@@ -307,7 +342,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/notifications/settings/me": {
+    "/api/v1/notifications/settings/me": {
         parameters: {
             query?: never;
             header?: never;
@@ -325,7 +360,7 @@ export interface paths {
         patch: operations["update_notification_settings"];
         trace?: never;
     };
-    "/notifications/settings/{uuid}": {
+    "/api/v1/notifications/settings/{uuid}": {
         parameters: {
             query?: never;
             header?: never;
@@ -342,7 +377,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/search": {
+    "/api/v1/search": {
         parameters: {
             query?: never;
             header?: never;
@@ -359,7 +394,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/session": {
+    "/api/v1/session": {
         parameters: {
             query?: never;
             header?: never;
@@ -377,7 +412,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/users": {
+    "/api/v1/users": {
         parameters: {
             query?: never;
             header?: never;
@@ -394,7 +429,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/users/me": {
+    "/api/v1/users/me": {
         parameters: {
             query?: never;
             header?: never;
@@ -411,7 +446,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/users/{uuid}": {
+    "/api/v1/users/{uuid}": {
         parameters: {
             query?: never;
             header?: never;
@@ -469,14 +504,27 @@ export interface components {
         };
         AnswerSettingsSchema: {
             default_answer_title?: string | null;
-            response_period?: null | components["schemas"]["ResponsePeriodInput"];
-            visibility?: string | null;
+            response_period: components["schemas"]["ResponsePeriodSchema"];
+            visibility: components["schemas"]["AnswerVisibility"];
         };
         AnswerUpdateSchema: {
             title?: string | null;
         };
         /** @enum {string} */
         AnswerVisibility: "PUBLIC" | "PRIVATE";
+        ArchivedFormSchema: {
+            /** Format: date-time */
+            archived_at: string;
+            archived_by: unknown;
+            description: string;
+            /** Format: uuid */
+            id: string;
+            labels: components["schemas"]["FormLabelResponseSchema"][];
+            metadata: components["schemas"]["FormMetaSchema"];
+            questions: components["schemas"]["QuestionResponseSchema"][];
+            settings: components["schemas"]["FormSettingsSchema"];
+            title: string;
+        };
         ChoiceResponseSchema: {
             /** Format: int32 */
             id?: number | null;
@@ -570,12 +618,17 @@ export interface components {
             title: string;
         };
         FormSettingsSchema: {
-            answer_settings?: null | components["schemas"]["AnswerSettingsSchema"];
-            visibility?: string | null;
+            answer_settings: components["schemas"]["AnswerSettingsSchema"];
+            visibility: string;
             webhook_url?: string | null;
         };
         FormUpdateSchema: {
             description?: string | null;
+            /**
+             * @description When provided, replaces the full set of labels attached to the form.
+             *     Omit this field to leave existing labels unchanged.
+             */
+            labels?: string[] | null;
             /**
              * @description When provided, replaces the full set of question definitions under the form.
              *     Omit this field to leave existing questions unchanged.
@@ -648,9 +701,6 @@ export interface components {
         ReplaceAnswerLabelSchema: {
             labels: string[];
         };
-        ReplaceFormLabelSchema: {
-            labels: string[];
-        };
         ResponsePeriodInput: {
             end_at?: string | null;
             start_at?: string | null;
@@ -712,6 +762,203 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
+    archived_form_list_handler: {
+        parameters: {
+            query?: {
+                /** @description Offset for pagination */
+                offset?: number;
+                /** @description Limit for pagination */
+                limit?: number;
+                /** @description Search query */
+                query?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The request has succeeded. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ArchivedFormSchema"][];
+                };
+            };
+            /** @description The server could not understand the request due to invalid syntax. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Access is unauthorized. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Access is forbidden. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    get_archived_form_handler: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Form ID */
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The request has succeeded. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ArchivedFormSchema"];
+                };
+            };
+            /** @description The server could not understand the request due to invalid syntax. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Access is unauthorized. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Access is forbidden. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description The server cannot find the requested resource. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    restore_archived_form_handler: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Form ID */
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description There is no content to send for this request, but the headers may be useful. */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description The server could not understand the request due to invalid syntax. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Access is unauthorized. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Access is forbidden. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description The server cannot find the requested resource. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
     form_list_handler: {
         parameters: {
             query?: {
@@ -1765,76 +2012,6 @@ export interface operations {
             };
         };
     };
-    replace_form_labels: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @description Form ID */
-                form_id: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["ReplaceFormLabelSchema"];
-            };
-        };
-        responses: {
-            /** @description The request has succeeded. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description The server could not understand the request due to invalid syntax. */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/problem+json": components["schemas"]["ErrorResponse"];
-                };
-            };
-            /** @description Access is unauthorized. */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/problem+json": components["schemas"]["ErrorResponse"];
-                };
-            };
-            /** @description Access is forbidden. */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/problem+json": components["schemas"]["ErrorResponse"];
-                };
-            };
-            /** @description The server cannot find the requested resource. */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/problem+json": components["schemas"]["ErrorResponse"];
-                };
-            };
-            /** @description Server error */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/problem+json": components["schemas"]["ErrorResponse"];
-                };
-            };
-        };
-    };
     get_form_handler: {
         parameters: {
             query?: never;
@@ -1966,72 +2143,6 @@ export interface operations {
             };
             /** @description Client error */
             422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/problem+json": components["schemas"]["ErrorResponse"];
-                };
-            };
-            /** @description Server error */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/problem+json": components["schemas"]["ErrorResponse"];
-                };
-            };
-        };
-    };
-    delete_form_handler: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @description Form ID */
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description There is no content to send for this request, but the headers may be useful. */
-            204: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description The server could not understand the request due to invalid syntax. */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/problem+json": components["schemas"]["ErrorResponse"];
-                };
-            };
-            /** @description Access is unauthorized. */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/problem+json": components["schemas"]["ErrorResponse"];
-                };
-            };
-            /** @description Access is forbidden. */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/problem+json": components["schemas"]["ErrorResponse"];
-                };
-            };
-            /** @description The server cannot find the requested resource. */
-            404: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -2206,28 +2317,69 @@ export interface operations {
             };
         };
     };
-    health_check: {
+    archive_form_handler: {
         parameters: {
             query?: never;
             header?: never;
-            path?: never;
+            path: {
+                /** @description Form ID */
+                id: string;
+            };
             cookie?: never;
         };
         requestBody?: never;
         responses: {
-            /** @description All dependencies are healthy. */
-            200: {
+            /** @description There is no content to send for this request, but the headers may be useful. */
+            204: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content?: never;
             };
-            /** @description One or more dependencies are unavailable. */
-            503: {
+            /** @description The server could not understand the request due to invalid syntax. */
+            400: {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Access is unauthorized. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Access is forbidden. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description The server cannot find the requested resource. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorResponse"];
+                };
             };
         };
     };

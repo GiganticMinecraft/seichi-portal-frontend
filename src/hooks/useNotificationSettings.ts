@@ -1,10 +1,10 @@
 'use client';
 
 import { proxyClient } from '@/lib/proxyClient';
-import type { paths } from '@/generated/api-types';
+import type { ApiPaths } from '@/lib/api/types';
 
 type NotificationSettingsUpdateBody =
-  paths['/notifications/settings/me']['patch']['requestBody']['content']['application/json'];
+  ApiPaths['/notifications/settings/me']['patch']['requestBody']['content']['application/json'];
 
 export const useNotificationSettings = () => {
   const updateSettings = async (

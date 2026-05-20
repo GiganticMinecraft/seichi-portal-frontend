@@ -1,13 +1,13 @@
 'use client';
 
 import { useState } from 'react';
-import type { paths } from '@/generated/api-types';
 import { errorResponseSchema } from '@/lib/api/errors';
 import { proxyClient } from '@/lib/proxyClient';
 import type { AnswerFormInput } from './answerFormTypes';
+import type { ApiPaths } from '@/lib/api/types';
 
 type AnswerCreateBody =
-  paths['/forms/{id}/answers']['post']['requestBody']['content']['application/json'];
+  ApiPaths['/forms/{id}/answers']['post']['requestBody']['content']['application/json'];
 
 type SubmissionErrorCode = 'OUT_OF_PERIOD' | 'UNKNOWN';
 

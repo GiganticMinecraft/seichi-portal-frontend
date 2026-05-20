@@ -1,6 +1,6 @@
 import { HttpError } from '@/lib/httpError';
 import { proxyClient } from '@/lib/proxyClient';
-import type { paths } from '@/generated/api-types';
+import type { ApiPaths } from '@/lib/api/types';
 
 /** @deprecated useApiQuery を使用してください */
 export const fetcher = async (url: string) => {
@@ -18,16 +18,16 @@ export const fetcher = async (url: string) => {
 };
 
 export type GetPaths = {
-  [P in keyof paths]: paths[P] extends { get: unknown } ? P : never;
-}[keyof paths];
+  [P in keyof ApiPaths]: ApiPaths[P] extends { get: unknown } ? P : never;
+}[keyof ApiPaths];
 
-export type GetParams<P extends GetPaths> = paths[P] extends {
+export type GetParams<P extends GetPaths> = ApiPaths[P] extends {
   get: { parameters?: infer Params };
 }
   ? Params
   : never;
 
-export type GetResponse<P extends GetPaths> = paths[P] extends {
+export type GetResponse<P extends GetPaths> = ApiPaths[P] extends {
   get: {
     responses: {
       200: {
