@@ -51,6 +51,7 @@ vi.mock('@/lib/server/backend', () => ({
     Authorization: `Bearer ${token}`,
   }),
   BackendError: MockBackendError,
+  requireBackendResponse: async (request: Promise<unknown>) => request,
   serverApiClient: {
     GET: (...args: unknown[]) => backendGetMock(...args),
   },

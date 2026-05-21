@@ -1,7 +1,12 @@
 import { redirect } from 'next/navigation';
 import { headers } from 'next/headers';
 import { cache } from 'react';
-import { authorizationHeader, BackendError, serverApiClient } from './backend';
+import {
+  authorizationHeader,
+  BackendError,
+  requireBackendResponse,
+  serverApiClient,
+} from './backend';
 import { AccessError } from '@/lib/accessError';
 import { normalizeRedirectTarget } from '@/lib/redirect';
 import { getPostLoginRedirectCookie } from '@/lib/postLoginRedirect';
@@ -53,20 +58,14 @@ const getSessionInternal = async (
   }
 
   try {
-    const { data, response } = await serverApiClient.GET('/api/v1/users/me', {
-      headers: {
-        Accept: 'application/json',
-        ...authorizationHeader(token),
-      },
-    });
-
-    if (!response.ok) {
-      throw new BackendError({
-        message: `Backend request failed with status ${response.status}`,
-        status: response.status,
-        code: 'http_error',
-      });
-    }
+    const { data } = await requireBackendResponse(
+      serverApiClient.GET('/api/v1/users/me', {
+        headers: {
+          Accept: 'application/json',
+          ...authorizationHeader(token),
+        },
+      })
+    );
 
     const user = parseUser(data);
 
