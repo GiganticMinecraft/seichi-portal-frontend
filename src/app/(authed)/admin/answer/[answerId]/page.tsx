@@ -24,7 +24,9 @@ const Home = ({ params }: { params: Promise<{ answerId: string }> }) => {
     data: allAnswers,
     error: answersError,
     isLoading: isAnswersLoading,
-  } = useApiQuery('/forms/answers', undefined, { refreshInterval: 1000 });
+  } = useApiQuery('/api/v1/forms/answers', undefined, {
+    refreshInterval: 1000,
+  });
 
   const answers = allAnswers?.find((a) => a.id === answerId);
 
@@ -33,7 +35,7 @@ const Home = ({ params }: { params: Promise<{ answerId: string }> }) => {
     error: formQuestionsError,
     isLoading: isFormQuestionsLoading,
   } = useApiQuery(
-    '/forms/{id}',
+    '/api/v1/forms/{id}',
     {
       path: { id: answers?.form_id ?? '' },
     },
@@ -44,14 +46,14 @@ const Home = ({ params }: { params: Promise<{ answerId: string }> }) => {
     data: labels,
     error: labelsError,
     isLoading: isLabelsLoading,
-  } = useApiQuery('/labels/answers');
+  } = useApiQuery('/api/v1/labels/answers');
 
   const {
     data: messages,
     error: messagesError,
     isLoading: isMessagesLoading,
   } = useApiQuery(
-    '/forms/{form_id}/answers/{answer_id}/messages',
+    '/api/v1/forms/{form_id}/answers/{answer_id}/messages',
     {
       path: {
         form_id: answers?.form_id ?? '',

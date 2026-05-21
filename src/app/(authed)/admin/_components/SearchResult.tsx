@@ -24,7 +24,7 @@ const SearchResult = (props: {
   onClose: () => void;
 }) => {
   const router = useRouter();
-  const { data, isLoading, error } = useApiQuery('/search', {
+  const { data, isLoading, error } = useApiQuery('/api/v1/search', {
     query: { query: props.searchContent },
   });
 

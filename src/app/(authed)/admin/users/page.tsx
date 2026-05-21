@@ -1,7 +1,10 @@
 import UserList from './_components/UserList';
-import { backendFetchJson } from '@/lib/server/backend';
+import {
+  authorizationHeader,
+  requireBackendData,
+  serverApiClient,
+} from '@/lib/server/backend';
 import { requireAdmin } from '@/lib/server/session';
-import type { GetUserListResponse } from '@/lib/api-types';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -10,10 +13,11 @@ export const metadata: Metadata = {
 
 const Home = async () => {
   const session = await requireAdmin();
-  const users = await backendFetchJson<GetUserListResponse>('/users', {
-    method: 'GET',
-    token: session.token,
-  });
+  const users = await requireBackendData(
+    serverApiClient.GET('/api/v1/users', {
+      headers: authorizationHeader(session.token),
+    })
+  );
 
   return <UserList users={users} currentUserId={session.user.id} />;
 };

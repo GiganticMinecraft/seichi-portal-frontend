@@ -6,7 +6,7 @@ import { handleMutationResponse } from '@/hooks/useApiMutation';
 export const useFormActions = () => {
   const deleteForm = async (formId: string): Promise<{ ok: boolean }> => {
     const { data, error, response } = await proxyClient.POST(
-      '/forms/{id}/archive',
+      '/api/v1/forms/{id}/archive',
       {
         params: { path: { id: formId } },
       }

@@ -8,7 +8,7 @@ type SendMessageResult = { success: boolean; forbidden?: boolean };
 export const useSendMessage = (formId: string, answerId: string) => {
   const sendMessage = async (body: string): Promise<SendMessageResult> => {
     const { data, error, response } = await proxyClient.POST(
-      '/forms/{form_id}/answers/{answer_id}/messages',
+      '/api/v1/forms/{form_id}/answers/{answer_id}/messages',
       {
         params: { path: { form_id: formId, answer_id: answerId } },
         body: { body },

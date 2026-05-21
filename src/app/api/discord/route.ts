@@ -1,9 +1,10 @@
 import { NextResponse } from 'next/server';
-import { getBackendServerUrl, getDiscordConfig } from '@/env.server';
+import { getDiscordConfig } from '@/env.server';
 import {
   getPostLoginRedirectFromRequest,
   setPostLoginRedirectCookie,
 } from '@/lib/postLoginRedirect';
+import { authorizationHeader, serverApiClient } from '@/lib/server/backend';
 import { getCachedToken } from '@/user-token/mcToken';
 import { discordTokenSchema } from '../_schemas/External';
 import type { NextRequest } from 'next/server';
@@ -33,7 +34,6 @@ const clearDiscordOauthStateCookie = (response: NextResponse) => {
 
 export async function GET(req: NextRequest) {
   const { clientId, clientSecret, redirectUri } = getDiscordConfig();
-  const backendServerUrl = getBackendServerUrl();
   const seichiPortalToken = await getCachedToken(req.cookies);
 
   if (!seichiPortalToken) {
@@ -108,18 +108,15 @@ export async function GET(req: NextRequest) {
       return response;
     }
 
-    const linkDiscordResponse = await fetch(
-      `${backendServerUrl}/link-discord`,
+    const { response: linkDiscordResponse } = await serverApiClient.POST(
+      '/api/v1/link-discord',
       {
-        method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${seichiPortalToken}`,
+          ...authorizationHeader(seichiPortalToken),
         },
-        body: JSON.stringify({
+        body: {
           token: token.data.access_token,
-        }),
-        cache: 'no-cache',
+        },
       }
     );
 

@@ -1,9 +1,12 @@
 import { Box, Typography } from '@mui/material';
 import FormList from './_components/FormList';
-import { backendFetchJson } from '@/lib/server/backend';
+import {
+  authorizationHeader,
+  requireBackendData,
+  serverApiClient,
+} from '@/lib/server/backend';
 import { requireUser } from '@/lib/server/session';
 import type { Metadata } from 'next';
-import type { GetFormsResponse } from '@/lib/api-types';
 
 export const metadata: Metadata = {
   title: 'フォーム一覧 | Seichi Portal',
@@ -11,10 +14,11 @@ export const metadata: Metadata = {
 
 const Home = async () => {
   const session = await requireUser();
-  const forms = await backendFetchJson<GetFormsResponse>('/forms', {
-    method: 'GET',
-    token: session.token,
-  });
+  const forms = await requireBackendData(
+    serverApiClient.GET('/api/v1/forms', {
+      headers: authorizationHeader(session.token),
+    })
+  );
 
   return (
     <Box sx={{ width: '100%' }}>

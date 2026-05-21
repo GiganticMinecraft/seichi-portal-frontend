@@ -1,7 +1,10 @@
 import AnswerForm from './_components/AnswerForm';
-import { backendFetchJson } from '@/lib/server/backend';
+import {
+  authorizationHeader,
+  requireBackendData,
+  serverApiClient,
+} from '@/lib/server/backend';
 import { requireUser } from '@/lib/server/session';
-import type { GetFormResponse } from '@/lib/api-types';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -11,10 +14,14 @@ export const metadata: Metadata = {
 const Home = async ({ params }: { params: Promise<{ formId: string }> }) => {
   const session = await requireUser();
   const { formId } = await params;
-  const form = await backendFetchJson<GetFormResponse>(`/forms/${formId}`, {
-    method: 'GET',
-    token: session.token,
-  });
+  const form = await requireBackendData(
+    serverApiClient.GET('/api/v1/forms/{id}', {
+      headers: authorizationHeader(session.token),
+      params: {
+        path: { id: formId },
+      },
+    })
+  );
 
   return (
     <AnswerForm

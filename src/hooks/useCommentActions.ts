@@ -8,7 +8,7 @@ type CommentActionResult = { ok: boolean; forbidden?: boolean };
 export const useCommentActions = (formId: string, answerId: string) => {
   const sendComment = async (content: string): Promise<CommentActionResult> => {
     const { data, error, response } = await proxyClient.POST(
-      '/forms/{form_id}/answers/{answer_id}/comments',
+      '/api/v1/forms/{form_id}/answers/{answer_id}/comments',
       {
         params: {
           path: { form_id: formId, answer_id: answerId },
@@ -28,7 +28,7 @@ export const useCommentActions = (formId: string, answerId: string) => {
     commentId: string
   ): Promise<CommentActionResult> => {
     const { data, error, response } = await proxyClient.DELETE(
-      '/forms/{form_id}/answers/{answer_id}/comments/{comment_id}',
+      '/api/v1/forms/{form_id}/answers/{answer_id}/comments/{comment_id}',
       {
         params: {
           path: {

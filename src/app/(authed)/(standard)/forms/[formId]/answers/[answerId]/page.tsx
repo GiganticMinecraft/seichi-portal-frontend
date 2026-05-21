@@ -24,7 +24,7 @@ const Home = ({
     error: answerError,
     isLoading: isLoadingAnswers,
   } = useApiQuery(
-    '/forms/{form_id}/answers/{answer_id}',
+    '/api/v1/forms/{form_id}/answers/{answer_id}',
     {
       path: { form_id: formId, answer_id: answerId },
     },
@@ -36,7 +36,7 @@ const Home = ({
     error: formQuestionsError,
     isLoading: isLoadingFormQuestions,
   } = useApiQuery(
-    '/forms/{id}',
+    '/api/v1/forms/{id}',
     {
       path: { id: answer?.form_id ?? '' },
     },
@@ -44,14 +44,14 @@ const Home = ({
   );
 
   const { data: currentUser, isLoading: isLoadingCurrentUser } =
-    useApiQuery('/users/me');
+    useApiQuery('/api/v1/users/me');
 
   const {
     data: messages,
     error: messagesError,
     isLoading: isLoadingMessages,
   } = useApiQuery(
-    '/forms/{form_id}/answers/{answer_id}/messages',
+    '/api/v1/forms/{form_id}/answers/{answer_id}/messages',
     {
       path: { form_id: formId, answer_id: answerId },
     },

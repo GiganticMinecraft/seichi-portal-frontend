@@ -6,7 +6,7 @@ import { handleMutationResponse } from '@/hooks/useApiMutation';
 export const useDiscordActions = () => {
   const unlinkDiscord = async (): Promise<void> => {
     const { data, error, response } = await proxyClient.DELETE(
-      '/link-discord',
+      '/api/v1/link-discord',
       {}
     );
     handleMutationResponse(response, data, error);

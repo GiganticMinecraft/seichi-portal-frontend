@@ -1,7 +1,7 @@
 import { redirect } from 'next/navigation';
 import { headers } from 'next/headers';
 import { cache } from 'react';
-import { backendFetch, BackendError } from './backend';
+import { authorizationHeader, BackendError, serverApiClient } from './backend';
 import { AccessError } from '@/lib/accessError';
 import { normalizeRedirectTarget } from '@/lib/redirect';
 import { getPostLoginRedirectCookie } from '@/lib/postLoginRedirect';
@@ -33,8 +33,7 @@ export type SessionResult =
   | UnauthenticatedSession
   | UnavailableSession;
 
-const parseUser = async (response: Response) => {
-  const body: unknown = await response.json().catch(() => null);
+const parseUser = (body: unknown) => {
   const parsed = userInfoResponseSchema.safeParse(body);
 
   if (!parsed.success) {
@@ -54,14 +53,22 @@ const getSessionInternal = async (
   }
 
   try {
-    const response = await backendFetch('/users/me', {
-      method: 'GET',
+    const { data, response } = await serverApiClient.GET('/api/v1/users/me', {
       headers: {
         Accept: 'application/json',
+        ...authorizationHeader(token),
       },
-      token,
     });
-    const user = await parseUser(response);
+
+    if (!response.ok) {
+      throw new BackendError({
+        message: `Backend request failed with status ${response.status}`,
+        status: response.status,
+        code: 'http_error',
+      });
+    }
+
+    const user = parseUser(data);
 
     if (!user) {
       return {
