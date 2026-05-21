@@ -1,12 +1,12 @@
 import { Stack, Typography } from '@mui/material';
 import { Suspense } from 'react';
 import LabelsTabs from './_components/LabelsTabs';
-import { backendFetchJson } from '@/lib/server/backend';
+import {
+  authorizationHeader,
+  requireBackendData,
+  serverApiClient,
+} from '@/lib/server/backend';
 import { requireAdmin } from '@/lib/server/session';
-import type {
-  GetAnswerLabelsResponse,
-  GetFormLabelsResponse,
-} from '@/lib/api-types';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -16,14 +16,16 @@ export const metadata: Metadata = {
 const Home = async () => {
   const session = await requireAdmin();
   const [formLabels, answerLabels] = await Promise.all([
-    backendFetchJson<GetFormLabelsResponse>('/labels/forms', {
-      method: 'GET',
-      token: session.token,
-    }),
-    backendFetchJson<GetAnswerLabelsResponse>('/labels/answers', {
-      method: 'GET',
-      token: session.token,
-    }),
+    requireBackendData(
+      serverApiClient.GET('/api/v1/labels/forms', {
+        headers: authorizationHeader(session.token),
+      })
+    ),
+    requireBackendData(
+      serverApiClient.GET('/api/v1/labels/answers', {
+        headers: authorizationHeader(session.token),
+      })
+    ),
   ]);
 
   return (

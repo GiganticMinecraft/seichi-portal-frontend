@@ -10,9 +10,9 @@ import type {
 } from '../_schema/formEditorSchema';
 
 type CreateFormBody =
-  ApiPaths['/forms']['post']['requestBody']['content']['application/json'];
+  ApiPaths['/api/v1/forms']['post']['requestBody']['content']['application/json'];
 type FormUpdateBody =
-  ApiPaths['/forms/{id}']['put']['requestBody']['content']['application/json'];
+  ApiPaths['/api/v1/forms/{id}']['put']['requestBody']['content']['application/json'];
 
 const toVisibility = (value: string | null | undefined): FormVisibility =>
   value === 'PRIVATE' ? 'PRIVATE' : 'PUBLIC';

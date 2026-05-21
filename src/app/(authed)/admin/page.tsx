@@ -1,7 +1,10 @@
 import DataTable from './_components/Dashboard';
-import { backendFetchJson } from '@/lib/server/backend';
+import {
+  authorizationHeader,
+  requireBackendData,
+  serverApiClient,
+} from '@/lib/server/backend';
 import { requireAdmin } from '@/lib/server/session';
-import type { GetAnswersResponse, GetFormsResponse } from '@/lib/api-types';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -11,14 +14,16 @@ export const metadata: Metadata = {
 const Home = async () => {
   const session = await requireAdmin();
   const [answers, forms] = await Promise.all([
-    backendFetchJson<GetAnswersResponse>('/forms/answers', {
-      method: 'GET',
-      token: session.token,
-    }),
-    backendFetchJson<GetFormsResponse>('/forms', {
-      method: 'GET',
-      token: session.token,
-    }),
+    requireBackendData(
+      serverApiClient.GET('/api/v1/forms/answers', {
+        headers: authorizationHeader(session.token),
+      })
+    ),
+    requireBackendData(
+      serverApiClient.GET('/api/v1/forms', {
+        headers: authorizationHeader(session.token),
+      })
+    ),
   ]);
 
   return (

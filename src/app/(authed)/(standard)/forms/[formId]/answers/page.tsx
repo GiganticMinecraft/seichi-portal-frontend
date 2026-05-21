@@ -1,8 +1,11 @@
 import { Box, Typography } from '@mui/material';
 import AnswerList from './_components/AnswerList';
-import { backendFetchJson } from '@/lib/server/backend';
+import {
+  authorizationHeader,
+  requireBackendData,
+  serverApiClient,
+} from '@/lib/server/backend';
 import { requireUser } from '@/lib/server/session';
-import type { GetFormAnswersResponse, GetFormResponse } from '@/lib/api-types';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -13,14 +16,22 @@ const Home = async ({ params }: { params: Promise<{ formId: string }> }) => {
   const session = await requireUser();
   const { formId } = await params;
   const [answers, form] = await Promise.all([
-    backendFetchJson<GetFormAnswersResponse>(`/forms/${formId}/answers`, {
-      method: 'GET',
-      token: session.token,
-    }),
-    backendFetchJson<GetFormResponse>(`/forms/${formId}`, {
-      method: 'GET',
-      token: session.token,
-    }),
+    requireBackendData(
+      serverApiClient.GET('/api/v1/forms/{id}/answers', {
+        headers: authorizationHeader(session.token),
+        params: {
+          path: { id: formId },
+        },
+      })
+    ),
+    requireBackendData(
+      serverApiClient.GET('/api/v1/forms/{id}', {
+        headers: authorizationHeader(session.token),
+        params: {
+          path: { id: formId },
+        },
+      })
+    ),
   ]);
 
   return (

@@ -17,9 +17,12 @@ export const useCreateForm = () => {
     setIsSubmitted(false);
 
     try {
-      const { data: createdForm, response } = await proxyClient.POST('/forms', {
-        body: toCreateFormBody(data),
-      });
+      const { data: createdForm, response } = await proxyClient.POST(
+        '/api/v1/forms',
+        {
+          body: toCreateFormBody(data),
+        }
+      );
       if (!response.ok || !createdForm) {
         setSubmitError({ message: 'フォームの作成に失敗しました。' });
         return;
@@ -27,7 +30,7 @@ export const useCreateForm = () => {
       const createdFormId = createdForm.id;
 
       const { response: setFormMetadataResponse } = await proxyClient.PUT(
-        '/forms/{id}',
+        '/api/v1/forms/{id}',
         {
           params: { path: { id: createdFormId } },
           body: toFormUpdateBody(data, false),

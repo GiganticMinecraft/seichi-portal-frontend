@@ -1,6 +1,6 @@
-import { getBackendServerUrl } from '@/env.server';
 import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
+import { authorizationHeader, serverApiClient } from '@/lib/server/backend';
 
 const SESSION_COOKIE = 'SEICHI_PORTAL__SESSION_ID';
 
@@ -9,12 +9,13 @@ export const DELETE = async () => {
   const token = cookieStore.get(SESSION_COOKIE)?.value;
 
   if (token) {
-    await fetch(`${getBackendServerUrl()}/session`, {
-      method: 'DELETE',
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    }).catch((e) => console.error('Failed to delete backend session:', e));
+    await serverApiClient
+      .DELETE('/api/v1/session', {
+        headers: {
+          ...authorizationHeader(token),
+        },
+      })
+      .catch((e) => console.error('Failed to delete backend session:', e));
   }
 
   const response = NextResponse.json({ success: true });

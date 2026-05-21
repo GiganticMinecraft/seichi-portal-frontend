@@ -7,7 +7,7 @@ import type { AnswerFormInput } from './answerFormTypes';
 import type { ApiPaths } from '@/lib/api/types';
 
 type AnswerCreateBody =
-  ApiPaths['/forms/{id}/answers']['post']['requestBody']['content']['application/json'];
+  ApiPaths['/api/v1/forms/{id}/answers']['post']['requestBody']['content']['application/json'];
 
 type SubmissionErrorCode = 'OUT_OF_PERIOD' | 'UNKNOWN';
 
@@ -62,14 +62,17 @@ export const useAnswerSubmission = (formId: string) => {
     useState<SubmissionErrorCode | null>(null);
 
   const submitAnswers = async (data: AnswerFormInput) => {
-    const { response, error } = await proxyClient.POST('/forms/{id}/answers', {
-      params: {
-        path: {
-          id: formId,
+    const { response, error } = await proxyClient.POST(
+      '/api/v1/forms/{id}/answers',
+      {
+        params: {
+          path: {
+            id: formId,
+          },
         },
-      },
-      body: toAnswerCreateBody(data),
-    });
+        body: toAnswerCreateBody(data),
+      }
+    );
 
     if (response.ok) {
       setIsSubmitted(true);

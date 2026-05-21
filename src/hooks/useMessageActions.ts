@@ -11,7 +11,7 @@ export const useMessageActions = (formId: string, answerId: string) => {
     body: string
   ): Promise<MessageActionResult> => {
     const { data, error, response } = await proxyClient.PATCH(
-      '/forms/{form_id}/answers/{answer_id}/messages/{message_id}',
+      '/api/v1/forms/{form_id}/answers/{answer_id}/messages/{message_id}',
       {
         params: {
           path: {
@@ -35,7 +35,7 @@ export const useMessageActions = (formId: string, answerId: string) => {
     messageId: string
   ): Promise<MessageActionResult> => {
     const { data, error, response } = await proxyClient.DELETE(
-      '/forms/{form_id}/answers/{answer_id}/messages/{message_id}',
+      '/api/v1/forms/{form_id}/answers/{answer_id}/messages/{message_id}',
       {
         params: {
           path: {

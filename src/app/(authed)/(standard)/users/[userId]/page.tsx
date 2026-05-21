@@ -3,12 +3,12 @@ import DiscordNotificationSettings from './_components/DiscordNotificationSettin
 import LinkDiscordButton from './_components/LinkDiscordButton';
 import UnlinkDiscordButton from './_components/UnlinkDiscordButton';
 import UserInformation from './_components/UserInformation';
-import { backendFetchJson } from '@/lib/server/backend';
+import {
+  authorizationHeader,
+  requireBackendData,
+  serverApiClient,
+} from '@/lib/server/backend';
 import { requireUser } from '@/lib/server/session';
-import type {
-  GetUserNotificationSettingsResponse,
-  GetUserResponse,
-} from '@/lib/api-types';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -19,16 +19,21 @@ const Home = async ({ params }: { params: Promise<{ userId: string }> }) => {
   const session = await requireUser();
   const { userId } = await params;
   const [user, notificationSettings] = await Promise.all([
-    backendFetchJson<GetUserResponse>(`/users/${userId}`, {
-      method: 'GET',
-      token: session.token,
-    }),
-    backendFetchJson<GetUserNotificationSettingsResponse>(
-      `/notifications/settings/${userId}`,
-      {
-        method: 'GET',
-        token: session.token,
-      }
+    requireBackendData(
+      serverApiClient.GET('/api/v1/users/{uuid}', {
+        headers: authorizationHeader(session.token),
+        params: {
+          path: { uuid: userId },
+        },
+      })
+    ),
+    requireBackendData(
+      serverApiClient.GET('/api/v1/notifications/settings/{uuid}', {
+        headers: authorizationHeader(session.token),
+        params: {
+          path: { uuid: userId },
+        },
+      })
     ),
   ]);
 
