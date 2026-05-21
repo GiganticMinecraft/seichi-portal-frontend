@@ -1,5 +1,6 @@
 import createClient from 'openapi-fetch';
 import { getBackendServerUrl } from '@/env.server';
+import type { Client } from 'openapi-fetch';
 import type { ApiPaths } from '@/lib/api/types';
 
 export class BackendError extends Error {
@@ -34,7 +35,18 @@ export const createServerApiClient = () =>
     cache: 'no-cache',
   });
 
-export const serverApiClient = createServerApiClient();
+let cachedServerApiClient: Client<ApiPaths> | undefined;
+
+const getServerApiClient = () => {
+  cachedServerApiClient ??= createServerApiClient();
+  return cachedServerApiClient;
+};
+
+export const serverApiClient = new Proxy({} as Client<ApiPaths>, {
+  get(_target, property, receiver) {
+    return Reflect.get(getServerApiClient(), property, receiver);
+  },
+});
 
 export const authorizationHeader = (token: string) => ({
   Authorization: `Bearer ${token}`,
