@@ -38,6 +38,10 @@ export type SessionResult =
   | UnauthenticatedSession
   | UnavailableSession;
 
+export type AdminAccessResult =
+  | { state: 'allowed'; session: AuthenticatedSession }
+  | { state: 'forbidden'; session: AuthenticatedSession };
+
 const parseUser = (body: unknown) => {
   const parsed = userInfoResponseSchema.safeParse(body);
 
@@ -141,16 +145,14 @@ export const requireUser = async (
   });
 };
 
-export const requireAdmin = async (cookie?: RequestCookies) => {
+export const getAdminAccess = async (
+  cookie?: RequestCookies
+): Promise<AdminAccessResult> => {
   const session = await requireUser(cookie);
 
   if (session.user.role !== 'ADMINISTRATOR') {
-    throw new AccessError({
-      message: 'Administrator role is required',
-      status: 403,
-      code: 'FORBIDDEN',
-    });
+    return { state: 'forbidden', session };
   }
 
-  return session;
+  return { state: 'allowed', session };
 };

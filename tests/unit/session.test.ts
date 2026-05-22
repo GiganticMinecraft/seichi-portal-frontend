@@ -1,5 +1,4 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { AccessError } from '@/lib/accessError';
 import { BackendError } from '@/lib/server/backend';
 import { normalizeRedirectTarget } from '@/lib/redirect';
 
@@ -141,7 +140,36 @@ describe('server session helpers', () => {
     );
   });
 
-  it('認証済みでも管理者でない場合は forbidden を送出する', async () => {
+  it('管理者の場合は admin access allowed を返す', async () => {
+    getCachedTokenMock.mockResolvedValue('token-123');
+    backendGetMock.mockResolvedValue({
+      data: {
+        id: 'user-id',
+        name: 'Alice',
+        role: 'ADMINISTRATOR',
+      },
+      response: new Response(null, {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' },
+      }),
+    });
+    const { getAdminAccess } = await loadSessionModule();
+
+    await expect(getAdminAccess()).resolves.toEqual({
+      state: 'allowed',
+      session: {
+        state: 'authenticated',
+        token: 'token-123',
+        user: {
+          id: 'user-id',
+          name: 'Alice',
+          role: 'ADMINISTRATOR',
+        },
+      },
+    });
+  });
+
+  it('認証済みでも管理者でない場合は forbidden を返す', async () => {
     getCachedTokenMock.mockResolvedValue('token-123');
     backendGetMock.mockResolvedValue({
       data: {
@@ -154,15 +182,20 @@ describe('server session helpers', () => {
         headers: { 'Content-Type': 'application/json' },
       }),
     });
-    const { requireAdmin } = await loadSessionModule();
+    const { getAdminAccess } = await loadSessionModule();
 
-    await expect(requireAdmin()).rejects.toEqual(
-      expect.objectContaining<Partial<AccessError>>({
-        name: 'AccessError',
-        status: 403,
-        code: 'FORBIDDEN',
-      })
-    );
+    await expect(getAdminAccess()).resolves.toEqual({
+      state: 'forbidden',
+      session: {
+        state: 'authenticated',
+        token: 'token-123',
+        user: {
+          id: 'user-id',
+          name: 'Alice',
+          role: 'STANDARD_USER',
+        },
+      },
+    });
   });
 
   it('バックエンドに到達できない場合は unavailable を返す', async () => {

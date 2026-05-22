@@ -1,6 +1,6 @@
 export class AccessError extends Error {
   status: number;
-  code: 'FORBIDDEN' | 'SERVICE_UNAVAILABLE';
+  code: 'SERVICE_UNAVAILABLE';
 
   constructor({
     message,
@@ -9,7 +9,7 @@ export class AccessError extends Error {
   }: {
     message: string;
     status: number;
-    code: 'FORBIDDEN' | 'SERVICE_UNAVAILABLE';
+    code: 'SERVICE_UNAVAILABLE';
   }) {
     super(message);
     this.name = 'AccessError';
