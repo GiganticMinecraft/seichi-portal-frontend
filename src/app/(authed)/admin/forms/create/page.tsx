@@ -4,7 +4,8 @@ import {
   requireBackendData,
   serverApiClient,
 } from '@/lib/server/backend';
-import { requireAdmin } from '@/lib/server/session';
+import ErrorDialog from '@/app/_components/ErrorDialog';
+import { getAdminAccess } from '@/lib/server/session';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -12,7 +13,11 @@ export const metadata: Metadata = {
 };
 
 const Home = async () => {
-  const session = await requireAdmin();
+  const adminAccess = await getAdminAccess();
+  if (adminAccess.state === 'forbidden') {
+    return <ErrorDialog status={403} showDiagnostics={false} />;
+  }
+  const { session } = adminAccess;
   const labels = await requireBackendData(
     serverApiClient.GET('/api/v1/labels/forms', {
       headers: authorizationHeader(session.token),

@@ -60,11 +60,13 @@ type CompleteLoginParams = {
   router: ReturnType<typeof useRouter>;
 };
 
+type CompleteLoginResult = { success: true } | { success: false };
+
 const completeLogin = async ({
   account,
   instance,
   router,
-}: CompleteLoginParams) => {
+}: CompleteLoginParams): Promise<CompleteLoginResult> => {
   const request: SilentRequest = {
     account,
     ...loginRequest,
@@ -76,10 +78,11 @@ const completeLogin = async ({
   );
 
   if (!isLinkedMinecraftAccount) {
-    throw new Error(LOGIN_ERROR_MESSAGE);
+    return { success: false };
   }
 
   router.push(await fetchPostLoginRedirect());
+  return { success: true };
 };
 
 export const useLandingLogin = () => {
@@ -113,16 +116,15 @@ export const useLandingLogin = () => {
       setIsProcessing(true);
 
       try {
-        await completeLogin({ account, instance, router });
+        const result = await completeLogin({ account, instance, router });
+        if (!result.success) {
+          setProcessingErrorMessage(LOGIN_ERROR_MESSAGE);
+          setIsProcessing(false);
+        }
       } catch (error) {
         if (error instanceof InteractionRequiredAuthError) {
           // Token requires interaction — don't auto-redirect; let the user click the button.
           setIsProcessing(false);
-        } else if (
-          error instanceof Error &&
-          error.message === LOGIN_ERROR_MESSAGE
-        ) {
-          handleFailure(LOGIN_ERROR_MESSAGE, error);
         } else {
           handleFailure(RETRY_ERROR_MESSAGE, error);
         }

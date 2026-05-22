@@ -1,4 +1,4 @@
-import { requireUser } from '@/lib/server/session';
+import { getAdminAccess } from '@/lib/server/session';
 import ErrorDialog from '@/app/_components/ErrorDialog';
 import NavBar from '@/app/_components/NavBar';
 import SearchField from './_components/SearchField';
@@ -7,9 +7,9 @@ import styles from '../../page.module.css';
 import type { ReactNode } from 'react';
 
 const RootLayout = async ({ children }: { children: ReactNode }) => {
-  const session = await requireUser();
+  const adminAccess = await getAdminAccess();
 
-  if (session.user.role !== 'ADMINISTRATOR') {
+  if (adminAccess.state === 'forbidden') {
     return <ErrorDialog status={403} showDiagnostics={false} />;
   }
 
