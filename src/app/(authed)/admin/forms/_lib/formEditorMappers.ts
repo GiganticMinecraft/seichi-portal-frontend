@@ -17,6 +17,20 @@ type FormUpdateBody =
 const toVisibility = (value: string | null | undefined): FormVisibility =>
   value === 'PRIVATE' ? 'PRIVATE' : 'PUBLIC';
 
+const toNullableNonEmptyString = (
+  value: string | null | undefined
+): string | null => {
+  const trimmed = value?.trim();
+
+  return trimmed || null;
+};
+
+const toTemplateKey = (value: string, index: number): string => {
+  const trimmed = value.trim();
+
+  return trimmed === '' ? `question_${index + 1}` : trimmed;
+};
+
 const toEditorQuestion = (
   question: GetFormResponse['questions'][number]
 ): FormEditorQuestion => ({
@@ -38,11 +52,11 @@ const toApiQuestion = (
   index: number
 ): ApiComponents['schemas']['QuestionSchema'] => {
   const base: ApiComponents['schemas']['QuestionDefinitionSchema'] = {
-    title: question.title,
-    description: question.description,
+    title: question.title.trim(),
+    description: toNullableNonEmptyString(question.description),
     is_required: question.is_required,
     position: index,
-    template_key: question.template_key,
+    template_key: toTemplateKey(question.template_key, index),
     id: question.id ?? null,
   };
 
@@ -57,7 +71,7 @@ const toApiQuestion = (
     ...base,
     question_type: question.question_type,
     choices: question.choices.map((choice, choiceIndex) => ({
-      label: choice.choice,
+      label: choice.choice.trim(),
       position: choiceIndex,
     })),
   };
@@ -92,7 +106,7 @@ export const fromFormResponseToEditorValues = (
 };
 
 export const toCreateFormBody = (data: FormEditorValues): CreateFormBody => ({
-  title: data.title,
+  title: data.title.trim(),
   description: data.description,
   questions: data.questions.map((question, index) =>
     toApiQuestion(question, index)
@@ -107,12 +121,12 @@ export const toFormUpdateBody = (
   const endAt = data.settings.response_period.end_at;
 
   const body: FormUpdateBody = {
-    title: data.title,
+    title: data.title.trim(),
     description: data.description,
     labels: data.labels.map((label) => label.id),
     settings: {
       visibility: data.settings.visibility,
-      webhook_url: data.settings.webhook_url,
+      webhook_url: toNullableNonEmptyString(data.settings.webhook_url),
       answer_settings: {
         default_answer_title:
           data.settings.default_answer_title === ''
