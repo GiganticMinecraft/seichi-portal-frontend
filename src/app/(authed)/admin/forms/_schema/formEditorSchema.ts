@@ -1,5 +1,7 @@
 import { z } from 'zod';
 
+const requiredStringSchema = z.string().trim().min(1, '入力してください。');
+
 export const questionTypeSchema = z.enum([
   'Text',
   'SingleChoice',
@@ -7,7 +9,7 @@ export const questionTypeSchema = z.enum([
 ]);
 
 const choiceSchema = z.object({
-  choice: z.string(),
+  choice: requiredStringSchema,
 });
 
 export const visibilitySchema = z.enum(['PUBLIC', 'PRIVATE']);
@@ -17,21 +19,33 @@ const formLabelSchema = z.object({
   name: z.string(),
 });
 
-export const formEditorQuestionSchema = z.object({
-  id: z.string().nullable().optional(),
-  title: z.string(),
-  description: z.string(),
-  question_type: questionTypeSchema,
-  choices: choiceSchema.array(),
-  is_required: z.boolean(),
-  position: z.number().int().gte(0),
-  template_key: z.string(),
-});
+export const formEditorQuestionSchema = z
+  .object({
+    id: z.string().nullable().optional(),
+    title: requiredStringSchema,
+    description: z.string(),
+    question_type: questionTypeSchema,
+    choices: choiceSchema.array(),
+    is_required: z.boolean(),
+    position: z.number().int().gte(0),
+    template_key: z.string(),
+  })
+  .superRefine((question, context) => {
+    if (question.question_type !== 'Text' && question.choices.length === 0) {
+      context.addIssue({
+        code: 'custom',
+        path: ['choices'],
+        message: '選択肢を1つ以上追加してください。',
+      });
+    }
+  });
 
 export const formEditorSchema = z.object({
-  title: z.string(),
-  description: z.string(),
-  questions: formEditorQuestionSchema.array(),
+  title: requiredStringSchema,
+  description: requiredStringSchema,
+  questions: formEditorQuestionSchema
+    .array()
+    .min(1, '質問を1つ以上追加してください。'),
   labels: formLabelSchema.array(),
   settings: z.object({
     has_response_period: z.boolean(),

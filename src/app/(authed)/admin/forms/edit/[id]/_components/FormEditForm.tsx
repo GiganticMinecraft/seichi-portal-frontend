@@ -9,6 +9,7 @@ import {
   Container,
   Stack,
 } from '@mui/material';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { useFieldArray, useForm, useWatch } from 'react-hook-form';
 import type { GetFormLabelsResponse, GetFormResponse } from '@/lib/api-types';
 import FormEditorLayout from '../../../_components/FormEditorLayout';
@@ -18,6 +19,7 @@ import QuestionList from '../../../_components/QuestionList';
 import { createEmptyFormEditorQuestion } from '../../../_lib/formEditorDefaults';
 import { fromFormResponseToEditorValues } from '../../../_lib/formRequestBuilders';
 import type { FormEditorValues } from '../../../_schema/formEditorSchema';
+import { formEditorSchema } from '../../../_schema/formEditorSchema';
 import { useUpdateFormSubmission } from '../../../_hooks/useUpdateFormSubmission';
 
 const FormEditForm = (props: {
@@ -33,6 +35,7 @@ const FormEditForm = (props: {
   } = useForm<FormEditorValues>({
     mode: 'onSubmit',
     reValidateMode: 'onBlur',
+    resolver: zodResolver(formEditorSchema),
     defaultValues: fromFormResponseToEditorValues(props.form),
   });
 
@@ -49,6 +52,10 @@ const FormEditForm = (props: {
   });
 
   const { submit, isSubmitted } = useUpdateFormSubmission(props.form.id);
+  const questionListError =
+    typeof errors.questions?.message === 'string'
+      ? errors.questions.message
+      : null;
 
   const onSubmit = async (data: FormEditorValues) => {
     const result = await submit(data);
@@ -91,6 +98,9 @@ const FormEditForm = (props: {
             />
           </Card>
           {errors.root && <Alert severity="error">{errors.root.message}</Alert>}
+          {questionListError && (
+            <Alert severity="error">{questionListError}</Alert>
+          )}
           {isSubmitted && (
             <Alert severity="success">フォームの編集に成功しました。</Alert>
           )}
