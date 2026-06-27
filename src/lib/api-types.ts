@@ -12,6 +12,7 @@ export type {
   CreateFormSchema,
   GetAnswerLabelsResponse,
   GetAnswerResponse,
+  GetAnswerSubmitterRestrictionResponse,
   GetAnswersResponse,
   GetFormAnswersResponse,
   GetFormLabelsResponse,
@@ -24,6 +25,7 @@ export type {
   GetQuestionsResponse,
   GetUserListResponse,
   GetUsersResponse,
+  PutAnswerSubmitterRestrictionSchema,
   SearchResponse,
   UpdateNotificationSettingsSchema,
 } from '@/lib/api/types';

@@ -33,6 +33,10 @@ export type GetUserResponse =
   ApiPaths['/api/v1/users/{uuid}']['get']['responses'][200]['content']['application/json'];
 export type GetUserListResponse =
   ApiPaths['/api/v1/users']['get']['responses'][200]['content']['application/json'];
+export type GetAnswerSubmitterRestrictionResponse =
+  ApiPaths['/api/v1/users/{uuid}/answer-submitter-restriction']['get']['responses'][200]['content']['application/json'];
+export type PutAnswerSubmitterRestrictionSchema =
+  ApiPaths['/api/v1/users/{uuid}/answer-submitter-restriction']['put']['requestBody']['content']['application/json'];
 export type SearchResponse =
   ApiPaths['/api/v1/search']['get']['responses'][200]['content']['application/json'];
 export type GetNotificationSettingsResponse =
