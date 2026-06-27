@@ -21,6 +21,14 @@ describe('restrictionFormSchema', () => {
     });
     expect(result.success).toBe(true);
   });
+
+  it('無効な日時は弾く', () => {
+    const result = restrictionFormSchema.safeParse({
+      reason: '不適切な回答のため',
+      expiresAt: dayjs('invalid-date-string'),
+    });
+    expect(result.success).toBe(false);
+  });
 });
 
 describe('toRestrictionRequest', () => {

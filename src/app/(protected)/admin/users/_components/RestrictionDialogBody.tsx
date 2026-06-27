@@ -15,6 +15,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { formatString } from '@/generic/DateFormatter';
 import { useAnswerSubmitterRestrictionActions } from '@/hooks/useAnswerSubmitterRestrictionActions';
@@ -32,6 +33,8 @@ const RestrictionDialogBody = ({
   uuid: string;
   onClose: () => void;
 }) => {
+  const [submitError, setSubmitError] = useState<string | null>(null);
+
   const { data, error, isLoading, mutate } = useApiQuery(
     '/api/v1/users/{uuid}/answer-submitter-restriction',
     { path: { uuid } }
@@ -70,29 +73,33 @@ const RestrictionDialogBody = ({
   // 既に制限中: 現在の内容を表示し、解除のみ行える。
   if (data) {
     const onUnrestrict = async () => {
+      setSubmitError(null);
       const result = await unrestrictUser(uuid);
       if (result.success) {
         await mutate();
         onClose();
       } else {
-        alert('制限の解除に失敗しました。');
+        setSubmitError('制限の解除に失敗しました。');
       }
     };
 
     return (
       <>
         <DialogContent>
-          <Stack spacing={1}>
-            <Typography>
-              <strong>理由:</strong> {data.reason}
-            </Typography>
-            <Typography>
-              <strong>制限日時:</strong> {formatString(data.restricted_at)}
-            </Typography>
-            <Typography>
-              <strong>解除予定:</strong>{' '}
-              {data.expires_at ? formatString(data.expires_at) : '無期限'}
-            </Typography>
+          <Stack spacing={2}>
+            {submitError && <Alert severity="error">{submitError}</Alert>}
+            <Stack spacing={1}>
+              <Typography>
+                <strong>理由:</strong> {data.reason}
+              </Typography>
+              <Typography>
+                <strong>制限日時:</strong> {formatString(data.restricted_at)}
+              </Typography>
+              <Typography>
+                <strong>解除予定:</strong>{' '}
+                {data.expires_at ? formatString(data.expires_at) : '無期限'}
+              </Typography>
+            </Stack>
           </Stack>
         </DialogContent>
         <DialogActions>
@@ -107,68 +114,74 @@ const RestrictionDialogBody = ({
 
   // 未制限: 制限を付与するフォームを表示する。
   const onRestrict = async (values: RestrictionFormValues) => {
+    setSubmitError(null);
     const result = await restrictUser(uuid, toRestrictionRequest(values));
     if (result.success) {
       await mutate();
       onClose();
     } else {
-      alert('制限の付与に失敗しました。');
+      setSubmitError('制限の付与に失敗しました。');
     }
   };
 
   return (
-    <form onSubmit={handleSubmit(onRestrict)}>
-      <DialogContent>
-        <Stack spacing={2}>
-          <Controller
-            name="reason"
-            control={control}
-            render={({ field, fieldState }) => (
-              <TextField
-                {...field}
-                label="理由"
-                required
-                multiline
-                minRows={2}
-                fullWidth
-                error={Boolean(fieldState.error)}
-                helperText={fieldState.error?.message}
-              />
-            )}
-          />
-          <Controller
-            name="expiresAt"
-            control={control}
-            render={({ field }) => (
-              <LocalizationProvider dateAdapter={AdapterDayjs}>
+    <LocalizationProvider dateAdapter={AdapterDayjs}>
+      <form onSubmit={handleSubmit(onRestrict)}>
+        <DialogContent>
+          <Stack spacing={2}>
+            {submitError && <Alert severity="error">{submitError}</Alert>}
+            <Controller
+              name="reason"
+              control={control}
+              render={({ field, fieldState }) => (
+                <TextField
+                  {...field}
+                  label="理由"
+                  required
+                  multiline
+                  minRows={2}
+                  fullWidth
+                  error={Boolean(fieldState.error)}
+                  helperText={fieldState.error?.message}
+                />
+              )}
+            />
+            <Controller
+              name="expiresAt"
+              control={control}
+              render={({ field, fieldState }) => (
                 <DateTimePicker
                   label="解除予定日時（任意・未指定で無期限）"
                   value={field.value ?? null}
                   onChange={field.onChange}
                   slotProps={{
                     field: { clearable: true },
-                    textField: { fullWidth: true },
+                    textField: {
+                      fullWidth: true,
+                      error: Boolean(fieldState.error),
+                      helperText: fieldState.error?.message,
+                    },
                   }}
                 />
-              </LocalizationProvider>
-            )}
-          />
-        </Stack>
-      </DialogContent>
-      <DialogActions>
-        <Button onClick={onClose} disabled={isSubmitting}>
-          キャンセル
-        </Button>
-        <Button
-          type="submit"
-          color="error"
-          variant="contained"
-          disabled={isSubmitting}
-        >
-          制限する
-        </Button>
-      </DialogActions>
-    </form>
+              )}
+            />
+          </Stack>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={onClose} disabled={isSubmitting}>
+            キャンセル
+          </Button>
+          <Button
+            type="submit"
+            color="error"
+            variant="contained"
+            disabled={isSubmitting}
+          >
+            制限する
+          </Button>
+        </DialogActions>
+      </form>
+    </LocalizationProvider>
   );
 };
 
