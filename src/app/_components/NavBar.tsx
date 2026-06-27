@@ -25,10 +25,10 @@ import Image from 'next/image';
 import NextLink from 'next/link';
 import { useState, type ReactNode } from 'react';
 import { useRouter } from 'next/navigation';
-import { useOptionalCurrentUser } from '@/app/(authed)/theme/themeMode';
+import { useOptionalCurrentUser } from '@/app/_providers/themeMode';
 import { SigninButton } from './SigninButton';
 import { getMsalInstance } from './MsalProvider';
-import ThemeModeToggle from '@/app/(authed)/_components/ThemeModeToggle';
+import ThemeModeToggle from '@/app/_components/ThemeModeToggle';
 
 type UserMenuProps = {
   user: NonNullable<ReturnType<typeof useOptionalCurrentUser>>;
