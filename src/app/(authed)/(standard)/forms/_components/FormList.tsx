@@ -28,7 +28,8 @@ const formatResponsePeriod = (startAt: string | null, endAt: string | null) => {
 type FormItem = GetFormsResponse[number];
 
 const EachForm = ({ form }: { form: FormItem }) => {
-  const responsePeriod = form.settings.answer_settings?.response_period ?? null;
+  const responsePeriod =
+    form.settings.answer_settings?.acceptance_period ?? null;
 
   return (
     <Card

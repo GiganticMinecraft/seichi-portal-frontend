@@ -48,12 +48,12 @@ export const formEditorSchema = z.object({
     .min(1, '質問を1つ以上追加してください。'),
   labels: formLabelSchema.array(),
   settings: z.object({
-    has_response_period: z.boolean(),
-    response_period: z.object({
+    has_acceptance_period: z.boolean(),
+    acceptance_period: z.object({
       start_at: z.string().nullable(),
       end_at: z.string().nullable(),
     }),
-    webhook_url: z.string().nullable(),
+    discord_webhook_url: z.string().nullable(),
     default_answer_title: z.string().nullable(),
     visibility: visibilitySchema,
     answer_visibility: visibilitySchema,

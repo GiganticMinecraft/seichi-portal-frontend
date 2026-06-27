@@ -17,7 +17,7 @@ import type { Control, UseFormRegister } from 'react-hook-form';
 const FormSettings = (props: {
   register: UseFormRegister<FormEditorValues>;
   control: Control<FormEditorValues>;
-  hasResponsePeriod: boolean;
+  hasAcceptancePeriod: boolean;
   labelOptions: GetFormLabelsResponse;
 }) => {
   const { field: visibilityField } = useController({
@@ -53,22 +53,22 @@ const FormSettings = (props: {
       <FormControlLabel
         label="回答開始日と回答終了日を設定する"
         control={
-          <Checkbox {...props.register('settings.has_response_period')} />
+          <Checkbox {...props.register('settings.has_acceptance_period')} />
         }
       />
       <TextField
-        {...props.register('settings.response_period.start_at')}
+        {...props.register('settings.acceptance_period.start_at')}
         label="回答開始日"
         type="datetime-local"
         helperText="回答開始日と回答終了日はどちらも指定する必要があります。"
-        disabled={!props.hasResponsePeriod}
+        disabled={!props.hasAcceptancePeriod}
       />
       <TextField
-        {...props.register('settings.response_period.end_at')}
+        {...props.register('settings.acceptance_period.end_at')}
         label="回答終了日"
         type="datetime-local"
         helperText="回答開始日と回答終了日はどちらも指定する必要があります。"
-        disabled={!props.hasResponsePeriod}
+        disabled={!props.hasAcceptancePeriod}
       />
       <TextField
         {...visibilityField}
@@ -93,7 +93,7 @@ const FormSettings = (props: {
         <MenuItem value="PRIVATE">非公開</MenuItem>
       </TextField>
       <TextField
-        {...props.register('settings.webhook_url')}
+        {...props.register('settings.discord_webhook_url')}
         label="Webhook URL"
         type="url"
       />

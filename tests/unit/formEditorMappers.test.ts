@@ -22,12 +22,12 @@ const baseValues: FormEditorValues = {
     },
   ],
   settings: {
-    has_response_period: false,
-    response_period: {
+    has_acceptance_period: false,
+    acceptance_period: {
       start_at: null,
       end_at: null,
     },
-    webhook_url: null,
+    discord_webhook_url: null,
     default_answer_title: null,
     visibility: 'PUBLIC',
     answer_visibility: 'PUBLIC',
@@ -62,12 +62,12 @@ describe('form request builders', () => {
         ...baseValues,
         settings: {
           ...baseValues.settings,
-          webhook_url: '',
+          discord_webhook_url: '',
         },
       },
       false
     );
 
-    expect(body.settings?.webhook_url).toBeNull();
+    expect(body.settings?.discord_webhook_url).toBeNull();
   });
 });

@@ -20,12 +20,12 @@ export const createEmptyFormEditorValues = (): FormEditorValues => ({
   questions: [],
   labels: [],
   settings: {
-    has_response_period: false,
-    response_period: {
+    has_acceptance_period: false,
+    acceptance_period: {
       start_at: null,
       end_at: null,
     },
-    webhook_url: null,
+    discord_webhook_url: null,
     default_answer_title: null,
     visibility: 'PUBLIC',
     answer_visibility: 'PUBLIC',

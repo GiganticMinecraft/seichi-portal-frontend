@@ -1,6 +1,7 @@
 'use client';
 
 import { Alert } from '@mui/material';
+import { formatString } from '@/generic/DateFormatter';
 import type { GetQuestionsResponse } from '@/lib/api-types';
 import AnswerSubmissionForm from './AnswerSubmissionForm';
 import AnswerSubmissionSuccess from './AnswerSubmissionSuccess';
@@ -21,6 +22,7 @@ const AnswerForm = ({ questions, formId, title, description }: Props) => {
   const {
     isSubmitted,
     submissionErrorCode,
+    restriction,
     submitAnswers,
     resetSubmissionState,
   } = useAnswerSubmission(formId);
@@ -37,6 +39,17 @@ const AnswerForm = ({ questions, formId, title, description }: Props) => {
           sx={{ width: '100%', maxWidth: 800, mx: 'auto', mb: 2 }}
         >
           回答期間が終了しています
+        </Alert>
+      )}
+      {submissionErrorCode === 'RESTRICTED' && (
+        <Alert
+          severity="error"
+          sx={{ width: '100%', maxWidth: 800, mx: 'auto', mb: 2 }}
+        >
+          現在、回答の投稿が制限されています。
+          {restriction?.reason && `（理由: ${restriction.reason}）`}
+          {restriction?.expires_at &&
+            ` 制限解除予定: ${formatString(restriction.expires_at)}`}
         </Alert>
       )}
       {submissionErrorCode === 'UNKNOWN' && (
