@@ -35,7 +35,7 @@ const Home = async ({ params }: { params: Promise<{ formId: string }> }) => {
       title={form.title}
       description={form.description}
       isAuthenticated={isAuthenticated}
-      allowTemporaryAnswers={form.settings.allow_temporary_answers}
+      allowTemporaryAnswers={form.settings.allow_temporary_answers ?? false}
     />
   );
 };

@@ -38,10 +38,15 @@ const toAnswerContents = (data: AnswerFormInput): AnswerContents =>
         ];
       }
 
-      return values.map((value) => ({
-        question_id: key,
-        answer: value,
-      }));
+      if (Array.isArray(values)) {
+        return values.map((value) => ({
+          question_id: key,
+          answer: value,
+        }));
+      }
+
+      // 未回答の任意質問など、想定外の値（undefined / null）は contents から除外する。
+      return [];
     });
 
 const toTemporaryUser = (

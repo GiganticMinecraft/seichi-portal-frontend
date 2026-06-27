@@ -101,7 +101,7 @@ export const fromFormResponseToEditorValues = (
       answer_visibility: toVisibility(
         form.settings.answer_settings?.visibility
       ),
-      allow_temporary_answers: form.settings.allow_temporary_answers,
+      allow_temporary_answers: form.settings.allow_temporary_answers ?? false,
     },
   };
 };
