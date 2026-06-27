@@ -4,12 +4,13 @@ import { useState } from 'react';
 import { errorResponseSchema } from '@/lib/api/errors';
 import { proxyClient } from '@/lib/proxyClient';
 import type { AnswerFormInput } from './answerFormTypes';
+import type { ErrorRestriction } from '@/lib/api/errors';
 import type { ApiPaths } from '@/lib/api/types';
 
 type AnswerCreateBody =
   ApiPaths['/api/v1/forms/{id}/answers']['post']['requestBody']['content']['application/json'];
 
-type SubmissionErrorCode = 'OUT_OF_PERIOD' | 'UNKNOWN';
+type SubmissionErrorCode = 'OUT_OF_PERIOD' | 'RESTRICTED' | 'UNKNOWN';
 
 const toAnswerCreateBody = (data: AnswerFormInput): AnswerCreateBody => ({
   contents: Object.entries(data).flatMap(([key, values]) => {
@@ -36,17 +37,28 @@ const toAnswerCreateBody = (data: AnswerFormInput): AnswerCreateBody => ({
   }),
 });
 
-const parseSubmissionErrorCode = (
-  error: unknown
-): SubmissionErrorCode | null => {
+type ParsedSubmissionError = {
+  code: SubmissionErrorCode;
+  restriction?: ErrorRestriction;
+};
+
+const parseSubmissionError = (error: unknown): ParsedSubmissionError | null => {
   const parsed = errorResponseSchema.safeParse(error);
 
   if (!parsed.success) {
     return null;
   }
 
+  // restriction が含まれる場合は回答投稿制限によるエラーとして扱う。
+  if (parsed.data.restriction) {
+    return {
+      code: 'RESTRICTED',
+      restriction: parsed.data.restriction,
+    };
+  }
+
   if (parsed.data.errorCode === 'OUT_OF_PERIOD') {
-    return 'OUT_OF_PERIOD';
+    return { code: 'OUT_OF_PERIOD' };
   }
 
   return null;
@@ -60,6 +72,7 @@ export const useAnswerSubmission = (formId: string) => {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [submissionErrorCode, setSubmissionErrorCode] =
     useState<SubmissionErrorCode | null>(null);
+  const [restriction, setRestriction] = useState<ErrorRestriction | null>(null);
 
   const submitAnswers = async (data: AnswerFormInput) => {
     const { response, error } = await proxyClient.POST(
@@ -77,11 +90,14 @@ export const useAnswerSubmission = (formId: string) => {
     if (response.ok) {
       setIsSubmitted(true);
       setSubmissionErrorCode(null);
+      setRestriction(null);
       return { ok: true as const };
     }
 
-    const errorCode = parseSubmissionErrorCode(error) ?? 'UNKNOWN';
+    const parsed = parseSubmissionError(error);
+    const errorCode = parsed?.code ?? 'UNKNOWN';
     setSubmissionErrorCode(errorCode);
+    setRestriction(parsed?.restriction ?? null);
 
     return { ok: false as const, errorCode };
   };
@@ -89,11 +105,13 @@ export const useAnswerSubmission = (formId: string) => {
   const resetSubmissionState = () => {
     setIsSubmitted(false);
     setSubmissionErrorCode(null);
+    setRestriction(null);
   };
 
   return {
     isSubmitted,
     submissionErrorCode,
+    restriction,
     submitAnswers,
     resetSubmissionState,
   };

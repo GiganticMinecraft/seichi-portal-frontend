@@ -80,8 +80,8 @@ const toApiQuestion = (
 export const fromFormResponseToEditorValues = (
   form: GetFormResponse
 ): FormEditorValues => {
-  const startAt = form.settings.answer_settings?.response_period?.start_at;
-  const endAt = form.settings.answer_settings?.response_period?.end_at;
+  const startAt = form.settings.answer_settings?.acceptance_period?.start_at;
+  const endAt = form.settings.answer_settings?.acceptance_period?.end_at;
 
   return {
     title: form.title,
@@ -89,12 +89,12 @@ export const fromFormResponseToEditorValues = (
     questions: form.questions.map(toEditorQuestion),
     labels: form.labels,
     settings: {
-      has_response_period: Boolean(startAt && endAt),
-      response_period: {
+      has_acceptance_period: Boolean(startAt && endAt),
+      acceptance_period: {
         start_at: startAt ? fromStringToJSTDateTime(startAt) : null,
         end_at: endAt ? fromStringToJSTDateTime(endAt) : null,
       },
-      webhook_url: form.settings.webhook_url ?? null,
+      discord_webhook_url: form.settings.discord_webhook_url ?? null,
       visibility: toVisibility(form.settings.visibility),
       default_answer_title:
         form.settings.answer_settings?.default_answer_title ?? null,
@@ -117,8 +117,8 @@ export const toFormUpdateBody = (
   data: FormEditorValues,
   includeQuestions: boolean
 ): FormUpdateBody => {
-  const startAt = data.settings.response_period.start_at;
-  const endAt = data.settings.response_period.end_at;
+  const startAt = data.settings.acceptance_period.start_at;
+  const endAt = data.settings.acceptance_period.end_at;
 
   const body: FormUpdateBody = {
     title: data.title.trim(),
@@ -126,13 +126,17 @@ export const toFormUpdateBody = (
     labels: data.labels.map((label) => label.id),
     settings: {
       visibility: data.settings.visibility,
-      webhook_url: toNullableNonEmptyString(data.settings.webhook_url),
+      // 未ログイン回答の UI は未実装のため、現時点では常に無効で送信する。
+      allow_temporary_answers: false,
+      discord_webhook_url: toNullableNonEmptyString(
+        data.settings.discord_webhook_url
+      ),
       answer_settings: {
         default_answer_title:
           data.settings.default_answer_title === ''
             ? null
             : data.settings.default_answer_title,
-        response_period: data.settings.has_response_period
+        acceptance_period: data.settings.has_acceptance_period
           ? {
               start_at: toApiDateTime(startAt),
               end_at: toApiDateTime(endAt),

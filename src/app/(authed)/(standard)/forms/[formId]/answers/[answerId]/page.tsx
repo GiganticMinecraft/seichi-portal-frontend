@@ -58,7 +58,19 @@ const Home = ({
     { refreshInterval: 1000 }
   );
 
-  if (answerError || formQuestionsError || messagesError) {
+  const {
+    data: comments,
+    error: commentsError,
+    isLoading: isLoadingComments,
+  } = useApiQuery(
+    '/api/v1/forms/{form_id}/answers/{answer_id}/comments',
+    {
+      path: { form_id: formId, answer_id: answerId },
+    },
+    { refreshInterval: 1000 }
+  );
+
+  if (answerError || formQuestionsError || messagesError || commentsError) {
     return <ErrorDialog />;
   }
 
@@ -67,9 +79,11 @@ const Home = ({
     isLoadingFormQuestions ||
     isLoadingCurrentUser ||
     isLoadingMessages ||
+    isLoadingComments ||
     !answer ||
     !form ||
-    !messages
+    !messages ||
+    !comments
   ) {
     return <LoadingCircular />;
   }
@@ -99,7 +113,7 @@ const Home = ({
       />
       <AnswerDetails answer={answer} questions={form.questions} />
       <Comments
-        comments={answer.comments as AnswerCommentType[]}
+        comments={comments as AnswerCommentType[]}
         formId={answer.form_id}
         answerId={answer.id}
         currentUserId={currentUser?.id}

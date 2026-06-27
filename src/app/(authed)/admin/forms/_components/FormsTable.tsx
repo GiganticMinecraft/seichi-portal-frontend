@@ -67,10 +67,10 @@ const FormsTable = ({ forms }: Props) => {
                 <TableCell>
                   <Typography variant="body2" color="text.secondary">
                     {formatResponsePeriod(
-                      form.settings.answer_settings?.response_period
+                      form.settings.answer_settings?.acceptance_period
                         ?.start_at ?? null,
-                      form.settings.answer_settings?.response_period?.end_at ??
-                        null
+                      form.settings.answer_settings?.acceptance_period
+                        ?.end_at ?? null
                     )}
                   </Typography>
                 </TableCell>

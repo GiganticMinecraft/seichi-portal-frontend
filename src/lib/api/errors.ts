@@ -1,5 +1,9 @@
 import { z } from 'zod';
-import type { components } from '@/generated/api-types';
+
+export const errorRestrictionSchema = z.object({
+  reason: z.string(),
+  expires_at: z.string().nullable().optional(),
+});
 
 export const errorResponseSchema = z.object({
   detail: z.string(),
@@ -7,9 +11,11 @@ export const errorResponseSchema = z.object({
   status: z.number(),
   title: z.string(),
   type: z.string(),
+  restriction: errorRestrictionSchema.nullable().optional(),
 });
 
-export type ErrorResponse = components['schemas']['ErrorResponse'];
+export type ErrorResponse = z.infer<typeof errorResponseSchema>;
+export type ErrorRestriction = z.infer<typeof errorRestrictionSchema>;
 
 export const parseErrorResponse = (error: unknown) =>
   errorResponseSchema.safeParse(error);

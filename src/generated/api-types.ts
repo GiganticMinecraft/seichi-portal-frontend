@@ -252,6 +252,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/forms/{id}/temporary-answers": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** 未ログイン回答の作成 */
+        post: operations["post_temporary_answer_handler"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/labels/answers": {
         parameters: {
             query?: never;
@@ -464,10 +481,48 @@ export interface paths {
         patch: operations["patch_user_role"];
         trace?: never;
     };
+    "/api/v1/users/{uuid}/answer-submitter-restriction": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** 回答投稿者の有効な回答投稿制限の取得 */
+        get: operations["get_answer_submitter_restriction"];
+        /** 回答投稿者の回答投稿を制限する */
+        put: operations["put_answer_submitter_restriction"];
+        post?: never;
+        /** 回答投稿者の回答投稿制限を解除する */
+        delete: operations["delete_answer_submitter_restriction"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        AnswerAcceptancePeriodInput: {
+            end_at?: string | null;
+            start_at?: string | null;
+        };
+        AnswerAcceptancePeriodSchema: {
+            /** Format: date-time */
+            end_at?: string | null;
+            /** Format: date-time */
+            start_at?: string | null;
+        };
+        AnswerAuthor: {
+            /** @enum {string} */
+            type: "AUTHENTICATED_USER";
+            user: components["schemas"]["User"];
+        } | {
+            temporary_user: components["schemas"]["TemporaryAnswerAuthor"];
+            /** @enum {string} */
+            type: "TEMPORARY_USER";
+        };
         AnswerComment: {
             commented_by: components["schemas"]["User"];
             content: string;
@@ -503,9 +558,24 @@ export interface components {
             name: string;
         };
         AnswerSettingsSchema: {
+            acceptance_period: components["schemas"]["AnswerAcceptancePeriodSchema"];
             default_answer_title?: string | null;
-            response_period: components["schemas"]["ResponsePeriodSchema"];
             visibility: components["schemas"]["AnswerVisibility"];
+        };
+        AnswerSubmitterRestrictionRequest: {
+            /** Format: date-time */
+            expires_at?: string | null;
+            reason: string;
+        };
+        AnswerSubmitterRestrictionResponse: {
+            /** Format: date-time */
+            expires_at?: string | null;
+            id: string;
+            reason: string;
+            /** Format: date-time */
+            restricted_at: string;
+            restricted_by: string;
+            submitter_id: string;
         };
         AnswerUpdateSchema: {
             title?: string | null;
@@ -568,14 +638,20 @@ export interface components {
         ErrorResponse: {
             detail: string;
             errorCode: string;
+            restriction?: null | components["schemas"]["ErrorRestriction"];
             /** Format: int32 */
             status: number;
             title: string;
             type: string;
         };
+        ErrorRestriction: {
+            /** Format: date-time */
+            expires_at?: string | null;
+            reason: string;
+        };
         FormAnswer: {
             answers: components["schemas"]["AnswerContent"][];
-            comments: components["schemas"]["AnswerComment"][];
+            author: components["schemas"]["AnswerAuthor"];
             /** Format: uuid */
             form_id: string;
             /** Format: uuid */
@@ -584,11 +660,11 @@ export interface components {
             /** Format: date-time */
             timestamp: string;
             title?: string | null;
-            user: components["schemas"]["User"];
         };
         FormCreateSchema: {
             description: string;
             questions: components["schemas"]["QuestionSchema"][];
+            settings?: null | components["schemas"]["FormSettingsSchema"];
             title: string;
         };
         FormLabelCreateSchema: {
@@ -618,9 +694,10 @@ export interface components {
             title: string;
         };
         FormSettingsSchema: {
+            allow_temporary_answers: boolean;
             answer_settings: components["schemas"]["AnswerSettingsSchema"];
+            discord_webhook_url?: string | null;
             visibility: string;
-            webhook_url?: string | null;
         };
         FormUpdateSchema: {
             description?: string | null;
@@ -701,16 +778,6 @@ export interface components {
         ReplaceAnswerLabelSchema: {
             labels: string[];
         };
-        ResponsePeriodInput: {
-            end_at?: string | null;
-            start_at?: string | null;
-        };
-        ResponsePeriodSchema: {
-            /** Format: date-time */
-            end_at?: string | null;
-            /** Format: date-time */
-            start_at?: string | null;
-        };
         /** @enum {string} */
         Role: "STANDARD_USER" | "ADMINISTRATOR";
         SelectQuestionResponseSchema: components["schemas"]["QuestionDefinitionResponseSchema"] & {
@@ -727,6 +794,19 @@ export interface components {
         SessionCreateSchema: {
             /** Format: int32 */
             expires: number;
+        };
+        TemporaryAnswerAuthor: {
+            contact_text: string;
+            id: string;
+            name: string;
+        };
+        TemporaryAnswerCreateSchema: {
+            contents: components["schemas"]["AnswerContentSchema"][];
+            temporary_user: components["schemas"]["TemporaryUserCreateSchema"];
+        };
+        TemporaryUserCreateSchema: {
+            contact_text: components["schemas"]["NonEmptyString"];
+            name: components["schemas"]["NonEmptyString"];
         };
         TextQuestionResponseSchema: components["schemas"]["QuestionDefinitionResponseSchema"];
         TextQuestionSchema: components["schemas"]["QuestionDefinitionSchema"];
@@ -2383,6 +2463,76 @@ export interface operations {
             };
         };
     };
+    post_temporary_answer_handler: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Form ID */
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["TemporaryAnswerCreateSchema"];
+            };
+        };
+        responses: {
+            /** @description The request has succeeded. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description The server could not understand the request due to invalid syntax. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Access is forbidden. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description The server cannot find the requested resource. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Client error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
     get_labels_for_answers: {
         parameters: {
             query?: never;
@@ -3732,6 +3882,221 @@ export interface operations {
             };
             /** @description Client error */
             422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    get_answer_submitter_restriction: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description User UUID */
+                uuid: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The request has succeeded. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": null | components["schemas"]["AnswerSubmitterRestrictionResponse"];
+                };
+            };
+            /** @description The server could not understand the request due to invalid syntax. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Access is unauthorized. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Access is forbidden. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description The server cannot find the requested resource. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    put_answer_submitter_restriction: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description User UUID */
+                uuid: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AnswerSubmitterRestrictionRequest"];
+            };
+        };
+        responses: {
+            /** @description The request has succeeded. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AnswerSubmitterRestrictionResponse"];
+                };
+            };
+            /** @description The server could not understand the request due to invalid syntax. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Access is unauthorized. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Access is forbidden. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description The server cannot find the requested resource. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Client error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    delete_answer_submitter_restriction: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description User UUID */
+                uuid: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description There is no content to send for this request, but the headers may be useful. */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description The server could not understand the request due to invalid syntax. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Access is unauthorized. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Access is forbidden. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description The server cannot find the requested resource. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Server error */
+            500: {
                 headers: {
                     [name: string]: unknown;
                 };

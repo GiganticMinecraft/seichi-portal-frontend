@@ -41,9 +41,9 @@ const FormCreateForm = (props: { labelOptions: GetFormLabelsResponse }) => {
     name: 'questions',
   });
 
-  const hasResponsePeriod = useWatch({
+  const hasAcceptancePeriod = useWatch({
     control,
-    name: 'settings.has_response_period',
+    name: 'settings.has_acceptance_period',
     defaultValue: false,
   });
 
@@ -65,7 +65,7 @@ const FormCreateForm = (props: { labelOptions: GetFormLabelsResponse }) => {
             <FormSettings
               control={control}
               register={register}
-              hasResponsePeriod={hasResponsePeriod}
+              hasAcceptancePeriod={hasAcceptancePeriod}
               labelOptions={props.labelOptions}
             />
           </CardContent>

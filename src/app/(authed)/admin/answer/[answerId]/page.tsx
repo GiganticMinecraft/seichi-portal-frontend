@@ -63,7 +63,28 @@ const Home = ({ params }: { params: Promise<{ answerId: string }> }) => {
     { refreshInterval: 1000 }
   );
 
-  if (answersError || formQuestionsError || labelsError || messagesError) {
+  const {
+    data: comments,
+    error: commentsError,
+    isLoading: isCommentsLoading,
+  } = useApiQuery(
+    '/api/v1/forms/{form_id}/answers/{answer_id}/comments',
+    {
+      path: {
+        form_id: answers?.form_id ?? '',
+        answer_id: answerId,
+      },
+    },
+    { refreshInterval: 1000 }
+  );
+
+  if (
+    answersError ||
+    formQuestionsError ||
+    labelsError ||
+    messagesError ||
+    commentsError
+  ) {
     return <ErrorDialog />;
   }
 
@@ -72,10 +93,12 @@ const Home = ({ params }: { params: Promise<{ answerId: string }> }) => {
     isFormQuestionsLoading ||
     isLabelsLoading ||
     isMessagesLoading ||
+    isCommentsLoading ||
     !answers ||
     !form ||
     !labels ||
-    !messages
+    !messages ||
+    !comments
   ) {
     return <LoadingCircular />;
   }
@@ -109,7 +132,7 @@ const Home = ({ params }: { params: Promise<{ answerId: string }> }) => {
       />
       <StandardAnswerDetails answer={answers} questions={form.questions} />
       <Comments
-        comments={answers.comments as AnswerCommentType[]}
+        comments={comments as AnswerCommentType[]}
         formId={answers.form_id}
         answerId={answerId}
         currentUserId={undefined}

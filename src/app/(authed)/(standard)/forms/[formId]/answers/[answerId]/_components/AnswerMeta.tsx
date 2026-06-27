@@ -1,10 +1,32 @@
 'use client';
 
-import { Box, Grid, Paper, Stack, Typography } from '@mui/material';
+import { Box, Chip, Grid, Paper, Stack, Typography } from '@mui/material';
 import type { ReactNode } from 'react';
 import { formatString } from '@/generic/DateFormatter';
 import AnswerLabels from './AnswerLabels';
 import type { GetAnswerResponse } from '@/lib/api-types';
+
+type Author = GetAnswerResponse['author'];
+
+const AuthorName = ({ author }: { author: Author }) => {
+  if (author.type === 'TEMPORARY_USER') {
+    return (
+      <Stack
+        direction="row"
+        spacing={1}
+        sx={{ alignItems: 'center', flexWrap: 'wrap' }}
+      >
+        <Typography>{author.temporary_user.name}</Typography>
+        <Chip label="未ログイン" size="small" color="default" />
+        <Typography variant="caption" color="text.secondary">
+          連絡先: {author.temporary_user.contact_text}
+        </Typography>
+      </Stack>
+    );
+  }
+
+  return <Typography>{author.user.name}</Typography>;
+};
 
 const AnswerMeta = (props: {
   answer: GetAnswerResponse;
@@ -18,7 +40,7 @@ const AnswerMeta = (props: {
         <Typography variant="caption" color="text.secondary">
           回答者
         </Typography>
-        <Typography>{props.answer.user.name}</Typography>
+        <AuthorName author={props.answer.author} />
       </Grid>
       <Grid size={{ xs: 12, sm: 6 }}>
         <Typography variant="caption" color="text.secondary">

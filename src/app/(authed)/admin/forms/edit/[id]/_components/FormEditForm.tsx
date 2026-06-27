@@ -45,9 +45,9 @@ const FormEditForm = (props: {
     name: 'questions',
   });
 
-  const hasResponsePeriod = useWatch({
+  const hasAcceptancePeriod = useWatch({
     control,
-    name: 'settings.has_response_period',
+    name: 'settings.has_acceptance_period',
     defaultValue: false,
   });
 
@@ -78,7 +78,7 @@ const FormEditForm = (props: {
               <FormSettings
                 register={register}
                 control={control}
-                hasResponsePeriod={hasResponsePeriod}
+                hasAcceptancePeriod={hasAcceptancePeriod}
                 labelOptions={props.labelOptions}
               />
             </CardContent>
