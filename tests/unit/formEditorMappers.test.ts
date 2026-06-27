@@ -2,8 +2,8 @@ import { describe, expect, it } from 'vitest';
 import {
   toCreateFormBody,
   toFormUpdateBody,
-} from '@/app/(authed)/admin/forms/_lib/formRequestBuilders';
-import type { FormEditorValues } from '@/app/(authed)/admin/forms/_schema/formEditorSchema';
+} from '@/app/(protected)/admin/forms/_lib/formRequestBuilders';
+import type { FormEditorValues } from '@/app/(protected)/admin/forms/_schema/formEditorSchema';
 
 const baseValues: FormEditorValues = {
   title: ' Form title ',
@@ -31,6 +31,7 @@ const baseValues: FormEditorValues = {
     default_answer_title: null,
     visibility: 'PUBLIC',
     answer_visibility: 'PUBLIC',
+    allow_temporary_answers: false,
   },
 };
 
@@ -69,5 +70,20 @@ describe('form request builders', () => {
     );
 
     expect(body.settings?.discord_webhook_url).toBeNull();
+  });
+
+  it('未ログイン回答の許可設定を更新ボディへ反映する', () => {
+    const body = toFormUpdateBody(
+      {
+        ...baseValues,
+        settings: {
+          ...baseValues.settings,
+          allow_temporary_answers: true,
+        },
+      },
+      false
+    );
+
+    expect(body.settings?.allow_temporary_answers).toBe(true);
   });
 });
