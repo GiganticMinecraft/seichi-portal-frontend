@@ -29,6 +29,7 @@ const UserList = ({
             <TableCell>UUID</TableCell>
             <TableCell>現在の権限</TableCell>
             <TableCell>権限の変更</TableCell>
+            <TableCell>回答投稿制限</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>

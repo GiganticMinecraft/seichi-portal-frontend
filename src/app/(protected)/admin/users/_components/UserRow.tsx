@@ -1,4 +1,5 @@
 import { TableCell, TableRow } from '@mui/material';
+import RestrictionCell from './RestrictionCell';
 import RoleChip from './RoleChip';
 import RoleSelectCell from './RoleSelectCell';
 import UserIdCell from './UserIdCell';
@@ -26,6 +27,13 @@ const UserRow = ({
       <RoleSelectCell
         userId={user.id}
         currentRole={user.role}
+        disabled={isSelf}
+      />
+    </TableCell>
+    <TableCell>
+      <RestrictionCell
+        userId={user.id}
+        userName={user.name}
         disabled={isSelf}
       />
     </TableCell>
