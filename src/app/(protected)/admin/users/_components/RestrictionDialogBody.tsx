@@ -89,13 +89,13 @@ const RestrictionDialogBody = ({
           <Stack spacing={2}>
             {submitError && <Alert severity="error">{submitError}</Alert>}
             <Stack spacing={1}>
-              <Typography>
+              <Typography component="p">
                 <strong>理由:</strong> {data.reason}
               </Typography>
-              <Typography>
+              <Typography component="p">
                 <strong>制限日時:</strong> {formatString(data.restricted_at)}
               </Typography>
-              <Typography>
+              <Typography component="p">
                 <strong>解除予定:</strong>{' '}
                 {data.expires_at ? formatString(data.expires_at) : '無期限'}
               </Typography>
