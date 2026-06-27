@@ -49,11 +49,13 @@ const parseSubmissionError = (error: unknown): ParsedSubmissionError | null => {
     return null;
   }
 
-  // restriction が含まれる場合は回答投稿制限によるエラーとして扱う。
-  if (parsed.data.restriction) {
+  // 回答投稿制限によるエラーは errorCode で判定する（restriction の有無に依存しない）。
+  if (parsed.data.errorCode === 'ANSWER_SUBMISSION_RESTRICTED') {
     return {
       code: 'RESTRICTED',
-      restriction: parsed.data.restriction,
+      ...(parsed.data.restriction
+        ? { restriction: parsed.data.restriction }
+        : {}),
     };
   }
 
