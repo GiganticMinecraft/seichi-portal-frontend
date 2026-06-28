@@ -6,9 +6,14 @@ import type { GetFormsResponse } from '@/lib/api-types';
 
 const fetchPublicForms = async (): Promise<GetFormsResponse> => {
   try {
-    const { data } = await serverApiClient.GET('/api/v1/forms');
+    const { data, error } = await serverApiClient.GET('/api/v1/forms');
+    if (error) {
+      console.error('Failed to fetch public forms:', error);
+      return [];
+    }
     return (data ?? []).filter((f) => f.settings.allow_temporary_answers);
-  } catch {
+  } catch (err) {
+    console.error('Network error while fetching public forms:', err);
     return [];
   }
 };

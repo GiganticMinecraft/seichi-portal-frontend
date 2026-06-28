@@ -15,6 +15,12 @@ const formatResponsePeriod = (startAt: string | null, endAt: string | null) => {
   if (startAt != null && endAt != null) {
     return `${formatString(startAt)} ~ ${formatString(endAt)}`;
   }
+  if (startAt != null) {
+    return `${formatString(startAt)} ~`;
+  }
+  if (endAt != null) {
+    return `~ ${formatString(endAt)}`;
+  }
   return '回答期限なし';
 };
 
