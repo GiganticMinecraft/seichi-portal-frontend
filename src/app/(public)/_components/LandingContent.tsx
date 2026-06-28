@@ -11,6 +11,8 @@ import {
   Typography,
 } from '@mui/material';
 import { useLandingLogin } from './useLandingLogin';
+import { PublicFormList } from './PublicFormList';
+import type { GetFormsResponse } from '@/lib/api-types';
 
 const ErrorState = ({ errorMessage }: { errorMessage: string }) => (
   <Container maxWidth="sm" sx={{ py: 10 }}>
@@ -31,10 +33,11 @@ const ProcessingState = () => (
 
 type LandingViewProps = {
   onLogin: () => void;
+  publicForms: GetFormsResponse;
 };
 
-const LandingView = ({ onLogin }: LandingViewProps) => (
-  <Container maxWidth="sm" sx={{ py: { xs: 6, md: 10 } }}>
+const LandingView = ({ onLogin, publicForms }: LandingViewProps) => (
+  <Container maxWidth="md" sx={{ py: { xs: 6, md: 10 } }}>
     <Stack spacing={5} sx={{ alignItems: 'center', textAlign: 'center' }}>
       <Box>
         <Typography
@@ -54,10 +57,10 @@ const LandingView = ({ onLogin }: LandingViewProps) => (
 
       <Divider sx={{ width: '100%' }} />
 
-      <Box sx={{ width: '100%' }}>
+      <Box sx={{ width: '100%', maxWidth: 'sm' }}>
         <Alert severity="info" sx={{ mb: 3, textAlign: 'left' }}>
           <Typography variant="body2" component="div">
-            <strong>ご利用にはMinecraftアカウントが必要です</strong>
+            <strong>サインインするとすべての機能をご利用いただけます</strong>
             <br />
             整地鯖でプレイしたことのある、Minecraftアカウントに紐づいた
             Microsoftアカウントでサインインしてください。
@@ -73,22 +76,40 @@ const LandingView = ({ onLogin }: LandingViewProps) => (
           Microsoftアカウントでサインイン
         </Button>
       </Box>
+
+      {publicForms.length > 0 && (
+        <>
+          <Divider sx={{ width: '100%' }} />
+          <Box sx={{ width: '100%' }}>
+            <Typography
+              variant="h6"
+              component="h2"
+              sx={{ fontWeight: 700, mb: 3 }}
+            >
+              サインインなしで回答できるフォーム
+            </Typography>
+            <PublicFormList forms={publicForms} />
+          </Box>
+        </>
+      )}
     </Stack>
   </Container>
 );
 
-export const LandingContent = () => {
+type LandingContentProps = {
+  publicForms: GetFormsResponse;
+};
+
+export const LandingContent = ({ publicForms }: LandingContentProps) => {
   const { errorMessage, isProcessing, handleLogin } = useLandingLogin();
 
   if (errorMessage) {
     return <ErrorState errorMessage={errorMessage} />;
   }
 
-  // MS からのコールバック処理中（accounts が埋まり、Minecraft アクセストークン交換中）
-  // のときだけスピナーを表示。初回表示や戻り遷移時はランディングそのものを即出す。
   if (isProcessing) {
     return <ProcessingState />;
   }
 
-  return <LandingView onLogin={handleLogin} />;
+  return <LandingView onLogin={handleLogin} publicForms={publicForms} />;
 };
