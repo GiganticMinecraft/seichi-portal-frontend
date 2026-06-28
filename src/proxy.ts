@@ -23,7 +23,7 @@ const isAnonymousAllowedApi = (request: NextRequest) => {
 
   if (
     request.method === 'GET' &&
-    /^\/api\/proxy\/api\/v1\/forms\/[^/]+$/.test(pathname)
+    /^\/api\/proxy\/api\/v1\/forms(\/[^/]+)?$/.test(pathname)
   ) {
     return true;
   }
