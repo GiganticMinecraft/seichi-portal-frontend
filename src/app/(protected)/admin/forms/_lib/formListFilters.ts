@@ -15,11 +15,17 @@ export const filterForms = (
     const matchesTitle =
       normalizedSearch.length === 0 ||
       form.title.toLowerCase().includes(normalizedSearch);
-    const formLabelIds = new Set(form.labels.map((label) => label.id));
+
+    if (!matchesTitle) {
+      return false;
+    }
+
     const matchesLabels =
       filter.labels.length === 0 ||
-      filter.labels.every((label) => formLabelIds.has(label.id));
+      filter.labels.every((label) =>
+        form.labels.some((formLabel) => formLabel.id === label.id)
+      );
 
-    return matchesTitle && matchesLabels;
+    return matchesLabels;
   });
 };
