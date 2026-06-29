@@ -10,7 +10,7 @@ import AnswerDetails from './_components/AnswerDetails';
 import AnswerMeta from './_components/AnswerMeta';
 import Comments from './_components/Comments';
 import { usePageTitle } from '@/hooks/usePageTitle';
-import type { AnswerCommentType } from '@/lib/api-types';
+
 
 const Home = ({
   params,
@@ -113,7 +113,7 @@ const Home = ({
       />
       <AnswerDetails answer={answer} questions={form.questions} />
       <Comments
-        comments={comments as AnswerCommentType[]}
+        comments={comments}
         formId={answer.form_id}
         answerId={answer.id}
         currentUserId={currentUser?.id}

@@ -17,9 +17,10 @@ import {
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { useController, useFieldArray } from 'react-hook-form';
-import type {
-  FormEditorQuestion,
-  FormEditorValues,
+import {
+  questionTypeSchema,
+  type FormEditorQuestion,
+  type FormEditorValues,
 } from '../_schema/formEditorSchema';
 import type { Control, UseFormRegister } from 'react-hook-form';
 
@@ -164,11 +165,12 @@ const ChoiceEditor = (props: {
         select
         required
         helperText="質問の種類を選択してください。"
-        onChange={(event) =>
-          handleQuestionTypeChange(
-            event.target.value as FormEditorQuestion['question_type']
-          )
-        }
+        onChange={(event) => {
+          const parsed = questionTypeSchema.safeParse(event.target.value);
+          if (parsed.success) {
+            handleQuestionTypeChange(parsed.data);
+          }
+        }}
       >
         <MenuItem value="Text">テキスト</MenuItem>
         <MenuItem value="SingleChoice">単一選択</MenuItem>

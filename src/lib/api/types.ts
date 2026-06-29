@@ -3,9 +3,7 @@ import type { components, paths } from '@/generated/api-types';
 export type ApiPaths = paths;
 export type ApiComponents = components;
 
-export type AnswerCommentType = components['schemas']['AnswerComment'] & {
-  comment_id: string;
-};
+export type AnswerComment = components['schemas']['AnswerComment'];
 
 export type GetQuestionsResponse =
   components['schemas']['QuestionResponseSchema'][];

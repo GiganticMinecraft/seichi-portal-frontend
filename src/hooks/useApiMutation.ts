@@ -37,5 +37,6 @@ export const handleMutationResponse = <T>(
     return { success: true, data: parseResult.data };
   }
 
+  // eslint-disable-next-line @typescript-eslint/consistent-type-assertions, @typescript-eslint/no-unsafe-type-assertion -- schema 未指定時、data は unknown だが呼び出し元が T を保証する前提の設計
   return { success: true, data: data as T };
 };

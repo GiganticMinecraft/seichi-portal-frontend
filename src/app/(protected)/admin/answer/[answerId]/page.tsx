@@ -15,7 +15,7 @@ import {
   AdminAnswerTitle,
 } from './_components/AnswerDetails';
 import { usePageTitle } from '@/hooks/usePageTitle';
-import type { AnswerCommentType } from '@/lib/api-types';
+
 
 const Home = ({ params }: { params: Promise<{ answerId: string }> }) => {
   usePageTitle('回答管理');
@@ -132,7 +132,7 @@ const Home = ({ params }: { params: Promise<{ answerId: string }> }) => {
       />
       <StandardAnswerDetails answer={answers} questions={form.questions} />
       <Comments
-        comments={comments as AnswerCommentType[]}
+        comments={comments}
         formId={answers.form_id}
         answerId={answerId}
         currentUserId={undefined}

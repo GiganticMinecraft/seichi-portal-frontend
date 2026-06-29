@@ -15,10 +15,11 @@
  */
 export function removeUndefinedOrNullRecords<T>(
   record: Record<string, T>
-): Record<string, string> {
+): Record<string, NonNullable<T>> {
   return Object.fromEntries(
     Object.entries(record).filter(
-      ([, value]) => value !== undefined && value !== null
+      (entry): entry is [string, NonNullable<T>] =>
+        entry[1] !== undefined && entry[1] !== null
     )
-  ) as { [k: string]: string };
+  );
 }

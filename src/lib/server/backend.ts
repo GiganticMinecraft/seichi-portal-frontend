@@ -37,16 +37,19 @@ export const createServerApiClient = () =>
 
 let cachedServerApiClient: Client<ApiPaths> | undefined;
 
-const getServerApiClient = () => {
+const getServerApiClient = (): Client<ApiPaths> => {
   cachedServerApiClient ??= createServerApiClient();
   return cachedServerApiClient;
 };
 
-export const serverApiClient = new Proxy({} as Client<ApiPaths>, {
-  get(_target, property, receiver) {
-    return Reflect.get(getServerApiClient(), property, receiver);
-  },
-});
+export const serverApiClient: Client<ApiPaths> = new Proxy(
+  createServerApiClient(),
+  {
+    get(_target, property, receiver) {
+      return Reflect.get(getServerApiClient(), property, receiver);
+    },
+  }
+);
 
 export const authorizationHeader = (token: string) => ({
   Authorization: `Bearer ${token}`,

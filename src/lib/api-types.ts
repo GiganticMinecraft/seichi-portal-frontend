@@ -7,7 +7,7 @@ export {
   searchUserItemSchema,
 } from '@/lib/api/schemas';
 export type {
-  AnswerCommentType,
+  AnswerComment,
   CreateFormResponse,
   CreateFormSchema,
   GetAnswerLabelsResponse,

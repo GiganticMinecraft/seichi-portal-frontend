@@ -13,13 +13,16 @@ export const useApiQuery = <P extends GetPaths>(
 ) => {
   const hasHydrated = useHasHydrated();
 
-  const pathParams =
+  const pathObj =
     params && typeof params === 'object' && 'path' in params
-      ? (params as { path?: Record<string, unknown> }).path
+      ? params.path
       : undefined;
 
   const hasEmptyPathParam =
-    pathParams && Object.values(pathParams).some((v) => !v && v !== 0);
+    pathObj &&
+    typeof pathObj === 'object' &&
+    pathObj !== null &&
+    Object.values(pathObj).some((v) => !v && v !== 0);
 
   const key =
     !hasHydrated || hasEmptyPathParam ? null : params ? [path, params] : [path];

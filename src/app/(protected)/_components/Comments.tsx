@@ -1,7 +1,7 @@
 'use client';
 
 import { Box, Typography } from '@mui/material';
-import type { AnswerCommentType } from '@/lib/api-types';
+import type { AnswerComment } from '@/lib/api-types';
 import ConversationComposer from './ConversationComposer';
 import ConversationSurface from './ConversationSurface';
 import type {
@@ -11,7 +11,7 @@ import type {
 import { useCommentConversationActions } from './useConversationActions';
 
 const Comments = (props: {
-  comments: AnswerCommentType[];
+  comments: AnswerComment[];
   formId: string;
   answerId: string;
   currentUserId: string | undefined;
@@ -21,9 +21,7 @@ const Comments = (props: {
 
   const entries: ConversationEntryViewModel[] = props.comments.map(
     (comment) => ({
-      id:
-        comment.comment_id ??
-        `${comment.commented_by.name}-${comment.timestamp}`,
+      id: `${comment.commented_by.name}-${comment.timestamp}`,
       body: comment.content,
       authorName: comment.commented_by.name,
       authorId: comment.commented_by.uuid,
