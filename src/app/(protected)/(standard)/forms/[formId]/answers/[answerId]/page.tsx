@@ -2,6 +2,11 @@
 
 import { Stack, Typography } from '@mui/material';
 import { use } from 'react';
+import {
+  getOptionalQueryData,
+  getRequiredQueryGroupError,
+  isQueryGroupReady,
+} from '@/app/_swr/queryState';
 import { useApiQuery } from '@/app/_swr/useApiQuery';
 import ErrorDialog from '@/app/_components/ErrorDialog';
 import LoadingCircular from '@/app/_components/LoadingCircular';
@@ -10,6 +15,62 @@ import AnswerDetails from './_components/AnswerDetails';
 import AnswerMeta from './_components/AnswerMeta';
 import Comments from './_components/Comments';
 import { usePageTitle } from '@/hooks/usePageTitle';
+import type {
+  AnswerComment,
+  GetAnswerResponse,
+  GetFormResponse,
+  GetMessagesResponse,
+} from '@/lib/api-types';
+
+type AnswerDetailsPageData = {
+  answer: GetAnswerResponse;
+  form: GetFormResponse;
+  messages: GetMessagesResponse;
+  comments: AnswerComment[];
+  currentUserId: string | undefined;
+};
+
+const AnswerDetailsPageView = ({
+  formId,
+  answerId,
+  data,
+}: {
+  formId: string;
+  answerId: string;
+  data: AnswerDetailsPageData;
+}) => (
+  <Stack
+    direction="column"
+    spacing={4}
+    sx={{
+      width: '100%',
+      justifyContent: 'flex-start',
+      alignItems: 'stretch',
+    }}
+  >
+    <Typography variant="h4">{data.answer.title}</Typography>
+    <AnswerMeta
+      answer={data.answer}
+      messageAction={
+        <Messages
+          messages={data.messages}
+          formId={formId}
+          answerId={answerId}
+          title="メッセージ"
+          triggerLabel={`メッセージ (${data.messages.length})`}
+        />
+      }
+    />
+    <AnswerDetails answer={data.answer} questions={data.form.questions} />
+    <Comments
+      comments={data.comments}
+      formId={data.answer.form_id}
+      answerId={data.answer.id}
+      currentUserId={data.currentUserId}
+      showDeleteButton={undefined}
+    />
+  </Stack>
+);
 
 const Home = ({
   params,
@@ -18,11 +79,7 @@ const Home = ({
 }) => {
   usePageTitle('回答詳細');
   const { formId, answerId } = use(params);
-  const {
-    data: answer,
-    error: answerError,
-    isLoading: isLoadingAnswers,
-  } = useApiQuery(
+  const answerQuery = useApiQuery(
     '/api/v1/forms/{form_id}/answers/{answer_id}',
     {
       path: { form_id: formId, answer_id: answerId },
@@ -30,11 +87,9 @@ const Home = ({
     { refreshInterval: 1000 }
   );
 
-  const {
-    data: form,
-    error: formQuestionsError,
-    isLoading: isLoadingFormQuestions,
-  } = useApiQuery(
+  const { data: answer } = answerQuery;
+
+  const formQuery = useApiQuery(
     '/api/v1/forms/{id}',
     {
       path: { id: answer?.form_id ?? '' },
@@ -42,14 +97,9 @@ const Home = ({
     { refreshInterval: 1000 }
   );
 
-  const { data: currentUser, isLoading: isLoadingCurrentUser } =
-    useApiQuery('/api/v1/users/me');
+  const currentUserQuery = useApiQuery('/api/v1/users/me');
 
-  const {
-    data: messages,
-    error: messagesError,
-    isLoading: isLoadingMessages,
-  } = useApiQuery(
+  const messagesQuery = useApiQuery(
     '/api/v1/forms/{form_id}/answers/{answer_id}/messages',
     {
       path: { form_id: formId, answer_id: answerId },
@@ -57,11 +107,7 @@ const Home = ({
     { refreshInterval: 1000 }
   );
 
-  const {
-    data: comments,
-    error: commentsError,
-    isLoading: isLoadingComments,
-  } = useApiQuery(
+  const commentsQuery = useApiQuery(
     '/api/v1/forms/{form_id}/answers/{answer_id}/comments',
     {
       path: { form_id: formId, answer_id: answerId },
@@ -69,56 +115,33 @@ const Home = ({
     { refreshInterval: 1000 }
   );
 
-  if (answerError || formQuestionsError || messagesError || commentsError) {
+  const requiredQueries = {
+    answer: answerQuery,
+    form: formQuery,
+    messages: messagesQuery,
+    comments: commentsQuery,
+  };
+  const queryError = getRequiredQueryGroupError(requiredQueries);
+
+  if (queryError !== undefined) {
     return <ErrorDialog />;
   }
 
-  if (
-    isLoadingAnswers ||
-    isLoadingFormQuestions ||
-    isLoadingCurrentUser ||
-    isLoadingMessages ||
-    isLoadingComments ||
-    !answer ||
-    !form ||
-    !messages ||
-    !comments
-  ) {
+  if (!isQueryGroupReady(requiredQueries)) {
     return <LoadingCircular />;
   }
 
+  const currentUser = getOptionalQueryData(currentUserQuery);
+  const data: AnswerDetailsPageData = {
+    answer: requiredQueries.answer.data,
+    form: requiredQueries.form.data,
+    messages: requiredQueries.messages.data,
+    comments: requiredQueries.comments.data,
+    currentUserId: currentUser?.id,
+  };
+
   return (
-    <Stack
-      direction="column"
-      spacing={4}
-      sx={{
-        width: '100%',
-        justifyContent: 'flex-start',
-        alignItems: 'stretch',
-      }}
-    >
-      <Typography variant="h4">{answer.title}</Typography>
-      <AnswerMeta
-        answer={answer}
-        messageAction={
-          <Messages
-            messages={messages}
-            formId={formId}
-            answerId={answerId}
-            title="メッセージ"
-            triggerLabel={`メッセージ (${messages.length})`}
-          />
-        }
-      />
-      <AnswerDetails answer={answer} questions={form.questions} />
-      <Comments
-        comments={comments}
-        formId={answer.form_id}
-        answerId={answer.id}
-        currentUserId={currentUser?.id}
-        showDeleteButton={undefined}
-      />
-    </Stack>
+    <AnswerDetailsPageView formId={formId} answerId={answerId} data={data} />
   );
 };
 

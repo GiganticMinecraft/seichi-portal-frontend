@@ -2,6 +2,10 @@
 
 import { Stack } from '@mui/material';
 import { use } from 'react';
+import {
+  getRequiredQueryGroupError,
+  isQueryGroupReady,
+} from '@/app/_swr/queryState';
 import { useApiQuery } from '@/app/_swr/useApiQuery';
 import ErrorDialog from '@/app/_components/ErrorDialog';
 import LoadingCircular from '@/app/_components/LoadingCircular';
@@ -15,25 +19,82 @@ import {
   AdminAnswerTitle,
 } from './_components/AnswerDetails';
 import { usePageTitle } from '@/hooks/usePageTitle';
+import type {
+  AnswerComment,
+  GetAnswerLabelsResponse,
+  GetAnswersResponse,
+  GetFormResponse,
+  GetMessagesResponse,
+} from '@/lib/api-types';
+
+type AdminAnswer = GetAnswersResponse[number];
+
+type AdminAnswerPageData = {
+  answer: AdminAnswer;
+  form: GetFormResponse;
+  labels: GetAnswerLabelsResponse;
+  messages: GetMessagesResponse;
+  comments: AnswerComment[];
+};
+
+const AdminAnswerPageView = ({
+  answerId,
+  data,
+}: {
+  answerId: string;
+  data: AdminAnswerPageData;
+}) => (
+  <Stack
+    direction="column"
+    spacing={4}
+    sx={{
+      width: '100%',
+      justifyContent: 'flex-start',
+      alignItems: 'stretch',
+    }}
+  >
+    <AdminAnswerTitle answer={data.answer} />
+    <StandardAnswerMeta
+      answer={data.answer}
+      labelsSlot={
+        <AdminAnswerLabels labelOptions={data.labels} answer={data.answer} />
+      }
+      extraActions={<AdminAnswerLabelManagementButton />}
+      messageAction={
+        <Messages
+          messages={data.messages}
+          formId={data.answer.form_id}
+          answerId={answerId}
+          title="メッセージ"
+          triggerLabel={`回答者にメッセージを送信 (${data.messages.length})`}
+        />
+      }
+    />
+    <StandardAnswerDetails
+      answer={data.answer}
+      questions={data.form.questions}
+    />
+    <Comments
+      comments={data.comments}
+      formId={data.answer.form_id}
+      answerId={answerId}
+      currentUserId={undefined}
+      showDeleteButton
+    />
+  </Stack>
+);
 
 const Home = ({ params }: { params: Promise<{ answerId: string }> }) => {
   usePageTitle('回答管理');
   const { answerId } = use(params);
-  const {
-    data: allAnswers,
-    error: answersError,
-    isLoading: isAnswersLoading,
-  } = useApiQuery('/api/v1/forms/answers', undefined, {
+  const allAnswersQuery = useApiQuery('/api/v1/forms/answers', undefined, {
     refreshInterval: 1000,
   });
 
+  const { data: allAnswers } = allAnswersQuery;
   const answers = allAnswers?.find((a) => a.id === answerId);
 
-  const {
-    data: form,
-    error: formQuestionsError,
-    isLoading: isFormQuestionsLoading,
-  } = useApiQuery(
+  const formQuery = useApiQuery(
     '/api/v1/forms/{id}',
     {
       path: { id: answers?.form_id ?? '' },
@@ -41,17 +102,9 @@ const Home = ({ params }: { params: Promise<{ answerId: string }> }) => {
     { refreshInterval: 1000 }
   );
 
-  const {
-    data: labels,
-    error: labelsError,
-    isLoading: isLabelsLoading,
-  } = useApiQuery('/api/v1/labels/answers');
+  const labelsQuery = useApiQuery('/api/v1/labels/answers');
 
-  const {
-    data: messages,
-    error: messagesError,
-    isLoading: isMessagesLoading,
-  } = useApiQuery(
+  const messagesQuery = useApiQuery(
     '/api/v1/forms/{form_id}/answers/{answer_id}/messages',
     {
       path: {
@@ -62,11 +115,7 @@ const Home = ({ params }: { params: Promise<{ answerId: string }> }) => {
     { refreshInterval: 1000 }
   );
 
-  const {
-    data: comments,
-    error: commentsError,
-    isLoading: isCommentsLoading,
-  } = useApiQuery(
+  const commentsQuery = useApiQuery(
     '/api/v1/forms/{form_id}/answers/{answer_id}/comments',
     {
       path: {
@@ -77,68 +126,56 @@ const Home = ({ params }: { params: Promise<{ answerId: string }> }) => {
     { refreshInterval: 1000 }
   );
 
-  if (
-    answersError ||
-    formQuestionsError ||
-    labelsError ||
-    messagesError ||
-    commentsError
-  ) {
+  const answerListQueries = { allAnswers: allAnswersQuery };
+  const answerListError = getRequiredQueryGroupError(answerListQueries);
+
+  if (answerListError !== undefined) {
     return <ErrorDialog />;
   }
 
-  if (
-    isAnswersLoading ||
-    isFormQuestionsLoading ||
-    isLabelsLoading ||
-    isMessagesLoading ||
-    isCommentsLoading ||
-    !answers ||
-    !form ||
-    !labels ||
-    !messages ||
-    !comments
-  ) {
+  if (!isQueryGroupReady(answerListQueries)) {
     return <LoadingCircular />;
   }
 
-  return (
-    <Stack
-      direction="column"
-      spacing={4}
-      sx={{
-        width: '100%',
-        justifyContent: 'flex-start',
-        alignItems: 'stretch',
-      }}
-    >
-      <AdminAnswerTitle answer={answers} />
-      <StandardAnswerMeta
-        answer={answers}
-        labelsSlot={
-          <AdminAnswerLabels labelOptions={labels} answer={answers} />
-        }
-        extraActions={<AdminAnswerLabelManagementButton />}
-        messageAction={
-          <Messages
-            messages={messages}
-            formId={answers.form_id}
-            answerId={answerId}
-            title="メッセージ"
-            triggerLabel={`回答者にメッセージを送信 (${messages.length})`}
-          />
-        }
-      />
-      <StandardAnswerDetails answer={answers} questions={form.questions} />
-      <Comments
-        comments={comments}
-        formId={answers.form_id}
-        answerId={answerId}
-        currentUserId={undefined}
-        showDeleteButton
-      />
-    </Stack>
+  const answer = answerListQueries.allAnswers.data.find(
+    (a) => a.id === answerId
   );
+
+  if (answer === undefined) {
+    return (
+      <ErrorDialog
+        status={404}
+        title="回答が見つかりません"
+        message="指定された回答は存在しないか、表示できません。"
+      />
+    );
+  }
+
+  const detailQueries = {
+    form: formQuery,
+    labels: labelsQuery,
+    messages: messagesQuery,
+    comments: commentsQuery,
+  };
+  const detailError = getRequiredQueryGroupError(detailQueries);
+
+  if (detailError !== undefined) {
+    return <ErrorDialog />;
+  }
+
+  if (!isQueryGroupReady(detailQueries)) {
+    return <LoadingCircular />;
+  }
+
+  const data: AdminAnswerPageData = {
+    answer,
+    form: detailQueries.form.data,
+    labels: detailQueries.labels.data,
+    messages: detailQueries.messages.data,
+    comments: detailQueries.comments.data,
+  };
+
+  return <AdminAnswerPageView answerId={answerId} data={data} />;
 };
 
 export default Home;
