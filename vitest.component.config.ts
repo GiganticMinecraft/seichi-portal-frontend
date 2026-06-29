@@ -13,7 +13,7 @@ export default mergeConfig(
       include: ['tests/component/**/*.test.tsx'],
       server: {
         deps: {
-          inline: true,
+          inline: [/@mui[+/]/, /react-transition-group/],
         },
       },
       setupFiles: ['tests/component/setup.ts'],
