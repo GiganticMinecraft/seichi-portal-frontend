@@ -4,7 +4,7 @@ import type {
 } from '../_schema/formEditorSchema';
 
 export const createEmptyFormEditorQuestion = (): FormEditorQuestion => ({
-  id: null,
+  identity: { kind: 'new' },
   title: '',
   description: '',
   question_type: 'Text',
@@ -21,8 +21,8 @@ export const createEmptyFormEditorValues = (): FormEditorValues => ({
   labels: [],
   settings: {
     acceptance_period: { kind: 'none' },
-    discord_webhook_url: null,
-    default_answer_title: null,
+    discord_webhook_url: '',
+    default_answer_title: '',
     visibility: 'PUBLIC',
     answer_visibility: 'PUBLIC',
     allow_temporary_answers: false,

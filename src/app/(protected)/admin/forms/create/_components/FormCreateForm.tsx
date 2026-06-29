@@ -42,11 +42,13 @@ const FormCreateForm = (props: { labelOptions: GetFormLabelsResponse }) => {
     name: 'questions',
   });
 
-  const { createForm, isSubmitted, submitError } = useCreateForm();
+  const { createForm, submitState } = useCreateForm();
   const questionListError =
     typeof errors.questions?.message === 'string'
       ? errors.questions.message
-      : null;
+      : undefined;
+  const submitErrorMessage =
+    submitState.kind === 'failed' ? submitState.message : undefined;
 
   const addQuestion = () => {
     append(createEmptyFormEditorQuestion());
@@ -79,15 +81,15 @@ const FormCreateForm = (props: { labelOptions: GetFormLabelsResponse }) => {
             onMove={move}
           />
         </Card>
-        {(errors.root || submitError) && (
+        {(errors.root || submitErrorMessage) && (
           <Alert severity="error">
-            {errors.root?.message ?? submitError?.message}
+            {errors.root?.message ?? submitErrorMessage}
           </Alert>
         )}
         {questionListError && (
           <Alert severity="error">{questionListError}</Alert>
         )}
-        {isSubmitted && (
+        {submitState.kind === 'submitted' && (
           <Alert severity="success">フォームを作成しました。</Alert>
         )}
         <Button

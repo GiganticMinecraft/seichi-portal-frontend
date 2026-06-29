@@ -7,6 +7,7 @@ import { match } from 'ts-pattern';
 import type {
   AcceptancePeriodSetting,
   FormEditorQuestion,
+  FormEditorQuestionIdentity,
   FormEditorValues,
   FormVisibility,
 } from '../_schema/formEditorSchema';
@@ -19,10 +20,8 @@ type FormUpdateBody =
 const toVisibility = (value: string | null | undefined): FormVisibility =>
   value === 'PRIVATE' ? 'PRIVATE' : 'PUBLIC';
 
-const toNullableNonEmptyString = (
-  value: string | null | undefined
-): string | null => {
-  const trimmed = value?.trim();
+const toNullableNonEmptyString = (value: string): string | null => {
+  const trimmed = value.trim();
 
   return trimmed || null;
 };
@@ -33,10 +32,19 @@ const toTemplateKey = (value: string, index: number): string => {
   return trimmed === '' ? `question_${index + 1}` : trimmed;
 };
 
+const toEditorQuestionIdentity = (
+  id: string | null | undefined
+): FormEditorQuestionIdentity =>
+  id ? { kind: 'existing', id } : { kind: 'new' };
+
+const toApiQuestionId = (
+  identity: FormEditorQuestionIdentity
+): string | null => (identity.kind === 'existing' ? identity.id : null);
+
 const toEditorQuestion = (
   question: GetFormResponse['questions'][number]
 ): FormEditorQuestion => ({
-  id: question.id ?? null,
+  identity: toEditorQuestionIdentity(question.id),
   title: question.title,
   description: question.description ?? '',
   question_type: question.question_type,
@@ -59,7 +67,7 @@ const toApiQuestion = (
     is_required: question.is_required,
     position: index,
     template_key: toTemplateKey(question.template_key, index),
-    id: question.id ?? null,
+    id: toApiQuestionId(question.identity),
   };
 
   if (question.question_type === 'Text') {
@@ -104,10 +112,10 @@ export const fromFormResponseToEditorValues = (
     labels: form.labels,
     settings: {
       acceptance_period: toAcceptancePeriodSetting(startAt, endAt),
-      discord_webhook_url: form.settings.discord_webhook_url ?? null,
+      discord_webhook_url: form.settings.discord_webhook_url ?? '',
       visibility: toVisibility(form.settings.visibility),
       default_answer_title:
-        form.settings.answer_settings?.default_answer_title ?? null,
+        form.settings.answer_settings?.default_answer_title ?? '',
       answer_visibility: toVisibility(
         form.settings.answer_settings?.visibility
       ),
@@ -150,10 +158,9 @@ export const toFormUpdateBody = (
         data.settings.discord_webhook_url
       ),
       answer_settings: {
-        default_answer_title:
-          data.settings.default_answer_title === ''
-            ? null
-            : data.settings.default_answer_title,
+        default_answer_title: toNullableNonEmptyString(
+          data.settings.default_answer_title
+        ),
         acceptance_period: acceptancePeriod,
         visibility: data.settings.answer_visibility,
       },

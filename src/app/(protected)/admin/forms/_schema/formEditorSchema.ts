@@ -19,9 +19,14 @@ const formLabelSchema = z.object({
   name: z.string(),
 });
 
+const formEditorQuestionIdentitySchema = z.discriminatedUnion('kind', [
+  z.object({ kind: z.literal('new') }),
+  z.object({ kind: z.literal('existing'), id: z.string() }),
+]);
+
 export const formEditorQuestionSchema = z
   .object({
-    id: z.string().nullable().optional(),
+    identity: formEditorQuestionIdentitySchema,
     title: requiredStringSchema,
     description: z.string(),
     question_type: questionTypeSchema,
@@ -60,8 +65,8 @@ export const formEditorSchema = z.object({
   labels: formLabelSchema.array(),
   settings: z.object({
     acceptance_period: acceptancePeriodSchema,
-    discord_webhook_url: z.string().nullable(),
-    default_answer_title: z.string().nullable(),
+    discord_webhook_url: z.string(),
+    default_answer_title: z.string(),
     visibility: visibilitySchema,
     answer_visibility: visibilitySchema,
     allow_temporary_answers: z.boolean(),
@@ -70,4 +75,7 @@ export const formEditorSchema = z.object({
 
 export type FormEditorValues = z.infer<typeof formEditorSchema>;
 export type FormEditorQuestion = z.infer<typeof formEditorQuestionSchema>;
+export type FormEditorQuestionIdentity = z.infer<
+  typeof formEditorQuestionIdentitySchema
+>;
 export type FormVisibility = z.infer<typeof visibilitySchema>;

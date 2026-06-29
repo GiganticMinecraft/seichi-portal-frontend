@@ -3,28 +3,31 @@ import {
   toCreateFormBody,
   toFormUpdateBody,
 } from '@/app/(protected)/admin/forms/_lib/formRequestBuilders';
-import type { FormEditorValues } from '@/app/(protected)/admin/forms/_schema/formEditorSchema';
+import type {
+  FormEditorQuestion,
+  FormEditorValues,
+} from '@/app/(protected)/admin/forms/_schema/formEditorSchema';
+
+const baseQuestion: FormEditorQuestion = {
+  identity: { kind: 'new' },
+  title: ' Question title ',
+  description: '',
+  question_type: 'Text',
+  choices: [],
+  is_required: false,
+  position: 0,
+  template_key: '',
+};
 
 const baseValues: FormEditorValues = {
   title: ' Form title ',
   description: 'Form description',
   labels: [],
-  questions: [
-    {
-      id: null,
-      title: ' Question title ',
-      description: '',
-      question_type: 'Text',
-      choices: [],
-      is_required: false,
-      position: 0,
-      template_key: '',
-    },
-  ],
+  questions: [baseQuestion],
   settings: {
     acceptance_period: { kind: 'none' },
-    discord_webhook_url: null,
-    default_answer_title: null,
+    discord_webhook_url: '',
+    default_answer_title: '',
     visibility: 'PUBLIC',
     answer_visibility: 'PUBLIC',
     allow_temporary_answers: false,
@@ -48,9 +51,27 @@ describe('form request builders', () => {
     const body = toFormUpdateBody(baseValues, true);
 
     expect(body.questions?.[0]).toMatchObject({
+      id: null,
       description: null,
       template_key: 'question_1',
     });
+  });
+
+  it('既存質問の画面内部表現を API の質問 ID へ変換する', () => {
+    const body = toFormUpdateBody(
+      {
+        ...baseValues,
+        questions: [
+          {
+            ...baseQuestion,
+            identity: { kind: 'existing', id: 'question-id' },
+          },
+        ],
+      },
+      true
+    );
+
+    expect(body.questions?.[0]?.id).toBe('question-id');
   });
 
   it('空の Webhook URL は null に正規化する', () => {
@@ -66,6 +87,21 @@ describe('form request builders', () => {
     );
 
     expect(body.settings?.discord_webhook_url).toBeNull();
+  });
+
+  it('空のデフォルト回答タイトルは null に正規化する', () => {
+    const body = toFormUpdateBody(
+      {
+        ...baseValues,
+        settings: {
+          ...baseValues.settings,
+          default_answer_title: '',
+        },
+      },
+      false
+    );
+
+    expect(body.settings?.answer_settings?.default_answer_title).toBeNull();
   });
 
   it('未ログイン回答の許可設定を更新ボディへ反映する', () => {

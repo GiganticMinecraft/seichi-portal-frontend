@@ -50,7 +50,7 @@ const FormEditForm = (props: {
   const questionListError =
     typeof errors.questions?.message === 'string'
       ? errors.questions.message
-      : null;
+      : undefined;
 
   const onSubmit = async (data: FormEditorValues) => {
     const result = await submit(data);
