@@ -1,53 +1,28 @@
-# seichi-portal-frontendの開発について
+# seichi-portal-frontend の開発について
 
-## 目次
+## 必要なツール
 
-- [seichi-portal-frontendの開発について](#seichi-portal-frontendの開発について)
-  - [目次](#目次)
-  - [必要なツールやミドルウェア](#必要なツールやミドルウェア)
-  - [環境変数](#環境変数)
-  - [デバッグモード](#デバッグモード)
-  - [ディレクトリ構成](#ディレクトリ構成)
-    - [`src/app/(authed)`](#srcappauthed)
-    - [`src/app/(unauthed)`](#srcappunauthed)
-    - [`src/app/api`](#srcappapi)
-    - [`src/components`](#srccomponents)
-    - [`src/features/`](#srcfeatures)
-    - [`generic`](#generic)
-  - [開発環境の起動](#開発環境の起動)
-  - [code formatter と lint](#code-formatter-と-lint)
-    - [フォーマット、auto fix、ビルドチェックの実行](#フォーマットauto-fixビルドチェックの実行)
-    - [フォーマットのみ実行](#フォーマットのみ実行)
-    - [auto fix の実行](#auto-fix-の実行)
-
-## 必要なツールやミドルウェア
-
-seichi-portal-frontend の開発に必要なツールは以下の通りです:
-
-- Node.js v22.14.0
-- pnpm v10.7.0
-
-これらのツールは [mise](https://github.com/jdx/mise) というツールを使用することでインストールすることができます。プロジェクトのルートディレクトリ上で以下のコマンドを実行してください。
+開発に必要な Node.js と pnpm のバージョンは `mise.toml` で管理しています。プロジェクトのルートで以下を実行すると、正しいバージョンが揃います。
 
 ```bash
 mise install
 ```
 
-何らかの理由で mise が使用できない場合は個別でインストールすることもできますが、必ずバージョンを合わせるようにしてください。
+mise を使えない場合は、`mise.toml` に書かれたバージョンに合わせて個別にインストールしてください。
 
 ## 環境変数
 
-環境変数は [.env.example](./.env.example) を参考に、`.env.local` ファイルを作成して設定してください。
+[.env.example](./.env.example) を参考に `.env.local` を作成してください。
 
-| 環境変数名                      | 意味                                                                                                       |
+| 環境変数名                      | 用途                                                                                                       |
 | ------------------------------- | ---------------------------------------------------------------------------------------------------------- |
 | MS_APP_CLIENT_ID                | Microsoft アカウントログイン用の CLIENT ID                                                                 |
-| MS_APP_REDIRECT_URL             | ログイン後にリダイレクトされるデフォルトの URL                                                             |
-| BACKEND_SERVER_URL              | [seichi-portal-backend](https://github.com/GiganticMinecraft/seichi-portal-backend) にアクセスできるリンク |
+| MS_APP_REDIRECT_URL             | ログイン後にリダイレクトされる URL                                                                         |
+| BACKEND_SERVER_URL              | [seichi-portal-backend](https://github.com/GiganticMinecraft/seichi-portal-backend) の URL                 |
 | DISCORD_CLIENT_ID               | Discord 連携用 OAuth クライアント ID                                                                       |
 | DISCORD_CLIENT_SECRET           | Discord 連携用 OAuth クライアントシークレット                                                              |
 | DISCORD_REDIRECT_URI            | Discord OAuth コールバック URL                                                                             |
-| NEXT_PUBLIC_DEBUG_MODE          | デバッグモードを有効にします                                                                               |
+| NEXT_PUBLIC_DEBUG_MODE          | デバッグモードの有効化                                                                                     |
 
 > [!TIP]
 >
@@ -55,80 +30,77 @@ mise install
 
 ## デバッグモード
 
-環境変数から設定できるデバッグモードは、Microsoft アカウントの認証を必要とせずにログインが必要なページを開くことできるようになるモードです。
+Microsoft アカウントの認証なしで、ログインが必要なページを開けるモードです。
 
 > [!TIP]
-> デバッグモードは以下の条件がすべて満たされている必要があります
+> 以下の条件をすべて満たす必要があります。
 >
-> - `NEXT_PUBLIC_DEBUG_MODE`(環境変数)が `true` に設定されていること
+> - `NEXT_PUBLIC_DEBUG_MODE` が `true` に設定されていること
 > - seichi-portal-backend がデバッグモードで起動されていること
-> - seichi-portal-frontend が開発モードで起動されていること(`pnpm run dev` コマンド)
+> - seichi-portal-frontend が `pnpm dev` で起動されていること
 
-## ディレクトリ構成
+## ディレクトリ構成と責務
 
-基本的には `src/app` ディレクトリ配下に [Next.js の App Router](https://nextjs.org/docs/app) に従って `page.tsx` や `route.ts` を配置していきます。
+ページの配置は [Next.js App Router](https://nextjs.org/docs/app) の規約に従います。以下では、各ディレクトリが何を担うかを説明します。
 
-```tree
-src
-├── app
-│   ├── (authed)
-│   ├── (unauthed)
-│   └── api
-├── components
-├── features
-│   ├── form
-│   └── user
-└── generic
-```
+### `src/app`
 
-### `src/app/(authed)`
+App Router のルーティング階層です。ページ (`page.tsx`) とレイアウト (`layout.tsx`) を配置します。
 
-認証が行われたあとにのみアクセスできるページがまとめられたディレクトリ
+| ディレクトリ | 責務 |
+|---|---|
+| `(protected)` | 認証済みユーザーだけがアクセスできるページ。`(standard)` は一般ユーザー向け、`admin` は管理者向け。 |
+| `(public)` | 認証なしでアクセスできるページ。 |
+| `api` | バックエンドへのプロキシなど、サーバ側 API ルートを配置する。 |
+| `_components` | `src/app` 内で共有する UI コンポーネント。 |
+| `_providers` | React Context の Provider をまとめる。 |
+| `_swr` | SWR のフェッチャーやクエリフックを配置する。 |
 
-### `src/app/(unauthed)`
+### `src` 直下
 
-認証が行われる前にもアクセスできるページがまとめられたディレクトリ
+| ディレクトリ | 責務 |
+|---|---|
+| `generated` | `pnpm codegen` で自動生成される API 型定義。**手動編集禁止**。 |
+| `hooks` | ページ横断で使うカスタムフック。 |
+| `lib` | API クライアント、エラー型、リダイレクト処理など、フレームワークに依存しないロジック。`lib/server` にはサーバ側専用のコードを置く。 |
+| `_schemas` | Zod スキーマ。フォーム入力のバリデーションなどに使う。 |
+| `generic` | プロジェクト全体で使う汎用的なユーティリティ型や関数。 |
+| `user-token` | Minecraft トークンなど、ユーザー固有のトークンを扱うモジュール。 |
 
-### `src/app/api`
+### 新しいコードを置く場所の判断基準
 
-主に、バックエンドと通信するときに必要な api を配置するディレクトリ
+- **ページ固有の UI** → そのページの `_components` ディレクトリ
+- **複数ページで使う UI** → `src/app/_components`
+- **データ取得や状態操作のフック** → `src/hooks`
+- **API 呼び出しや型変換のロジック** → `src/lib`
+- **バリデーションスキーマ** → `src/_schemas`
 
-### `src/components`
+## 認証・認可の境界
 
-各ページを作成するときに必要なコンポーネントを配置するディレクトリ
+- 保護ルートの認証確認はサーバ側で行います。
+- `/admin` を含む保護ルートは、バックエンドに到達できない場合も fail-closed（アクセス拒否）で閉じます。
+- middleware (`src/proxy.ts`) は軽量な入口判定だけを担い、ユーザーやロールの厳密な判定は App Router の layout/page 側で行います。
 
-### `src/features/`
+## API 型と生成コード
 
-TODO: 後で書く
+API 型定義の正の情報源は [seichi-portal-backend](https://github.com/GiganticMinecraft/seichi-portal-backend) の OpenAPI スキーマです。
 
-### `generic`
-
-プロジェクト全体で使用する共通の型を定義するディレクトリ
+- `src/generated/` は `pnpm codegen` で生成されるファイルだけを置きます。手動で編集しないでください。
+- バックエンドのスキーマが変わったら `pnpm codegen` を再実行してください。
+- 詳しい使い方は [README.md](./README.md) の「API 定義」を参照してください。
 
 ## 開発環境の起動
 
-環境変数の設定と seichi-portal-backend を起動した後、以下のコマンドを実行してください
+環境変数の設定と seichi-portal-backend の起動が済んだら、以下を実行してください。
 
 ```bash
-pnpm run dev
+pnpm dev
 ```
 
-## code formatter と lint
+## コードの検査と整形
 
-### フォーマット、auto fix、ビルドチェックの実行
-
-```bash
-pnpm run pretty
-```
-
-### フォーマットのみ実行
-
-```bash
-pnpm run fmt:fix
-```
-
-### auto fix の実行
-
-```bash
-pnpm run fmt:fix
-```
+| コマンド | 内容 |
+|---|---|
+| `pnpm pretty` | lint の自動修正、フォーマット、ビルドチェックをまとめて実行 |
+| `pnpm lint:fix` | ESLint の自動修正のみ |
+| `pnpm fmt:fix` | Prettier のフォーマットのみ |
