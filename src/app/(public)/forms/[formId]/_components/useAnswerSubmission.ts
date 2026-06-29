@@ -1,14 +1,12 @@
 'use client';
 
 import { useState } from 'react';
-import { errorResponseSchema } from '@/lib/api/errors';
 import { proxyClient } from '@/lib/proxyClient';
-import { toRestrictionExpiration } from '@/lib/restrictions/expiration';
+import { parseSubmissionError } from '../_lib/submissionErrors';
 import { isTemporaryUserField, TEMPORARY_USER_FIELDS } from './answerFormTypes';
 import type { AnswerFormInput } from './answerFormTypes';
-import type { ErrorRestriction } from '@/lib/api/errors';
+import type { SubmissionError } from '../_lib/submissionErrors';
 import type { ApiPaths } from '@/lib/api/types';
-import type { RestrictionExpiration } from '@/lib/restrictions/expiration';
 
 type AnswerCreateBody =
   ApiPaths['/api/v1/forms/{id}/answers']['post']['requestBody']['content']['application/json'];
@@ -16,15 +14,6 @@ type TemporaryAnswerCreateBody =
   ApiPaths['/api/v1/forms/{id}/temporary-answers']['post']['requestBody']['content']['application/json'];
 type AnswerContents = AnswerCreateBody['contents'];
 
-type SubmissionErrorCode = 'OUT_OF_PERIOD' | 'RESTRICTED' | 'UNKNOWN';
-type SubmissionRestriction = {
-  reason: string;
-  expiration: RestrictionExpiration;
-};
-type SubmissionError =
-  | { kind: 'outOfPeriod' }
-  | { kind: 'restricted'; restriction?: SubmissionRestriction }
-  | { kind: 'unknown' };
 export type SubmissionState =
   | { kind: 'editing' }
   | { kind: 'submitted' }
@@ -75,47 +64,9 @@ const toTemporaryUser = (
   };
 };
 
-type ParsedSubmissionError = {
-  code: SubmissionErrorCode;
-  restriction?: SubmissionRestriction;
-};
-
-const toSubmissionRestriction = (
-  restriction: ErrorRestriction
-): SubmissionRestriction => ({
-  reason: restriction.reason,
-  expiration: toRestrictionExpiration(restriction.expires_at),
-});
-
-export const parseSubmissionError = (
-  error: unknown
-): ParsedSubmissionError | null => {
-  const parsed = errorResponseSchema.safeParse(error);
-
-  if (!parsed.success) {
-    return null;
-  }
-
-  // 回答投稿制限によるエラーは errorCode で判定する（restriction の有無に依存しない）。
-  if (parsed.data.errorCode === 'ANSWER_SUBMISSION_RESTRICTED') {
-    return {
-      code: 'RESTRICTED',
-      ...(parsed.data.restriction
-        ? { restriction: toSubmissionRestriction(parsed.data.restriction) }
-        : {}),
-    };
-  }
-
-  if (parsed.data.errorCode === 'OUT_OF_PERIOD') {
-    return { code: 'OUT_OF_PERIOD' };
-  }
-
-  return null;
-};
-
 /**
  * 回答送信の state と API interaction を UI から分離する hook。
- * payload 変換と API エラー解釈はここを正本にする。
+ * payload 変換と送信状態の更新はここを正本にする。
  */
 export const useAnswerSubmission = (
   formId: string,
