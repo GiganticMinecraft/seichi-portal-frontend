@@ -1,5 +1,4 @@
-import { Box, Typography } from '@mui/material';
-import AnswerList from './_components/AnswerList';
+import AnswersPageContent from './_components/AnswersPageContent';
 import {
   authorizationHeader,
   requireBackendData,
@@ -34,14 +33,7 @@ const Home = async ({ params }: { params: Promise<{ formId: string }> }) => {
     ),
   ]);
 
-  return (
-    <Box sx={{ width: '100%' }}>
-      <Typography variant="h5" component="h1" sx={{ mb: 2 }}>
-        {form.title}
-      </Typography>
-      <AnswerList answers={answers} />
-    </Box>
-  );
+  return <AnswersPageContent form={form} answers={answers} />;
 };
 
 export default Home;
