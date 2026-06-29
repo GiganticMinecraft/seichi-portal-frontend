@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { parseSubmissionError } from '@/app/(public)/forms/[formId]/_components/useAnswerSubmission';
+import { parseSubmissionError } from '@/app/(public)/forms/[formId]/_lib/submissionErrors';
 
 describe('parseSubmissionError', () => {
   it('制限エラーの nullable な解除予定を送信用 model に変換する', () => {

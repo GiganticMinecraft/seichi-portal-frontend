@@ -3,9 +3,10 @@
 import { Alert, Button, Snackbar, Stack } from '@mui/material';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import FormsTable from './FormsTable';
 import FormsToolbar from './FormsToolbar';
+import { useFormListFilters } from '../_hooks/useFormListFilters';
 import type { GetFormLabelsResponse, GetFormsResponse } from '@/lib/api-types';
 
 const FormsPageContent = ({
@@ -18,30 +19,15 @@ const FormsPageContent = ({
   createdFormId?: string | undefined;
 }) => {
   const router = useRouter();
-  const [titleSearch, setTitleSearch] = useState('');
-  const [labelFilter, setLabelFilter] = useState<GetFormLabelsResponse>([]);
   const [snackbarOpen, setSnackbarOpen] = useState(createdFormId != null);
+  const { titleSearch, setTitleSearch, setLabelFilter, filteredForms } =
+    useFormListFilters(forms);
 
   useEffect(() => {
     if (createdFormId != null) {
       router.replace('/admin/forms', { scroll: false });
     }
   }, [createdFormId, router]);
-
-  const filteredForms = useMemo(() => {
-    const normalizedSearch = titleSearch.trim().toLowerCase();
-    return forms.filter((form) => {
-      const matchesTitle =
-        normalizedSearch.length === 0 ||
-        form.title.toLowerCase().includes(normalizedSearch);
-      const matchesLabels =
-        labelFilter.length === 0 ||
-        labelFilter.every((label) =>
-          form.labels.some((formLabel) => formLabel.id === label.id)
-        );
-      return matchesTitle && matchesLabels;
-    });
-  }, [forms, titleSearch, labelFilter]);
 
   return (
     <Stack spacing={3}>
