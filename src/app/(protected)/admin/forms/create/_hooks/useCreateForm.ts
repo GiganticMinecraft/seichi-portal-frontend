@@ -6,15 +6,18 @@ import {
 } from '../../_lib/formRequestBuilders';
 import type { FormEditorValues } from '../../_schema/formEditorSchema';
 
-type SubmitError = { message: string };
+type SubmitState =
+  | { kind: 'idle' }
+  | { kind: 'submitted' }
+  | { kind: 'failed'; message: string };
 
 export const useCreateForm = () => {
-  const [isSubmitted, setIsSubmitted] = useState(false);
-  const [submitError, setSubmitError] = useState<SubmitError | null>(null);
+  const [submitState, setSubmitState] = useState<SubmitState>({
+    kind: 'idle',
+  });
 
   const createForm = async (data: FormEditorValues) => {
-    setSubmitError(null);
-    setIsSubmitted(false);
+    setSubmitState({ kind: 'idle' });
 
     try {
       const { data: createdForm, response } = await proxyClient.POST(
@@ -24,7 +27,10 @@ export const useCreateForm = () => {
         }
       );
       if (!response.ok || !createdForm) {
-        setSubmitError({ message: 'フォームの作成に失敗しました。' });
+        setSubmitState({
+          kind: 'failed',
+          message: 'フォームの作成に失敗しました。',
+        });
         return;
       }
       const createdFormId = createdForm.id;
@@ -37,17 +43,21 @@ export const useCreateForm = () => {
         }
       );
       if (!setFormMetadataResponse.ok) {
-        setSubmitError({
+        setSubmitState({
+          kind: 'failed',
           message: 'フォームのメタデータの設定に失敗しました。',
         });
         return;
       }
 
-      setIsSubmitted(true);
+      setSubmitState({ kind: 'submitted' });
     } catch {
-      setSubmitError({ message: '予期せぬエラーが発生しました。' });
+      setSubmitState({
+        kind: 'failed',
+        message: '予期せぬエラーが発生しました。',
+      });
     }
   };
 
-  return { createForm, isSubmitted, submitError };
+  return { createForm, submitState };
 };

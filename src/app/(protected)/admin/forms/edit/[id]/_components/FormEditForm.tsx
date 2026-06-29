@@ -10,7 +10,7 @@ import {
   Stack,
 } from '@mui/material';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useFieldArray, useForm, useWatch } from 'react-hook-form';
+import { useFieldArray, useForm } from 'react-hook-form';
 import type { GetFormLabelsResponse, GetFormResponse } from '@/lib/api-types';
 import FormEditorLayout from '../../../_components/FormEditorLayout';
 import FormSettings from '../../../_components/FormSettings';
@@ -30,6 +30,7 @@ const FormEditForm = (props: {
     control,
     handleSubmit,
     register,
+    setValue,
     setError,
     formState: { errors },
   } = useForm<FormEditorValues>({
@@ -45,17 +46,11 @@ const FormEditForm = (props: {
     name: 'questions',
   });
 
-  const hasAcceptancePeriod = useWatch({
-    control,
-    name: 'settings.has_acceptance_period',
-    defaultValue: false,
-  });
-
   const { submit, isSubmitted } = useUpdateFormSubmission(props.form.id);
   const questionListError =
     typeof errors.questions?.message === 'string'
       ? errors.questions.message
-      : null;
+      : undefined;
 
   const onSubmit = async (data: FormEditorValues) => {
     const result = await submit(data);
@@ -78,7 +73,7 @@ const FormEditForm = (props: {
               <FormSettings
                 register={register}
                 control={control}
-                hasAcceptancePeriod={hasAcceptancePeriod}
+                setValue={setValue}
                 labelOptions={props.labelOptions}
               />
             </CardContent>

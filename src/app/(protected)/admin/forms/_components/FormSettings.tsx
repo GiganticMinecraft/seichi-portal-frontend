@@ -8,16 +8,20 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { useController } from 'react-hook-form';
+import { useController, useWatch } from 'react-hook-form';
 import FormLabelField from './FormLabelField';
 import type { GetFormLabelsResponse } from '@/lib/api-types';
 import type { FormEditorValues } from '../_schema/formEditorSchema';
-import type { Control, UseFormRegister } from 'react-hook-form';
+import type {
+  Control,
+  UseFormRegister,
+  UseFormSetValue,
+} from 'react-hook-form';
 
 const FormSettings = (props: {
   register: UseFormRegister<FormEditorValues>;
   control: Control<FormEditorValues>;
-  hasAcceptancePeriod: boolean;
+  setValue: UseFormSetValue<FormEditorValues>;
   labelOptions: GetFormLabelsResponse;
 }) => {
   const { field: visibilityField } = useController({
@@ -29,6 +33,20 @@ const FormSettings = (props: {
     control: props.control,
     name: 'settings.answer_visibility',
   });
+
+  const acceptancePeriod = useWatch({
+    control: props.control,
+    name: 'settings.acceptance_period',
+  });
+
+  const hasAcceptancePeriod = acceptancePeriod.kind === 'specified';
+
+  const onAcceptancePeriodToggle = (checked: boolean) => {
+    props.setValue(
+      'settings.acceptance_period',
+      checked ? { kind: 'specified', startAt: '', endAt: '' } : { kind: 'none' }
+    );
+  };
 
   return (
     <Stack spacing={2}>
@@ -53,23 +71,28 @@ const FormSettings = (props: {
       <FormControlLabel
         label="回答開始日と回答終了日を設定する"
         control={
-          <Checkbox {...props.register('settings.has_acceptance_period')} />
+          <Checkbox
+            checked={hasAcceptancePeriod}
+            onChange={(_, checked) => onAcceptancePeriodToggle(checked)}
+          />
         }
       />
-      <TextField
-        {...props.register('settings.acceptance_period.start_at')}
-        label="回答開始日"
-        type="datetime-local"
-        helperText="回答開始日と回答終了日はどちらも指定する必要があります。"
-        disabled={!props.hasAcceptancePeriod}
-      />
-      <TextField
-        {...props.register('settings.acceptance_period.end_at')}
-        label="回答終了日"
-        type="datetime-local"
-        helperText="回答開始日と回答終了日はどちらも指定する必要があります。"
-        disabled={!props.hasAcceptancePeriod}
-      />
+      {hasAcceptancePeriod && (
+        <>
+          <TextField
+            {...props.register('settings.acceptance_period.startAt')}
+            label="回答開始日"
+            type="datetime-local"
+            helperText="回答開始日と回答終了日はどちらも指定する必要があります。"
+          />
+          <TextField
+            {...props.register('settings.acceptance_period.endAt')}
+            label="回答終了日"
+            type="datetime-local"
+            helperText="回答開始日と回答終了日はどちらも指定する必要があります。"
+          />
+        </>
+      )}
       <TextField
         {...visibilityField}
         value={visibilityField.value ?? 'PUBLIC'}

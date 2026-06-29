@@ -19,9 +19,14 @@ const formLabelSchema = z.object({
   name: z.string(),
 });
 
+const formEditorQuestionIdentitySchema = z.discriminatedUnion('kind', [
+  z.object({ kind: z.literal('new') }),
+  z.object({ kind: z.literal('existing'), id: z.string() }),
+]);
+
 export const formEditorQuestionSchema = z
   .object({
-    id: z.string().nullable().optional(),
+    identity: formEditorQuestionIdentitySchema,
     title: requiredStringSchema,
     description: z.string(),
     question_type: questionTypeSchema,
@@ -40,6 +45,17 @@ export const formEditorQuestionSchema = z
     }
   });
 
+const acceptancePeriodSchema = z.discriminatedUnion('kind', [
+  z.object({ kind: z.literal('none') }),
+  z.object({
+    kind: z.literal('specified'),
+    startAt: z.string().min(1, '回答開始日を入力してください。'),
+    endAt: z.string().min(1, '回答終了日を入力してください。'),
+  }),
+]);
+
+export type AcceptancePeriodSetting = z.infer<typeof acceptancePeriodSchema>;
+
 export const formEditorSchema = z.object({
   title: requiredStringSchema,
   description: requiredStringSchema,
@@ -48,13 +64,9 @@ export const formEditorSchema = z.object({
     .min(1, '質問を1つ以上追加してください。'),
   labels: formLabelSchema.array(),
   settings: z.object({
-    has_acceptance_period: z.boolean(),
-    acceptance_period: z.object({
-      start_at: z.string().nullable(),
-      end_at: z.string().nullable(),
-    }),
-    discord_webhook_url: z.string().nullable(),
-    default_answer_title: z.string().nullable(),
+    acceptance_period: acceptancePeriodSchema,
+    discord_webhook_url: z.string(),
+    default_answer_title: z.string(),
     visibility: visibilitySchema,
     answer_visibility: visibilitySchema,
     allow_temporary_answers: z.boolean(),
@@ -63,4 +75,7 @@ export const formEditorSchema = z.object({
 
 export type FormEditorValues = z.infer<typeof formEditorSchema>;
 export type FormEditorQuestion = z.infer<typeof formEditorQuestionSchema>;
+export type FormEditorQuestionIdentity = z.infer<
+  typeof formEditorQuestionIdentitySchema
+>;
 export type FormVisibility = z.infer<typeof visibilitySchema>;
