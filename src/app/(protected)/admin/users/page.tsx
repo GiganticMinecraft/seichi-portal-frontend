@@ -1,11 +1,13 @@
-import UsersPageContent from './_components/UsersPageContent';
+import type { Metadata } from 'next';
+
 import {
   authorizationHeader,
   requireBackendData,
   serverApiClient,
 } from '@/lib/server/backend';
 import { getAdminAccess } from '@/lib/server/session';
-import type { Metadata } from 'next';
+
+import UsersPageContent from './_components/UsersPageContent';
 
 export const metadata: Metadata = {
   title: 'ユーザー管理 | Seichi Portal',

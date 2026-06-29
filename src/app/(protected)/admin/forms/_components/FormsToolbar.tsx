@@ -2,11 +2,13 @@
 
 import { Search } from '@mui/icons-material';
 import { Divider, InputAdornment, Stack, TextField } from '@mui/material';
+import type { Dispatch, SetStateAction } from 'react';
+
+import type { GetFormLabelsResponse } from '@/lib/api-types';
+
 import FormCreateButton from './FormCreateButton';
 import FormLabelFilter from './FormLabelFilter';
 import ToManageFormLabelButton from './ToManageFormLabelButton';
-import type { GetFormLabelsResponse } from '@/lib/api-types';
-import type { Dispatch, SetStateAction } from 'react';
 
 interface Props {
   labels: GetFormLabelsResponse;
@@ -37,7 +39,9 @@ const FormsToolbar = ({
           size="small"
           label="タイトル検索"
           value={titleSearch}
-          onChange={(e) => onTitleSearchChange(e.target.value)}
+          onChange={(e) => {
+            onTitleSearchChange(e.target.value);
+          }}
           sx={{ minWidth: 200 }}
           slotProps={{
             input: {

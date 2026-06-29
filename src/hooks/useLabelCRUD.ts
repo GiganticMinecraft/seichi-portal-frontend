@@ -1,6 +1,7 @@
 'use client';
 
 import { useSWRConfig } from 'swr';
+
 import { proxyClient } from '@/lib/proxyClient';
 
 export const useLabelCRUD = (labelType: 'answers' | 'forms') => {

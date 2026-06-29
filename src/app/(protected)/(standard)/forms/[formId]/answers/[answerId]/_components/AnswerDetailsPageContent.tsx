@@ -1,13 +1,14 @@
 'use client';
 
+import ErrorDialog from '@/app/_components/ErrorDialog';
+import LoadingCircular from '@/app/_components/LoadingCircular';
 import {
   getOptionalQueryData,
   getRequiredQueryGroupError,
   isQueryGroupReady,
 } from '@/app/_swr/queryState';
 import { useApiQuery } from '@/app/_swr/useApiQuery';
-import ErrorDialog from '@/app/_components/ErrorDialog';
-import LoadingCircular from '@/app/_components/LoadingCircular';
+
 import AnswerDetailsPageView from './AnswerDetailsPageView';
 import type { AnswerDetailsPageData } from './AnswerDetailsPageView';
 

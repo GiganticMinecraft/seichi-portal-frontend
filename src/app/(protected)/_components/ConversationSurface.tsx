@@ -13,6 +13,7 @@ import {
 } from '@mui/material';
 import type { ReactNode } from 'react';
 import { useState } from 'react';
+
 import ConversationEntry from './ConversationEntry';
 import type {
   ConversationActionResult,
@@ -106,7 +107,9 @@ const ConversationSurface = ({
     <>
       <Button
         variant="outlined"
-        onClick={() => setOpen(true)}
+        onClick={() => {
+          setOpen(true);
+        }}
         startIcon={triggerStartIcon}
       >
         {triggerLabel}
@@ -115,7 +118,9 @@ const ConversationSurface = ({
       <Drawer
         anchor="right"
         open={open}
-        onClose={() => setOpen(false)}
+        onClose={() => {
+          setOpen(false);
+        }}
         slotProps={{
           paper: { sx: { width: { xs: '100%', sm: 400 } } },
         }}
@@ -132,7 +137,11 @@ const ConversationSurface = ({
           <Typography variant="h6" component="h2">
             {title}
           </Typography>
-          <IconButton onClick={() => setOpen(false)}>
+          <IconButton
+            onClick={() => {
+              setOpen(false);
+            }}
+          >
             <CloseIcon />
           </IconButton>
         </Toolbar>

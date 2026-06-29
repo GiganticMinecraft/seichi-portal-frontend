@@ -8,6 +8,7 @@ import {
 import { useMsal } from '@azure/msal-react';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
+
 import { useRedirectLogin } from '@/app/_components/useRedirectLogin';
 import { normalizeRedirectTarget } from '@/lib/redirect';
 
@@ -129,7 +130,9 @@ export const useLandingLogin = () => {
           handleFailure(RETRY_ERROR_MESSAGE, error);
         }
       }
-    })().catch((error) => handleFailure(LOGIN_PROCESSING_ERROR_MESSAGE, error));
+    })().catch((error: unknown) => {
+      handleFailure(LOGIN_PROCESSING_ERROR_MESSAGE, error);
+    });
   }, [accounts, errorMessage, instance, router]);
 
   return {

@@ -13,6 +13,7 @@ import {
 } from '@mui/material';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
+
 import { useLabelCRUD } from '@/hooks/useLabelCRUD';
 
 type CreateLabelSchema = {
@@ -36,7 +37,9 @@ const CreateLabelField = (props: { labelType: 'answers' | 'forms' }) => {
   const { handleSubmit, register, reset } = useForm<CreateLabelSchema>();
   const { createLabel } = useLabelCRUD(props.labelType);
 
-  const handleOpen = () => setDialogOpen(true);
+  const handleOpen = () => {
+    setDialogOpen(true);
+  };
   const handleClose = () => {
     setDialogOpen(false);
     reset();
@@ -76,7 +79,11 @@ const CreateLabelField = (props: { labelType: 'answers' | 'forms' }) => {
 
       <Dialog open={dialogOpen} onClose={handleClose} fullWidth>
         <DialogTitle>新規ラベル作成</DialogTitle>
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form
+          onSubmit={(e) => {
+            void handleSubmit(onSubmit)(e);
+          }}
+        >
           <DialogContent>
             <TextField
               {...register('name')}

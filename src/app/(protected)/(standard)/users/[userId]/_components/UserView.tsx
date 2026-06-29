@@ -1,12 +1,14 @@
 import { Box, Card, CardContent, Divider, Stack } from '@mui/material';
-import DiscordNotificationSettings from './DiscordNotificationSettings';
-import LinkDiscordButton from './LinkDiscordButton';
-import UnlinkDiscordButton from './UnlinkDiscordButton';
-import UserInformation from './UserInformation';
+
 import type {
   GetUserNotificationSettingsResponse,
   GetUsersResponse,
 } from '@/lib/api-types';
+
+import DiscordNotificationSettings from './DiscordNotificationSettings';
+import LinkDiscordButton from './LinkDiscordButton';
+import UnlinkDiscordButton from './UnlinkDiscordButton';
+import UserInformation from './UserInformation';
 
 const UserView = ({
   user,

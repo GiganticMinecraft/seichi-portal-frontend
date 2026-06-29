@@ -1,9 +1,9 @@
 'use client';
 
-import { proxyClient } from '@/lib/proxyClient';
 import { handleMutationResponse } from '@/hooks/useApiMutation';
 import type { MutationResult } from '@/hooks/useApiMutation';
 import type { PutAnswerSubmitterRestrictionSchema } from '@/lib/api-types';
+import { proxyClient } from '@/lib/proxyClient';
 
 export const useAnswerSubmitterRestrictionActions = () => {
   const restrictUser = async (

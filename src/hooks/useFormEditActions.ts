@@ -1,8 +1,8 @@
 'use client';
 
-import { proxyClient } from '@/lib/proxyClient';
 import { handleMutationResponse } from '@/hooks/useApiMutation';
 import type { ApiPaths } from '@/lib/api/types';
+import { proxyClient } from '@/lib/proxyClient';
 
 type FormUpdateBody =
   ApiPaths['/api/v1/forms/{id}']['put']['requestBody']['content']['application/json'];

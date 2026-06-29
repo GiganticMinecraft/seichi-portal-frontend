@@ -1,4 +1,5 @@
 import { Card, CardContent, Divider, Stack, Typography } from '@mui/material';
+
 import type { GetUsersResponse } from '@/lib/api-types';
 
 const InfoRow = ({ label, value }: { label: string; value: string }) => (
@@ -26,7 +27,7 @@ const UserInformation = (props: { user: GetUsersResponse }) => {
             label="Discord ユーザー名"
             value={
               props.user['discord_username']
-                ? String(props.user['discord_username'])
+                ? props.user['discord_username']
                 : '未設定'
             }
           />
@@ -34,7 +35,7 @@ const UserInformation = (props: { user: GetUsersResponse }) => {
             label="Discord ID"
             value={
               props.user['discord_user_id']
-                ? String(props.user['discord_user_id'])
+                ? props.user['discord_user_id']
                 : '未設定'
             }
           />

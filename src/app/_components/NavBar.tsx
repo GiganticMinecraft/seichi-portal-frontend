@@ -1,9 +1,9 @@
 'use client';
 
-import PersonIcon from '@mui/icons-material/Person';
-import LogoutIcon from '@mui/icons-material/Logout';
 import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
 import HomeIcon from '@mui/icons-material/Home';
+import LogoutIcon from '@mui/icons-material/Logout';
+import PersonIcon from '@mui/icons-material/Person';
 import {
   Box,
   AppBar,
@@ -23,12 +23,14 @@ import {
 } from '@mui/material';
 import Image from 'next/image';
 import NextLink from 'next/link';
-import { useState, type ReactNode } from 'react';
 import { useRouter } from 'next/navigation';
-import { useOptionalCurrentUser } from '@/app/_providers/currentUser';
-import { SigninButton } from './SigninButton';
-import { getMsalInstance } from './MsalProvider';
+import { useState, type ReactNode } from 'react';
+
 import ThemeModeToggle from '@/app/_components/ThemeModeToggle';
+import { useOptionalCurrentUser } from '@/app/_providers/currentUser';
+
+import { getMsalInstance } from './MsalProvider';
+import { SigninButton } from './SigninButton';
 
 type UserMenuProps = {
   user: NonNullable<ReturnType<typeof useOptionalCurrentUser>>;
@@ -71,7 +73,9 @@ const UserMenu = ({ user, isAdminPage }: UserMenuProps) => {
     <Box sx={{ ml: 2.5 }}>
       <Tooltip title="メニューを開く">
         <IconButton
-          onClick={(event) => setAnchorEl(event.currentTarget)}
+          onClick={(event) => {
+            setAnchorEl(event.currentTarget);
+          }}
           aria-controls={anchorEl ? 'user-menu' : undefined}
           aria-haspopup="true"
           aria-expanded={anchorEl ? 'true' : undefined}
@@ -89,7 +93,9 @@ const UserMenu = ({ user, isAdminPage }: UserMenuProps) => {
         id="user-menu"
         anchorEl={anchorEl}
         open={Boolean(anchorEl)}
-        onClose={() => setAnchorEl(null)}
+        onClose={() => {
+          setAnchorEl(null);
+        }}
         transformOrigin={{ horizontal: 'right', vertical: 'top' }}
         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
       >
@@ -113,7 +119,9 @@ const UserMenu = ({ user, isAdminPage }: UserMenuProps) => {
         <MenuItem
           component={NextLink}
           href={`/users/${user.id}`}
-          onClick={() => setAnchorEl(null)}
+          onClick={() => {
+            setAnchorEl(null);
+          }}
         >
           <ListItemIcon>
             <PersonIcon fontSize="small" />
@@ -124,7 +132,9 @@ const UserMenu = ({ user, isAdminPage }: UserMenuProps) => {
           <MenuItem
             component={NextLink}
             href={isAdminPage ? '/' : '/admin'}
-            onClick={() => setAnchorEl(null)}
+            onClick={() => {
+              setAnchorEl(null);
+            }}
           >
             <ListItemIcon>
               {isAdminPage ? (
@@ -138,7 +148,12 @@ const UserMenu = ({ user, isAdminPage }: UserMenuProps) => {
             </ListItemText>
           </MenuItem>
         )}
-        <MenuItem onClick={handleSignout} disabled={isSigningOut}>
+        <MenuItem
+          onClick={() => {
+            void handleSignout();
+          }}
+          disabled={isSigningOut}
+        >
           <ListItemIcon>
             <LogoutIcon fontSize="small" />
           </ListItemIcon>

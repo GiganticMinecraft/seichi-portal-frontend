@@ -1,8 +1,9 @@
 'use client';
 
 import { Box } from '@mui/material';
-import NavBar from '@/app/_components/NavBar';
 import type { ReactNode } from 'react';
+
+import NavBar from '@/app/_components/NavBar';
 
 const RootLayout = ({ children }: { children: ReactNode }) => {
   return (

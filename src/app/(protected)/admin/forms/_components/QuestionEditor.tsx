@@ -9,9 +9,11 @@ import {
   Typography,
 } from '@mui/material';
 import Checkbox from '@mui/material/Checkbox';
-import ChoiceEditor from './ChoiceEditor';
-import type { FormEditorValues } from '../_schema/formEditorSchema';
 import type { Control, UseFormRegister } from 'react-hook-form';
+
+import type { FormEditorValues } from '../_schema/formEditorSchema';
+
+import ChoiceEditor from './ChoiceEditor';
 
 const QuestionEditor = (props: {
   control: Control<FormEditorValues>;
@@ -27,7 +29,9 @@ const QuestionEditor = (props: {
       <Button
         variant="outlined"
         startIcon={<DeleteIcon />}
-        onClick={() => props.removeQuestion(props.questionIndex)}
+        onClick={() => {
+          props.removeQuestion(props.questionIndex);
+        }}
       >
         質問の削除
       </Button>

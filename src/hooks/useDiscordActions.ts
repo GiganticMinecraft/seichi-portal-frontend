@@ -1,7 +1,7 @@
 'use client';
 
-import { proxyClient } from '@/lib/proxyClient';
 import { handleMutationResponse } from '@/hooks/useApiMutation';
+import { proxyClient } from '@/lib/proxyClient';
 
 export const useDiscordActions = () => {
   const unlinkDiscord = async (): Promise<void> => {

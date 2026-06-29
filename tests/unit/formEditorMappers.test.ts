@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+
 import {
   toCreateFormBody,
   toFormUpdateBody,
@@ -101,7 +102,7 @@ describe('form request builders', () => {
       false
     );
 
-    expect(body.settings?.answer_settings?.default_answer_title).toBeNull();
+    expect(body.settings?.answer_settings.default_answer_title).toBeNull();
   });
 
   it('未ログイン回答の許可設定を更新ボディへ反映する', () => {
@@ -135,7 +136,7 @@ describe('form request builders', () => {
       false
     );
 
-    expect(body.settings?.answer_settings?.acceptance_period).toMatchObject({
+    expect(body.settings?.answer_settings.acceptance_period).toMatchObject({
       start_at: '2026-06-01T10:00:00+09:00',
       end_at: '2026-06-30T23:59:00+09:00',
     });

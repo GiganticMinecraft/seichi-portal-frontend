@@ -1,18 +1,20 @@
 'use client';
 
+import { CssBaseline, ThemeProvider } from '@mui/material';
+import { AppRouterCacheProvider } from '@mui/material-nextjs/v16-appRouter';
 import {
   createContext,
   useContext,
   useMemo,
   useSyncExternalStore,
 } from 'react';
-import { CssBaseline, ThemeProvider } from '@mui/material';
-import { AppRouterCacheProvider } from '@mui/material-nextjs/v16-appRouter';
+import type { ReactNode } from 'react';
 import { SWRConfig } from 'swr';
+
 import { MsalProvider } from '@/app/_components/MsalProvider';
 import { fetcher } from '@/app/_swr/fetcher';
+
 import { getAuthedTheme, type ThemeMode } from './getAuthedTheme';
-import type { ReactNode } from 'react';
 
 const STORAGE_KEY = 'seichi-portal-theme-mode';
 const THEME_MODE_EVENT = 'seichi-portal-theme-mode-change';
@@ -76,7 +78,9 @@ export const AppProviders = ({
     () => ({
       mode,
       setMode,
-      toggleMode: () => setMode(mode === 'light' ? 'dark' : 'light'),
+      toggleMode: () => {
+        setMode(mode === 'light' ? 'dark' : 'light');
+      },
     }),
     [mode]
   );

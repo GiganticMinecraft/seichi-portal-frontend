@@ -2,6 +2,7 @@
 
 import { Button, Tooltip } from '@mui/material';
 import { useState } from 'react';
+
 import RestrictionDialog from './RestrictionDialog';
 
 const RestrictionCell = ({
@@ -23,7 +24,9 @@ const RestrictionCell = ({
           size="small"
           color="error"
           disabled={disabled}
-          onClick={() => setOpen(true)}
+          onClick={() => {
+            setOpen(true);
+          }}
         >
           制限を管理
         </Button>
@@ -31,7 +34,9 @@ const RestrictionCell = ({
           uuid={userId}
           userName={userName}
           open={open}
-          onClose={() => setOpen(false)}
+          onClose={() => {
+            setOpen(false);
+          }}
         />
       </span>
     </Tooltip>

@@ -1,6 +1,6 @@
+import type { ApiPaths } from '@/lib/api/types';
 import { HttpError } from '@/lib/httpError';
 import { proxyClient } from '@/lib/proxyClient';
-import type { ApiPaths } from '@/lib/api/types';
 
 /** @deprecated useApiQuery を使用してください */
 export const fetcher = async (url: string) => {
@@ -14,7 +14,8 @@ export const fetcher = async (url: string) => {
     });
   }
 
-  return res.json();
+  const body: unknown = await res.json();
+  return body;
 };
 
 export type GetPaths = {

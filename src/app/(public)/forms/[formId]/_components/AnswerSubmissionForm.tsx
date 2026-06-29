@@ -14,7 +14,9 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import Markdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+
 import type { GetQuestionsResponse } from '@/lib/api-types';
+
 import { TEMPORARY_USER_FIELDS } from './answerFormTypes';
 import type { AnswerFormInput } from './answerFormTypes';
 import QuestionFieldRenderer from './QuestionFieldRenderer';
@@ -69,7 +71,11 @@ const AnswerSubmissionForm = ({
           <Markdown remarkPlugins={[remarkGfm]}>{description}</Markdown>
         </Box>
       )}
-      <form onSubmit={handleSubmit(handleAnswerSubmit)}>
+      <form
+        onSubmit={(e) => {
+          void handleSubmit(handleAnswerSubmit)(e);
+        }}
+      >
         <Stack spacing={3}>
           {isTemporary && (
             <Paper variant="outlined" sx={{ p: 3 }}>

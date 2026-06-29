@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { BackendError } from '@/lib/server/backend';
+
 import { normalizeRedirectTarget } from '@/lib/redirect';
+import { BackendError } from '@/lib/server/backend';
 
 const { backendGetMock, MockBackendError } = vi.hoisted(() => {
   class MockBackendError extends Error {
@@ -30,7 +31,7 @@ const { backendGetMock, MockBackendError } = vi.hoisted(() => {
 });
 
 const redirectMock = vi.fn<(url: string) => never>();
-const headersMock = vi.fn(async () => new Headers());
+const headersMock = vi.fn(() => new Headers());
 const getCachedTokenMock = vi.fn();
 
 vi.mock('next/navigation', () => ({
@@ -42,7 +43,7 @@ vi.mock('next/headers', () => ({
 }));
 
 vi.mock('@/user-token/mcToken', () => ({
-  getCachedToken: (...args: unknown[]) => getCachedTokenMock(...args),
+  getCachedToken: (...args: unknown[]): unknown => getCachedTokenMock(...args),
 }));
 
 vi.mock('@/lib/server/backend', () => ({
@@ -52,7 +53,8 @@ vi.mock('@/lib/server/backend', () => ({
   BackendError: MockBackendError,
   requireBackendResponse: async (request: Promise<unknown>) => request,
   serverApiClient: {
-    GET: (...args: unknown[]) => backendGetMock(...args),
+    // eslint-disable-next-line @typescript-eslint/naming-convention -- HTTP メソッド名は大文字が正規の表記
+    GET: (...args: unknown[]): unknown => backendGetMock(...args),
   },
 }));
 

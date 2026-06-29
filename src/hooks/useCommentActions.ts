@@ -1,7 +1,7 @@
 'use client';
 
-import { proxyClient } from '@/lib/proxyClient';
 import { handleMutationResponse } from '@/hooks/useApiMutation';
+import { proxyClient } from '@/lib/proxyClient';
 
 type CommentActionResult = { ok: boolean; forbidden?: boolean };
 

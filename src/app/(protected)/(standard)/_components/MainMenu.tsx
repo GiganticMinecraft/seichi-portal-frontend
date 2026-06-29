@@ -1,6 +1,9 @@
 'use client';
 
-import NextLink from 'next/link';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import AssignmentIcon from '@mui/icons-material/Assignment';
+import CampaignIcon from '@mui/icons-material/Campaign';
+import GavelIcon from '@mui/icons-material/Gavel';
 import {
   Box,
   Card,
@@ -10,10 +13,8 @@ import {
   Typography,
   useTheme,
 } from '@mui/material';
-import AssignmentIcon from '@mui/icons-material/Assignment';
-import GavelIcon from '@mui/icons-material/Gavel';
-import CampaignIcon from '@mui/icons-material/Campaign';
-import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import NextLink from 'next/link';
+
 import { useCurrentUser } from '@/app/_providers/currentUser';
 
 const menuItems = [

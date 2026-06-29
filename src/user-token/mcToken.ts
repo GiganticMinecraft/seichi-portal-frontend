@@ -1,6 +1,7 @@
-import { cookies } from 'next/headers';
-import { getDebugMode } from '@/env.server';
 import type { RequestCookies } from 'next/dist/compiled/@edge-runtime/cookies';
+import { cookies } from 'next/headers';
+
+import { getDebugMode } from '@/env.server';
 
 const KEY = 'SEICHI_PORTAL__SESSION_ID';
 

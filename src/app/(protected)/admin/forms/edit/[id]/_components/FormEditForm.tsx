@@ -1,5 +1,6 @@
 'use client';
 
+import { zodResolver } from '@hookform/resolvers/zod';
 import SendIcon from '@mui/icons-material/Send';
 import {
   Alert,
@@ -9,18 +10,19 @@ import {
   Container,
   Stack,
 } from '@mui/material';
-import { zodResolver } from '@hookform/resolvers/zod';
 import { useFieldArray, useForm } from 'react-hook-form';
+
 import type { GetFormLabelsResponse, GetFormResponse } from '@/lib/api-types';
+
 import FormEditorLayout from '../../../_components/FormEditorLayout';
 import FormSettings from '../../../_components/FormSettings';
 import QuestionEditor from '../../../_components/QuestionEditor';
 import QuestionList from '../../../_components/QuestionList';
+import { useUpdateFormSubmission } from '../../../_hooks/useUpdateFormSubmission';
 import { createEmptyFormEditorQuestion } from '../../../_lib/formEditorDefaults';
 import { fromFormResponseToEditorValues } from '../../../_lib/formRequestBuilders';
 import type { FormEditorValues } from '../../../_schema/formEditorSchema';
 import { formEditorSchema } from '../../../_schema/formEditorSchema';
-import { useUpdateFormSubmission } from '../../../_hooks/useUpdateFormSubmission';
 
 const FormEditForm = (props: {
   form: GetFormResponse;
@@ -64,9 +66,16 @@ const FormEditForm = (props: {
 
   return (
     <FormEditorLayout
-      onAddQuestion={() => append(createEmptyFormEditorQuestion())}
+      onAddQuestion={() => {
+        append(createEmptyFormEditorQuestion());
+      }}
     >
-      <Container component="form" onSubmit={handleSubmit(onSubmit)}>
+      <Container
+        component="form"
+        onSubmit={(e) => {
+          void handleSubmit(onSubmit)(e);
+        }}
+      >
         <Stack spacing={2}>
           <Card>
             <CardContent>

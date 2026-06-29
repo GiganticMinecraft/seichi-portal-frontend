@@ -1,8 +1,10 @@
 import { redirect } from 'next/navigation';
-import { getSession } from '@/lib/server/session';
-import { serverApiClient } from '@/lib/server/backend';
-import { LandingContent } from './_components/LandingContent';
+
 import type { GetFormsResponse } from '@/lib/api-types';
+import { serverApiClient } from '@/lib/server/backend';
+import { getSession } from '@/lib/server/session';
+
+import { LandingContent } from './_components/LandingContent';
 
 const fetchPublicForms = async (): Promise<GetFormsResponse> => {
   try {
@@ -11,7 +13,7 @@ const fetchPublicForms = async (): Promise<GetFormsResponse> => {
       console.error('Failed to fetch public forms:', error);
       return [];
     }
-    return (data ?? []).filter((f) => f.settings.allow_temporary_answers);
+    return data.filter((f) => f.settings.allow_temporary_answers);
   } catch (err) {
     console.error('Network error while fetching public forms:', err);
     return [];

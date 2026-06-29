@@ -1,6 +1,8 @@
-import UsersView from './UsersView';
-import { toUserListRows } from '../_lib/userListRows';
 import type { GetUserListResponse } from '@/lib/api-types';
+
+import { toUserListRows } from '../_lib/userListRows';
+
+import UsersView from './UsersView';
 
 const UsersPageContent = ({
   users,

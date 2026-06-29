@@ -4,9 +4,11 @@ import Autocomplete from '@mui/material/Autocomplete';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import { useController } from 'react-hook-form';
-import type { GetFormLabelsResponse } from '@/lib/api-types';
-import type { FormEditorValues } from '../_schema/formEditorSchema';
 import type { Control } from 'react-hook-form';
+
+import type { GetFormLabelsResponse } from '@/lib/api-types';
+
+import type { FormEditorValues } from '../_schema/formEditorSchema';
 
 const FormLabelField = (props: {
   control: Control<FormEditorValues>;
@@ -39,7 +41,9 @@ const FormLabelField = (props: {
           sx={{ borderBottom: (theme) => `1px solid ${theme.palette.divider}` }}
         />
       )}
-      onChange={(_event, value) => field.onChange(value)}
+      onChange={(_event, value) => {
+        field.onChange(value);
+      }}
     />
   );
 };

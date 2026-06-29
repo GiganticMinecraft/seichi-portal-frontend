@@ -1,5 +1,6 @@
 'use client';
 
+import { zodResolver } from '@hookform/resolvers/zod';
 import SendIcon from '@mui/icons-material/Send';
 import {
   Alert,
@@ -9,21 +10,22 @@ import {
   Container,
   Stack,
 } from '@mui/material';
-import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import { useFieldArray, useForm } from 'react-hook-form';
+
 import type { GetFormLabelsResponse } from '@/lib/api-types';
+
 import FormEditorLayout from '../../_components/FormEditorLayout';
 import FormSettings from '../../_components/FormSettings';
 import QuestionEditor from '../../_components/QuestionEditor';
 import QuestionList from '../../_components/QuestionList';
-import type { FormEditorValues } from '../../_schema/formEditorSchema';
-import { formEditorSchema } from '../../_schema/formEditorSchema';
 import {
   createEmptyFormEditorQuestion,
   createEmptyFormEditorValues,
 } from '../../_lib/formEditorDefaults';
+import type { FormEditorValues } from '../../_schema/formEditorSchema';
+import { formEditorSchema } from '../../_schema/formEditorSchema';
 import { useCreateForm } from '../_hooks/useCreateForm';
 
 const FormCreateForm = (props: { labelOptions: GetFormLabelsResponse }) => {
@@ -67,7 +69,12 @@ const FormCreateForm = (props: { labelOptions: GetFormLabelsResponse }) => {
   };
 
   const formContent = (
-    <Container component="form" onSubmit={handleSubmit(createForm)}>
+    <Container
+      component="form"
+      onSubmit={(e) => {
+        void handleSubmit(createForm)(e);
+      }}
+    >
       <Stack spacing={2}>
         <Card>
           <CardContent>

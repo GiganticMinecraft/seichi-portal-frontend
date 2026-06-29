@@ -1,8 +1,10 @@
 'use client';
 
 import { useMemo, useState } from 'react';
-import { filterForms } from '../_lib/formListFilters';
+
 import type { GetFormLabelsResponse, GetFormsResponse } from '@/lib/api-types';
+
+import { filterForms } from '../_lib/formListFilters';
 
 export const useFormListFilters = (forms: GetFormsResponse) => {
   const [titleSearch, setTitleSearch] = useState('');

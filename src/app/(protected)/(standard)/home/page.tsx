@@ -1,5 +1,6 @@
-import MainMenu from '../_components/MainMenu';
 import type { Metadata } from 'next';
+
+import MainMenu from '../_components/MainMenu';
 
 export const metadata: Metadata = {
   title: 'ホーム | Seichi Portal',

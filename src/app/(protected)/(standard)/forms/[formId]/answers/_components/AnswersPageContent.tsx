@@ -1,9 +1,12 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import AnswersView from './AnswersView';
-import { toAnswerListRows } from '../_lib/answerListRows';
+
 import type { GetFormAnswersResponse, GetFormResponse } from '@/lib/api-types';
+
+import { toAnswerListRows } from '../_lib/answerListRows';
+
+import AnswersView from './AnswersView';
 
 const AnswersPageContent = ({
   form,

@@ -1,11 +1,13 @@
-import FormsPageContent from './_components/FormsPageContent';
+import type { Metadata } from 'next';
+
 import {
   authorizationHeader,
   requireBackendData,
   serverApiClient,
 } from '@/lib/server/backend';
 import { getAdminAccess } from '@/lib/server/session';
-import type { Metadata } from 'next';
+
+import FormsPageContent from './_components/FormsPageContent';
 
 export const metadata: Metadata = {
   title: 'フォーム管理 | Seichi Portal',

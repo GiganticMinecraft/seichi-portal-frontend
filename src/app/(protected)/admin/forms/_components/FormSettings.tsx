@@ -9,14 +9,17 @@ import {
   Typography,
 } from '@mui/material';
 import { useController, useWatch } from 'react-hook-form';
-import FormLabelField from './FormLabelField';
-import type { GetFormLabelsResponse } from '@/lib/api-types';
-import type { FormEditorValues } from '../_schema/formEditorSchema';
 import type {
   Control,
   UseFormRegister,
   UseFormSetValue,
 } from 'react-hook-form';
+
+import type { GetFormLabelsResponse } from '@/lib/api-types';
+
+import type { FormEditorValues } from '../_schema/formEditorSchema';
+
+import FormLabelField from './FormLabelField';
 
 const FormSettings = (props: {
   register: UseFormRegister<FormEditorValues>;
@@ -73,7 +76,9 @@ const FormSettings = (props: {
         control={
           <Checkbox
             checked={hasAcceptancePeriod}
-            onChange={(_, checked) => onAcceptancePeriodToggle(checked)}
+            onChange={(_, checked) => {
+              onAcceptancePeriodToggle(checked);
+            }}
           />
         }
       />
@@ -95,7 +100,7 @@ const FormSettings = (props: {
       )}
       <TextField
         {...visibilityField}
-        value={visibilityField.value ?? 'PUBLIC'}
+        value={visibilityField.value}
         label="フォーム公開設定"
         helperText="この設定を公開にすると、一般ユーザーがこのフォームに回答できるようになります。"
         select
@@ -106,7 +111,7 @@ const FormSettings = (props: {
       </TextField>
       <TextField
         {...answerVisibilityField}
-        value={answerVisibilityField.value ?? 'PUBLIC'}
+        value={answerVisibilityField.value}
         label="回答の公開設定"
         helperText="この設定を公開にすると、すべての回答が一般ユーザーから確認できるようになります。"
         select

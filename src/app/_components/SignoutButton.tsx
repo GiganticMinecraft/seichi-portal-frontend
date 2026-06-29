@@ -3,6 +3,7 @@
 import { Button } from '@mui/material';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
+
 import { getMsalInstance } from './MsalProvider';
 
 export const SignoutButton = () => {
@@ -37,7 +38,13 @@ export const SignoutButton = () => {
   };
 
   return (
-    <Button color="inherit" onClick={handleClick} disabled={isSubmitting}>
+    <Button
+      color="inherit"
+      onClick={() => {
+        void handleClick();
+      }}
+      disabled={isSubmitting}
+    >
       サインアウト
     </Button>
   );

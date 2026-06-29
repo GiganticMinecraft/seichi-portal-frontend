@@ -8,9 +8,11 @@ import {
   TableHead,
   TableRow,
 } from '@mui/material';
+
+import type { UserListRow } from '../_lib/userListRows';
+
 import UserListHeader from './UserListHeader';
 import UserRow from './UserRow';
-import type { UserListRow } from '../_lib/userListRows';
 
 const UsersView = ({ rows }: { rows: UserListRow[] }) => {
   return (

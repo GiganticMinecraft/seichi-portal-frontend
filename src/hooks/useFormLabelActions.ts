@@ -1,7 +1,7 @@
 'use client';
 
-import { proxyClient } from '@/lib/proxyClient';
 import { handleMutationResponse } from '@/hooks/useApiMutation';
+import { proxyClient } from '@/lib/proxyClient';
 
 export const useFormLabelActions = (formId: string) => {
   const updateLabels = async (labelIds: string[]): Promise<{ ok: boolean }> => {

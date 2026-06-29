@@ -1,6 +1,7 @@
 'use client';
 
 import { MenuItem, Select, Tooltip } from '@mui/material';
+
 import { useUserRoleActions } from '@/hooks/useUserRoleActions';
 
 const RoleSelectCell = ({
@@ -24,8 +25,8 @@ const RoleSelectCell = ({
           defaultValue={currentRole}
           size="small"
           disabled={disabled}
-          onChange={async (event) => {
-            await updateUserRole(userId, event.target.value);
+          onChange={(event) => {
+            void updateUserRole(userId, event.target.value);
           }}
         >
           <MenuItem value="STANDARD_USER">通常ユーザー</MenuItem>

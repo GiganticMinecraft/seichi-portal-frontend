@@ -1,6 +1,7 @@
 'use client';
 
 import { Paper, Stack, Typography } from '@mui/material';
+
 import { removeDuplicates } from '@/generic/ArrayExtra';
 import type { GetAnswerResponse, GetQuestionsResponse } from '@/lib/api-types';
 

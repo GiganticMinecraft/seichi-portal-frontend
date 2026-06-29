@@ -1,11 +1,12 @@
 'use client';
 
 import { EventType, PublicClientApplication } from '@azure/msal-browser';
+import type { Configuration } from '@azure/msal-browser';
 import { MsalProvider as MsalLibProvider } from '@azure/msal-react';
 import { useEffect, useState } from 'react';
-import { shouldReloadForMsalRedirectRecovery } from './msalRedirectState';
-import type { Configuration } from '@azure/msal-browser';
 import type { ReactNode } from 'react';
+
+import { shouldReloadForMsalRedirectRecovery } from './msalRedirectState';
 
 let msalInstance: PublicClientApplication | null = null;
 

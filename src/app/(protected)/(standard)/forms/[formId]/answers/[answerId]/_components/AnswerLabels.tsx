@@ -1,5 +1,6 @@
 'use client';
 import { Chip, Stack, Typography } from '@mui/material';
+
 import type { GetAnswerResponse } from '@/lib/api-types';
 
 const AnswerLabels = (props: { answers: GetAnswerResponse }) => {

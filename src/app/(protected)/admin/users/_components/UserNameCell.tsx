@@ -1,4 +1,5 @@
 import { Avatar, Box, Typography } from '@mui/material';
+
 import CopyButton from './CopyButton';
 
 const UserNameCell = ({ id, name }: { id: string; name: string }) => (

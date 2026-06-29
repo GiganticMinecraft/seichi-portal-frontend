@@ -1,8 +1,5 @@
 'use client';
 
-import { Add, DragIndicator } from '@mui/icons-material';
-import DeleteIcon from '@mui/icons-material/Delete';
-import { Button, IconButton, MenuItem, Stack, TextField } from '@mui/material';
 import {
   DndContext,
   type DragEndEvent,
@@ -16,13 +13,17 @@ import {
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
+import { Add, DragIndicator } from '@mui/icons-material';
+import DeleteIcon from '@mui/icons-material/Delete';
+import { Button, IconButton, MenuItem, Stack, TextField } from '@mui/material';
 import { useController, useFieldArray } from 'react-hook-form';
+import type { Control, UseFormRegister } from 'react-hook-form';
+
 import {
   questionTypeSchema,
   type FormEditorQuestion,
   type FormEditorValues,
 } from '../_schema/formEditorSchema';
-import type { Control, UseFormRegister } from 'react-hook-form';
 
 const SortableChoiceItem = (props: {
   id: string;
@@ -75,7 +76,9 @@ const SortableChoiceItem = (props: {
       />
       <IconButton
         size="small"
-        onClick={() => props.removeChoice(props.index)}
+        onClick={() => {
+          props.removeChoice(props.index);
+        }}
         disabled={!props.canRemove}
       >
         <DeleteIcon fontSize="small" />
@@ -128,9 +131,13 @@ const ChoiceEditor = (props: {
     })
   );
 
-  const appendChoice = () => append({ choice: '' });
+  const appendChoice = () => {
+    append({ choice: '' });
+  };
 
-  const clearChoices = () => remove();
+  const clearChoices = () => {
+    remove();
+  };
 
   const handleQuestionTypeChange = (
     nextQuestionType: FormEditorQuestion['question_type']
@@ -161,7 +168,7 @@ const ChoiceEditor = (props: {
     }
   };
 
-  const questionType = questionTypeField.value ?? 'Text';
+  const questionType = questionTypeField.value;
 
   return (
     <>

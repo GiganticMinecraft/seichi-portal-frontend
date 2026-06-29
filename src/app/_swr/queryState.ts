@@ -48,7 +48,7 @@ export const toRequiredQueryState = <T>(
 
 export const getRequiredQueryGroupError = (
   queries: Record<string, QuerySnapshot<unknown>>
-): unknown | undefined =>
+): unknown =>
   Object.values(queries).find((query) => query.error !== undefined)?.error;
 
 export const isQueryGroupReady = <

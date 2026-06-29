@@ -1,9 +1,11 @@
 import './globals.css';
-import { AppProviders } from './_providers/themeMode';
-import { getMsalConfig } from '@/env.server';
 import type { ReactNode } from 'react';
 
-const RootLayout = async ({ children }: { children: ReactNode }) => {
+import { getMsalConfig } from '@/env.server';
+
+import { AppProviders } from './_providers/themeMode';
+
+const RootLayout = ({ children }: { children: ReactNode }) => {
   const msalConfig = getMsalConfig();
 
   return (

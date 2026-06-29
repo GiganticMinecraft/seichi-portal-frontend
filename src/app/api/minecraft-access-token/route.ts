@@ -1,11 +1,12 @@
 import { NextResponse } from 'next/server';
+import type { NextRequest } from 'next/server';
 import { z } from 'zod';
+
 import {
   minecraftAccessTokenResponseSchema,
   xboxLiveServiceTokenResponseSchema,
 } from '@/_schemas/loginSchema';
 import { authorizationHeader, serverApiClient } from '@/lib/server/backend';
-import type { NextRequest } from 'next/server';
 
 const microsoftAccountTokenSchema = z.object({
   token: z.string().min(1),

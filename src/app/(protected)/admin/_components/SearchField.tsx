@@ -4,6 +4,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import { Paper, IconButton, InputBase } from '@mui/material';
 import { alpha } from '@mui/material/styles';
 import { useState } from 'react';
+
 import SearchResult from './SearchResult';
 
 const SearchField = () => {
@@ -32,7 +33,9 @@ const SearchField = () => {
       <IconButton
         sx={{ p: '10px', color: 'text.primary' }}
         aria-label="search"
-        onClick={() => setOpenSearchResultModal(true)}
+        onClick={() => {
+          setOpenSearchResultModal(true);
+        }}
       >
         <SearchIcon />
       </IconButton>
@@ -40,7 +43,9 @@ const SearchField = () => {
         sx={{ ml: 1, flex: 1 }}
         placeholder="Search..."
         inputProps={{ 'aria-label': 'search...' }}
-        onChange={(event) => setSearchValue(event.target.value)}
+        onChange={(event) => {
+          setSearchValue(event.target.value);
+        }}
         onKeyDown={(event) => {
           if (event.key === 'Enter') {
             event.preventDefault();
@@ -52,7 +57,9 @@ const SearchField = () => {
         <SearchResult
           searchContent={searchValue}
           openState={openSearchResultModal}
-          onClose={() => setOpenSearchResultModal(false)}
+          onClose={() => {
+            setOpenSearchResultModal(false);
+          }}
         />
       )}
     </Paper>

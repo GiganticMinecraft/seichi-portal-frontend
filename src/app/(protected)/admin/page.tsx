@@ -1,11 +1,13 @@
-import DataTable from './_components/Dashboard';
+import type { Metadata } from 'next';
+
 import {
   authorizationHeader,
   requireBackendData,
   serverApiClient,
 } from '@/lib/server/backend';
 import { getAdminAccess } from '@/lib/server/session';
-import type { Metadata } from 'next';
+
+import DataTable from './_components/Dashboard';
 
 export const metadata: Metadata = {
   title: '管理ダッシュボード | Seichi Portal',

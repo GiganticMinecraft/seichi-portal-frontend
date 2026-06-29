@@ -1,8 +1,9 @@
+import type { RequestCookies } from 'next/dist/compiled/@edge-runtime/cookies';
 import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
-import { normalizeRedirectTarget } from './redirect';
 import type { NextRequest } from 'next/server';
-import type { RequestCookies } from 'next/dist/compiled/@edge-runtime/cookies';
+
+import { normalizeRedirectTarget } from './redirect';
 
 const POST_LOGIN_REDIRECT_COOKIE = 'SEICHI_PORTAL__POST_LOGIN_REDIRECT';
 const POST_LOGIN_REDIRECT_MAX_AGE = 60 * 10;

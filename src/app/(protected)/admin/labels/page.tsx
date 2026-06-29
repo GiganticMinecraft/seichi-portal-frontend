@@ -1,13 +1,15 @@
 import { Stack, Typography } from '@mui/material';
+import type { Metadata } from 'next';
 import { Suspense } from 'react';
-import LabelsTabs from './_components/LabelsTabs';
+
 import {
   authorizationHeader,
   requireBackendData,
   serverApiClient,
 } from '@/lib/server/backend';
 import { getAdminAccess } from '@/lib/server/session';
-import type { Metadata } from 'next';
+
+import LabelsTabs from './_components/LabelsTabs';
 
 export const metadata: Metadata = {
   title: 'ラベル管理 | Seichi Portal',

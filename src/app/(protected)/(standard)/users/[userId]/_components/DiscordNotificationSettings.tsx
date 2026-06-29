@@ -11,12 +11,14 @@ import {
 } from '@mui/material';
 import Checkbox from '@mui/material/Checkbox';
 import { Controller, useForm } from 'react-hook-form';
+
 import { useNotificationSettings } from '@/hooks/useNotificationSettings';
+import type { GetUserNotificationSettingsResponse } from '@/lib/api-types';
+
 import {
   fromNotificationSettingsResponseToFormValues,
   toNotificationSettingsUpdateBody,
 } from './notificationSettingsForm';
-import type { GetUserNotificationSettingsResponse } from '@/lib/api-types';
 import type { NotificationSettingsFormValues } from './notificationSettingsForm';
 
 const DiscordNotificationSettings = (props: {
@@ -41,7 +43,12 @@ const DiscordNotificationSettings = (props: {
   };
 
   return (
-    <CardContent component="form" onSubmit={handleSubmit(onSubmit)}>
+    <CardContent
+      component="form"
+      onSubmit={(e) => {
+        void handleSubmit(onSubmit)(e);
+      }}
+    >
       <Typography variant="h6" gutterBottom>
         通知設定
       </Typography>
@@ -56,7 +63,9 @@ const DiscordNotificationSettings = (props: {
               control={
                 <Checkbox
                   checked={field.value}
-                  onChange={(_, checked) => field.onChange(checked)}
+                  onChange={(_, checked) => {
+                    field.onChange(checked);
+                  }}
                   onBlur={field.onBlur}
                   ref={field.ref}
                 />

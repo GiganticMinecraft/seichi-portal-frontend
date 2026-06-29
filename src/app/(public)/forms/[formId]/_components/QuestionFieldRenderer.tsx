@@ -14,6 +14,7 @@ import {
 import type { Dispatch, SetStateAction } from 'react';
 import { Controller } from 'react-hook-form';
 import type { Control, FieldErrors, UseFormRegister } from 'react-hook-form';
+
 import type { AnswerFormInput, AnswerQuestion } from './answerFormTypes';
 
 type Props = {
@@ -37,10 +38,9 @@ const QuestionFieldRenderer = ({
   control,
   register,
   errors,
-  selectedValues,
   setSelectedValues,
 }: Props) => {
-  const questionId = question.id ?? '';
+  const questionId = question.id;
 
   switch (question.question_type) {
     case 'Text':
@@ -69,7 +69,7 @@ const QuestionFieldRenderer = ({
                 fullWidth
                 labelId={`select-label-${questionId}`}
                 label="選択してください"
-                value={field.value ?? selectedValues[questionId] ?? ''}
+                value={field.value}
                 onChange={(event) => {
                   const nextValue = event.target.value;
                   if (typeof nextValue !== 'string') {
@@ -84,7 +84,7 @@ const QuestionFieldRenderer = ({
                 }}
                 displayEmpty
               >
-                {question.choices?.map((choice, index) => (
+                {question.choices.map((choice, index) => (
                   <MenuItem
                     key={`q-${questionId}.a-${index}`}
                     value={choice.label}
@@ -101,7 +101,7 @@ const QuestionFieldRenderer = ({
       return (
         <>
           <Grid container spacing={2} sx={{ mt: 1 }}>
-            {question.choices?.map((choice, index) => (
+            {question.choices.map((choice, index) => (
               <Grid
                 size={{ xs: 12, sm: 6, md: 4 }}
                 key={`q-${questionId}.a-${index}`}
@@ -133,7 +133,7 @@ const QuestionFieldRenderer = ({
           </Grid>
           {errors[questionId] && (
             <FormHelperText sx={{ color: 'error.main' }}>
-              {errors[questionId]?.message}
+              {errors[questionId].message}
             </FormHelperText>
           )}
         </>

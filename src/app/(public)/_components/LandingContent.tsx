@@ -10,15 +10,22 @@ import {
   Stack,
   Typography,
 } from '@mui/material';
-import { useLandingLogin } from './useLandingLogin';
-import { PublicFormList } from './PublicFormList';
+
 import type { GetFormsResponse } from '@/lib/api-types';
+
+import { PublicFormList } from './PublicFormList';
+import { useLandingLogin } from './useLandingLogin';
 
 const ErrorState = ({ errorMessage }: { errorMessage: string }) => (
   <Container maxWidth="sm" sx={{ py: 10 }}>
     <Stack spacing={2}>
       <Alert severity="error">{errorMessage}</Alert>
-      <Button variant="contained" onClick={() => window.location.reload()}>
+      <Button
+        variant="contained"
+        onClick={() => {
+          window.location.reload();
+        }}
+      >
         再試行
       </Button>
     </Stack>

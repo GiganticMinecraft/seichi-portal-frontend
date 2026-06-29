@@ -2,6 +2,7 @@
 
 import LinkOffIcon from '@mui/icons-material/LinkOff';
 import { Button, Chip, Stack, Typography } from '@mui/material';
+
 import { useDiscordActions } from '@/hooks/useDiscordActions';
 
 const UnlinkDiscordButton = () => {
@@ -25,7 +26,9 @@ const UnlinkDiscordButton = () => {
         variant="outlined"
         color="error"
         startIcon={<LinkOffIcon />}
-        onClick={onClick}
+        onClick={() => {
+          void onClick();
+        }}
         size="small"
       >
         連携を解除する

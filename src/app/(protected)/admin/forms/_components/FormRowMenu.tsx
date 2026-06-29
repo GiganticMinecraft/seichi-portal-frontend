@@ -10,6 +10,7 @@ import {
 } from '@mui/material';
 import NextLink from 'next/link';
 import { useState } from 'react';
+
 import { useFormActions } from '@/hooks/useFormActions';
 
 interface Props {
@@ -60,7 +61,11 @@ const FormRowMenu = ({ formId }: Props) => {
           </ListItemIcon>
           <ListItemText>編集</ListItemText>
         </MenuItem>
-        <MenuItem onClick={handleDelete}>
+        <MenuItem
+          onClick={() => {
+            void handleDelete();
+          }}
+        >
           <ListItemIcon>
             <Delete fontSize="small" />
           </ListItemIcon>

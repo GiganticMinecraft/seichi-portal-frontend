@@ -1,6 +1,6 @@
 import { errorResponseSchema } from '@/lib/api/errors';
-import { toRestrictionExpiration } from '@/lib/restrictions/expiration';
 import type { ErrorRestriction } from '@/lib/api/errors';
+import { toRestrictionExpiration } from '@/lib/restrictions/expiration';
 import type { RestrictionExpiration } from '@/lib/restrictions/expiration';
 
 export type SubmissionErrorCode = 'OUT_OF_PERIOD' | 'RESTRICTED' | 'UNKNOWN';
