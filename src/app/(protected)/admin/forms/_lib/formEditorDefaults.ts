@@ -23,8 +23,8 @@ export const createEmptyFormEditorValues = (): FormEditorValues => ({
     acceptance_period: { kind: 'none' },
     discord_webhook_url: '',
     default_answer_title: '',
-    visibility: 'PUBLIC',
-    answer_visibility: 'PUBLIC',
+    visibility: 'PRIVATE',
+    answer_visibility: 'PRIVATE',
     allow_temporary_answers: false,
   },
 });
