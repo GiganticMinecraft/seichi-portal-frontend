@@ -19,9 +19,14 @@ import { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { formatString } from '@/generic/DateFormatter';
 import { useAnswerSubmitterRestrictionActions } from '@/hooks/useAnswerSubmitterRestrictionActions';
+import {
+  formatRestrictionExpiration,
+  toRestrictionExpiration,
+} from '@/lib/restrictions/expiration';
 import { useApiQuery } from '@/app/_swr/useApiQuery';
 import { restrictionFormSchema, toRestrictionRequest } from './restrictionForm';
 import type {
+  RestrictionFormExpiration,
   RestrictionFormInput,
   RestrictionFormValues,
 } from './restrictionForm';
@@ -49,7 +54,7 @@ const RestrictionDialogBody = ({
     formState: { isSubmitting },
   } = useForm<RestrictionFormInput, unknown, RestrictionFormValues>({
     resolver: zodResolver(restrictionFormSchema),
-    defaultValues: { reason: '', expiresAt: null },
+    defaultValues: { reason: '', expiration: { kind: 'indefinite' } },
   });
 
   if (isLoading) {
@@ -72,6 +77,8 @@ const RestrictionDialogBody = ({
 
   // 既に制限中: 現在の内容を表示し、解除のみ行える。
   if (data) {
+    const expiration = toRestrictionExpiration(data.expires_at);
+
     const onUnrestrict = async () => {
       setSubmitError(null);
       const result = await unrestrictUser(uuid);
@@ -97,7 +104,7 @@ const RestrictionDialogBody = ({
               </Typography>
               <Typography component="p">
                 <strong>解除予定:</strong>{' '}
-                {data.expires_at ? formatString(data.expires_at) : '無期限'}
+                {formatRestrictionExpiration(expiration)}
               </Typography>
             </Stack>
           </Stack>
@@ -147,13 +154,23 @@ const RestrictionDialogBody = ({
               )}
             />
             <Controller
-              name="expiresAt"
+              name="expiration"
               control={control}
               render={({ field, fieldState }) => (
                 <DateTimePicker
                   label="解除予定日時（任意・未指定で無期限）"
-                  value={field.value ?? null}
-                  onChange={field.onChange}
+                  value={
+                    field.value?.kind === 'expiresAt'
+                      ? field.value.expiresAt
+                      : null
+                  }
+                  onChange={(value) => {
+                    const expiration: RestrictionFormExpiration =
+                      value == null
+                        ? { kind: 'indefinite' }
+                        : { kind: 'expiresAt', expiresAt: value };
+                    field.onChange(expiration);
+                  }}
                   slotProps={{
                     field: { clearable: true },
                     textField: {
