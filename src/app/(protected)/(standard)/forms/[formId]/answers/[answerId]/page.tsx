@@ -11,7 +11,6 @@ import AnswerMeta from './_components/AnswerMeta';
 import Comments from './_components/Comments';
 import { usePageTitle } from '@/hooks/usePageTitle';
 
-
 const Home = ({
   params,
 }: {

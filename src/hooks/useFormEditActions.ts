@@ -6,8 +6,6 @@ import type { ApiPaths } from '@/lib/api/types';
 
 type FormUpdateBody =
   ApiPaths['/api/v1/forms/{id}']['put']['requestBody']['content']['application/json'];
-type FormUpdateResponse =
-  ApiPaths['/api/v1/forms/{id}']['put']['responses'][200]['content']['application/json'];
 
 export const useFormEditActions = (formId: string) => {
   const updateForm = async (body: FormUpdateBody): Promise<{ ok: boolean }> => {
@@ -18,11 +16,7 @@ export const useFormEditActions = (formId: string) => {
         body,
       }
     );
-    const result = handleMutationResponse<FormUpdateResponse>(
-      response,
-      data,
-      error
-    );
+    const result = handleMutationResponse(response, data, error);
     return { ok: result.success };
   };
 

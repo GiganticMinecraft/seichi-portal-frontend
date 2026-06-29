@@ -43,7 +43,8 @@ const getServerApiClient = (): Client<ApiPaths> => {
 };
 
 export const serverApiClient: Client<ApiPaths> = new Proxy(
-  createServerApiClient(),
+  // eslint-disable-next-line @typescript-eslint/consistent-type-assertions, @typescript-eslint/no-unsafe-type-assertion -- モジュールインポート時の初期化を防ぐため、空オブジェクトをターゲットとして遅延初期化する
+  {} as Client<ApiPaths>,
   {
     get(_target, property, receiver) {
       return Reflect.get(getServerApiClient(), property, receiver);

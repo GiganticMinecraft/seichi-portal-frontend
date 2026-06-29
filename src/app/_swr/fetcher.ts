@@ -45,7 +45,7 @@ export const typedFetcher = async <P extends GetPaths>(
   path: P,
   params?: GetParams<P>
 ): Promise<GetResponse<P>> => {
-  // eslint-disable-next-line @typescript-eslint/consistent-type-assertions, @typescript-eslint/no-unsafe-type-assertion -- GetPaths と PathsWithMethod<ApiPaths, "get"> は同じパス集合だが、TypeScript がジェネリクス上で等価性を証明できないため型境界として必要
+  // eslint-disable-next-line @typescript-eslint/consistent-type-assertions, @typescript-eslint/no-unsafe-type-assertion -- GetPaths と PathsWithMethod<ApiPaths, "get"> は同じパス集合だが、ジェネリクス上で等価性を証明できないため型境界として必要
   const get = proxyClient.GET as (
     path: P,
     options?: { params?: GetParams<P> }

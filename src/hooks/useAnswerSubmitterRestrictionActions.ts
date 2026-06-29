@@ -9,7 +9,7 @@ export const useAnswerSubmitterRestrictionActions = () => {
   const restrictUser = async (
     uuid: string,
     body: PutAnswerSubmitterRestrictionSchema
-  ): Promise<MutationResult<unknown>> => {
+  ): Promise<MutationResult> => {
     const { data, error, response } = await proxyClient.PUT(
       '/api/v1/users/{uuid}/answer-submitter-restriction',
       {
@@ -20,9 +20,7 @@ export const useAnswerSubmitterRestrictionActions = () => {
     return handleMutationResponse(response, data, error);
   };
 
-  const unrestrictUser = async (
-    uuid: string
-  ): Promise<MutationResult<unknown>> => {
+  const unrestrictUser = async (uuid: string): Promise<MutationResult> => {
     const { data, error, response } = await proxyClient.DELETE(
       '/api/v1/users/{uuid}/answer-submitter-restriction',
       {

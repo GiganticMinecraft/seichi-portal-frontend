@@ -16,7 +16,6 @@ import {
 } from './_components/AnswerDetails';
 import { usePageTitle } from '@/hooks/usePageTitle';
 
-
 const Home = ({ params }: { params: Promise<{ answerId: string }> }) => {
   usePageTitle('回答管理');
   const { answerId } = use(params);
