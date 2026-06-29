@@ -4,7 +4,7 @@ import prettier from 'eslint-config-prettier/flat';
 import { importX } from 'eslint-plugin-import-x';
 import pluginReactConfig from 'eslint-plugin-react/configs/recommended.js';
 import reactHooks from 'eslint-plugin-react-hooks';
-import { plugin as tseslintPlugin, parser as tseslintParser } from 'typescript-eslint';
+import * as tseslint from 'typescript-eslint';
 import unusedImports from 'eslint-plugin-unused-imports';
 
 const eslintReactConfig = {
@@ -41,10 +41,10 @@ const unusedImportConfig = {
 const typescriptStrictnessConfig = {
   files: ['**/*.ts', '**/*.tsx'],
   plugins: {
-    '@typescript-eslint': tseslintPlugin,
+    '@typescript-eslint': tseslint.plugin,
   },
   languageOptions: {
-    parser: tseslintParser,
+    parser: tseslint.parser,
     parserOptions: {
       projectService: true,
     },
