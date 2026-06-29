@@ -17,7 +17,7 @@ export const createEmptyFormEditorQuestion = (): FormEditorQuestion => ({
 export const createEmptyFormEditorValues = (): FormEditorValues => ({
   title: '',
   description: '',
-  questions: [],
+  questions: [createEmptyFormEditorQuestion()],
   labels: [],
   settings: {
     acceptance_period: { kind: 'none' },
