@@ -1,8 +1,4 @@
-import { Box, Card, CardContent, Divider, Stack } from '@mui/material';
-import DiscordNotificationSettings from './_components/DiscordNotificationSettings';
-import LinkDiscordButton from './_components/LinkDiscordButton';
-import UnlinkDiscordButton from './_components/UnlinkDiscordButton';
-import UserInformation from './_components/UserInformation';
+import UserPageContent from './_components/UserPageContent';
 import {
   authorizationHeader,
   requireBackendData,
@@ -38,25 +34,11 @@ const Home = async ({ params }: { params: Promise<{ userId: string }> }) => {
   ]);
 
   return (
-    <Box sx={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
-      <Stack spacing={3} sx={{ maxWidth: 640, width: '100%' }}>
-        <UserInformation user={user} />
-        {user['discord_user_id'] ? (
-          <Card variant="outlined">
-            <CardContent>
-              <UnlinkDiscordButton />
-            </CardContent>
-            <Divider />
-            <DiscordNotificationSettings
-              userId={userId}
-              currentSettings={notificationSettings}
-            />
-          </Card>
-        ) : (
-          <LinkDiscordButton />
-        )}
-      </Stack>
-    </Box>
+    <UserPageContent
+      user={user}
+      userId={userId}
+      notificationSettings={notificationSettings}
+    />
   );
 };
 

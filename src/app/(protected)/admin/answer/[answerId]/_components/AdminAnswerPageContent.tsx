@@ -1,0 +1,105 @@
+'use client';
+
+import {
+  getRequiredQueryGroupError,
+  isQueryGroupReady,
+} from '@/app/_swr/queryState';
+import { useApiQuery } from '@/app/_swr/useApiQuery';
+import ErrorDialog from '@/app/_components/ErrorDialog';
+import LoadingCircular from '@/app/_components/LoadingCircular';
+import AdminAnswerPageView from './AdminAnswerPageView';
+import type { AdminAnswerPageData } from './AdminAnswerPageView';
+
+const AdminAnswerPageContent = ({ answerId }: { answerId: string }) => {
+  const allAnswersQuery = useApiQuery('/api/v1/forms/answers', undefined, {
+    refreshInterval: 1000,
+  });
+
+  const { data: allAnswers } = allAnswersQuery;
+  const answers = allAnswers?.find((a) => a.id === answerId);
+
+  const formQuery = useApiQuery(
+    '/api/v1/forms/{id}',
+    {
+      path: { id: answers?.form_id ?? '' },
+    },
+    { refreshInterval: 1000 }
+  );
+
+  const labelsQuery = useApiQuery('/api/v1/labels/answers');
+
+  const messagesQuery = useApiQuery(
+    '/api/v1/forms/{form_id}/answers/{answer_id}/messages',
+    {
+      path: {
+        form_id: answers?.form_id ?? '',
+        answer_id: answerId,
+      },
+    },
+    { refreshInterval: 1000 }
+  );
+
+  const commentsQuery = useApiQuery(
+    '/api/v1/forms/{form_id}/answers/{answer_id}/comments',
+    {
+      path: {
+        form_id: answers?.form_id ?? '',
+        answer_id: answerId,
+      },
+    },
+    { refreshInterval: 1000 }
+  );
+
+  const answerListQueries = { allAnswers: allAnswersQuery };
+  const answerListError = getRequiredQueryGroupError(answerListQueries);
+
+  if (answerListError !== undefined) {
+    return <ErrorDialog />;
+  }
+
+  if (!isQueryGroupReady(answerListQueries)) {
+    return <LoadingCircular />;
+  }
+
+  const answer = answerListQueries.allAnswers.data.find(
+    (a) => a.id === answerId
+  );
+
+  if (answer === undefined) {
+    return (
+      <ErrorDialog
+        status={404}
+        title="回答が見つかりません"
+        message="指定された回答は存在しないか、表示できません。"
+      />
+    );
+  }
+
+  const detailQueries = {
+    form: formQuery,
+    labels: labelsQuery,
+    messages: messagesQuery,
+    comments: commentsQuery,
+  };
+  const detailError = getRequiredQueryGroupError(detailQueries);
+
+  if (detailError !== undefined) {
+    return <ErrorDialog />;
+  }
+
+  if (!isQueryGroupReady(detailQueries)) {
+    return <LoadingCircular />;
+  }
+
+  const data: AdminAnswerPageData = {
+    answer,
+    form: detailQueries.form.data,
+    labels: detailQueries.labels.data,
+    messages: detailQueries.messages.data,
+    comments: detailQueries.comments.data,
+  };
+
+  return <AdminAnswerPageView answerId={answerId} data={data} />;
+};
+
+export default AdminAnswerPageContent;
