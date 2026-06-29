@@ -9,7 +9,7 @@ describe('restrictionFormSchema', () => {
   it('空の理由は弾く', () => {
     const result = restrictionFormSchema.safeParse({
       reason: '   ',
-      expiresAt: null,
+      expiration: { kind: 'indefinite' },
     });
     expect(result.success).toBe(false);
   });
@@ -17,7 +17,7 @@ describe('restrictionFormSchema', () => {
   it('理由があれば通る', () => {
     const result = restrictionFormSchema.safeParse({
       reason: '不適切な回答のため',
-      expiresAt: null,
+      expiration: { kind: 'indefinite' },
     });
     expect(result.success).toBe(true);
   });
@@ -25,7 +25,10 @@ describe('restrictionFormSchema', () => {
   it('無効な日時は弾く', () => {
     const result = restrictionFormSchema.safeParse({
       reason: '不適切な回答のため',
-      expiresAt: dayjs('invalid-date-string'),
+      expiration: {
+        kind: 'expiresAt',
+        expiresAt: dayjs('invalid-date-string'),
+      },
     });
     expect(result.success).toBe(false);
   });
@@ -35,7 +38,7 @@ describe('toRestrictionRequest', () => {
   it('expiresAt 未指定なら expires_at を含めない', () => {
     const body = toRestrictionRequest({
       reason: ' 理由 ',
-      expiresAt: null,
+      expiration: { kind: 'indefinite' },
     });
     expect(body).toEqual({ reason: '理由' });
     expect('expires_at' in body).toBe(false);
@@ -45,7 +48,7 @@ describe('toRestrictionRequest', () => {
     const expiresAt = dayjs('2026-07-01T12:34:00+09:00');
     const body = toRestrictionRequest({
       reason: '理由',
-      expiresAt,
+      expiration: { kind: 'expiresAt', expiresAt },
     });
     expect(body.reason).toBe('理由');
     expect(body.expires_at).toBe(expiresAt.format());

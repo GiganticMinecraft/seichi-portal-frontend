@@ -3,15 +3,21 @@ import { z } from 'zod';
 import type { Dayjs } from 'dayjs';
 import type { PutAnswerSubmitterRestrictionSchema } from '@/lib/api-types';
 
+const restrictionExpirationSchema = z.discriminatedUnion('kind', [
+  z.object({ kind: z.literal('indefinite') }),
+  z.object({
+    kind: z.literal('expiresAt'),
+    expiresAt: z.custom<Dayjs>((val) => isDayjs(val) && val.isValid(), {
+      message: '有効な日時を入力してください',
+    }),
+  }),
+]);
+
+export type RestrictionExpiration = z.infer<typeof restrictionExpirationSchema>;
+
 export const restrictionFormSchema = z.object({
   reason: z.string().trim().min(1, '理由を入力してください'),
-  // 有効期限は任意。未指定なら無期限の制限になる。
-  // 指定時は有効な Dayjs であることを保証し、Invalid Date が API に渡らないようにする。
-  expiresAt: z
-    .custom<Dayjs>((val) => isDayjs(val) && val.isValid(), {
-      message: '有効な日時を入力してください',
-    })
-    .nullable(),
+  expiration: restrictionExpirationSchema,
 });
 
 export type RestrictionFormInput = z.input<typeof restrictionFormSchema>;
@@ -23,7 +29,14 @@ export type RestrictionFormValues = z.output<typeof restrictionFormSchema>;
  */
 export const toRestrictionRequest = (
   values: RestrictionFormValues
-): PutAnswerSubmitterRestrictionSchema => ({
-  reason: values.reason.trim(),
-  ...(values.expiresAt ? { expires_at: values.expiresAt.format() } : {}),
-});
+): PutAnswerSubmitterRestrictionSchema => {
+  const request: PutAnswerSubmitterRestrictionSchema = {
+    reason: values.reason.trim(),
+  };
+
+  if (values.expiration.kind === 'expiresAt') {
+    request.expires_at = values.expiration.expiresAt.format();
+  }
+
+  return request;
+};

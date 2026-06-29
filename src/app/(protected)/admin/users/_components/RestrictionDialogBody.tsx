@@ -22,6 +22,7 @@ import { useAnswerSubmitterRestrictionActions } from '@/hooks/useAnswerSubmitter
 import { useApiQuery } from '@/app/_swr/useApiQuery';
 import { restrictionFormSchema, toRestrictionRequest } from './restrictionForm';
 import type {
+  RestrictionExpiration,
   RestrictionFormInput,
   RestrictionFormValues,
 } from './restrictionForm';
@@ -49,7 +50,7 @@ const RestrictionDialogBody = ({
     formState: { isSubmitting },
   } = useForm<RestrictionFormInput, unknown, RestrictionFormValues>({
     resolver: zodResolver(restrictionFormSchema),
-    defaultValues: { reason: '', expiresAt: null },
+    defaultValues: { reason: '', expiration: { kind: 'indefinite' } },
   });
 
   if (isLoading) {
@@ -147,13 +148,23 @@ const RestrictionDialogBody = ({
               )}
             />
             <Controller
-              name="expiresAt"
+              name="expiration"
               control={control}
               render={({ field, fieldState }) => (
                 <DateTimePicker
                   label="解除予定日時（任意・未指定で無期限）"
-                  value={field.value ?? null}
-                  onChange={field.onChange}
+                  value={
+                    field.value.kind === 'expiresAt'
+                      ? field.value.expiresAt
+                      : null
+                  }
+                  onChange={(value) => {
+                    const expiration: RestrictionExpiration =
+                      value == null
+                        ? { kind: 'indefinite' }
+                        : { kind: 'expiresAt', expiresAt: value };
+                    field.onChange(expiration);
+                  }}
                   slotProps={{
                     field: { clearable: true },
                     textField: {
