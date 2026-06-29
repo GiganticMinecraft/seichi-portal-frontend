@@ -85,9 +85,9 @@ describe('RestrictionDialogBody', () => {
       expect(restrictionMocks.restrictUser).toHaveBeenCalledWith('user-uuid', {
         reason: '迷惑投稿',
       });
+      expect(restrictionMocks.queryState.mutate).toHaveBeenCalledOnce();
+      expect(onClose).toHaveBeenCalledOnce();
     });
-    expect(restrictionMocks.queryState.mutate).toHaveBeenCalledOnce();
-    expect(onClose).toHaveBeenCalledOnce();
   });
 
   it('理由が空白だけなら制限を付与せず validation error を表示する', async () => {
@@ -127,8 +127,8 @@ describe('RestrictionDialogBody', () => {
 
     await waitFor(() => {
       expect(restrictionMocks.unrestrictUser).toHaveBeenCalledWith('user-uuid');
+      expect(restrictionMocks.queryState.mutate).toHaveBeenCalledOnce();
+      expect(onClose).toHaveBeenCalledOnce();
     });
-    expect(restrictionMocks.queryState.mutate).toHaveBeenCalledOnce();
-    expect(onClose).toHaveBeenCalledOnce();
   });
 });
