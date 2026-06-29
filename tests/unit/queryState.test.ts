@@ -1,5 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import {
+  getOptionalQueryData,
+  getRequiredQueryGroupError,
+  isQueryGroupReady,
   toOptionalQueryState,
   toRequiredQueryState,
 } from '@/app/_swr/queryState';
@@ -89,6 +92,52 @@ describe('toOptionalQueryState', () => {
     expect(toOptionalQueryState(ready('data'))).toEqual({
       kind: 'ready',
       data: 'data',
+    });
+  });
+});
+
+describe('required query group helpers', () => {
+  it('必須 query がすべて揃うと ready として扱う', () => {
+    expect(
+      isQueryGroupReady({
+        answer: ready({ id: 'answer-id' }),
+        messages: ready(['message']),
+      })
+    ).toBe(true);
+  });
+
+  it('必須 query が未取得なら ready として扱わない', () => {
+    expect(
+      isQueryGroupReady({
+        answer: ready({ id: 'answer-id' }),
+        form: loading<{ id: string }>(),
+      })
+    ).toBe(false);
+  });
+
+  it('必須 query が失敗したら error を返す', () => {
+    const error = new Error('failed');
+
+    expect(
+      getRequiredQueryGroupError({
+        answer: ready({ id: 'answer-id' }),
+        form: failed(error),
+      })
+    ).toBe(error);
+  });
+});
+
+describe('getOptionalQueryData', () => {
+  it('任意 query が未取得や失敗なら undefined として扱う', () => {
+    expect(getOptionalQueryData(loading<{ id: string }>())).toBeUndefined();
+    expect(
+      getOptionalQueryData(failed<{ id: string }>(new Error('failed')))
+    ).toBeUndefined();
+  });
+
+  it('任意 query が取得済みなら data を返す', () => {
+    expect(getOptionalQueryData(ready({ id: 'current-user-id' }))).toEqual({
+      id: 'current-user-id',
     });
   });
 });

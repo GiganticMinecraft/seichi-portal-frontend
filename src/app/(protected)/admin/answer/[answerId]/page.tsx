@@ -2,6 +2,10 @@
 
 import { Stack } from '@mui/material';
 import { use } from 'react';
+import {
+  getRequiredQueryGroupError,
+  isQueryGroupReady,
+} from '@/app/_swr/queryState';
 import { useApiQuery } from '@/app/_swr/useApiQuery';
 import ErrorDialog from '@/app/_components/ErrorDialog';
 import LoadingCircular from '@/app/_components/LoadingCircular';
@@ -14,9 +18,24 @@ import {
   AdminAnswerLabels,
   AdminAnswerTitle,
 } from './_components/AnswerDetails';
-import { toAdminAnswerPageState } from './adminAnswerPageState';
 import { usePageTitle } from '@/hooks/usePageTitle';
-import type { AdminAnswerPageData } from './adminAnswerPageState';
+import type {
+  AnswerComment,
+  GetAnswerLabelsResponse,
+  GetAnswersResponse,
+  GetFormResponse,
+  GetMessagesResponse,
+} from '@/lib/api-types';
+
+type AdminAnswer = GetAnswersResponse[number];
+
+type AdminAnswerPageData = {
+  answer: AdminAnswer;
+  form: GetFormResponse;
+  labels: GetAnswerLabelsResponse;
+  messages: GetMessagesResponse;
+  comments: AnswerComment[];
+};
 
 const AdminAnswerPageView = ({
   answerId,
@@ -107,20 +126,22 @@ const Home = ({ params }: { params: Promise<{ answerId: string }> }) => {
     { refreshInterval: 1000 }
   );
 
-  const pageState = toAdminAnswerPageState({
-    answerId,
-    allAnswers: allAnswersQuery,
-    form: formQuery,
-    labels: labelsQuery,
-    messages: messagesQuery,
-    comments: commentsQuery,
-  });
+  const answerListQueries = { allAnswers: allAnswersQuery };
+  const answerListError = getRequiredQueryGroupError(answerListQueries);
 
-  if (pageState.kind === 'error') {
+  if (answerListError !== undefined) {
     return <ErrorDialog />;
   }
 
-  if (pageState.kind === 'notFound') {
+  if (!isQueryGroupReady(answerListQueries)) {
+    return <LoadingCircular />;
+  }
+
+  const answer = answerListQueries.allAnswers.data.find(
+    (a) => a.id === answerId
+  );
+
+  if (answer === undefined) {
     return (
       <ErrorDialog
         status={404}
@@ -130,11 +151,31 @@ const Home = ({ params }: { params: Promise<{ answerId: string }> }) => {
     );
   }
 
-  if (pageState.kind !== 'ready') {
+  const detailQueries = {
+    form: formQuery,
+    labels: labelsQuery,
+    messages: messagesQuery,
+    comments: commentsQuery,
+  };
+  const detailError = getRequiredQueryGroupError(detailQueries);
+
+  if (detailError !== undefined) {
+    return <ErrorDialog />;
+  }
+
+  if (!isQueryGroupReady(detailQueries)) {
     return <LoadingCircular />;
   }
 
-  return <AdminAnswerPageView answerId={answerId} data={pageState.data} />;
+  const data: AdminAnswerPageData = {
+    answer,
+    form: detailQueries.form.data,
+    labels: detailQueries.labels.data,
+    messages: detailQueries.messages.data,
+    comments: detailQueries.comments.data,
+  };
+
+  return <AdminAnswerPageView answerId={answerId} data={data} />;
 };
 
 export default Home;

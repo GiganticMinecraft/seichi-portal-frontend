@@ -2,16 +2,33 @@
 
 import { Stack, Typography } from '@mui/material';
 import { use } from 'react';
+import {
+  getOptionalQueryData,
+  getRequiredQueryGroupError,
+  isQueryGroupReady,
+} from '@/app/_swr/queryState';
 import { useApiQuery } from '@/app/_swr/useApiQuery';
 import ErrorDialog from '@/app/_components/ErrorDialog';
 import LoadingCircular from '@/app/_components/LoadingCircular';
 import Messages from '@/app/(protected)/_components/Messages';
-import { toAnswerDetailsPageState } from './answerDetailsPageState';
 import AnswerDetails from './_components/AnswerDetails';
 import AnswerMeta from './_components/AnswerMeta';
 import Comments from './_components/Comments';
 import { usePageTitle } from '@/hooks/usePageTitle';
-import type { AnswerDetailsPageData } from './answerDetailsPageState';
+import type {
+  AnswerComment,
+  GetAnswerResponse,
+  GetFormResponse,
+  GetMessagesResponse,
+} from '@/lib/api-types';
+
+type AnswerDetailsPageData = {
+  answer: GetAnswerResponse;
+  form: GetFormResponse;
+  messages: GetMessagesResponse;
+  comments: AnswerComment[];
+  currentUserId: string | undefined;
+};
 
 const AnswerDetailsPageView = ({
   formId,
@@ -98,28 +115,33 @@ const Home = ({
     { refreshInterval: 1000 }
   );
 
-  const pageState = toAnswerDetailsPageState({
+  const requiredQueries = {
     answer: answerQuery,
     form: formQuery,
-    currentUser: currentUserQuery,
     messages: messagesQuery,
     comments: commentsQuery,
-  });
+  };
+  const queryError = getRequiredQueryGroupError(requiredQueries);
 
-  if (pageState.kind === 'error') {
+  if (queryError !== undefined) {
     return <ErrorDialog />;
   }
 
-  if (pageState.kind !== 'ready') {
+  if (!isQueryGroupReady(requiredQueries)) {
     return <LoadingCircular />;
   }
 
+  const currentUser = getOptionalQueryData(currentUserQuery);
+  const data: AnswerDetailsPageData = {
+    answer: requiredQueries.answer.data,
+    form: requiredQueries.form.data,
+    messages: requiredQueries.messages.data,
+    comments: requiredQueries.comments.data,
+    currentUserId: currentUser?.id,
+  };
+
   return (
-    <AnswerDetailsPageView
-      formId={formId}
-      answerId={answerId}
-      data={pageState.data}
-    />
+    <AnswerDetailsPageView formId={formId} answerId={answerId} data={data} />
   );
 };
 
