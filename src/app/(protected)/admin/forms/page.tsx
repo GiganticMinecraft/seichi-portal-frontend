@@ -11,9 +11,11 @@ export const metadata: Metadata = {
   title: 'フォーム管理 | Seichi Portal',
 };
 
-const Home = async () => {
+const Home = async (props: {
+  searchParams: Promise<{ createdFormId?: string }>;
+}) => {
   const { session } = await getAdminAccess();
-  const [forms, labels] = await Promise.all([
+  const [forms, labels, searchParams] = await Promise.all([
     requireBackendData(
       serverApiClient.GET('/api/v1/forms', {
         headers: authorizationHeader(session.token),
@@ -24,9 +26,16 @@ const Home = async () => {
         headers: authorizationHeader(session.token),
       })
     ),
+    props.searchParams,
   ]);
 
-  return <FormsPageContent forms={forms} labels={labels} />;
+  return (
+    <FormsPageContent
+      forms={forms}
+      labels={labels}
+      createdFormId={searchParams.createdFormId}
+    />
+  );
 };
 
 export default Home;

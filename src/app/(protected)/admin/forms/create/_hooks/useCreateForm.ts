@@ -8,7 +8,7 @@ import type { FormEditorValues } from '../../_schema/formEditorSchema';
 
 type SubmitState =
   | { kind: 'idle' }
-  | { kind: 'submitted' }
+  | { kind: 'submitted'; formId: string }
   | { kind: 'failed'; message: string };
 
 export const useCreateForm = () => {
@@ -50,7 +50,7 @@ export const useCreateForm = () => {
         return;
       }
 
-      setSubmitState({ kind: 'submitted' });
+      setSubmitState({ kind: 'submitted', formId: createdFormId });
     } catch {
       setSubmitState({
         kind: 'failed',

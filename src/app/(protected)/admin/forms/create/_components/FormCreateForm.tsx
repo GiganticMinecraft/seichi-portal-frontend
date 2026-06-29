@@ -10,6 +10,8 @@ import {
   Stack,
 } from '@mui/material';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
 import { useFieldArray, useForm } from 'react-hook-form';
 import type { GetFormLabelsResponse } from '@/lib/api-types';
 import FormEditorLayout from '../../_components/FormEditorLayout';
@@ -42,7 +44,17 @@ const FormCreateForm = (props: { labelOptions: GetFormLabelsResponse }) => {
     name: 'questions',
   });
 
+  const router = useRouter();
   const { createForm, submitState } = useCreateForm();
+
+  useEffect(() => {
+    if (submitState.kind === 'submitted') {
+      router.push(
+        `/admin/forms?createdFormId=${encodeURIComponent(submitState.formId)}`
+      );
+    }
+  }, [submitState, router]);
+
   const questionListError =
     typeof errors.questions?.message === 'string'
       ? errors.questions.message
@@ -88,9 +100,6 @@ const FormCreateForm = (props: { labelOptions: GetFormLabelsResponse }) => {
         )}
         {questionListError && (
           <Alert severity="error">{questionListError}</Alert>
-        )}
-        {submitState.kind === 'submitted' && (
-          <Alert severity="success">フォームを作成しました。</Alert>
         )}
         <Button
           type="submit"
