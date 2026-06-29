@@ -44,8 +44,8 @@ const acceptancePeriodSchema = z.discriminatedUnion('kind', [
   z.object({ kind: z.literal('none') }),
   z.object({
     kind: z.literal('specified'),
-    start_at: z.string().min(1, '回答開始日を入力してください。'),
-    end_at: z.string().min(1, '回答終了日を入力してください。'),
+    startAt: z.string().min(1, '回答開始日を入力してください。'),
+    endAt: z.string().min(1, '回答終了日を入力してください。'),
   }),
 ]);
 

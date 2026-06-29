@@ -82,4 +82,26 @@ describe('form request builders', () => {
 
     expect(body.settings?.allow_temporary_answers).toBe(true);
   });
+
+  it('回答期間の画面内部表現を API の日時フィールドへ変換する', () => {
+    const body = toFormUpdateBody(
+      {
+        ...baseValues,
+        settings: {
+          ...baseValues.settings,
+          acceptance_period: {
+            kind: 'specified',
+            startAt: '2026-06-01T10:00',
+            endAt: '2026-06-30T23:59',
+          },
+        },
+      },
+      false
+    );
+
+    expect(body.settings?.answer_settings?.acceptance_period).toMatchObject({
+      start_at: '2026-06-01T10:00:00+09:00',
+      end_at: '2026-06-30T23:59:00+09:00',
+    });
+  });
 });

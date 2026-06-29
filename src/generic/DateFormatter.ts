@@ -18,27 +18,6 @@ export const fromStringToJSTDateTime = (date: string) => {
   return dayjs(new Date(date)).tz('Asia/Tokyo').format(formatString);
 };
 
-export const formatAcceptancePeriod = (
-  period:
-    | { start_at?: string | null; end_at?: string | null }
-    | null
-    | undefined
-): string => {
-  const startAt = period?.start_at;
-  const endAt = period?.end_at;
-
-  if (startAt && endAt) {
-    return `${formatString(startAt)} ~ ${formatString(endAt)}`;
-  }
-  if (startAt) {
-    return `${formatString(startAt)} ~`;
-  }
-  if (endAt) {
-    return `~ ${formatString(endAt)}`;
-  }
-  return '回答期限なし';
-};
-
 export const toApiDateTime = (
   dateStr: string | null | undefined
 ): string | null => {

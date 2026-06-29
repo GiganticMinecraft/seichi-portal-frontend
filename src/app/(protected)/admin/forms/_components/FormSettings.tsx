@@ -44,9 +44,7 @@ const FormSettings = (props: {
   const onAcceptancePeriodToggle = (checked: boolean) => {
     props.setValue(
       'settings.acceptance_period',
-      checked
-        ? { kind: 'specified', start_at: '', end_at: '' }
-        : { kind: 'none' }
+      checked ? { kind: 'specified', startAt: '', endAt: '' } : { kind: 'none' }
     );
   };
 
@@ -82,13 +80,13 @@ const FormSettings = (props: {
       {hasAcceptancePeriod && (
         <>
           <TextField
-            {...props.register('settings.acceptance_period.start_at')}
+            {...props.register('settings.acceptance_period.startAt')}
             label="回答開始日"
             type="datetime-local"
             helperText="回答開始日と回答終了日はどちらも指定する必要があります。"
           />
           <TextField
-            {...props.register('settings.acceptance_period.end_at')}
+            {...props.register('settings.acceptance_period.endAt')}
             label="回答終了日"
             type="datetime-local"
             helperText="回答開始日と回答終了日はどちらも指定する必要があります。"

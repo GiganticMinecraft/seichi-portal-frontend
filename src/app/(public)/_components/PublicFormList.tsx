@@ -8,12 +8,28 @@ import {
   Typography,
 } from '@mui/material';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
-import { formatAcceptancePeriod } from '@/generic/DateFormatter';
+import { formatString } from '@/generic/DateFormatter';
 import type { GetFormsResponse } from '@/lib/api-types';
+
+const formatResponsePeriod = (startAt: string | null, endAt: string | null) => {
+  if (startAt != null && endAt != null) {
+    return `${formatString(startAt)} ~ ${formatString(endAt)}`;
+  }
+  if (startAt != null) {
+    return `${formatString(startAt)} ~`;
+  }
+  if (endAt != null) {
+    return `~ ${formatString(endAt)}`;
+  }
+  return '回答期限なし';
+};
 
 type FormItem = GetFormsResponse[number];
 
 const EachForm = ({ form }: { form: FormItem }) => {
+  const responsePeriod =
+    form.settings.answer_settings?.acceptance_period ?? null;
+
   return (
     <Card
       variant="outlined"
@@ -30,8 +46,9 @@ const EachForm = ({ form }: { form: FormItem }) => {
           </Typography>
           <Chip
             icon={<AccessTimeIcon />}
-            label={formatAcceptancePeriod(
-              form.settings.answer_settings?.acceptance_period
+            label={formatResponsePeriod(
+              responsePeriod?.start_at ?? null,
+              responsePeriod?.end_at ?? null
             )}
             size="small"
             variant="outlined"

@@ -86,8 +86,8 @@ const toAcceptancePeriodSetting = (
   startAt && endAt
     ? {
         kind: 'specified',
-        start_at: fromStringToJSTDateTime(startAt),
-        end_at: fromStringToJSTDateTime(endAt),
+        startAt: fromStringToJSTDateTime(startAt),
+        endAt: fromStringToJSTDateTime(endAt),
       }
     : { kind: 'none' };
 
@@ -129,9 +129,9 @@ export const toFormUpdateBody = (
   includeQuestions: boolean
 ): FormUpdateBody => {
   const acceptancePeriod = match(data.settings.acceptance_period)
-    .with({ kind: 'specified' }, ({ start_at, end_at }) => ({
-      start_at: toApiDateTime(start_at),
-      end_at: toApiDateTime(end_at),
+    .with({ kind: 'specified' }, ({ startAt, endAt }) => ({
+      start_at: toApiDateTime(startAt),
+      end_at: toApiDateTime(endAt),
     }))
     .with({ kind: 'none' }, () => ({
       start_at: null,

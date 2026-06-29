@@ -13,12 +13,19 @@ import {
 import { useRouter } from 'next/navigation';
 import FormRowMenu from './FormRowMenu';
 import LabelChips from './LabelChips';
-import { formatAcceptancePeriod } from '@/generic/DateFormatter';
+import { formatString } from '@/generic/DateFormatter';
 import type { GetFormsResponse } from '@/lib/api-types';
 
 interface Props {
   forms: GetFormsResponse;
 }
+
+const formatResponsePeriod = (startAt: string | null, endAt: string | null) => {
+  if (startAt != null && endAt != null) {
+    return `${formatString(startAt)} ~ ${formatString(endAt)}`;
+  }
+  return '回答期限なし';
+};
 
 const FormsTable = ({ forms }: Props) => {
   const router = useRouter();
@@ -59,8 +66,11 @@ const FormsTable = ({ forms }: Props) => {
                 </TableCell>
                 <TableCell>
                   <Typography variant="body2" color="text.secondary">
-                    {formatAcceptancePeriod(
+                    {formatResponsePeriod(
                       form.settings.answer_settings?.acceptance_period
+                        ?.start_at ?? null,
+                      form.settings.answer_settings?.acceptance_period
+                        ?.end_at ?? null
                     )}
                   </Typography>
                 </TableCell>
