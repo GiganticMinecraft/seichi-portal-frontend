@@ -69,7 +69,8 @@ const QuestionFieldRenderer = ({
                 fullWidth
                 labelId={`select-label-${questionId}`}
                 label="選択してください"
-                value={field.value}
+                // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- defaultValues 未指定のため初期レンダリング時に undefined になりうる
+                value={field.value ?? ''}
                 onChange={(event) => {
                   const nextValue = event.target.value;
                   if (typeof nextValue !== 'string') {
