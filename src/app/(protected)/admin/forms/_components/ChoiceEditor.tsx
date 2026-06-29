@@ -31,6 +31,7 @@ const SortableChoiceItem = (props: {
   register: UseFormRegister<FormEditorValues>;
   removeChoice: (index: number) => void;
   canRemove: boolean;
+  onAppendChoice: () => void;
 }) => {
   const {
     attributes,
@@ -65,6 +66,12 @@ const SortableChoiceItem = (props: {
         label={`選択肢${props.index + 1}`}
         required
         fullWidth
+        onKeyDown={(event) => {
+          if (event.key === 'Enter') {
+            event.preventDefault();
+            props.onAppendChoice();
+          }
+        }}
       />
       <IconButton
         size="small"
@@ -199,6 +206,7 @@ const ChoiceEditor = (props: {
                 register={props.register}
                 removeChoice={removeChoice}
                 canRemove={choiceFields.length > 1}
+                onAppendChoice={appendChoice}
               />
             ))}
           </Stack>
