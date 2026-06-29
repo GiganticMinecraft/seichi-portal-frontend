@@ -25,7 +25,7 @@ import Image from 'next/image';
 import NextLink from 'next/link';
 import { useState, type ReactNode } from 'react';
 import { useRouter } from 'next/navigation';
-import { useOptionalCurrentUser } from '@/app/_providers/themeMode';
+import { useOptionalCurrentUser } from '@/app/_providers/currentUser';
 import { SigninButton } from './SigninButton';
 import { getMsalInstance } from './MsalProvider';
 import ThemeModeToggle from '@/app/_components/ThemeModeToggle';
