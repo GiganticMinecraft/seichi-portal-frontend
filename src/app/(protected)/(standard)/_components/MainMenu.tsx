@@ -14,7 +14,7 @@ import AssignmentIcon from '@mui/icons-material/Assignment';
 import GavelIcon from '@mui/icons-material/Gavel';
 import CampaignIcon from '@mui/icons-material/Campaign';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
-import { useCurrentUser } from '@/app/_providers/themeMode';
+import { useCurrentUser } from '@/app/_providers/currentUser';
 
 const menuItems = [
   {

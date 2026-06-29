@@ -12,7 +12,6 @@ import { SWRConfig } from 'swr';
 import { MsalProvider } from '@/app/_components/MsalProvider';
 import { fetcher } from '@/app/_swr/fetcher';
 import { getAuthedTheme, type ThemeMode } from './getAuthedTheme';
-import type { CurrentUser } from '@/lib/currentUser';
 import type { ReactNode } from 'react';
 
 const STORAGE_KEY = 'seichi-portal-theme-mode';
@@ -25,7 +24,6 @@ type ThemeModeContextValue = {
 };
 
 const ThemeModeContext = createContext<ThemeModeContextValue | null>(null);
-const CurrentUserContext = createContext<CurrentUser | null>(null);
 
 const subscribeThemeMode = (callback: () => void) => {
   const handleStorage = (event: StorageEvent) => {
@@ -54,12 +52,10 @@ const getThemeModeServerSnapshot = (): ThemeMode => 'light';
 
 export const AppProviders = ({
   children,
-  currentUser,
   msalClientId,
   msalRedirectUri,
 }: {
   children: ReactNode;
-  currentUser: CurrentUser | null;
   msalClientId: string;
   msalRedirectUri: string;
 }) => {
@@ -87,25 +83,20 @@ export const AppProviders = ({
 
   return (
     <AppRouterCacheProvider>
-      <CurrentUserContext.Provider value={currentUser}>
-        <ThemeModeContext.Provider value={value}>
-          <ThemeProvider theme={theme}>
-            <CssBaseline />
-            <SWRConfig
-              value={{
-                fetcher,
-              }}
-            >
-              <MsalProvider
-                clientId={msalClientId}
-                redirectUri={msalRedirectUri}
-              >
-                {children}
-              </MsalProvider>
-            </SWRConfig>
-          </ThemeProvider>
-        </ThemeModeContext.Provider>
-      </CurrentUserContext.Provider>
+      <ThemeModeContext.Provider value={value}>
+        <ThemeProvider theme={theme}>
+          <CssBaseline />
+          <SWRConfig
+            value={{
+              fetcher,
+            }}
+          >
+            <MsalProvider clientId={msalClientId} redirectUri={msalRedirectUri}>
+              {children}
+            </MsalProvider>
+          </SWRConfig>
+        </ThemeProvider>
+      </ThemeModeContext.Provider>
     </AppRouterCacheProvider>
   );
 };
@@ -121,15 +112,3 @@ export const useThemeMode = () => {
 };
 
 export const useOptionalThemeMode = () => useContext(ThemeModeContext);
-
-export const useCurrentUser = () => {
-  const currentUser = useContext(CurrentUserContext);
-
-  if (!currentUser) {
-    throw new Error('useCurrentUser must be used within AppProviders');
-  }
-
-  return currentUser;
-};
-
-export const useOptionalCurrentUser = () => useContext(CurrentUserContext);
