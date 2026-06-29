@@ -67,7 +67,7 @@ const SortableChoiceItem = (props: {
         required
         fullWidth
         onKeyDown={(event) => {
-          if (event.key === 'Enter') {
+          if (event.key === 'Enter' && !event.nativeEvent.isComposing) {
             event.preventDefault();
             props.onAppendChoice();
           }
