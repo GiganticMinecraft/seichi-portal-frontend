@@ -37,16 +37,20 @@ export const createServerApiClient = () =>
 
 let cachedServerApiClient: Client<ApiPaths> | undefined;
 
-const getServerApiClient = () => {
+const getServerApiClient = (): Client<ApiPaths> => {
   cachedServerApiClient ??= createServerApiClient();
   return cachedServerApiClient;
 };
 
-export const serverApiClient = new Proxy({} as Client<ApiPaths>, {
-  get(_target, property, receiver) {
-    return Reflect.get(getServerApiClient(), property, receiver);
-  },
-});
+export const serverApiClient: Client<ApiPaths> = new Proxy(
+  // eslint-disable-next-line @typescript-eslint/consistent-type-assertions, @typescript-eslint/no-unsafe-type-assertion -- モジュールインポート時の初期化を防ぐため、空オブジェクトをターゲットとして遅延初期化する
+  {} as Client<ApiPaths>,
+  {
+    get(_target, property, receiver) {
+      return Reflect.get(getServerApiClient(), property, receiver);
+    },
+  }
+);
 
 export const authorizationHeader = (token: string) => ({
   Authorization: `Bearer ${token}`,
