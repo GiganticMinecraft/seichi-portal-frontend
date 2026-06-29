@@ -12,28 +12,27 @@ import {
 import Checkbox from '@mui/material/Checkbox';
 import { Controller, useForm } from 'react-hook-form';
 import { useNotificationSettings } from '@/hooks/useNotificationSettings';
-import type {
-  GetUserNotificationSettingsResponse,
-  UpdateNotificationSettingsSchema,
-} from '@/lib/api-types';
+import {
+  fromNotificationSettingsResponseToFormValues,
+  toNotificationSettingsUpdateBody,
+} from './notificationSettingsForm';
+import type { GetUserNotificationSettingsResponse } from '@/lib/api-types';
+import type { NotificationSettingsFormValues } from './notificationSettingsForm';
 
 const DiscordNotificationSettings = (props: {
   currentSettings: GetUserNotificationSettingsResponse;
   userId: string;
 }) => {
-  const { handleSubmit, control } = useForm<UpdateNotificationSettingsSchema>({
-    defaultValues: {
-      is_send_message_notification:
-        props.currentSettings.is_send_message_notification,
-    },
+  const { handleSubmit, control } = useForm<NotificationSettingsFormValues>({
+    defaultValues: fromNotificationSettingsResponseToFormValues(
+      props.currentSettings
+    ),
   });
 
   const { updateSettings } = useNotificationSettings();
 
-  const onSubmit = async (data: UpdateNotificationSettingsSchema) => {
-    const result = await updateSettings({
-      is_send_message_notification: data.is_send_message_notification ?? null,
-    });
+  const onSubmit = async (data: NotificationSettingsFormValues) => {
+    const result = await updateSettings(toNotificationSettingsUpdateBody(data));
     if (result.ok) {
       alert('設定を更新しました');
     } else {
@@ -49,15 +48,15 @@ const DiscordNotificationSettings = (props: {
       <Divider sx={{ mb: 2 }} />
       <Stack spacing={2}>
         <Controller
-          name="is_send_message_notification"
+          name="isSendMessageNotificationEnabled"
           control={control}
           render={({ field }) => (
             <FormControlLabel
               label="自身の回答に対するメッセージ通知を受け取る"
               control={
                 <Checkbox
-                  checked={field.value ?? false}
-                  onChange={field.onChange}
+                  checked={field.value}
+                  onChange={(_, checked) => field.onChange(checked)}
                   onBlur={field.onBlur}
                   ref={field.ref}
                 />

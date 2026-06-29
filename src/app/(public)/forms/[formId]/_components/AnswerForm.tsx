@@ -1,11 +1,12 @@
 'use client';
 
 import { Alert, Box, Stack, Typography } from '@mui/material';
-import { formatString } from '@/generic/DateFormatter';
 import { SigninButton } from '@/app/_components/SigninButton';
+import { formatRestrictionExpiration } from '@/lib/restrictions/expiration';
 import type { GetQuestionsResponse } from '@/lib/api-types';
 import AnswerSubmissionForm from './AnswerSubmissionForm';
 import AnswerSubmissionSuccess from './AnswerSubmissionSuccess';
+import type { SubmissionState } from './useAnswerSubmission';
 import { useAnswerSubmission } from './useAnswerSubmission';
 
 interface Props {
@@ -31,15 +32,10 @@ const AnswerForm = ({
 }: Props) => {
   // 未ログインかつフォームが未ログイン回答を許可している場合のみ匿名回答モード。
   const isTemporary = !isAuthenticated && allowTemporaryAnswers;
-  const {
-    isSubmitted,
-    submissionErrorCode,
-    restriction,
-    submitAnswers,
-    resetSubmissionState,
-  } = useAnswerSubmission(formId, isTemporary);
+  const { submissionState, submitAnswers, resetSubmissionState } =
+    useAnswerSubmission(formId, isTemporary);
 
-  if (isSubmitted) {
+  if (submissionState.kind === 'submitted') {
     return <AnswerSubmissionSuccess onReset={resetSubmissionState} />;
   }
 
@@ -63,33 +59,7 @@ const AnswerForm = ({
 
   return (
     <Stack spacing={0}>
-      {submissionErrorCode === 'OUT_OF_PERIOD' && (
-        <Alert
-          severity="error"
-          sx={{ width: '100%', maxWidth: 800, mx: 'auto', mb: 2 }}
-        >
-          回答期間が終了しています
-        </Alert>
-      )}
-      {submissionErrorCode === 'RESTRICTED' && (
-        <Alert
-          severity="error"
-          sx={{ width: '100%', maxWidth: 800, mx: 'auto', mb: 2 }}
-        >
-          現在、回答の投稿が制限されています。
-          {restriction?.reason && `（理由: ${restriction.reason}）`}
-          {restriction?.expires_at &&
-            ` 制限解除予定: ${formatString(restriction.expires_at)}`}
-        </Alert>
-      )}
-      {submissionErrorCode === 'UNKNOWN' && (
-        <Alert
-          severity="error"
-          sx={{ width: '100%', maxWidth: 800, mx: 'auto', mb: 2 }}
-        >
-          回答の送信に失敗しました。時間をおいて再度お試しください。
-        </Alert>
-      )}
+      <SubmissionErrorAlert submissionState={submissionState} />
       <AnswerSubmissionForm
         questions={questions}
         title={title}
@@ -99,6 +69,46 @@ const AnswerForm = ({
       />
     </Stack>
   );
+};
+
+const SubmissionErrorAlert = ({
+  submissionState,
+}: {
+  submissionState: SubmissionState;
+}) => {
+  if (submissionState.kind !== 'failed') {
+    return null;
+  }
+
+  const alertSx = { width: '100%', maxWidth: 800, mx: 'auto', mb: 2 };
+
+  switch (submissionState.error.kind) {
+    case 'outOfPeriod':
+      return (
+        <Alert severity="error" sx={alertSx}>
+          回答期間が終了しています
+        </Alert>
+      );
+    case 'restricted': {
+      const restriction = submissionState.error.restriction;
+      return (
+        <Alert severity="error" sx={alertSx}>
+          現在、回答の投稿が制限されています。
+          {restriction && `（理由: ${restriction.reason}）`}
+          {restriction?.expiration.kind === 'expiresAt' &&
+            ` 制限解除予定: ${formatRestrictionExpiration(
+              restriction.expiration
+            )}`}
+        </Alert>
+      );
+    }
+    case 'unknown':
+      return (
+        <Alert severity="error" sx={alertSx}>
+          回答の送信に失敗しました。時間をおいて再度お試しください。
+        </Alert>
+      );
+  }
 };
 
 export default AnswerForm;

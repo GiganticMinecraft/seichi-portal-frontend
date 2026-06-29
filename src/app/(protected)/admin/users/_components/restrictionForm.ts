@@ -13,7 +13,9 @@ const restrictionExpirationSchema = z.discriminatedUnion('kind', [
   }),
 ]);
 
-export type RestrictionExpiration = z.infer<typeof restrictionExpirationSchema>;
+export type RestrictionFormExpiration = z.infer<
+  typeof restrictionExpirationSchema
+>;
 
 export const restrictionFormSchema = z.object({
   reason: z.string().trim().min(1, '理由を入力してください'),

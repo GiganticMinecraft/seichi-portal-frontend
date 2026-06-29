@@ -3,10 +3,12 @@
 import { useState } from 'react';
 import { errorResponseSchema } from '@/lib/api/errors';
 import { proxyClient } from '@/lib/proxyClient';
+import { toRestrictionExpiration } from '@/lib/restrictions/expiration';
 import { isTemporaryUserField, TEMPORARY_USER_FIELDS } from './answerFormTypes';
 import type { AnswerFormInput } from './answerFormTypes';
 import type { ErrorRestriction } from '@/lib/api/errors';
 import type { ApiPaths } from '@/lib/api/types';
+import type { RestrictionExpiration } from '@/lib/restrictions/expiration';
 
 type AnswerCreateBody =
   ApiPaths['/api/v1/forms/{id}/answers']['post']['requestBody']['content']['application/json'];
@@ -15,6 +17,18 @@ type TemporaryAnswerCreateBody =
 type AnswerContents = AnswerCreateBody['contents'];
 
 type SubmissionErrorCode = 'OUT_OF_PERIOD' | 'RESTRICTED' | 'UNKNOWN';
+type SubmissionRestriction = {
+  reason: string;
+  expiration: RestrictionExpiration;
+};
+type SubmissionError =
+  | { kind: 'outOfPeriod' }
+  | { kind: 'restricted'; restriction?: SubmissionRestriction }
+  | { kind: 'unknown' };
+export type SubmissionState =
+  | { kind: 'editing' }
+  | { kind: 'submitted' }
+  | { kind: 'failed'; error: SubmissionError };
 
 // 質問の回答（key は質問 UUID）だけを contents に変換する。
 // 未ログイン回答の投稿者情報フィールドは除外する。
@@ -63,10 +77,19 @@ const toTemporaryUser = (
 
 type ParsedSubmissionError = {
   code: SubmissionErrorCode;
-  restriction?: ErrorRestriction;
+  restriction?: SubmissionRestriction;
 };
 
-const parseSubmissionError = (error: unknown): ParsedSubmissionError | null => {
+const toSubmissionRestriction = (
+  restriction: ErrorRestriction
+): SubmissionRestriction => ({
+  reason: restriction.reason,
+  expiration: toRestrictionExpiration(restriction.expires_at),
+});
+
+export const parseSubmissionError = (
+  error: unknown
+): ParsedSubmissionError | null => {
   const parsed = errorResponseSchema.safeParse(error);
 
   if (!parsed.success) {
@@ -78,7 +101,7 @@ const parseSubmissionError = (error: unknown): ParsedSubmissionError | null => {
     return {
       code: 'RESTRICTED',
       ...(parsed.data.restriction
-        ? { restriction: parsed.data.restriction }
+        ? { restriction: toSubmissionRestriction(parsed.data.restriction) }
         : {}),
     };
   }
@@ -98,10 +121,9 @@ export const useAnswerSubmission = (
   formId: string,
   isTemporary: boolean = false
 ) => {
-  const [isSubmitted, setIsSubmitted] = useState(false);
-  const [submissionErrorCode, setSubmissionErrorCode] =
-    useState<SubmissionErrorCode | null>(null);
-  const [restriction, setRestriction] = useState<ErrorRestriction | null>(null);
+  const [submissionState, setSubmissionState] = useState<SubmissionState>({
+    kind: 'editing',
+  });
 
   const postAnswers = (data: AnswerFormInput) => {
     const params = { path: { id: formId } };
@@ -126,30 +148,36 @@ export const useAnswerSubmission = (
     const { response, error } = await postAnswers(data);
 
     if (response.ok) {
-      setIsSubmitted(true);
-      setSubmissionErrorCode(null);
-      setRestriction(null);
+      setSubmissionState({ kind: 'submitted' });
       return { ok: true as const };
     }
 
     const parsed = parseSubmissionError(error);
     const errorCode = parsed?.code ?? 'UNKNOWN';
-    setSubmissionErrorCode(errorCode);
-    setRestriction(parsed?.restriction ?? null);
+    const submissionError = (() => {
+      switch (errorCode) {
+        case 'OUT_OF_PERIOD':
+          return { kind: 'outOfPeriod' } satisfies SubmissionError;
+        case 'RESTRICTED':
+          return {
+            kind: 'restricted',
+            ...(parsed?.restriction ? { restriction: parsed.restriction } : {}),
+          } satisfies SubmissionError;
+        case 'UNKNOWN':
+          return { kind: 'unknown' } satisfies SubmissionError;
+      }
+    })();
+    setSubmissionState({ kind: 'failed', error: submissionError });
 
     return { ok: false as const, errorCode };
   };
 
   const resetSubmissionState = () => {
-    setIsSubmitted(false);
-    setSubmissionErrorCode(null);
-    setRestriction(null);
+    setSubmissionState({ kind: 'editing' });
   };
 
   return {
-    isSubmitted,
-    submissionErrorCode,
-    restriction,
+    submissionState,
     submitAnswers,
     resetSubmissionState,
   };
