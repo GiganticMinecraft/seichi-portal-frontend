@@ -160,7 +160,7 @@ const RestrictionDialogBody = ({
                 <DateTimePicker
                   label="解除予定日時（任意・未指定で無期限）"
                   value={
-                    field.value.kind === 'expiresAt'
+                    field.value?.kind === 'expiresAt'
                       ? field.value.expiresAt
                       : null
                   }

@@ -94,7 +94,7 @@ const SubmissionErrorAlert = ({
       return (
         <Alert severity="error" sx={alertSx}>
           現在、回答の投稿が制限されています。
-          {restriction && `（理由: ${restriction.reason}）`}
+          {restriction?.reason && `（理由: ${restriction.reason}）`}
           {restriction?.expiration.kind === 'expiresAt' &&
             ` 制限解除予定: ${formatRestrictionExpiration(
               restriction.expiration

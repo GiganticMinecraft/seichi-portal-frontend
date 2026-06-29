@@ -1,16 +1,18 @@
-import type {
-  GetUserNotificationSettingsResponse,
-  UpdateNotificationSettingsSchema,
-} from '@/lib/api-types';
+import type { UpdateNotificationSettingsSchema } from '@/lib/api-types';
+
+type NotificationSettingsResponseInput = {
+  is_send_message_notification?: boolean | null;
+};
 
 export type NotificationSettingsFormValues = {
   isSendMessageNotificationEnabled: boolean;
 };
 
 export const fromNotificationSettingsResponseToFormValues = (
-  settings: GetUserNotificationSettingsResponse
+  settings: NotificationSettingsResponseInput
 ): NotificationSettingsFormValues => ({
-  isSendMessageNotificationEnabled: settings.is_send_message_notification,
+  isSendMessageNotificationEnabled:
+    settings.is_send_message_notification ?? false,
 });
 
 export const toNotificationSettingsUpdateBody = (

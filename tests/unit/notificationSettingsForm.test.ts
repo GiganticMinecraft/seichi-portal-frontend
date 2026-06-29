@@ -13,6 +13,17 @@ describe('notification settings form mappers', () => {
     ).toEqual({ isSendMessageNotificationEnabled: true });
   });
 
+  it('API response の通知設定が欠けていても false に正規化する', () => {
+    expect(
+      fromNotificationSettingsResponseToFormValues({
+        is_send_message_notification: null,
+      })
+    ).toEqual({ isSendMessageNotificationEnabled: false });
+    expect(fromNotificationSettingsResponseToFormValues({})).toEqual({
+      isSendMessageNotificationEnabled: false,
+    });
+  });
+
   it('フォーム値を nullable ではない更新 body へ変換する', () => {
     expect(
       toNotificationSettingsUpdateBody({
