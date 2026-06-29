@@ -28,7 +28,9 @@ export const toResponsePeriod = (
   return { kind: 'none' };
 };
 
-export const formatResponsePeriod = (responsePeriod: ResponsePeriod) => {
+export const formatResponsePeriod = (
+  responsePeriod: ResponsePeriod
+): string => {
   switch (responsePeriod.kind) {
     case 'specified':
       return `${formatString(responsePeriod.startAt)} ~ ${formatString(

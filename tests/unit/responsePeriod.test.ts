@@ -7,6 +7,7 @@ import {
 describe('toResponsePeriod', () => {
   it('API の未設定状態を画面用 model の none に変換する', () => {
     expect(toResponsePeriod(null)).toEqual({ kind: 'none' });
+    expect(toResponsePeriod(undefined)).toEqual({ kind: 'none' });
     expect(toResponsePeriod({ start_at: null, end_at: null })).toEqual({
       kind: 'none',
     });
