@@ -10,7 +10,7 @@ import {
   Stack,
 } from '@mui/material';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useFieldArray, useForm, useWatch } from 'react-hook-form';
+import { useFieldArray, useForm } from 'react-hook-form';
 import type { GetFormLabelsResponse } from '@/lib/api-types';
 import FormEditorLayout from '../../_components/FormEditorLayout';
 import FormSettings from '../../_components/FormSettings';
@@ -29,6 +29,7 @@ const FormCreateForm = (props: { labelOptions: GetFormLabelsResponse }) => {
     control,
     handleSubmit,
     register,
+    setValue,
     formState: { errors, isSubmitting },
   } = useForm<FormEditorValues>({
     mode: 'onSubmit',
@@ -39,12 +40,6 @@ const FormCreateForm = (props: { labelOptions: GetFormLabelsResponse }) => {
   const { fields, append, remove, move } = useFieldArray({
     control,
     name: 'questions',
-  });
-
-  const hasAcceptancePeriod = useWatch({
-    control,
-    name: 'settings.has_acceptance_period',
-    defaultValue: false,
   });
 
   const { createForm, isSubmitted, submitError } = useCreateForm();
@@ -65,7 +60,7 @@ const FormCreateForm = (props: { labelOptions: GetFormLabelsResponse }) => {
             <FormSettings
               control={control}
               register={register}
-              hasAcceptancePeriod={hasAcceptancePeriod}
+              setValue={setValue}
               labelOptions={props.labelOptions}
             />
           </CardContent>

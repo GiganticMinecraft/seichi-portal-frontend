@@ -40,6 +40,17 @@ export const formEditorQuestionSchema = z
     }
   });
 
+const acceptancePeriodSchema = z.discriminatedUnion('kind', [
+  z.object({ kind: z.literal('none') }),
+  z.object({
+    kind: z.literal('specified'),
+    start_at: z.string().min(1, '回答開始日を入力してください。'),
+    end_at: z.string().min(1, '回答終了日を入力してください。'),
+  }),
+]);
+
+export type AcceptancePeriodSetting = z.infer<typeof acceptancePeriodSchema>;
+
 export const formEditorSchema = z.object({
   title: requiredStringSchema,
   description: requiredStringSchema,
@@ -48,11 +59,7 @@ export const formEditorSchema = z.object({
     .min(1, '質問を1つ以上追加してください。'),
   labels: formLabelSchema.array(),
   settings: z.object({
-    has_acceptance_period: z.boolean(),
-    acceptance_period: z.object({
-      start_at: z.string().nullable(),
-      end_at: z.string().nullable(),
-    }),
+    acceptance_period: acceptancePeriodSchema,
     discord_webhook_url: z.string().nullable(),
     default_answer_title: z.string().nullable(),
     visibility: visibilitySchema,

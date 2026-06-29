@@ -22,11 +22,7 @@ const baseValues: FormEditorValues = {
     },
   ],
   settings: {
-    has_acceptance_period: false,
-    acceptance_period: {
-      start_at: null,
-      end_at: null,
-    },
+    acceptance_period: { kind: 'none' },
     discord_webhook_url: null,
     default_answer_title: null,
     visibility: 'PUBLIC',

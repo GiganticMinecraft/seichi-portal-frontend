@@ -3,7 +3,9 @@ import {
   toApiDateTime,
 } from '@/generic/DateFormatter';
 import type { ApiComponents, ApiPaths, GetFormResponse } from '@/lib/api/types';
+import { match } from 'ts-pattern';
 import type {
+  AcceptancePeriodSetting,
   FormEditorQuestion,
   FormEditorValues,
   FormVisibility,
@@ -77,6 +79,18 @@ const toApiQuestion = (
   };
 };
 
+const toAcceptancePeriodSetting = (
+  startAt: string | null | undefined,
+  endAt: string | null | undefined
+): AcceptancePeriodSetting =>
+  startAt && endAt
+    ? {
+        kind: 'specified',
+        start_at: fromStringToJSTDateTime(startAt),
+        end_at: fromStringToJSTDateTime(endAt),
+      }
+    : { kind: 'none' };
+
 export const fromFormResponseToEditorValues = (
   form: GetFormResponse
 ): FormEditorValues => {
@@ -89,11 +103,7 @@ export const fromFormResponseToEditorValues = (
     questions: form.questions.map(toEditorQuestion),
     labels: form.labels,
     settings: {
-      has_acceptance_period: Boolean(startAt && endAt),
-      acceptance_period: {
-        start_at: startAt ? fromStringToJSTDateTime(startAt) : null,
-        end_at: endAt ? fromStringToJSTDateTime(endAt) : null,
-      },
+      acceptance_period: toAcceptancePeriodSetting(startAt, endAt),
       discord_webhook_url: form.settings.discord_webhook_url ?? null,
       visibility: toVisibility(form.settings.visibility),
       default_answer_title:
@@ -118,8 +128,16 @@ export const toFormUpdateBody = (
   data: FormEditorValues,
   includeQuestions: boolean
 ): FormUpdateBody => {
-  const startAt = data.settings.acceptance_period.start_at;
-  const endAt = data.settings.acceptance_period.end_at;
+  const acceptancePeriod = match(data.settings.acceptance_period)
+    .with({ kind: 'specified' }, ({ start_at, end_at }) => ({
+      start_at: toApiDateTime(start_at),
+      end_at: toApiDateTime(end_at),
+    }))
+    .with({ kind: 'none' }, () => ({
+      start_at: null,
+      end_at: null,
+    }))
+    .exhaustive();
 
   const body: FormUpdateBody = {
     title: data.title.trim(),
@@ -136,15 +154,7 @@ export const toFormUpdateBody = (
           data.settings.default_answer_title === ''
             ? null
             : data.settings.default_answer_title,
-        acceptance_period: data.settings.has_acceptance_period
-          ? {
-              start_at: toApiDateTime(startAt),
-              end_at: toApiDateTime(endAt),
-            }
-          : {
-              start_at: null,
-              end_at: null,
-            },
+        acceptance_period: acceptancePeriod,
         visibility: data.settings.answer_visibility,
       },
     },
