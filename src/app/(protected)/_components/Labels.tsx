@@ -24,6 +24,7 @@ import {
 } from '@mui/material';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
+
 import { useLabelCRUD } from '@/hooks/useLabelCRUD';
 
 type Label = {
@@ -156,14 +157,18 @@ const Labels = (props: { labels: Label[]; labelType: 'answers' | 'forms' }) => {
                 <TableCell align="right">
                   <IconButton
                     color="primary"
-                    onClick={() => handleOpenEdit(label)}
+                    onClick={() => {
+                      handleOpenEdit(label);
+                    }}
                     aria-label="編集"
                   >
                     <Edit />
                   </IconButton>
                   <IconButton
                     color="error"
-                    onClick={() => handleOpenDelete(label)}
+                    onClick={() => {
+                      handleOpenDelete(label);
+                    }}
                     aria-label="削除"
                   >
                     <Delete />
@@ -178,7 +183,12 @@ const Labels = (props: { labels: Label[]; labelType: 'answers' | 'forms' }) => {
       {/* 編集ダイアログ */}
       <Dialog open={editDialogOpen} onClose={handleCloseEdit} fullWidth>
         <DialogTitle>ラベルを編集</DialogTitle>
-        <Box component="form" onSubmit={handleSubmit(onEdit)}>
+        <Box
+          component="form"
+          onSubmit={(e) => {
+            void handleSubmit(onEdit)(e);
+          }}
+        >
           <DialogContent>
             <TextField {...register('id')} type="hidden" />
             <TextField
@@ -210,7 +220,13 @@ const Labels = (props: { labels: Label[]; labelType: 'answers' | 'forms' }) => {
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseDelete}>キャンセル</Button>
-          <Button onClick={onDelete} color="error" variant="contained">
+          <Button
+            onClick={() => {
+              void onDelete();
+            }}
+            color="error"
+            variant="contained"
+          >
             削除
           </Button>
         </DialogActions>

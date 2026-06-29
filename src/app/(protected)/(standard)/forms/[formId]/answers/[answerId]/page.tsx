@@ -1,5 +1,6 @@
-import AnswerDetailsPageContent from './_components/AnswerDetailsPageContent';
 import type { Metadata } from 'next';
+
+import AnswerDetailsPageContent from './_components/AnswerDetailsPageContent';
 
 export const metadata: Metadata = {
   title: '回答詳細 | Seichi Portal',

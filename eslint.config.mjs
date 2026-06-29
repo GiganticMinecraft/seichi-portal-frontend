@@ -4,8 +4,8 @@ import prettier from 'eslint-config-prettier/flat';
 import { importX } from 'eslint-plugin-import-x';
 import pluginReactConfig from 'eslint-plugin-react/configs/recommended.js';
 import reactHooks from 'eslint-plugin-react-hooks';
-import * as tseslint from 'typescript-eslint';
 import unusedImports from 'eslint-plugin-unused-imports';
+import * as tseslint from 'typescript-eslint';
 
 const eslintReactConfig = {
   files: ['**/*.ts', '**/*.tsx'],
@@ -38,13 +38,10 @@ const unusedImportConfig = {
   },
 };
 
-const typescriptStrictnessConfig = {
+const typescriptStrictConfig = tseslint.config({
   files: ['**/*.ts', '**/*.tsx'],
-  plugins: {
-    '@typescript-eslint': tseslint.plugin,
-  },
+  extends: [tseslint.configs.strictTypeChecked],
   languageOptions: {
-    parser: tseslint.parser,
     parserOptions: {
       projectService: true,
     },
@@ -56,9 +53,71 @@ const typescriptStrictnessConfig = {
         assertionStyle: 'never',
       },
     ],
-    '@typescript-eslint/no-explicit-any': 'error',
-    '@typescript-eslint/no-non-null-assertion': 'error',
     '@typescript-eslint/no-unsafe-type-assertion': 'error',
+    '@typescript-eslint/restrict-template-expressions': [
+      'error',
+      { allowNumber: true },
+    ],
+    '@typescript-eslint/switch-exhaustiveness-check': 'error',
+    '@typescript-eslint/naming-convention': [
+      'error',
+      {
+        selector: 'default',
+        format: ['camelCase'],
+        leadingUnderscore: 'allow',
+      },
+      {
+        selector: 'variable',
+        format: ['camelCase', 'UPPER_CASE', 'PascalCase'],
+        leadingUnderscore: 'allow',
+      },
+      {
+        selector: 'function',
+        format: ['camelCase', 'PascalCase'],
+      },
+      {
+        selector: 'parameter',
+        format: ['camelCase'],
+        leadingUnderscore: 'allow',
+      },
+      {
+        selector: 'typeLike',
+        format: ['PascalCase'],
+      },
+      {
+        selector: 'enumMember',
+        format: ['PascalCase'],
+      },
+      {
+        selector: 'property',
+        format: null,
+      },
+      {
+        selector: 'import',
+        format: ['camelCase', 'PascalCase'],
+      },
+    ],
+  },
+});
+
+const importOrderConfig = {
+  rules: {
+    'import-x/order': [
+      'error',
+      {
+        'groups': [
+          'builtin',
+          'external',
+          'internal',
+          'parent',
+          'sibling',
+          'index',
+        ],
+        'newlines-between': 'always',
+        'alphabetize': { order: 'asc', caseInsensitive: true },
+      },
+    ],
+    'import-x/no-cycle': 'error',
   },
 };
 
@@ -75,7 +134,8 @@ export default defineConfig([
   eslintReactConfig,
   reactHooks.configs.flat.recommended,
   unusedImportConfig,
-  typescriptStrictnessConfig,
+  ...typescriptStrictConfig,
+  importOrderConfig,
   prettier,
   ...nextVitals,
 ]);

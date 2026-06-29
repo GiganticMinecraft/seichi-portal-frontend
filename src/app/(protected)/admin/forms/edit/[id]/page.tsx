@@ -1,11 +1,13 @@
-import FormEditForm from './_components/FormEditForm';
+import type { Metadata } from 'next';
+
 import {
   authorizationHeader,
   requireBackendData,
   serverApiClient,
 } from '@/lib/server/backend';
 import { getAdminAccess } from '@/lib/server/session';
-import type { Metadata } from 'next';
+
+import FormEditForm from './_components/FormEditForm';
 
 export const metadata: Metadata = {
   title: 'フォーム編集 | Seichi Portal',

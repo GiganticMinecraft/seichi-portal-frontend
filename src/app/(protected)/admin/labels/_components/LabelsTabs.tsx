@@ -3,6 +3,7 @@
 import { Box, Stack, Tab, Tabs } from '@mui/material';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useMemo } from 'react';
+
 import CreateLabelField from '@/app/(protected)/_components/CreateLabelField';
 import Labels from '@/app/(protected)/_components/Labels';
 import type {

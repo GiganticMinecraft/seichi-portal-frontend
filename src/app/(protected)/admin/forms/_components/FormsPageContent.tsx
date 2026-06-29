@@ -4,10 +4,13 @@ import { Alert, Button, Snackbar, Stack } from '@mui/material';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import FormsView from './FormsView';
-import FormsToolbar from './FormsToolbar';
-import { useFormListFilters } from '../_hooks/useFormListFilters';
+
 import type { GetFormLabelsResponse, GetFormsResponse } from '@/lib/api-types';
+
+import { useFormListFilters } from '../_hooks/useFormListFilters';
+
+import FormsToolbar from './FormsToolbar';
+import FormsView from './FormsView';
 
 const FormsPageContent = ({
   forms,
@@ -39,7 +42,9 @@ const FormsPageContent = ({
       />
       <FormsView
         forms={filteredForms}
-        onFormClick={(formId) => router.push(`/forms/${formId}/answers`)}
+        onFormClick={(formId) => {
+          router.push(`/forms/${formId}/answers`);
+        }}
       />
       <Snackbar
         open={snackbarOpen}
@@ -51,11 +56,13 @@ const FormsPageContent = ({
       >
         <Alert
           severity="success"
-          onClose={() => setSnackbarOpen(false)}
+          onClose={() => {
+            setSnackbarOpen(false);
+          }}
           action={
             <Button
               component={Link}
-              href={`/admin/forms/edit/${createdFormId}`}
+              href={`/admin/forms/edit/${createdFormId ?? ''}`}
               color="inherit"
               size="small"
             >

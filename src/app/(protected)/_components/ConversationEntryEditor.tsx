@@ -21,15 +21,17 @@ const ConversationEntryEditor = ({
     helperText="編集を確定するには Enter キー、キャンセルするには Esc キーを入力してください。"
     multiline
     fullWidth
-    onChange={(event) => onChange(event.target.value)}
-    onKeyDown={async (event) => {
+    onChange={(event) => {
+      onChange(event.target.value);
+    }}
+    onKeyDown={(event) => {
       if (
         event.key === 'Enter' &&
         !event.shiftKey &&
         !event.nativeEvent.isComposing
       ) {
         event.preventDefault();
-        await onSubmit();
+        void onSubmit();
       } else if (event.key === 'Escape') {
         onCancel();
       }

@@ -4,6 +4,7 @@ import { Box, Paper, Typography } from '@mui/material';
 import { alpha } from '@mui/material/styles';
 import Markdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+
 import type { ConversationEntryViewModel } from './conversationTypes';
 
 type Props = {

@@ -2,12 +2,13 @@
 
 import { Box, Typography } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
-import type { AnswerListRow } from '../_lib/answerListRows';
 import type {
   GridColDef,
   GridEventListener,
   GridRowParams,
 } from '@mui/x-data-grid';
+
+import type { AnswerListRow } from '../_lib/answerListRows';
 
 const AnswersView = ({
   formTitle,

@@ -3,18 +3,19 @@
 import { Alert, Box, Snackbar } from '@mui/material';
 import type { MouseEvent } from 'react';
 import { useState } from 'react';
+
+import ConversationEntryBody from './ConversationEntryBody';
+import ConversationEntryEditor from './ConversationEntryEditor';
+import ConversationEntryHeader from './ConversationEntryHeader';
+import {
+  CONVERSATION_ENTRY_AVATAR_SIZE,
+  CONVERSATION_ENTRY_HEADER_SPACING,
+} from './conversationEntryLayout';
 import type {
   ConversationActionResult,
   ConversationCapabilities,
   ConversationEntryViewModel,
 } from './conversationTypes';
-import {
-  CONVERSATION_ENTRY_AVATAR_SIZE,
-  CONVERSATION_ENTRY_HEADER_SPACING,
-} from './conversationEntryLayout';
-import ConversationEntryBody from './ConversationEntryBody';
-import ConversationEntryEditor from './ConversationEntryEditor';
-import ConversationEntryHeader from './ConversationEntryHeader';
 
 type Props = {
   entry: ConversationEntryViewModel;
@@ -44,11 +45,18 @@ const ConversationEntry = ({
     message: string;
   }>({ open: false, message: '' });
 
-  const showError = (message: string) => setSnackbar({ open: true, message });
-  const closeSnackbar = () => setSnackbar((prev) => ({ ...prev, open: false }));
-  const handleOpenMenu = (event: MouseEvent<HTMLElement>) =>
+  const showError = (message: string) => {
+    setSnackbar({ open: true, message });
+  };
+  const closeSnackbar = () => {
+    setSnackbar((prev) => ({ ...prev, open: false }));
+  };
+  const handleOpenMenu = (event: MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
-  const handleCloseMenu = () => setAnchorEl(undefined);
+  };
+  const handleCloseMenu = () => {
+    setAnchorEl(undefined);
+  };
   const handleStartEditing = () => {
     setDraftBody(entry.body);
     setIsEditing(true);

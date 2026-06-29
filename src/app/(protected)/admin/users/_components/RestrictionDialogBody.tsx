@@ -1,5 +1,6 @@
 'use client';
 
+import { zodResolver } from '@hookform/resolvers/zod';
 import {
   Alert,
   Box,
@@ -14,16 +15,17 @@ import {
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { zodResolver } from '@hookform/resolvers/zod';
 import { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
+
+import { useApiQuery } from '@/app/_swr/useApiQuery';
 import { formatString } from '@/generic/DateFormatter';
 import { useAnswerSubmitterRestrictionActions } from '@/hooks/useAnswerSubmitterRestrictionActions';
 import {
   formatRestrictionExpiration,
   toRestrictionExpiration,
 } from '@/lib/restrictions/expiration';
-import { useApiQuery } from '@/app/_swr/useApiQuery';
+
 import { restrictionFormSchema, toRestrictionRequest } from './restrictionForm';
 import type {
   RestrictionFormExpiration,
@@ -111,7 +113,13 @@ const RestrictionDialogBody = ({
         </DialogContent>
         <DialogActions>
           <Button onClick={onClose}>閉じる</Button>
-          <Button color="error" variant="contained" onClick={onUnrestrict}>
+          <Button
+            color="error"
+            variant="contained"
+            onClick={() => {
+              void onUnrestrict();
+            }}
+          >
             制限を解除する
           </Button>
         </DialogActions>
@@ -133,7 +141,11 @@ const RestrictionDialogBody = ({
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
-      <form onSubmit={handleSubmit(onRestrict)}>
+      <form
+        onSubmit={(e) => {
+          void handleSubmit(onRestrict)(e);
+        }}
+      >
         <DialogContent>
           <Stack spacing={2}>
             {submitError && <Alert severity="error">{submitError}</Alert>}
@@ -160,7 +172,7 @@ const RestrictionDialogBody = ({
                 <DateTimePicker
                   label="解除予定日時（任意・未指定で無期限）"
                   value={
-                    field.value?.kind === 'expiresAt'
+                    field.value.kind === 'expiresAt'
                       ? field.value.expiresAt
                       : null
                   }

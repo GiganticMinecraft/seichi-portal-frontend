@@ -12,6 +12,7 @@ import {
 import type { SxProps, Theme } from '@mui/material/styles';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
+
 import type { ConversationActionResult } from './conversationTypes';
 
 type ComposerForm = {
@@ -62,20 +63,28 @@ const ConversationComposer = ({
 
   return (
     <>
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <form
+        onSubmit={(e) => {
+          void handleSubmit(onSubmit)(e);
+        }}
+      >
         <Stack spacing={1}>
           <TextField
             {...register('body')}
             helperText={helperText}
-            sx={{ width: '100%', ...textFieldSx }}
-            onKeyDown={async (event) => {
+            sx={
+              textFieldSx
+                ? [{ width: '100%' }, textFieldSx].flat()
+                : { width: '100%' }
+            }
+            onKeyDown={(event) => {
               if (
                 event.key === 'Enter' &&
                 !event.shiftKey &&
                 !event.nativeEvent.isComposing
               ) {
                 event.preventDefault();
-                await handleSubmit(onSubmit)();
+                void handleSubmit(onSubmit)();
               }
             }}
             slotProps={{
@@ -97,12 +106,16 @@ const ConversationComposer = ({
       <Snackbar
         open={snackbar.open}
         autoHideDuration={6000}
-        onClose={() => setSnackbar((prev) => ({ ...prev, open: false }))}
+        onClose={() => {
+          setSnackbar((prev) => ({ ...prev, open: false }));
+        }}
         anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
       >
         <Alert
           severity="error"
-          onClose={() => setSnackbar((prev) => ({ ...prev, open: false }))}
+          onClose={() => {
+            setSnackbar((prev) => ({ ...prev, open: false }));
+          }}
         >
           {snackbar.message}
         </Alert>

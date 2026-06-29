@@ -1,11 +1,13 @@
-import AnswersPageContent from './_components/AnswersPageContent';
+import type { Metadata } from 'next';
+
 import {
   authorizationHeader,
   requireBackendData,
   serverApiClient,
 } from '@/lib/server/backend';
 import { requireUser } from '@/lib/server/session';
-import type { Metadata } from 'next';
+
+import AnswersPageContent from './_components/AnswersPageContent';
 
 export const metadata: Metadata = {
   title: '回答一覧 | Seichi Portal',

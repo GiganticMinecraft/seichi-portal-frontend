@@ -12,15 +12,17 @@ import {
   Typography,
 } from '@mui/material';
 import type { MouseEvent } from 'react';
+
 import { formatString } from '@/generic/DateFormatter';
-import type {
-  ConversationCapabilities,
-  ConversationEntryViewModel,
-} from './conversationTypes';
+
 import {
   CONVERSATION_ENTRY_AVATAR_SIZE,
   CONVERSATION_ENTRY_HEADER_SPACING,
 } from './conversationEntryLayout';
+import type {
+  ConversationCapabilities,
+  ConversationEntryViewModel,
+} from './conversationTypes';
 
 type Props = {
   entry: ConversationEntryViewModel;

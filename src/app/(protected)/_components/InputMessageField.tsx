@@ -2,6 +2,7 @@
 
 import { Box } from '@mui/material';
 import type { SxProps, Theme } from '@mui/material/styles';
+
 import ConversationComposer from './ConversationComposer';
 import { useMessageConversationActions } from './useConversationActions';
 

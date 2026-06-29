@@ -1,13 +1,8 @@
 import { Stack } from '@mui/material';
-import Messages from '@/app/(protected)/_components/Messages';
+
 import StandardAnswerDetails from '@/app/(protected)/(standard)/forms/[formId]/answers/[answerId]/_components/AnswerDetails';
 import StandardAnswerMeta from '@/app/(protected)/(standard)/forms/[formId]/answers/[answerId]/_components/AnswerMeta';
-import Comments from './Comments';
-import {
-  AdminAnswerLabelManagementButton,
-  AdminAnswerLabels,
-  AdminAnswerTitle,
-} from './AnswerDetails';
+import Messages from '@/app/(protected)/_components/Messages';
 import type {
   AnswerComment,
   GetAnswerLabelsResponse,
@@ -15,6 +10,13 @@ import type {
   GetFormResponse,
   GetMessagesResponse,
 } from '@/lib/api-types';
+
+import {
+  AdminAnswerLabelManagementButton,
+  AdminAnswerLabels,
+  AdminAnswerTitle,
+} from './AnswerDetails';
+import Comments from './Comments';
 
 type AdminAnswer = GetAnswersResponse[number];
 

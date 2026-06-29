@@ -1,10 +1,10 @@
 import { z } from 'zod';
 
-const backendServerUrlSchema = z.string().url();
+const backendServerUrlSchema = z.url();
 const discordConfigSchema = z.object({
   clientId: z.string().min(1),
   clientSecret: z.string().min(1),
-  redirectUri: z.string().url(),
+  redirectUri: z.url(),
 });
 const debugModeSchema = z.enum(['true', 'false']).default('false');
 
@@ -23,7 +23,7 @@ export const getDebugMode = () =>
 
 const msalConfigSchema = z.object({
   clientId: z.string().min(1),
-  redirectUri: z.string().url(),
+  redirectUri: z.url(),
 });
 
 export const getMsalConfig = () =>

@@ -1,19 +1,21 @@
-import { redirect } from 'next/navigation';
+import type { RequestCookies } from 'next/dist/compiled/@edge-runtime/cookies';
 import { headers } from 'next/headers';
+import { redirect } from 'next/navigation';
 import { cache } from 'react';
+
+import { AccessError } from '@/lib/accessError';
+import { userInfoResponseSchema } from '@/lib/api/schemas';
+import type { CurrentUser } from '@/lib/currentUser';
+import { getPostLoginRedirectCookie } from '@/lib/postLoginRedirect';
+import { normalizeRedirectTarget } from '@/lib/redirect';
+import { getCachedToken } from '@/user-token/mcToken';
+
 import {
   authorizationHeader,
   BackendError,
   requireBackendResponse,
   serverApiClient,
 } from './backend';
-import { AccessError } from '@/lib/accessError';
-import { normalizeRedirectTarget } from '@/lib/redirect';
-import { getPostLoginRedirectCookie } from '@/lib/postLoginRedirect';
-import { userInfoResponseSchema } from '@/lib/api/schemas';
-import type { CurrentUser } from '@/lib/currentUser';
-import { getCachedToken } from '@/user-token/mcToken';
-import type { RequestCookies } from 'next/dist/compiled/@edge-runtime/cookies';
 
 type SessionUser = CurrentUser;
 

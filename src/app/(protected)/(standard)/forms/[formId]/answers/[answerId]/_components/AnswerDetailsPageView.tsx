@@ -1,14 +1,16 @@
 import { Stack, Typography } from '@mui/material';
+
 import Messages from '@/app/(protected)/_components/Messages';
-import AnswerDetails from './AnswerDetails';
-import AnswerMeta from './AnswerMeta';
-import Comments from './Comments';
 import type {
   AnswerComment,
   GetAnswerResponse,
   GetFormResponse,
   GetMessagesResponse,
 } from '@/lib/api-types';
+
+import AnswerDetails from './AnswerDetails';
+import AnswerMeta from './AnswerMeta';
+import Comments from './Comments';
 
 export type AnswerDetailsPageData = {
   answer: GetAnswerResponse;

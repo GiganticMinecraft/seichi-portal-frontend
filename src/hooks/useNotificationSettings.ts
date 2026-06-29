@@ -1,7 +1,7 @@
 'use client';
 
-import { proxyClient } from '@/lib/proxyClient';
 import type { ApiPaths } from '@/lib/api/types';
+import { proxyClient } from '@/lib/proxyClient';
 
 type NotificationSettingsUpdateBody =
   ApiPaths['/api/v1/notifications/settings/me']['patch']['requestBody']['content']['application/json'];

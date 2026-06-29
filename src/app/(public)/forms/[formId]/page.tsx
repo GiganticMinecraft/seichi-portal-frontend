@@ -1,11 +1,13 @@
-import AnswerForm from './_components/AnswerForm';
+import type { Metadata } from 'next';
+
 import {
   authorizationHeader,
   requireBackendData,
   serverApiClient,
 } from '@/lib/server/backend';
 import { getSession } from '@/lib/server/session';
-import type { Metadata } from 'next';
+
+import AnswerForm from './_components/AnswerForm';
 
 export const metadata: Metadata = {
   title: 'フォーム回答 | Seichi Portal',
@@ -35,7 +37,7 @@ const Home = async ({ params }: { params: Promise<{ formId: string }> }) => {
       title={form.title}
       description={form.description}
       isAuthenticated={isAuthenticated}
-      allowTemporaryAnswers={form.settings.allow_temporary_answers ?? false}
+      allowTemporaryAnswers={form.settings.allow_temporary_answers}
     />
   );
 };

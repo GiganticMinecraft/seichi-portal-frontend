@@ -1,6 +1,8 @@
 import { Box, Typography } from '@mui/material';
-import FormsView from './FormsView';
+
 import type { GetFormsResponse } from '@/lib/api-types';
+
+import FormsView from './FormsView';
 
 const FormsPageContent = ({ forms }: { forms: GetFormsResponse }) => (
   <Box sx={{ width: '100%' }}>

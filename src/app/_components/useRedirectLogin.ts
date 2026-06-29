@@ -1,7 +1,7 @@
 'use client';
 
-import { useState } from 'react';
 import { useMsal } from '@azure/msal-react';
+import { useState } from 'react';
 
 const DEFAULT_REDIRECT_ERROR_MESSAGE = 'サインイン画面への遷移に失敗しました。';
 
@@ -20,7 +20,7 @@ export const useRedirectLogin = (options?: UseRedirectLoginOptions) => {
 
   const handleLogin = () => {
     setErrorMessage(null);
-    instance.loginRedirect(loginRequest).catch((error) => {
+    instance.loginRedirect(loginRequest).catch((error: unknown) => {
       console.error(
         options?.errorMessage ?? DEFAULT_REDIRECT_ERROR_MESSAGE,
         error
@@ -32,6 +32,8 @@ export const useRedirectLogin = (options?: UseRedirectLoginOptions) => {
   return {
     errorMessage,
     handleLogin,
-    resetError: () => setErrorMessage(null),
+    resetError: () => {
+      setErrorMessage(null);
+    },
   };
 };

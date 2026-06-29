@@ -3,6 +3,7 @@
 import DarkModeIcon from '@mui/icons-material/DarkMode';
 import LightModeIcon from '@mui/icons-material/LightMode';
 import { IconButton, Tooltip } from '@mui/material';
+
 import { useOptionalThemeMode } from '@/app/_providers/themeMode';
 
 const ThemeModeToggle = () => {

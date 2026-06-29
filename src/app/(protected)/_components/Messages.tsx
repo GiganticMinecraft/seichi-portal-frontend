@@ -1,12 +1,13 @@
 'use client';
 
 import { Message as MessageIcon } from '@mui/icons-material';
+
 import ConversationSurface from './ConversationSurface';
-import InputMessageField from './InputMessageField';
 import type {
   ConversationCapabilities,
   ConversationEntryViewModel,
 } from './conversationTypes';
+import InputMessageField from './InputMessageField';
 import { useMessageConversationActions } from './useConversationActions';
 
 type ConversationMessage = {

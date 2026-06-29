@@ -20,6 +20,7 @@ import {
 import dayjs from 'dayjs';
 import Link from 'next/link';
 import { useState } from 'react';
+
 import { isAccessError } from '@/lib/accessError';
 import { isHttpError } from '@/lib/httpError';
 
@@ -163,7 +164,12 @@ const ErrorDialog = ({
             </Button>
             <Button
               variant="contained"
-              onClick={onRetry ?? (() => window.location.reload())}
+              onClick={
+                onRetry ??
+                (() => {
+                  window.location.reload();
+                })
+              }
             >
               {onRetry ? retryLabel : 'ページを再読み込み'}
             </Button>

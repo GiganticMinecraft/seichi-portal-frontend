@@ -1,9 +1,11 @@
+import { match } from 'ts-pattern';
+
 import {
   fromStringToJSTDateTime,
   toApiDateTime,
 } from '@/generic/DateFormatter';
 import type { ApiComponents, ApiPaths, GetFormResponse } from '@/lib/api/types';
-import { match } from 'ts-pattern';
+
 import type {
   AcceptancePeriodSetting,
   FormEditorQuestion,
@@ -102,8 +104,8 @@ const toAcceptancePeriodSetting = (
 export const fromFormResponseToEditorValues = (
   form: GetFormResponse
 ): FormEditorValues => {
-  const startAt = form.settings.answer_settings?.acceptance_period?.start_at;
-  const endAt = form.settings.answer_settings?.acceptance_period?.end_at;
+  const startAt = form.settings.answer_settings.acceptance_period.start_at;
+  const endAt = form.settings.answer_settings.acceptance_period.end_at;
 
   return {
     title: form.title,
@@ -115,11 +117,9 @@ export const fromFormResponseToEditorValues = (
       discord_webhook_url: form.settings.discord_webhook_url ?? '',
       visibility: toVisibility(form.settings.visibility),
       default_answer_title:
-        form.settings.answer_settings?.default_answer_title ?? '',
-      answer_visibility: toVisibility(
-        form.settings.answer_settings?.visibility
-      ),
-      allow_temporary_answers: form.settings.allow_temporary_answers ?? false,
+        form.settings.answer_settings.default_answer_title ?? '',
+      answer_visibility: toVisibility(form.settings.answer_settings.visibility),
+      allow_temporary_answers: form.settings.allow_temporary_answers,
     },
   };
 };

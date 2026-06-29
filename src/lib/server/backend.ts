@@ -1,6 +1,7 @@
 import createClient from 'openapi-fetch';
-import { getBackendServerUrl } from '@/env.server';
 import type { Client } from 'openapi-fetch';
+
+import { getBackendServerUrl } from '@/env.server';
 import type { ApiPaths } from '@/lib/api/types';
 
 export class BackendError extends Error {
@@ -46,7 +47,7 @@ export const serverApiClient: Client<ApiPaths> = new Proxy(
   // eslint-disable-next-line @typescript-eslint/consistent-type-assertions, @typescript-eslint/no-unsafe-type-assertion -- モジュールインポート時の初期化を防ぐため、空オブジェクトをターゲットとして遅延初期化する
   {} as Client<ApiPaths>,
   {
-    get(_target, property, receiver) {
+    get(_target, property, receiver): unknown {
       return Reflect.get(getServerApiClient(), property, receiver);
     },
   }

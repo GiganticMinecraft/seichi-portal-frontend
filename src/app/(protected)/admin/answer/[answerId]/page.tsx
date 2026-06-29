@@ -1,5 +1,6 @@
-import AdminAnswerPageContent from './_components/AdminAnswerPageContent';
 import type { Metadata } from 'next';
+
+import AdminAnswerPageContent from './_components/AdminAnswerPageContent';
 
 export const metadata: Metadata = {
   title: '回答管理 | Seichi Portal',

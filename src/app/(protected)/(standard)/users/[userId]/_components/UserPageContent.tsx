@@ -1,8 +1,9 @@
-import UserView from './UserView';
 import type {
   GetUserNotificationSettingsResponse,
   GetUsersResponse,
 } from '@/lib/api-types';
+
+import UserView from './UserView';
 
 const UserPageContent = ({
   user,

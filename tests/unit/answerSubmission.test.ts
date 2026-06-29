@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+
 import { parseSubmissionError } from '@/app/(public)/forms/[formId]/_lib/submissionErrors';
 
 describe('parseSubmissionError', () => {

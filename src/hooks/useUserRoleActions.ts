@@ -1,7 +1,7 @@
 'use client';
 
-import { proxyClient } from '@/lib/proxyClient';
 import { handleMutationResponse } from '@/hooks/useApiMutation';
+import { proxyClient } from '@/lib/proxyClient';
 
 export const useUserRoleActions = () => {
   const updateUserRole = async (uuid: string, role: string): Promise<void> => {

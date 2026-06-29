@@ -1,7 +1,8 @@
 import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
-import type { GetFormLabelsResponse } from '@/lib/api-types';
 import type { Dispatch, SetStateAction } from 'react';
+
+import type { GetFormLabelsResponse } from '@/lib/api-types';
 
 const FormLabelFilter = (props: {
   labelOptions: GetFormLabelsResponse;

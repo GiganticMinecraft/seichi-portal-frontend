@@ -1,6 +1,7 @@
+import type { ReactNode } from 'react';
+
 import { AuthenticatedUserProvider } from '@/app/_providers/currentUser';
 import { requireUser } from '@/lib/server/session';
-import type { ReactNode } from 'react';
 
 export const dynamic = 'force-dynamic';
 

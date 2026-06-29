@@ -1,12 +1,15 @@
 'use client';
 
 import { useState } from 'react';
+
+import type { ApiPaths } from '@/lib/api/types';
 import { proxyClient } from '@/lib/proxyClient';
+
 import { parseSubmissionError } from '../_lib/submissionErrors';
+import type { SubmissionError } from '../_lib/submissionErrors';
+
 import { isTemporaryUserField, TEMPORARY_USER_FIELDS } from './answerFormTypes';
 import type { AnswerFormInput } from './answerFormTypes';
-import type { SubmissionError } from '../_lib/submissionErrors';
-import type { ApiPaths } from '@/lib/api/types';
 
 type AnswerCreateBody =
   ApiPaths['/api/v1/forms/{id}/answers']['post']['requestBody']['content']['application/json'];

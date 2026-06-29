@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+
 import { toUserListRows } from '@/app/(protected)/admin/users/_lib/userListRows';
 import type { GetUserListResponse } from '@/lib/api-types';
 

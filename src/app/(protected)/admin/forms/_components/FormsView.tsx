@@ -10,13 +10,15 @@ import {
   TableRow,
   Typography,
 } from '@mui/material';
-import FormRowMenu from './FormRowMenu';
-import LabelChips from './LabelChips';
+
+import type { GetFormsResponse } from '@/lib/api-types';
 import {
   formatResponsePeriod,
   toResponsePeriod,
 } from '@/lib/forms/responsePeriod';
-import type { GetFormsResponse } from '@/lib/api-types';
+
+import FormRowMenu from './FormRowMenu';
+import LabelChips from './LabelChips';
 
 interface Props {
   forms: GetFormsResponse;
@@ -50,7 +52,9 @@ const FormsView = ({ forms, onFormClick }: Props) => {
                 key={form.id}
                 hover
                 sx={{ cursor: 'pointer', height: 64 }}
-                onClick={() => onFormClick(form.id)}
+                onClick={() => {
+                  onFormClick(form.id);
+                }}
               >
                 <TableCell>
                   <Typography variant="body1">{form.title}</Typography>
@@ -62,14 +66,16 @@ const FormsView = ({ forms, onFormClick }: Props) => {
                   <Typography variant="body2" color="text.secondary">
                     {formatResponsePeriod(
                       toResponsePeriod(
-                        form.settings.answer_settings?.acceptance_period
+                        form.settings.answer_settings.acceptance_period
                       )
                     )}
                   </Typography>
                 </TableCell>
                 <TableCell
                   align="right"
-                  onClick={(e) => e.stopPropagation()}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                  }}
                   sx={{ width: 56 }}
                 >
                   <FormRowMenu formId={form.id} />

@@ -1,10 +1,13 @@
-import { getAdminAccess } from '@/lib/server/session';
+import type { ReactNode } from 'react';
+
 import ErrorDialog from '@/app/_components/ErrorDialog';
 import NavBar from '@/app/_components/NavBar';
-import SearchField from './_components/SearchField';
-import DashboardMenu from './_components/DashboardMenu';
+import { getAdminAccess } from '@/lib/server/session';
+
 import styles from '../../page.module.css';
-import type { ReactNode } from 'react';
+
+import DashboardMenu from './_components/DashboardMenu';
+import SearchField from './_components/SearchField';
 
 const RootLayout = async ({ children }: { children: ReactNode }) => {
   const adminAccess = await getAdminAccess();

@@ -10,12 +10,20 @@ const CopyButton = ({ value }: { value: string }) => {
   const handleCopy = async () => {
     await navigator.clipboard.writeText(value);
     setCopied(true);
-    setTimeout(() => setCopied(false), 1500);
+    setTimeout(() => {
+      setCopied(false);
+    }, 1500);
   };
 
   return (
     <Tooltip title={copied ? 'コピーしました' : 'コピー'} placement="top">
-      <IconButton size="small" onClick={handleCopy} sx={{ ml: 0.5 }}>
+      <IconButton
+        size="small"
+        onClick={() => {
+          void handleCopy();
+        }}
+        sx={{ ml: 0.5 }}
+      >
         <ContentCopyIcon fontSize="inherit" />
       </IconButton>
     </Tooltip>

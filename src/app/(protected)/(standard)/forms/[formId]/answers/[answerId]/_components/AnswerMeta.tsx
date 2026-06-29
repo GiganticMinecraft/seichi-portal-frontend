@@ -2,9 +2,11 @@
 
 import { Box, Chip, Grid, Paper, Stack, Typography } from '@mui/material';
 import type { ReactNode } from 'react';
+
 import { formatString } from '@/generic/DateFormatter';
-import AnswerLabels from './AnswerLabels';
 import type { GetAnswerResponse } from '@/lib/api-types';
+
+import AnswerLabels from './AnswerLabels';
 
 type Author = GetAnswerResponse['author'];
 

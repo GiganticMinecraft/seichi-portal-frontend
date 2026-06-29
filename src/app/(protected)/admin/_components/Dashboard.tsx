@@ -12,8 +12,10 @@ import {
 } from '@mui/material';
 import { useRouter } from 'next/navigation';
 import * as React from 'react';
+
 import { formatString } from '@/generic/DateFormatter';
 import type { GetAnswerResponse } from '@/lib/api-types';
+
 import { usePaginatedRows } from './usePaginatedRows';
 
 interface Row {
@@ -74,7 +76,9 @@ const DataTable = (props: {
             <TableRow
               key={row.id}
               hover
-              onClick={() => handleRowClick(row.id)}
+              onClick={() => {
+                handleRowClick(row.id);
+              }}
               sx={{ cursor: 'pointer' }}
             >
               <TableCell>{row.category}</TableCell>

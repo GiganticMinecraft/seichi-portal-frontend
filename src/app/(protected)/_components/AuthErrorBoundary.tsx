@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect } from 'react';
+
 import ErrorDialog from '@/app/_components/ErrorDialog';
 
 type AuthErrorBoundaryProps = {

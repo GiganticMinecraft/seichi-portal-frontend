@@ -1,4 +1,4 @@
-import NextLink from 'next/link';
+import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import {
   Card,
   CardActionArea,
@@ -7,18 +7,19 @@ import {
   Grid,
   Typography,
 } from '@mui/material';
-import AccessTimeIcon from '@mui/icons-material/AccessTime';
+import NextLink from 'next/link';
+
+import type { GetFormsResponse } from '@/lib/api-types';
 import {
   formatResponsePeriod,
   toResponsePeriod,
 } from '@/lib/forms/responsePeriod';
-import type { GetFormsResponse } from '@/lib/api-types';
 
 type FormItem = GetFormsResponse[number];
 
 const EachForm = ({ form }: { form: FormItem }) => {
   const responsePeriod = toResponsePeriod(
-    form.settings.answer_settings?.acceptance_period
+    form.settings.answer_settings.acceptance_period
   );
 
   return (

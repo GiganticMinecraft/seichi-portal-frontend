@@ -1,4 +1,6 @@
 import { NextResponse } from 'next/server';
+import type { NextRequest } from 'next/server';
+
 import { getDiscordConfig } from '@/env.server';
 import {
   getPostLoginRedirectFromRequest,
@@ -6,8 +8,8 @@ import {
 } from '@/lib/postLoginRedirect';
 import { authorizationHeader, serverApiClient } from '@/lib/server/backend';
 import { getCachedToken } from '@/user-token/mcToken';
+
 import { discordTokenSchema } from '../_schemas/External';
-import type { NextRequest } from 'next/server';
 
 const DISCORD_TOKEN_URL = 'https://discord.com/api/oauth2/token';
 const DISCORD_OAUTH_STATE_COOKIE = 'SEICHI_PORTAL__DISCORD_OAUTH_STATE';

@@ -11,6 +11,7 @@ import Typography from '@mui/material/Typography';
 import NextLink from 'next/link';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
+
 import { useAnswerActions } from '@/hooks/useAnswerActions';
 import type {
   GetAnswerLabelsResponse,
@@ -60,7 +61,9 @@ export const AdminAnswerTitle = (props: { answer: GetAnswerResponse }) => {
         <Button
           variant="contained"
           startIcon={<Send />}
-          onClick={handleSubmit(onSubmit)}
+          onClick={() => {
+            void handleSubmit(onSubmit)();
+          }}
         >
           編集完了
         </Button>
@@ -68,7 +71,9 @@ export const AdminAnswerTitle = (props: { answer: GetAnswerResponse }) => {
         <Button
           variant="contained"
           startIcon={<EditIcon />}
-          onClick={() => setIsEditing(true)}
+          onClick={() => {
+            setIsEditing(true);
+          }}
         >
           タイトルを編集
         </Button>
@@ -105,11 +110,11 @@ export const AdminAnswerLabels = (props: {
           sx={{ borderBottom: (theme) => `1px solid ${theme.palette.divider}` }}
         />
       )}
-      onChange={async (_event, value) => {
+      onChange={(_event, value) => {
         const selectedIds = props.labelOptions
           .filter((label) => value.includes(label.name))
           .map((label) => label.id);
-        await updateLabels(selectedIds);
+        void updateLabels(selectedIds);
       }}
     />
   );

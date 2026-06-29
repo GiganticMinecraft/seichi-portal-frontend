@@ -1,7 +1,7 @@
 'use client';
 
-import type { GetQuestionsResponse } from '@/lib/api-types';
 import type { NonEmptyArray } from '@/generic/Types';
+import type { GetQuestionsResponse } from '@/lib/api-types';
 
 /**
  * 回答フォーム内部で扱う入力値。

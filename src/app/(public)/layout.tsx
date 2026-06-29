@@ -1,7 +1,9 @@
-import NavBar from '@/app/_components/NavBar';
-import styles from '../page.module.css';
 import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
+
+import NavBar from '@/app/_components/NavBar';
+
+import styles from '../page.module.css';
 
 export const dynamic = 'force-dynamic';
 

@@ -1,10 +1,12 @@
 import { NextResponse, type NextRequest } from 'next/server';
-import { getBackendServerUrl } from './env.server';
-import { getCachedToken } from './user-token/mcToken';
+
 import {
   getPostLoginRedirectFromRequest,
   setPostLoginRedirectCookie,
 } from '@/lib/postLoginRedirect';
+
+import { getBackendServerUrl } from './env.server';
+import { getCachedToken } from './user-token/mcToken';
 
 // 未ログインでも到達してよい公開ページ。回答ページ /forms/{id} のみ
 // （/forms 一覧や /forms/{id}/answers は対象外）。
