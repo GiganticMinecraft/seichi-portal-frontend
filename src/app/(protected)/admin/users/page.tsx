@@ -1,4 +1,4 @@
-import UserList from './_components/UserList';
+import UsersPageContent from './_components/UsersPageContent';
 import {
   authorizationHeader,
   requireBackendData,
@@ -19,7 +19,7 @@ const Home = async () => {
     })
   );
 
-  return <UserList users={users} currentUserId={session.user.id} />;
+  return <UsersPageContent users={users} currentUserId={session.user.id} />;
 };
 
 export default Home;

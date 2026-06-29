@@ -1,5 +1,4 @@
-import { Box, Typography } from '@mui/material';
-import FormList from './_components/FormList';
+import FormsPageContent from './_components/FormsPageContent';
 import {
   authorizationHeader,
   requireBackendData,
@@ -20,14 +19,7 @@ const Home = async () => {
     })
   );
 
-  return (
-    <Box sx={{ width: '100%' }}>
-      <Typography variant="h5" sx={{ mb: 3 }}>
-        フォーム一覧
-      </Typography>
-      <FormList forms={forms} />
-    </Box>
-  );
+  return <FormsPageContent forms={forms} />;
 };
 
 export default Home;

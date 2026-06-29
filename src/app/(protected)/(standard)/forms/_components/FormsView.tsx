@@ -78,11 +78,11 @@ const EachForm = ({ form }: { form: FormItem }) => {
   );
 };
 
-interface Props {
+interface FormsViewProps {
   forms: GetFormsResponse;
 }
 
-const FormList = ({ forms }: Props) => {
+const FormsView = ({ forms }: FormsViewProps) => {
   return (
     <Box sx={{ width: '100%' }}>
       {forms.length === 0 ? (
@@ -103,4 +103,4 @@ const FormList = ({ forms }: Props) => {
   );
 };
 
-export default FormList;
+export default FormsView;

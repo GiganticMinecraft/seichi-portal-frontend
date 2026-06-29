@@ -4,7 +4,7 @@ import { Alert, Button, Snackbar, Stack } from '@mui/material';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import FormsTable from './FormsTable';
+import FormsView from './FormsView';
 import FormsToolbar from './FormsToolbar';
 import { useFormListFilters } from '../_hooks/useFormListFilters';
 import type { GetFormLabelsResponse, GetFormsResponse } from '@/lib/api-types';
@@ -37,7 +37,10 @@ const FormsPageContent = ({
         onTitleSearchChange={setTitleSearch}
         onLabelFilterChange={setLabelFilter}
       />
-      <FormsTable forms={filteredForms} />
+      <FormsView
+        forms={filteredForms}
+        onFormClick={(formId) => router.push(`/forms/${formId}/answers`)}
+      />
       <Snackbar
         open={snackbarOpen}
         autoHideDuration={10000}

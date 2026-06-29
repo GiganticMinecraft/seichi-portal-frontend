@@ -10,18 +10,9 @@ import {
 } from '@mui/material';
 import UserListHeader from './UserListHeader';
 import UserRow from './UserRow';
-import { toUserListRows } from '../_lib/userListRows';
-import type { GetUserListResponse } from '@/lib/api-types';
+import type { UserListRow } from '../_lib/userListRows';
 
-const UserList = ({
-  users,
-  currentUserId,
-}: {
-  users: GetUserListResponse;
-  currentUserId: string;
-}) => {
-  const rows = toUserListRows(users, currentUserId);
-
+const UsersView = ({ rows }: { rows: UserListRow[] }) => {
   return (
     <Box sx={{ p: 3 }}>
       <UserListHeader count={rows.length} />
@@ -47,4 +38,4 @@ const UserList = ({
   );
 };
 
-export default UserList;
+export default UsersView;

@@ -10,7 +10,6 @@ import {
   TableRow,
   Typography,
 } from '@mui/material';
-import { useRouter } from 'next/navigation';
 import FormRowMenu from './FormRowMenu';
 import LabelChips from './LabelChips';
 import {
@@ -21,11 +20,10 @@ import type { GetFormsResponse } from '@/lib/api-types';
 
 interface Props {
   forms: GetFormsResponse;
+  onFormClick: (formId: string) => void;
 }
 
-const FormsTable = ({ forms }: Props) => {
-  const router = useRouter();
-
+const FormsView = ({ forms, onFormClick }: Props) => {
   return (
     <TableContainer component={Paper} variant="outlined">
       <Table>
@@ -52,7 +50,7 @@ const FormsTable = ({ forms }: Props) => {
                 key={form.id}
                 hover
                 sx={{ cursor: 'pointer', height: 64 }}
-                onClick={() => router.push(`/forms/${form.id}/answers`)}
+                onClick={() => onFormClick(form.id)}
               >
                 <TableCell>
                   <Typography variant="body1">{form.title}</Typography>
@@ -85,4 +83,4 @@ const FormsTable = ({ forms }: Props) => {
   );
 };
 
-export default FormsTable;
+export default FormsView;
