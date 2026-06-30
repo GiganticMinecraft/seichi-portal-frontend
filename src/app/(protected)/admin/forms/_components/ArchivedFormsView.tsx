@@ -10,23 +10,19 @@ import {
   TableRow,
   Typography,
 } from '@mui/material';
+import dayjs from 'dayjs';
 
-import type { GetFormsResponse } from '@/lib/api-types';
-import {
-  formatResponsePeriod,
-  toResponsePeriod,
-} from '@/lib/forms/responsePeriod';
+import type { GetArchivedFormsResponse } from '@/lib/api-types';
 
-import FormRowMenu from './FormRowMenu';
+import ArchivedFormRowMenu from './ArchivedFormRowMenu';
 import LabelChips from './LabelChips';
 
 interface Props {
-  forms: GetFormsResponse;
-  onFormClick: (formId: string) => void;
+  forms: GetArchivedFormsResponse;
   onResult?: ((result: { ok: boolean }) => void) | undefined;
 }
 
-const FormsView = ({ forms, onFormClick, onResult }: Props) => {
+const ArchivedFormsView = ({ forms, onResult }: Props) => {
   return (
     <TableContainer component={Paper} variant="outlined">
       <Table>
@@ -34,7 +30,7 @@ const FormsView = ({ forms, onFormClick, onResult }: Props) => {
           <TableRow>
             <TableCell>タイトル</TableCell>
             <TableCell>ラベル</TableCell>
-            <TableCell>回答期間</TableCell>
+            <TableCell>アーカイブ日</TableCell>
             <TableCell align="right" sx={{ width: 56 }} />
           </TableRow>
         </TableHead>
@@ -43,20 +39,13 @@ const FormsView = ({ forms, onFormClick, onResult }: Props) => {
             <TableRow>
               <TableCell colSpan={4} align="center" sx={{ py: 4 }}>
                 <Typography color="text.secondary">
-                  条件に一致するフォームがありません
+                  アーカイブ済みのフォームはありません
                 </Typography>
               </TableCell>
             </TableRow>
           ) : (
             forms.map((form) => (
-              <TableRow
-                key={form.id}
-                hover
-                sx={{ cursor: 'pointer', height: 64 }}
-                onClick={() => {
-                  onFormClick(form.id);
-                }}
-              >
+              <TableRow key={form.id} sx={{ height: 64 }}>
                 <TableCell>
                   <Typography variant="body1">{form.title}</Typography>
                 </TableCell>
@@ -65,11 +54,7 @@ const FormsView = ({ forms, onFormClick, onResult }: Props) => {
                 </TableCell>
                 <TableCell>
                   <Typography variant="body2" color="text.secondary">
-                    {formatResponsePeriod(
-                      toResponsePeriod(
-                        form.settings.answer_settings.acceptance_period
-                      )
-                    )}
+                    {dayjs(form.archived_at).format('YYYY/MM/DD')}
                   </Typography>
                 </TableCell>
                 <TableCell
@@ -79,7 +64,7 @@ const FormsView = ({ forms, onFormClick, onResult }: Props) => {
                   }}
                   sx={{ width: 56 }}
                 >
-                  <FormRowMenu formId={form.id} onResult={onResult} />
+                  <ArchivedFormRowMenu formId={form.id} onResult={onResult} />
                 </TableCell>
               </TableRow>
             ))
@@ -90,4 +75,4 @@ const FormsView = ({ forms, onFormClick, onResult }: Props) => {
   );
 };
 
-export default FormsView;
+export default ArchivedFormsView;

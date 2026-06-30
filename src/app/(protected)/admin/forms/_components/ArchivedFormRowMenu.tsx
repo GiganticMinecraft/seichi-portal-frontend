@@ -1,6 +1,6 @@
 'use client';
 
-import { Archive, Edit, MoreVert } from '@mui/icons-material';
+import { MoreVert, Restore } from '@mui/icons-material';
 import {
   Button,
   Dialog,
@@ -14,7 +14,6 @@ import {
   Menu,
   MenuItem,
 } from '@mui/material';
-import NextLink from 'next/link';
 import { useState } from 'react';
 
 import { useFormActions } from '@/hooks/useFormActions';
@@ -24,10 +23,10 @@ interface Props {
   onResult?: ((result: { ok: boolean }) => void) | undefined;
 }
 
-const FormRowMenu = ({ formId, onResult }: Props) => {
+const ArchivedFormRowMenu = ({ formId, onResult }: Props) => {
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
-  const { archiveForm } = useFormActions();
+  const { restoreForm } = useFormActions();
   const menuOpen = Boolean(anchorEl);
 
   const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
@@ -38,14 +37,14 @@ const FormRowMenu = ({ formId, onResult }: Props) => {
     setAnchorEl(null);
   };
 
-  const handleArchiveClick = () => {
+  const handleRestoreClick = () => {
     handleMenuClose();
     setDialogOpen(true);
   };
 
-  const handleArchiveConfirm = async () => {
+  const handleRestoreConfirm = async () => {
     setDialogOpen(false);
-    const result = await archiveForm(formId);
+    const result = await restoreForm(formId);
     onResult?.(result);
   };
 
@@ -54,26 +53,16 @@ const FormRowMenu = ({ formId, onResult }: Props) => {
       <IconButton
         size="small"
         onClick={handleMenuOpen}
-        aria-label="フォーム操作メニュー"
+        aria-label="アーカイブ済みフォーム操作メニュー"
       >
         <MoreVert />
       </IconButton>
       <Menu anchorEl={anchorEl} open={menuOpen} onClose={handleMenuClose}>
-        <MenuItem
-          component={NextLink}
-          href={`/admin/forms/edit/${formId}`}
-          onClick={handleMenuClose}
-        >
+        <MenuItem onClick={handleRestoreClick}>
           <ListItemIcon>
-            <Edit fontSize="small" />
+            <Restore fontSize="small" />
           </ListItemIcon>
-          <ListItemText>編集</ListItemText>
-        </MenuItem>
-        <MenuItem onClick={handleArchiveClick}>
-          <ListItemIcon>
-            <Archive fontSize="small" />
-          </ListItemIcon>
-          <ListItemText>アーカイブ</ListItemText>
+          <ListItemText>復元</ListItemText>
         </MenuItem>
       </Menu>
       <Dialog
@@ -82,11 +71,9 @@ const FormRowMenu = ({ formId, onResult }: Props) => {
           setDialogOpen(false);
         }}
       >
-        <DialogTitle>フォームのアーカイブ</DialogTitle>
+        <DialogTitle>フォームの復元</DialogTitle>
         <DialogContent>
-          <DialogContentText>
-            このフォームをアーカイブしますか？
-          </DialogContentText>
+          <DialogContentText>このフォームを復元しますか？</DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button
@@ -98,11 +85,11 @@ const FormRowMenu = ({ formId, onResult }: Props) => {
           </Button>
           <Button
             onClick={() => {
-              void handleArchiveConfirm();
+              void handleRestoreConfirm();
             }}
             autoFocus
           >
-            アーカイブ
+            復元
           </Button>
         </DialogActions>
       </Dialog>
@@ -110,4 +97,4 @@ const FormRowMenu = ({ formId, onResult }: Props) => {
   );
 };
 
-export default FormRowMenu;
+export default ArchivedFormRowMenu;
