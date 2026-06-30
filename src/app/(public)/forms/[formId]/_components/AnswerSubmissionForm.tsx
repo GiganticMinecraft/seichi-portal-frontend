@@ -10,7 +10,6 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import Markdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
@@ -40,9 +39,6 @@ const AnswerSubmissionForm = ({
   isTemporary,
   onSubmitAnswers,
 }: Props) => {
-  const [selectedValues, setSelectedValues] = useState<Record<string, string>>(
-    {}
-  );
   const {
     control,
     register,
@@ -58,7 +54,6 @@ const AnswerSubmissionForm = ({
     }
 
     reset();
-    setSelectedValues({});
   };
 
   return (
@@ -138,8 +133,6 @@ const AnswerSubmissionForm = ({
                   control={control}
                   register={register}
                   errors={errors}
-                  selectedValues={selectedValues}
-                  setSelectedValues={setSelectedValues}
                 />
               </Stack>
             </Paper>

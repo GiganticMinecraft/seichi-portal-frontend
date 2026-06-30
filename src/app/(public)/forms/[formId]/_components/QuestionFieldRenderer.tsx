@@ -11,7 +11,6 @@ import {
   MenuItem,
   Select,
 } from '@mui/material';
-import type { Dispatch, SetStateAction } from 'react';
 import { Controller } from 'react-hook-form';
 import type { Control, FieldErrors, UseFormRegister } from 'react-hook-form';
 
@@ -22,8 +21,6 @@ type Props = {
   control: Control<AnswerFormInput>;
   register: UseFormRegister<AnswerFormInput>;
   errors: FieldErrors<AnswerFormInput>;
-  selectedValues: Record<string, string>;
-  setSelectedValues: Dispatch<SetStateAction<Record<string, string>>>;
 };
 
 const requiredMultiSelectMessage =
@@ -38,7 +35,6 @@ const QuestionFieldRenderer = ({
   control,
   register,
   errors,
-  setSelectedValues,
 }: Props) => {
   const questionId = question.id;
 
@@ -55,47 +51,60 @@ const QuestionFieldRenderer = ({
       );
     case 'SingleChoice':
       return (
-        <FormControl fullWidth sx={{ mt: 2 }}>
-          <InputLabel id={`select-label-${questionId}`}>
+        <FormControl
+          fullWidth
+          sx={{ mt: 2 }}
+          error={Boolean(errors[questionId])}
+        >
+          <InputLabel id={`select-label-${questionId}`} shrink>
             選択してください
           </InputLabel>
           <Controller
             control={control}
             name={questionId}
-            render={({ field }) => (
-              <Select
-                {...field}
-                required={question.is_required}
-                fullWidth
-                labelId={`select-label-${questionId}`}
-                label="選択してください"
-                // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- defaultValues 未指定のため初期レンダリング時に undefined になりうる
-                value={field.value ?? ''}
-                onChange={(event) => {
-                  const nextValue = event.target.value;
-                  if (typeof nextValue !== 'string') {
-                    return;
-                  }
+            rules={{
+              required: question.is_required ? '選択してください。' : false,
+            }}
+            render={({ field }) => {
+              const fieldValue =
+                typeof field.value === 'string' ? field.value : '';
 
-                  field.onChange(nextValue);
-                  setSelectedValues((current) => ({
-                    ...current,
-                    [questionId]: nextValue,
-                  }));
-                }}
-                displayEmpty
-              >
-                {question.choices.map((choice, index) => (
-                  <MenuItem
-                    key={`q-${questionId}.a-${index}`}
-                    value={choice.label}
-                  >
-                    {choice.label}
+              return (
+                <Select
+                  {...field}
+                  fullWidth
+                  labelId={`select-label-${questionId}`}
+                  label="選択してください"
+                  value={fieldValue}
+                  inputProps={{ 'aria-required': question.is_required }}
+                  onChange={(event) => {
+                    const nextValue = event.target.value;
+                    if (typeof nextValue !== 'string') {
+                      return;
+                    }
+
+                    field.onChange(nextValue);
+                  }}
+                  displayEmpty
+                >
+                  <MenuItem value="">
+                    <em>未選択</em>
                   </MenuItem>
-                ))}
-              </Select>
-            )}
+                  {question.choices.map((choice, index) => (
+                    <MenuItem
+                      key={`q-${questionId}.a-${index}`}
+                      value={choice.label}
+                    >
+                      {choice.label}
+                    </MenuItem>
+                  ))}
+                </Select>
+              );
+            }}
           />
+          {errors[questionId] && (
+            <FormHelperText>{errors[questionId].message}</FormHelperText>
+          )}
         </FormControl>
       );
     case 'MultipleChoice':

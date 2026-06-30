@@ -1,5 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
+import { TEMPORARY_USER_FIELDS } from '@/app/(public)/forms/[formId]/_components/answerFormTypes';
+import { toAnswerContents } from '@/app/(public)/forms/[formId]/_components/useAnswerSubmission';
 import { parseSubmissionError } from '@/app/(public)/forms/[formId]/_lib/submissionErrors';
 
 describe('parseSubmissionError', () => {
@@ -48,5 +50,22 @@ describe('parseSubmissionError', () => {
         },
       },
     });
+  });
+});
+
+describe('toAnswerContents', () => {
+  it('未選択の単一選択回答を contents から除外する', () => {
+    expect(
+      toAnswerContents({
+        [TEMPORARY_USER_FIELDS.name]: 'テスト太郎',
+        '0c2a6f9a-28c2-4116-835b-fdd7289a16f1': '',
+        '8f98a37f-9070-4624-b161-f288769160d5': '申請について',
+      })
+    ).toEqual([
+      {
+        question_id: '8f98a37f-9070-4624-b161-f288769160d5',
+        answer: '申請について',
+      },
+    ]);
   });
 });
