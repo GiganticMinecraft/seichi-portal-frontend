@@ -37,8 +37,6 @@ const currentSettings = {
 describe('DiscordNotificationSettings', () => {
   beforeEach(() => {
     notificationSettingsMocks.updateSettings.mockResolvedValue({ ok: true });
-    vi.spyOn(window, 'alert').mockImplementation(() => {});
-    vi.clearAllMocks();
   });
 
   afterEach(() => {
@@ -67,6 +65,6 @@ describe('DiscordNotificationSettings', () => {
         is_send_message_notification: true,
       });
     });
-    expect(window.alert).toHaveBeenCalledWith('設定を更新しました');
+    await screen.findByText('設定を更新しました');
   });
 });
