@@ -132,7 +132,7 @@ const ChoiceEditor = (props: {
   );
 
   const appendChoice = () => {
-    append({ choice: '' });
+    append({ id: null, choice: '' });
   };
 
   const clearChoices = () => {

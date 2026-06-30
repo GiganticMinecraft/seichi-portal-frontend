@@ -9,6 +9,7 @@ export const questionTypeSchema = z.enum([
 ]);
 
 const choiceSchema = z.object({
+  id: z.number().int().nullable().optional(),
   choice: requiredStringSchema,
 });
 
