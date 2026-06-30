@@ -45,3 +45,5 @@ export type CreateFormSchema =
   ApiPaths['/api/v1/forms']['post']['requestBody']['content']['application/json'];
 export type UpdateNotificationSettingsSchema =
   ApiPaths['/api/v1/notifications/settings/me']['patch']['requestBody']['content']['application/json'];
+export type GetArchivedFormsResponse =
+  ApiPaths['/api/v1/archived-forms']['get']['responses'][200]['content']['application/json'];

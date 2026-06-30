@@ -1,6 +1,6 @@
 'use client';
 
-import { Delete, Edit, MoreVert } from '@mui/icons-material';
+import { Archive, Edit, MoreVert } from '@mui/icons-material';
 import {
   IconButton,
   ListItemIcon,
@@ -15,11 +15,12 @@ import { useFormActions } from '@/hooks/useFormActions';
 
 interface Props {
   formId: string;
+  onArchived?: (() => void) | undefined;
 }
 
-const FormRowMenu = ({ formId }: Props) => {
+const FormRowMenu = ({ formId, onArchived }: Props) => {
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
-  const { deleteForm } = useFormActions();
+  const { archiveForm } = useFormActions();
   const open = Boolean(anchorEl);
 
   const handleOpen = (event: React.MouseEvent<HTMLElement>) => {
@@ -30,14 +31,14 @@ const FormRowMenu = ({ formId }: Props) => {
     setAnchorEl(null);
   };
 
-  const handleDelete = async () => {
+  const handleArchive = async () => {
     handleClose();
-    if (!confirm('本当に削除しますか？')) return;
-    const result = await deleteForm(formId);
+    if (!confirm('このフォームをアーカイブしますか？')) return;
+    const result = await archiveForm(formId);
     if (result.ok) {
-      alert('削除しました');
+      onArchived?.();
     } else {
-      alert('削除に失敗しました');
+      alert('アーカイブに失敗しました');
     }
   };
 
@@ -63,13 +64,13 @@ const FormRowMenu = ({ formId }: Props) => {
         </MenuItem>
         <MenuItem
           onClick={() => {
-            void handleDelete();
+            void handleArchive();
           }}
         >
           <ListItemIcon>
-            <Delete fontSize="small" />
+            <Archive fontSize="small" />
           </ListItemIcon>
-          <ListItemText>削除</ListItemText>
+          <ListItemText>アーカイブ</ListItemText>
         </MenuItem>
       </Menu>
     </>

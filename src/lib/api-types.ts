@@ -14,6 +14,7 @@ export type {
   GetAnswerResponse,
   GetAnswerSubmitterRestrictionResponse,
   GetAnswersResponse,
+  GetArchivedFormsResponse,
   GetFormAnswersResponse,
   GetFormLabelsResponse,
   GetFormResponse,

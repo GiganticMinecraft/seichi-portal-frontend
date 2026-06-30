@@ -17,9 +17,14 @@ const Home = async (props: {
   searchParams: Promise<{ createdFormId?: string }>;
 }) => {
   const { session } = await getAdminAccess();
-  const [forms, labels, searchParams] = await Promise.all([
+  const [forms, archivedForms, labels, searchParams] = await Promise.all([
     requireBackendData(
       serverApiClient.GET('/api/v1/forms', {
+        headers: authorizationHeader(session.token),
+      })
+    ),
+    requireBackendData(
+      serverApiClient.GET('/api/v1/archived-forms', {
         headers: authorizationHeader(session.token),
       })
     ),
@@ -34,6 +39,7 @@ const Home = async (props: {
   return (
     <FormsPageContent
       forms={forms}
+      archivedForms={archivedForms}
       labels={labels}
       createdFormId={searchParams.createdFormId}
     />
