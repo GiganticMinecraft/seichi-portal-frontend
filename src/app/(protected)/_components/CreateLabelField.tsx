@@ -2,37 +2,26 @@
 
 import { AddCircle } from '@mui/icons-material';
 import {
-  Alert,
   Button,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
-  Snackbar,
   TextField,
 } from '@mui/material';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 
+import SnackbarAlert, { useSnackbar } from '@/app/_components/SnackbarAlert';
 import { useLabelCRUD } from '@/hooks/useLabelCRUD';
 
 type CreateLabelSchema = {
   name: string;
 };
 
-type SnackbarState = {
-  open: boolean;
-  message: string;
-  severity: 'success' | 'error';
-};
-
 const CreateLabelField = (props: { labelType: 'answers' | 'forms' }) => {
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [snackbar, setSnackbar] = useState<SnackbarState>({
-    open: false,
-    message: '',
-    severity: 'success',
-  });
+  const { snackbar, showSnackbar, closeSnackbar } = useSnackbar();
 
   const { handleSubmit, register, reset } = useForm<CreateLabelSchema>();
   const { createLabel } = useLabelCRUD(props.labelType);
@@ -45,25 +34,13 @@ const CreateLabelField = (props: { labelType: 'answers' | 'forms' }) => {
     reset();
   };
 
-  const handleCloseSnackbar = () => {
-    setSnackbar((prev) => ({ ...prev, open: false }));
-  };
-
   const onSubmit = async (data: CreateLabelSchema) => {
     const result = await createLabel(data.name);
     if (result.ok) {
-      setSnackbar({
-        open: true,
-        message: 'ラベルを作成しました。',
-        severity: 'success',
-      });
+      showSnackbar('ラベルを作成しました。', 'success');
       handleClose();
     } else {
-      setSnackbar({
-        open: true,
-        message: 'ラベルの作成に失敗しました。',
-        severity: 'error',
-      });
+      showSnackbar('ラベルの作成に失敗しました。', 'error');
     }
   };
 
@@ -103,20 +80,12 @@ const CreateLabelField = (props: { labelType: 'answers' | 'forms' }) => {
         </form>
       </Dialog>
 
-      <Snackbar
+      <SnackbarAlert
         open={snackbar.open}
-        autoHideDuration={6000}
-        onClose={handleCloseSnackbar}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-      >
-        <Alert
-          onClose={handleCloseSnackbar}
-          severity={snackbar.severity}
-          sx={{ width: '100%' }}
-        >
-          {snackbar.message}
-        </Alert>
-      </Snackbar>
+        message={snackbar.message}
+        severity={snackbar.severity}
+        onClose={closeSnackbar}
+      />
     </>
   );
 };

@@ -2,12 +2,6 @@
 
 import { MoreVert, Restore } from '@mui/icons-material';
 import {
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
   IconButton,
   ListItemIcon,
   ListItemText,
@@ -16,6 +10,7 @@ import {
 } from '@mui/material';
 import { useState } from 'react';
 
+import ConfirmDialog from '@/app/_components/ConfirmDialog';
 import { useFormActions } from '@/hooks/useFormActions';
 
 interface Props {
@@ -65,34 +60,18 @@ const ArchivedFormRowMenu = ({ formId, onResult }: Props) => {
           <ListItemText>復元</ListItemText>
         </MenuItem>
       </Menu>
-      <Dialog
+      <ConfirmDialog
         open={dialogOpen}
-        onClose={() => {
+        title="フォームの復元"
+        description="このフォームを復元しますか？"
+        confirmLabel="復元"
+        onConfirm={() => {
+          void handleRestoreConfirm();
+        }}
+        onCancel={() => {
           setDialogOpen(false);
         }}
-      >
-        <DialogTitle>フォームの復元</DialogTitle>
-        <DialogContent>
-          <DialogContentText>このフォームを復元しますか？</DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button
-            onClick={() => {
-              setDialogOpen(false);
-            }}
-          >
-            キャンセル
-          </Button>
-          <Button
-            onClick={() => {
-              void handleRestoreConfirm();
-            }}
-            autoFocus
-          >
-            復元
-          </Button>
-        </DialogActions>
-      </Dialog>
+      />
     </>
   );
 };

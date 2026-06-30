@@ -2,17 +2,14 @@
 
 import { Delete, Edit } from '@mui/icons-material';
 import {
-  Alert,
   Box,
   Button,
   Dialog,
   DialogActions,
   DialogContent,
-  DialogContentText,
   DialogTitle,
   IconButton,
   Paper,
-  Snackbar,
   Table,
   TableBody,
   TableCell,
@@ -25,6 +22,8 @@ import {
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 
+import ConfirmDialog from '@/app/_components/ConfirmDialog';
+import SnackbarAlert, { useSnackbar } from '@/app/_components/SnackbarAlert';
 import { useLabelCRUD } from '@/hooks/useLabelCRUD';
 
 type Label = {
@@ -37,18 +36,8 @@ type EditLabelSchema = {
   name: string;
 };
 
-type SnackbarState = {
-  open: boolean;
-  message: string;
-  severity: 'success' | 'error';
-};
-
 const Labels = (props: { labels: Label[]; labelType: 'answers' | 'forms' }) => {
-  const [snackbar, setSnackbar] = useState<SnackbarState>({
-    open: false,
-    message: '',
-    severity: 'success',
-  });
+  const { snackbar, showSnackbar, closeSnackbar } = useSnackbar();
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [selectedLabel, setSelectedLabel] = useState<Label | null>(null);
@@ -59,14 +48,6 @@ const Labels = (props: { labels: Label[]; labelType: 'answers' | 'forms' }) => {
   const { deleteLabel, editLabel: editLabelAction } = useLabelCRUD(
     props.labelType
   );
-
-  const showSnackbar = (message: string, severity: 'success' | 'error') => {
-    setSnackbar({ open: true, message, severity });
-  };
-
-  const handleCloseSnackbar = () => {
-    setSnackbar((prev) => ({ ...prev, open: false }));
-  };
 
   const handleOpenEdit = (label: Label) => {
     setSelectedLabel(label);
@@ -120,20 +101,12 @@ const Labels = (props: { labels: Label[]; labelType: 'answers' | 'forms' }) => {
             ラベルが登録されていません。
           </Typography>
         </Paper>
-        <Snackbar
+        <SnackbarAlert
           open={snackbar.open}
-          autoHideDuration={6000}
-          onClose={handleCloseSnackbar}
-          anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-        >
-          <Alert
-            onClose={handleCloseSnackbar}
-            severity={snackbar.severity}
-            sx={{ width: '100%' }}
-          >
-            {snackbar.message}
-          </Alert>
-        </Snackbar>
+          message={snackbar.message}
+          severity={snackbar.severity}
+          onClose={closeSnackbar}
+        />
       </Box>
     );
   }
@@ -180,7 +153,6 @@ const Labels = (props: { labels: Label[]; labelType: 'answers' | 'forms' }) => {
         </Table>
       </TableContainer>
 
-      {/* 編集ダイアログ */}
       <Dialog open={editDialogOpen} onClose={handleCloseEdit} fullWidth>
         <DialogTitle>ラベルを編集</DialogTitle>
         <Box
@@ -209,43 +181,23 @@ const Labels = (props: { labels: Label[]; labelType: 'answers' | 'forms' }) => {
         </Box>
       </Dialog>
 
-      {/* 削除確認ダイアログ */}
-      <Dialog open={deleteDialogOpen} onClose={handleCloseDelete}>
-        <DialogTitle>ラベルを削除</DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            「{selectedLabel?.name}
-            」を削除してもよろしいですか？この操作は元に戻せません。
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCloseDelete}>キャンセル</Button>
-          <Button
-            onClick={() => {
-              void onDelete();
-            }}
-            color="error"
-            variant="contained"
-          >
-            削除
-          </Button>
-        </DialogActions>
-      </Dialog>
+      <ConfirmDialog
+        open={deleteDialogOpen}
+        title="ラベルを削除"
+        description={`「${selectedLabel?.name ?? ''}」を削除してもよろしいですか？この操作は元に戻せません。`}
+        confirmLabel="削除"
+        onConfirm={() => {
+          void onDelete();
+        }}
+        onCancel={handleCloseDelete}
+      />
 
-      <Snackbar
+      <SnackbarAlert
         open={snackbar.open}
-        autoHideDuration={6000}
-        onClose={handleCloseSnackbar}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-      >
-        <Alert
-          onClose={handleCloseSnackbar}
-          severity={snackbar.severity}
-          sx={{ width: '100%' }}
-        >
-          {snackbar.message}
-        </Alert>
-      </Snackbar>
+        message={snackbar.message}
+        severity={snackbar.severity}
+        onClose={closeSnackbar}
+      />
     </Box>
   );
 };

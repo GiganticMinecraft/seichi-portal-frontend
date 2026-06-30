@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
+import SnackbarAlert, { useSnackbar } from '@/app/_components/SnackbarAlert';
 import type {
   GetArchivedFormsResponse,
   GetFormLabelsResponse,
@@ -16,12 +17,6 @@ import { useFormListFilters } from '../_hooks/useFormListFilters';
 import ArchivedFormsView from './ArchivedFormsView';
 import FormsToolbar from './FormsToolbar';
 import FormsView from './FormsView';
-
-type SnackbarState = {
-  open: boolean;
-  message: string;
-  severity: 'success' | 'error';
-};
 
 const FormsPageContent = ({
   forms,
@@ -38,11 +33,7 @@ const FormsPageContent = ({
   const [createdSnackbarOpen, setCreatedSnackbarOpen] = useState(
     createdFormId != null
   );
-  const [snackbar, setSnackbar] = useState<SnackbarState>({
-    open: false,
-    message: '',
-    severity: 'success',
-  });
+  const { snackbar, showSnackbar, closeSnackbar } = useSnackbar();
   const [activeTab, setActiveTab] = useState(0);
   const { titleSearch, setTitleSearch, setLabelFilter, filteredForms } =
     useFormListFilters(forms);
@@ -55,40 +46,20 @@ const FormsPageContent = ({
 
   const handleArchiveResult = (result: { ok: boolean }) => {
     if (result.ok) {
-      setSnackbar({
-        open: true,
-        message: 'フォームをアーカイブしました',
-        severity: 'success',
-      });
+      showSnackbar('フォームをアーカイブしました', 'success');
       router.refresh();
     } else {
-      setSnackbar({
-        open: true,
-        message: 'アーカイブに失敗しました',
-        severity: 'error',
-      });
+      showSnackbar('アーカイブに失敗しました', 'error');
     }
   };
 
   const handleRestoreResult = (result: { ok: boolean }) => {
     if (result.ok) {
-      setSnackbar({
-        open: true,
-        message: 'フォームを復元しました',
-        severity: 'success',
-      });
+      showSnackbar('フォームを復元しました', 'success');
       router.refresh();
     } else {
-      setSnackbar({
-        open: true,
-        message: '復元に失敗しました',
-        severity: 'error',
-      });
+      showSnackbar('復元に失敗しました', 'error');
     }
-  };
-
-  const handleCloseSnackbar = () => {
-    setSnackbar((prev) => ({ ...prev, open: false }));
   };
 
   return (
@@ -152,16 +123,12 @@ const FormsPageContent = ({
           フォームを作成しました
         </Alert>
       </Snackbar>
-      <Snackbar
+      <SnackbarAlert
         open={snackbar.open}
-        autoHideDuration={5000}
-        onClose={handleCloseSnackbar}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-      >
-        <Alert severity={snackbar.severity} onClose={handleCloseSnackbar}>
-          {snackbar.message}
-        </Alert>
-      </Snackbar>
+        message={snackbar.message}
+        severity={snackbar.severity}
+        onClose={closeSnackbar}
+      />
     </Stack>
   );
 };
