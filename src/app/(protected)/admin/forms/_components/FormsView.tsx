@@ -23,10 +23,10 @@ import LabelChips from './LabelChips';
 interface Props {
   forms: GetFormsResponse;
   onFormClick: (formId: string) => void;
-  onArchived?: (() => void) | undefined;
+  onResult?: ((result: { ok: boolean }) => void) | undefined;
 }
 
-const FormsView = ({ forms, onFormClick, onArchived }: Props) => {
+const FormsView = ({ forms, onFormClick, onResult }: Props) => {
   return (
     <TableContainer component={Paper} variant="outlined">
       <Table>
@@ -79,7 +79,7 @@ const FormsView = ({ forms, onFormClick, onArchived }: Props) => {
                   }}
                   sx={{ width: 56 }}
                 >
-                  <FormRowMenu formId={form.id} onArchived={onArchived} />
+                  <FormRowMenu formId={form.id} onResult={onResult} />
                 </TableCell>
               </TableRow>
             ))

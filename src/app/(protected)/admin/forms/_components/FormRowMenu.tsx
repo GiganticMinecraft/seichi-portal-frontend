@@ -2,6 +2,12 @@
 
 import { Archive, Edit, MoreVert } from '@mui/icons-material';
 import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
   IconButton,
   ListItemIcon,
   ListItemText,
@@ -15,64 +21,91 @@ import { useFormActions } from '@/hooks/useFormActions';
 
 interface Props {
   formId: string;
-  onArchived?: (() => void) | undefined;
+  onResult?: ((result: { ok: boolean }) => void) | undefined;
 }
 
-const FormRowMenu = ({ formId, onArchived }: Props) => {
+const FormRowMenu = ({ formId, onResult }: Props) => {
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
+  const [dialogOpen, setDialogOpen] = useState(false);
   const { archiveForm } = useFormActions();
-  const open = Boolean(anchorEl);
+  const menuOpen = Boolean(anchorEl);
 
-  const handleOpen = (event: React.MouseEvent<HTMLElement>) => {
+  const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
 
-  const handleClose = () => {
+  const handleMenuClose = () => {
     setAnchorEl(null);
   };
 
-  const handleArchive = async () => {
-    handleClose();
-    if (!confirm('このフォームをアーカイブしますか？')) return;
+  const handleArchiveClick = () => {
+    handleMenuClose();
+    setDialogOpen(true);
+  };
+
+  const handleArchiveConfirm = async () => {
+    setDialogOpen(false);
     const result = await archiveForm(formId);
-    if (result.ok) {
-      onArchived?.();
-    } else {
-      alert('アーカイブに失敗しました');
-    }
+    onResult?.(result);
   };
 
   return (
     <>
       <IconButton
         size="small"
-        onClick={handleOpen}
+        onClick={handleMenuOpen}
         aria-label="フォーム操作メニュー"
       >
         <MoreVert />
       </IconButton>
-      <Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
+      <Menu anchorEl={anchorEl} open={menuOpen} onClose={handleMenuClose}>
         <MenuItem
           component={NextLink}
           href={`/admin/forms/edit/${formId}`}
-          onClick={handleClose}
+          onClick={handleMenuClose}
         >
           <ListItemIcon>
             <Edit fontSize="small" />
           </ListItemIcon>
           <ListItemText>編集</ListItemText>
         </MenuItem>
-        <MenuItem
-          onClick={() => {
-            void handleArchive();
-          }}
-        >
+        <MenuItem onClick={handleArchiveClick}>
           <ListItemIcon>
             <Archive fontSize="small" />
           </ListItemIcon>
           <ListItemText>アーカイブ</ListItemText>
         </MenuItem>
       </Menu>
+      <Dialog
+        open={dialogOpen}
+        onClose={() => {
+          setDialogOpen(false);
+        }}
+      >
+        <DialogTitle>フォームのアーカイブ</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            このフォームをアーカイブしますか？
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            onClick={() => {
+              setDialogOpen(false);
+            }}
+          >
+            キャンセル
+          </Button>
+          <Button
+            onClick={() => {
+              void handleArchiveConfirm();
+            }}
+            autoFocus
+          >
+            アーカイブ
+          </Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 };

@@ -19,10 +19,10 @@ import LabelChips from './LabelChips';
 
 interface Props {
   forms: GetArchivedFormsResponse;
-  onRestored?: (() => void) | undefined;
+  onResult?: ((result: { ok: boolean }) => void) | undefined;
 }
 
-const ArchivedFormsView = ({ forms, onRestored }: Props) => {
+const ArchivedFormsView = ({ forms, onResult }: Props) => {
   return (
     <TableContainer component={Paper} variant="outlined">
       <Table>
@@ -64,10 +64,7 @@ const ArchivedFormsView = ({ forms, onRestored }: Props) => {
                   }}
                   sx={{ width: 56 }}
                 >
-                  <ArchivedFormRowMenu
-                    formId={form.id}
-                    onRestored={onRestored}
-                  />
+                  <ArchivedFormRowMenu formId={form.id} onResult={onResult} />
                 </TableCell>
               </TableRow>
             ))

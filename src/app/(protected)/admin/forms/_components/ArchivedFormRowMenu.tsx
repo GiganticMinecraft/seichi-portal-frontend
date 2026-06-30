@@ -2,6 +2,12 @@
 
 import { MoreVert, Restore } from '@mui/icons-material';
 import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
   IconButton,
   ListItemIcon,
   ListItemText,
@@ -14,54 +20,79 @@ import { useFormActions } from '@/hooks/useFormActions';
 
 interface Props {
   formId: string;
-  onRestored?: (() => void) | undefined;
+  onResult?: ((result: { ok: boolean }) => void) | undefined;
 }
 
-const ArchivedFormRowMenu = ({ formId, onRestored }: Props) => {
+const ArchivedFormRowMenu = ({ formId, onResult }: Props) => {
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
+  const [dialogOpen, setDialogOpen] = useState(false);
   const { restoreForm } = useFormActions();
-  const open = Boolean(anchorEl);
+  const menuOpen = Boolean(anchorEl);
 
-  const handleOpen = (event: React.MouseEvent<HTMLElement>) => {
+  const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
 
-  const handleClose = () => {
+  const handleMenuClose = () => {
     setAnchorEl(null);
   };
 
-  const handleRestore = async () => {
-    handleClose();
-    if (!confirm('このフォームを復元しますか？')) return;
+  const handleRestoreClick = () => {
+    handleMenuClose();
+    setDialogOpen(true);
+  };
+
+  const handleRestoreConfirm = async () => {
+    setDialogOpen(false);
     const result = await restoreForm(formId);
-    if (result.ok) {
-      onRestored?.();
-    } else {
-      alert('復元に失敗しました');
-    }
+    onResult?.(result);
   };
 
   return (
     <>
       <IconButton
         size="small"
-        onClick={handleOpen}
+        onClick={handleMenuOpen}
         aria-label="アーカイブ済みフォーム操作メニュー"
       >
         <MoreVert />
       </IconButton>
-      <Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
-        <MenuItem
-          onClick={() => {
-            void handleRestore();
-          }}
-        >
+      <Menu anchorEl={anchorEl} open={menuOpen} onClose={handleMenuClose}>
+        <MenuItem onClick={handleRestoreClick}>
           <ListItemIcon>
             <Restore fontSize="small" />
           </ListItemIcon>
           <ListItemText>復元</ListItemText>
         </MenuItem>
       </Menu>
+      <Dialog
+        open={dialogOpen}
+        onClose={() => {
+          setDialogOpen(false);
+        }}
+      >
+        <DialogTitle>フォームの復元</DialogTitle>
+        <DialogContent>
+          <DialogContentText>このフォームを復元しますか？</DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            onClick={() => {
+              setDialogOpen(false);
+            }}
+          >
+            キャンセル
+          </Button>
+          <Button
+            onClick={() => {
+              void handleRestoreConfirm();
+            }}
+            autoFocus
+          >
+            復元
+          </Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 };

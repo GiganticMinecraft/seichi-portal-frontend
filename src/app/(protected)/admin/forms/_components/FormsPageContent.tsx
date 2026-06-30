@@ -17,6 +17,12 @@ import ArchivedFormsView from './ArchivedFormsView';
 import FormsToolbar from './FormsToolbar';
 import FormsView from './FormsView';
 
+type SnackbarState = {
+  open: boolean;
+  message: string;
+  severity: 'success' | 'error';
+};
+
 const FormsPageContent = ({
   forms,
   archivedForms,
@@ -29,7 +35,14 @@ const FormsPageContent = ({
   createdFormId?: string | undefined;
 }) => {
   const router = useRouter();
-  const [snackbarOpen, setSnackbarOpen] = useState(createdFormId != null);
+  const [createdSnackbarOpen, setCreatedSnackbarOpen] = useState(
+    createdFormId != null
+  );
+  const [snackbar, setSnackbar] = useState<SnackbarState>({
+    open: false,
+    message: '',
+    severity: 'success',
+  });
   const [activeTab, setActiveTab] = useState(0);
   const { titleSearch, setTitleSearch, setLabelFilter, filteredForms } =
     useFormListFilters(forms);
@@ -40,8 +53,42 @@ const FormsPageContent = ({
     }
   }, [createdFormId, router]);
 
-  const handleMutated = () => {
-    router.refresh();
+  const handleArchiveResult = (result: { ok: boolean }) => {
+    if (result.ok) {
+      setSnackbar({
+        open: true,
+        message: 'フォームをアーカイブしました',
+        severity: 'success',
+      });
+      router.refresh();
+    } else {
+      setSnackbar({
+        open: true,
+        message: 'アーカイブに失敗しました',
+        severity: 'error',
+      });
+    }
+  };
+
+  const handleRestoreResult = (result: { ok: boolean }) => {
+    if (result.ok) {
+      setSnackbar({
+        open: true,
+        message: 'フォームを復元しました',
+        severity: 'success',
+      });
+      router.refresh();
+    } else {
+      setSnackbar({
+        open: true,
+        message: '復元に失敗しました',
+        severity: 'error',
+      });
+    }
+  };
+
+  const handleCloseSnackbar = () => {
+    setSnackbar((prev) => ({ ...prev, open: false }));
   };
 
   return (
@@ -68,25 +115,28 @@ const FormsPageContent = ({
             onFormClick={(formId) => {
               router.push(`/forms/${formId}/answers`);
             }}
-            onArchived={handleMutated}
+            onResult={handleArchiveResult}
           />
         </>
       )}
       {activeTab === 1 && (
-        <ArchivedFormsView forms={archivedForms} onRestored={handleMutated} />
+        <ArchivedFormsView
+          forms={archivedForms}
+          onResult={handleRestoreResult}
+        />
       )}
       <Snackbar
-        open={snackbarOpen}
+        open={createdSnackbarOpen}
         autoHideDuration={10000}
         onClose={(_event, reason) => {
-          if (reason !== 'clickaway') setSnackbarOpen(false);
+          if (reason !== 'clickaway') setCreatedSnackbarOpen(false);
         }}
         anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
       >
         <Alert
           severity="success"
           onClose={() => {
-            setSnackbarOpen(false);
+            setCreatedSnackbarOpen(false);
           }}
           action={
             <Button
@@ -100,6 +150,16 @@ const FormsPageContent = ({
           }
         >
           フォームを作成しました
+        </Alert>
+      </Snackbar>
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={5000}
+        onClose={handleCloseSnackbar}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      >
+        <Alert severity={snackbar.severity} onClose={handleCloseSnackbar}>
+          {snackbar.message}
         </Alert>
       </Snackbar>
     </Stack>
