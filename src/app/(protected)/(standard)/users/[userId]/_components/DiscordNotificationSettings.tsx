@@ -73,7 +73,7 @@ const DiscordNotificationSettings = (props: {
           void handleSubmit(onSubmit)(e);
         }}
       >
-        <Typography variant="h6" gutterBottom>
+        <Typography variant="h6" component="h2" gutterBottom>
           通知設定
         </Typography>
         <Divider sx={{ mb: 2 }} />
