@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
 import {
+  fromFormResponseToEditorValues,
   toCreateFormBody,
   toFormUpdateBody,
 } from '@/app/(protected)/admin/forms/_lib/formRequestBuilders';
@@ -8,6 +9,7 @@ import type {
   FormEditorQuestion,
   FormEditorValues,
 } from '@/app/(protected)/admin/forms/_schema/formEditorSchema';
+import type { GetFormResponse } from '@/lib/api-types';
 
 const baseQuestion: FormEditorQuestion = {
   identity: { kind: 'new' },
@@ -73,6 +75,73 @@ describe('form request builders', () => {
     );
 
     expect(body.questions?.[0]?.id).toBe('question-id');
+  });
+
+  it('既存選択肢の ID を API の選択肢 ID へ変換する', () => {
+    const body = toFormUpdateBody(
+      {
+        ...baseValues,
+        questions: [
+          {
+            ...baseQuestion,
+            question_type: 'SingleChoice',
+            choices: [
+              { id: 1, choice: ' First choice ' },
+              { choice: 'New choice' },
+            ],
+          },
+        ],
+      },
+      true
+    );
+
+    expect(body.questions?.[0]).toMatchObject({
+      question_type: 'SingleChoice',
+      choices: [
+        { id: 1, label: 'First choice', position: 0 },
+        { id: null, label: 'New choice', position: 1 },
+      ],
+    });
+  });
+
+  it('フォーム取得レスポンスの選択肢 ID を画面内部表現へ保持する', () => {
+    const values = fromFormResponseToEditorValues({
+      id: 'form-id',
+      title: 'Form title',
+      description: 'Form description',
+      labels: [],
+      metadata: {
+        created_at: '2026-06-01T00:00:00+09:00',
+        updated_at: '2026-06-01T00:00:00+09:00',
+      },
+      settings: {
+        visibility: 'PUBLIC',
+        allow_temporary_answers: false,
+        discord_webhook_url: null,
+        answer_settings: {
+          default_answer_title: null,
+          acceptance_period: {
+            start_at: null,
+            end_at: null,
+          },
+          visibility: 'PUBLIC',
+        },
+      },
+      questions: [
+        {
+          id: 'question-id',
+          title: 'Question title',
+          description: null,
+          question_type: 'SingleChoice',
+          choices: [{ id: 1, label: 'First choice', position: 0 }],
+          is_required: false,
+          position: 0,
+          template_key: 'question_1',
+        },
+      ],
+    } satisfies GetFormResponse);
+
+    expect(values.questions[0]?.choices[0]?.id).toBe(1);
   });
 
   it('空の Webhook URL は null に正規化する', () => {

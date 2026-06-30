@@ -52,7 +52,10 @@ const toEditorQuestion = (
   question_type: question.question_type,
   choices:
     'choices' in question
-      ? question.choices.map((choice) => ({ choice: choice.label }))
+      ? question.choices.map((choice) => ({
+          id: choice.id ?? null,
+          choice: choice.label,
+        }))
       : [],
   is_required: question.is_required,
   position: question.position,
@@ -83,6 +86,7 @@ const toApiQuestion = (
     ...base,
     question_type: question.question_type,
     choices: question.choices.map((choice, choiceIndex) => ({
+      id: choice.id ?? null,
       label: choice.choice.trim(),
       position: choiceIndex,
     })),
