@@ -2,12 +2,6 @@
 
 import { Archive, Edit, MoreVert } from '@mui/icons-material';
 import {
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
   IconButton,
   ListItemIcon,
   ListItemText,
@@ -17,6 +11,7 @@ import {
 import NextLink from 'next/link';
 import { useState } from 'react';
 
+import ConfirmDialog from '@/app/_components/ConfirmDialog';
 import { useFormActions } from '@/hooks/useFormActions';
 
 interface Props {
@@ -76,36 +71,18 @@ const FormRowMenu = ({ formId, onResult }: Props) => {
           <ListItemText>アーカイブ</ListItemText>
         </MenuItem>
       </Menu>
-      <Dialog
+      <ConfirmDialog
         open={dialogOpen}
-        onClose={() => {
+        title="フォームのアーカイブ"
+        description="このフォームをアーカイブしますか？"
+        confirmLabel="アーカイブ"
+        onConfirm={() => {
+          void handleArchiveConfirm();
+        }}
+        onCancel={() => {
           setDialogOpen(false);
         }}
-      >
-        <DialogTitle>フォームのアーカイブ</DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            このフォームをアーカイブしますか？
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button
-            onClick={() => {
-              setDialogOpen(false);
-            }}
-          >
-            キャンセル
-          </Button>
-          <Button
-            onClick={() => {
-              void handleArchiveConfirm();
-            }}
-            autoFocus
-          >
-            アーカイブ
-          </Button>
-        </DialogActions>
-      </Dialog>
+      />
     </>
   );
 };

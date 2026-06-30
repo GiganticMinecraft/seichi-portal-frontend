@@ -2,19 +2,17 @@
 
 import SaveAltIcon from '@mui/icons-material/SaveAlt';
 import {
-  Alert,
   Button,
   CardContent,
   Divider,
   FormControlLabel,
-  Snackbar,
   Stack,
   Typography,
 } from '@mui/material';
 import Checkbox from '@mui/material/Checkbox';
-import { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 
+import SnackbarAlert, { useSnackbar } from '@/app/_components/SnackbarAlert';
 import { useNotificationSettings } from '@/hooks/useNotificationSettings';
 import type { GetUserNotificationSettingsResponse } from '@/lib/api-types';
 
@@ -23,12 +21,6 @@ import {
   toNotificationSettingsUpdateBody,
 } from './notificationSettingsForm';
 import type { NotificationSettingsFormValues } from './notificationSettingsForm';
-
-type SnackbarState = {
-  open: boolean;
-  message: string;
-  severity: 'success' | 'error';
-};
 
 const DiscordNotificationSettings = (props: {
   currentSettings: GetUserNotificationSettingsResponse;
@@ -41,27 +33,14 @@ const DiscordNotificationSettings = (props: {
   });
 
   const { updateSettings } = useNotificationSettings();
-
-  const [snackbar, setSnackbar] = useState<SnackbarState>({
-    open: false,
-    message: '',
-    severity: 'success',
-  });
+  const { snackbar, showSnackbar, closeSnackbar } = useSnackbar();
 
   const onSubmit = async (data: NotificationSettingsFormValues) => {
     const result = await updateSettings(toNotificationSettingsUpdateBody(data));
     if (result.ok) {
-      setSnackbar({
-        open: true,
-        message: '設定を更新しました',
-        severity: 'success',
-      });
+      showSnackbar('設定を更新しました', 'success');
     } else {
-      setSnackbar({
-        open: true,
-        message: '通知設定の更新に失敗しました',
-        severity: 'error',
-      });
+      showSnackbar('通知設定の更新に失敗しました', 'error');
     }
   };
 
@@ -107,23 +86,12 @@ const DiscordNotificationSettings = (props: {
           </Button>
         </Stack>
       </CardContent>
-      <Snackbar
+      <SnackbarAlert
         open={snackbar.open}
-        autoHideDuration={3000}
-        onClose={(_, reason) => {
-          if (reason !== 'clickaway')
-            setSnackbar((prev) => ({ ...prev, open: false }));
-        }}
-      >
-        <Alert
-          severity={snackbar.severity}
-          onClose={() => {
-            setSnackbar((prev) => ({ ...prev, open: false }));
-          }}
-        >
-          {snackbar.message}
-        </Alert>
-      </Snackbar>
+        message={snackbar.message}
+        severity={snackbar.severity}
+        onClose={closeSnackbar}
+      />
     </>
   );
 };
