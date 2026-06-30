@@ -24,11 +24,15 @@ export type SubmissionState =
 
 // 質問の回答（key は質問 UUID）だけを contents に変換する。
 // 未ログイン回答の投稿者情報フィールドは除外する。
-const toAnswerContents = (data: AnswerFormInput): AnswerContents =>
+export const toAnswerContents = (data: AnswerFormInput): AnswerContents =>
   Object.entries(data)
     .filter(([key]) => !isTemporaryUserField(key))
     .flatMap(([key, values]) => {
       if (typeof values === 'string') {
+        if (values === '') {
+          return [];
+        }
+
         return {
           question_id: key,
           answer: values,
