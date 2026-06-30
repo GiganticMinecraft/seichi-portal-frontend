@@ -51,13 +51,20 @@ const QuestionFieldRenderer = ({
       );
     case 'SingleChoice':
       return (
-        <FormControl fullWidth sx={{ mt: 2 }}>
+        <FormControl
+          fullWidth
+          sx={{ mt: 2 }}
+          error={Boolean(errors[questionId])}
+        >
           <InputLabel id={`select-label-${questionId}`} shrink>
             選択してください
           </InputLabel>
           <Controller
             control={control}
             name={questionId}
+            rules={{
+              required: question.is_required ? '選択してください。' : false,
+            }}
             render={({ field }) => {
               const fieldValue =
                 typeof field.value === 'string' ? field.value : '';
@@ -65,11 +72,11 @@ const QuestionFieldRenderer = ({
               return (
                 <Select
                   {...field}
-                  required={question.is_required}
                   fullWidth
                   labelId={`select-label-${questionId}`}
                   label="選択してください"
                   value={fieldValue}
+                  inputProps={{ 'aria-required': question.is_required }}
                   onChange={(event) => {
                     const nextValue = event.target.value;
                     if (typeof nextValue !== 'string') {
@@ -95,6 +102,9 @@ const QuestionFieldRenderer = ({
               );
             }}
           />
+          {errors[questionId] && (
+            <FormHelperText>{errors[questionId].message}</FormHelperText>
+          )}
         </FormControl>
       );
     case 'MultipleChoice':

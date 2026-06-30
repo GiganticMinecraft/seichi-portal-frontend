@@ -42,6 +42,22 @@ const singleChoiceQuestions: GetQuestionsResponse = [
   },
 ];
 
+const requiredSingleChoiceQuestions: GetQuestionsResponse = [
+  {
+    id: '0c2a6f9a-28c2-4116-835b-fdd7289a16f1',
+    template_key: 'contact_reason',
+    title: 'お問い合わせ種別',
+    description: '',
+    is_required: true,
+    position: 1,
+    question_type: 'SingleChoice',
+    choices: [
+      { id: 1, label: '申請について', position: 1 },
+      { id: 2, label: 'その他', position: 2 },
+    ],
+  },
+];
+
 describe('AnswerSubmissionForm', () => {
   it('一時回答者の入力値と質問の回答を submitter に渡す', async () => {
     const user = userEvent.setup();
@@ -108,5 +124,27 @@ describe('AnswerSubmissionForm', () => {
         '0c2a6f9a-28c2-4116-835b-fdd7289a16f1': '',
       });
     });
+  });
+
+  it('必須の単一選択が未選択の場合は送信しない', async () => {
+    const user = userEvent.setup();
+    const onSubmitAnswers = vi
+      .fn<(data: AnswerFormInput) => Promise<{ ok: boolean }>>()
+      .mockResolvedValue({ ok: true });
+
+    renderWithProviders(
+      <AnswerSubmissionForm
+        questions={requiredSingleChoiceQuestions}
+        title="お問い合わせ"
+        description=""
+        isTemporary={false}
+        onSubmitAnswers={onSubmitAnswers}
+      />
+    );
+
+    await user.click(screen.getByRole('button', { name: '送信' }));
+
+    expect(await screen.findByText('選択してください。')).toBeVisible();
+    expect(onSubmitAnswers).not.toHaveBeenCalled();
   });
 });
