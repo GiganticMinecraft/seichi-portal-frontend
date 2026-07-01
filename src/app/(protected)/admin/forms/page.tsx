@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 
 import {
   authorizationHeader,
+  requireAllBackendPages,
   requireBackendData,
   serverApiClient,
 } from '@/lib/server/backend';
@@ -17,30 +18,32 @@ const Home = async (props: {
   searchParams: Promise<{ createdFormId?: string }>;
 }) => {
   const { session } = await getAdminAccess();
-  const [initialForms, initialArchivedForms, labels, searchParams] =
-    await Promise.all([
-      requireBackendData(
-        serverApiClient.GET('/api/v1/forms', {
-          headers: authorizationHeader(session.token),
-        })
-      ),
-      requireBackendData(
-        serverApiClient.GET('/api/v1/archived-forms', {
-          headers: authorizationHeader(session.token),
-        })
-      ),
-      requireBackendData(
-        serverApiClient.GET('/api/v1/labels/forms', {
-          headers: authorizationHeader(session.token),
-        })
-      ),
-      props.searchParams,
-    ]);
+  // クライアントサイドのタイトル/ラベル絞り込みと組み合わせるため、無限スクロールではなく全件取得する
+  const [forms, archivedForms, labels, searchParams] = await Promise.all([
+    requireAllBackendPages((cursor) =>
+      serverApiClient.GET('/api/v1/forms', {
+        headers: authorizationHeader(session.token),
+        params: { query: cursor === undefined ? {} : { cursor } },
+      })
+    ),
+    requireAllBackendPages((cursor) =>
+      serverApiClient.GET('/api/v1/archived-forms', {
+        headers: authorizationHeader(session.token),
+        params: { query: cursor === undefined ? {} : { cursor } },
+      })
+    ),
+    requireBackendData(
+      serverApiClient.GET('/api/v1/labels/forms', {
+        headers: authorizationHeader(session.token),
+      })
+    ),
+    props.searchParams,
+  ]);
 
   return (
     <FormsPageContent
-      initialForms={initialForms}
-      initialArchivedForms={initialArchivedForms}
+      forms={forms}
+      archivedForms={archivedForms}
       labels={labels}
       createdFormId={searchParams.createdFormId}
     />

@@ -24,7 +24,7 @@ const AnswersPageContent = ({
     items: answers,
     hasMore,
     isLoadingMore,
-    sentinelRef,
+    loadMore,
   } = useInfiniteApiQuery(
     '/api/v1/forms/{id}/answers',
     (cursor) => ({
@@ -41,7 +41,7 @@ const AnswersPageContent = ({
       rows={rows}
       hasMore={hasMore}
       isLoadingMore={isLoadingMore}
-      sentinelRef={sentinelRef}
+      onLoadMore={loadMore}
       onAnswerClick={(answerId) => {
         router.push(`/forms/${form.id}/answers/${answerId}`);
       }}

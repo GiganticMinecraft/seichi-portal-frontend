@@ -40,17 +40,20 @@ const DataTable = (props: {
     props.initialAnswers
   );
 
+  const formTitleById = React.useMemo(
+    () => new Map(props.forms.map((form) => [form.id, form.title])),
+    [props.forms]
+  );
+
   const rows = React.useMemo<Row[]>(
     () =>
       answers.map((answer) => ({
         id: answer.id,
-        category:
-          props.forms.find((form) => form.id === answer.form_id)?.title ??
-          'unknown form',
+        category: formTitleById.get(answer.form_id) ?? 'unknown form',
         title: answer.title ?? '',
         date: formatString(answer.timestamp),
       })),
-    [answers, props.forms]
+    [answers, formTitleById]
   );
 
   const handleRowClick = (rowId: string) => {
