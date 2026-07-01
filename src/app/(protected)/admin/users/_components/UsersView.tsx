@@ -46,11 +46,12 @@ const UsersView = ({
         <Table sx={{ tableLayout: 'fixed' }}>
           <TableHead>
             <TableRow sx={{ '& th': { fontWeight: 'bold' } }}>
-              <TableCell sx={{ width: '24%' }}>ユーザー</TableCell>
-              <TableCell sx={{ width: '26%' }}>UUID</TableCell>
-              <TableCell sx={{ width: '14%' }}>現在の権限</TableCell>
-              <TableCell sx={{ width: '18%' }}>権限の変更</TableCell>
-              <TableCell sx={{ width: '18%' }}>回答投稿制限</TableCell>
+              <TableCell sx={{ width: '32%' }}>ユーザー</TableCell>
+              <TableCell sx={{ width: '36%' }}>UUID</TableCell>
+              <TableCell sx={{ width: '18%' }}>現在の権限</TableCell>
+              <TableCell sx={{ width: '14%' }} align="center">
+                詳細
+              </TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
