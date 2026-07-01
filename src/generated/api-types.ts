@@ -411,6 +411,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/search/users": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** ユーザー検索を行う */
+        get: operations["search_users"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/session": {
         parameters: {
             query?: never;
@@ -907,6 +924,9 @@ export interface components {
             id: string;
             name: string;
             role: string;
+        };
+        UserSearchResult: {
+            users: components["schemas"]["UserSchema"][];
         };
         UserUpdateSchema: {
             /** Format: uuid */
@@ -3542,9 +3562,9 @@ export interface operations {
     };
     cross_search: {
         parameters: {
-            query?: {
+            query: {
                 /** @description Search query */
-                query?: string;
+                query: string;
             };
             header?: never;
             path?: never;
@@ -3559,6 +3579,65 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["CrossSearchResult"];
+                };
+            };
+            /** @description The server could not understand the request due to invalid syntax. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Access is unauthorized. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Access is forbidden. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    search_users: {
+        parameters: {
+            query: {
+                /** @description Search query */
+                query: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The request has succeeded. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UserSearchResult"];
                 };
             };
             /** @description The server could not understand the request due to invalid syntax. */

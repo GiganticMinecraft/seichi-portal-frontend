@@ -41,6 +41,9 @@ export type PutAnswerSubmitterRestrictionSchema =
   ApiPaths['/api/v1/users/{uuid}/answer-submitter-restriction']['put']['requestBody']['content']['application/json'];
 export type SearchResponse =
   ApiPaths['/api/v1/search']['get']['responses'][200]['content']['application/json'];
+export type GetUserSearchPageResponse =
+  ApiPaths['/api/v1/search/users']['get']['responses'][200]['content']['application/json'];
+export type GetUserSearchResponse = GetUserSearchPageResponse['users'];
 export type GetNotificationSettingsResponse =
   ApiPaths['/api/v1/notifications/settings/me']['get']['responses'][200]['content']['application/json'];
 export type GetUserNotificationSettingsResponse =
