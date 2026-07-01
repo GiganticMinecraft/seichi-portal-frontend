@@ -14,19 +14,31 @@ import type { UserListRow } from '../_lib/userListRows';
 import UserListHeader from './UserListHeader';
 import UserRow from './UserRow';
 
-const UsersView = ({ rows }: { rows: UserListRow[] }) => {
+const UsersView = ({
+  rows,
+  search,
+  onSearchChange,
+}: {
+  rows: UserListRow[];
+  search: string;
+  onSearchChange: (value: string) => void;
+}) => {
   return (
     <Box sx={{ p: 3 }}>
-      <UserListHeader count={rows.length} />
+      <UserListHeader
+        count={rows.length}
+        search={search}
+        onSearchChange={onSearchChange}
+      />
       <TableContainer component={Paper} variant="outlined">
-        <Table>
+        <Table sx={{ tableLayout: 'fixed' }}>
           <TableHead>
             <TableRow sx={{ '& th': { fontWeight: 'bold' } }}>
-              <TableCell>ユーザー</TableCell>
-              <TableCell>UUID</TableCell>
-              <TableCell>現在の権限</TableCell>
-              <TableCell>権限の変更</TableCell>
-              <TableCell>回答投稿制限</TableCell>
+              <TableCell sx={{ width: '24%' }}>ユーザー</TableCell>
+              <TableCell sx={{ width: '26%' }}>UUID</TableCell>
+              <TableCell sx={{ width: '14%' }}>現在の権限</TableCell>
+              <TableCell sx={{ width: '18%' }}>権限の変更</TableCell>
+              <TableCell sx={{ width: '18%' }}>回答投稿制限</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>

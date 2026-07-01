@@ -30,6 +30,8 @@ export type {
   GetUserResponse,
   GetQuestionsResponse,
   GetUserListResponse,
+  GetUserSearchPageResponse,
+  GetUserSearchResponse,
   GetUsersResponse,
   PutAnswerSubmitterRestrictionSchema,
   SearchResponse,
