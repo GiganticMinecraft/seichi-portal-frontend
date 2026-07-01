@@ -7,16 +7,15 @@ import {
   TableCell,
   TableContainer,
   TableHead,
-  TablePagination,
   TableRow,
 } from '@mui/material';
 import { useRouter } from 'next/navigation';
 import * as React from 'react';
 
+import InfiniteScrollSentinel from '@/app/_components/InfiniteScrollSentinel';
+import { useInfiniteApiQuery } from '@/app/_swr/useInfiniteApiQuery';
 import { formatString } from '@/generic/DateFormatter';
-import type { GetAnswerResponse } from '@/lib/api-types';
-
-import { usePaginatedRows } from './usePaginatedRows';
+import type { GetAnswersPageResponse, GetFormsResponse } from '@/lib/api-types';
 
 interface Row {
   id: string;
@@ -25,37 +24,37 @@ interface Row {
   date: string;
 }
 
-type AnswerResponseWithFormTitle = GetAnswerResponse & { form_title: string };
-
-const prepareRows = (
-  answerResponseWithFormTitle: AnswerResponseWithFormTitle[]
-) => {
-  return answerResponseWithFormTitle.map((answer) => {
-    const row: Row = {
-      id: answer.id,
-      category: answer.form_title,
-      title: answer.title ?? '',
-      date: formatString(answer.timestamp),
-    };
-    return row;
-  });
-};
-
 const DataTable = (props: {
-  answerResponseWithFormTitle: AnswerResponseWithFormTitle[];
+  initialAnswers: GetAnswersPageResponse;
+  forms: GetFormsResponse;
 }) => {
   const router = useRouter();
-  const rows = React.useMemo(
-    () => prepareRows(props.answerResponseWithFormTitle),
-    [props.answerResponseWithFormTitle]
-  );
   const {
-    page,
-    paginatedRows,
-    rowsPerPage,
-    handleChangePage,
-    handleChangeRowsPerPage,
-  } = usePaginatedRows(rows);
+    items: answers,
+    hasMore,
+    isLoadingMore,
+    sentinelRef,
+  } = useInfiniteApiQuery(
+    '/api/v1/forms/answers',
+    (cursor) => ({ query: cursor === undefined ? {} : { cursor } }),
+    props.initialAnswers
+  );
+
+  const formTitleById = React.useMemo(
+    () => new Map(props.forms.map((form) => [form.id, form.title])),
+    [props.forms]
+  );
+
+  const rows = React.useMemo<Row[]>(
+    () =>
+      answers.map((answer) => ({
+        id: answer.id,
+        category: formTitleById.get(answer.form_id) ?? 'unknown form',
+        title: answer.title ?? '',
+        date: formatString(answer.timestamp),
+      })),
+    [answers, formTitleById]
+  );
 
   const handleRowClick = (rowId: string) => {
     router.push(`/admin/answer/${rowId}`);
@@ -72,7 +71,7 @@ const DataTable = (props: {
           </TableRow>
         </TableHead>
         <TableBody>
-          {paginatedRows.map((row) => (
+          {rows.map((row) => (
             <TableRow
               key={row.id}
               hover
@@ -88,15 +87,12 @@ const DataTable = (props: {
           ))}
         </TableBody>
       </Table>
-      <TablePagination
-        component="div"
-        count={rows.length}
-        page={page}
-        onPageChange={handleChangePage}
-        rowsPerPage={rowsPerPage}
-        onRowsPerPageChange={handleChangeRowsPerPage}
-        rowsPerPageOptions={[5, 10, 25, 50, 100]}
-      />
+      {hasMore && (
+        <InfiniteScrollSentinel
+          sentinelRef={sentinelRef}
+          isLoadingMore={isLoadingMore}
+        />
+      )}
     </TableContainer>
   );
 };

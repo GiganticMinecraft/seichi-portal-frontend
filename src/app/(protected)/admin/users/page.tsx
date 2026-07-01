@@ -15,14 +15,17 @@ export const metadata: Metadata = {
 
 const Home = async () => {
   const { session } = await getAdminAccess();
-  const users = await requireBackendData(
+  const initialUsers = await requireBackendData(
     serverApiClient.GET('/api/v1/users', {
       headers: authorizationHeader(session.token),
     })
   );
 
   return (
-    <UsersPageContent users={users.items} currentUserId={session.user.id} />
+    <UsersPageContent
+      initialUsers={initialUsers}
+      currentUserId={session.user.id}
+    />
   );
 };
 

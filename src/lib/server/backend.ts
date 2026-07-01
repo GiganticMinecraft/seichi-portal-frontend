@@ -73,6 +73,34 @@ export const requireBackendData = async <T>(
   return data;
 };
 
+type KeysetPage<T> = {
+  items: T[];
+  next_cursor?: string | null;
+};
+
+/**
+ * Keyset Pagination の全ページを cursor が尽きるまで辿り、items を1つの配列にまとめて返す。
+ * バックエンドが1リクエストあたり返す件数を絞るようになったため、従来通り一覧を丸ごと必要とする
+ * 呼び出し元との互換を保つために用意している。
+ */
+export const requireAllBackendPages = async <T>(
+  fetchPage: (cursor?: string) => Promise<BackendFetchResult<KeysetPage<T>>>
+): Promise<T[]> => {
+  const items: T[] = [];
+  let cursor: string | undefined;
+
+  for (;;) {
+    const page = await requireBackendData(fetchPage(cursor));
+    items.push(...page.items);
+
+    if (!page.next_cursor) {
+      return items;
+    }
+
+    cursor = page.next_cursor;
+  }
+};
+
 export const requireBackendResponse = async <T>(
   request: Promise<BackendFetchResult<T>>
 ): Promise<BackendFetchResult<T>> => {

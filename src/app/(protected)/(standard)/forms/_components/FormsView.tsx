@@ -16,7 +16,9 @@ import {
 } from '@mui/material';
 import NextLink from 'next/link';
 
-import type { GetFormsResponse } from '@/lib/api-types';
+import InfiniteScrollSentinel from '@/app/_components/InfiniteScrollSentinel';
+import { useInfiniteApiQuery } from '@/app/_swr/useInfiniteApiQuery';
+import type { GetFormsPageResponse, GetFormsResponse } from '@/lib/api-types';
 import {
   formatResponsePeriod,
   toResponsePeriod,
@@ -80,10 +82,21 @@ const EachForm = ({ form }: { form: FormItem }) => {
 };
 
 interface FormsViewProps {
-  forms: GetFormsResponse;
+  initialForms: GetFormsPageResponse;
 }
 
-const FormsView = ({ forms }: FormsViewProps) => {
+const FormsView = ({ initialForms }: FormsViewProps) => {
+  const {
+    items: forms,
+    hasMore,
+    isLoadingMore,
+    sentinelRef,
+  } = useInfiniteApiQuery(
+    '/api/v1/forms',
+    (cursor) => ({ query: cursor === undefined ? {} : { cursor } }),
+    initialForms
+  );
+
   return (
     <Box sx={{ width: '100%' }}>
       {forms.length === 0 ? (
@@ -99,6 +112,12 @@ const FormsView = ({ forms }: FormsViewProps) => {
             </Grid>
           ))}
         </Grid>
+      )}
+      {hasMore && (
+        <InfiniteScrollSentinel
+          sentinelRef={sentinelRef}
+          isLoadingMore={isLoadingMore}
+        />
       )}
     </Box>
   );

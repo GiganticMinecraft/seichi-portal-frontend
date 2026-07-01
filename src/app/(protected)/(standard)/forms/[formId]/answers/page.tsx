@@ -16,7 +16,7 @@ export const metadata: Metadata = {
 const Home = async ({ params }: { params: Promise<{ formId: string }> }) => {
   const session = await requireUser();
   const { formId } = await params;
-  const [answers, form] = await Promise.all([
+  const [initialAnswers, form] = await Promise.all([
     requireBackendData(
       serverApiClient.GET('/api/v1/forms/{id}/answers', {
         headers: authorizationHeader(session.token),
@@ -35,7 +35,7 @@ const Home = async ({ params }: { params: Promise<{ formId: string }> }) => {
     ),
   ]);
 
-  return <AnswersPageContent form={form} answers={answers.items} />;
+  return <AnswersPageContent form={form} initialAnswers={initialAnswers} />;
 };
 
 export default Home;
