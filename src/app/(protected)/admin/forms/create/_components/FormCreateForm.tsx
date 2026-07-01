@@ -14,7 +14,10 @@ import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import { useFieldArray, useForm } from 'react-hook-form';
 
-import type { GetFormLabelsResponse } from '@/lib/api-types';
+import type {
+  GetFormLabelsResponse,
+  GetUserGroupsResponse,
+} from '@/lib/api-types';
 
 import FormEditorLayout from '../../_components/FormEditorLayout';
 import FormSettings from '../../_components/FormSettings';
@@ -28,7 +31,10 @@ import type { FormEditorValues } from '../../_schema/formEditorSchema';
 import { formEditorSchema } from '../../_schema/formEditorSchema';
 import { useCreateForm } from '../_hooks/useCreateForm';
 
-const FormCreateForm = (props: { labelOptions: GetFormLabelsResponse }) => {
+const FormCreateForm = (props: {
+  labelOptions: GetFormLabelsResponse;
+  groupOptions: GetUserGroupsResponse;
+}) => {
   const {
     control,
     handleSubmit,
@@ -83,6 +89,7 @@ const FormCreateForm = (props: { labelOptions: GetFormLabelsResponse }) => {
               register={register}
               setValue={setValue}
               labelOptions={props.labelOptions}
+              groupOptions={props.groupOptions}
             />
           </CardContent>
           <QuestionList

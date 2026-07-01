@@ -12,7 +12,11 @@ import {
 } from '@mui/material';
 import { useFieldArray, useForm } from 'react-hook-form';
 
-import type { GetFormLabelsResponse, GetFormResponse } from '@/lib/api-types';
+import type {
+  GetFormLabelsResponse,
+  GetFormResponse,
+  GetUserGroupsResponse,
+} from '@/lib/api-types';
 
 import FormEditorLayout from '../../../_components/FormEditorLayout';
 import FormSettings from '../../../_components/FormSettings';
@@ -27,6 +31,7 @@ import { formEditorSchema } from '../../../_schema/formEditorSchema';
 const FormEditForm = (props: {
   form: GetFormResponse;
   labelOptions: GetFormLabelsResponse;
+  groupOptions: GetUserGroupsResponse;
 }) => {
   const {
     control,
@@ -84,6 +89,7 @@ const FormEditForm = (props: {
                 control={control}
                 setValue={setValue}
                 labelOptions={props.labelOptions}
+                groupOptions={props.groupOptions}
               />
             </CardContent>
             <QuestionList

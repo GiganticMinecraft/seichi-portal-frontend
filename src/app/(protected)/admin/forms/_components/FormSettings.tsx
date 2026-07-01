@@ -15,10 +15,14 @@ import type {
   UseFormSetValue,
 } from 'react-hook-form';
 
-import type { GetFormLabelsResponse } from '@/lib/api-types';
+import type {
+  GetFormLabelsResponse,
+  GetUserGroupsResponse,
+} from '@/lib/api-types';
 
 import type { FormEditorValues } from '../_schema/formEditorSchema';
 
+import FormGroupField from './FormGroupField';
 import FormLabelField from './FormLabelField';
 
 const FormSettings = (props: {
@@ -26,6 +30,7 @@ const FormSettings = (props: {
   control: Control<FormEditorValues>;
   setValue: UseFormSetValue<FormEditorValues>;
   labelOptions: GetFormLabelsResponse;
+  groupOptions: GetUserGroupsResponse;
 }) => {
   const { field: visibilityField } = useController({
     control: props.control,
@@ -109,6 +114,13 @@ const FormSettings = (props: {
         <MenuItem value="PUBLIC">公開</MenuItem>
         <MenuItem value="PRIVATE">非公開</MenuItem>
       </TextField>
+      <FormGroupField
+        control={props.control}
+        name="settings.allowed_group_ids"
+        label="回答可能なユーザーグループ"
+        helperText="指定すると、選択したグループに所属するユーザーのみがこのフォームに回答できるようになります。未指定の場合は全員が対象になります。"
+        groupOptions={props.groupOptions}
+      />
       <TextField
         {...answerVisibilityField}
         value={answerVisibilityField.value}
@@ -120,6 +132,13 @@ const FormSettings = (props: {
         <MenuItem value="PUBLIC">公開</MenuItem>
         <MenuItem value="PRIVATE">非公開</MenuItem>
       </TextField>
+      <FormGroupField
+        control={props.control}
+        name="settings.answer_group_ids"
+        label="回答を閲覧できるユーザーグループ"
+        helperText="指定すると、選択したグループに所属するユーザーのみがこのフォームの回答を閲覧できるようになります。未指定の場合は全員が対象になります。"
+        groupOptions={props.groupOptions}
+      />
       <FormControlLabel
         label="未ログインユーザーの回答を許可する"
         control={
