@@ -23,7 +23,12 @@ const CreateGroupField = () => {
   const [dialogOpen, setDialogOpen] = useState(false);
   const { snackbar, showSnackbar, closeSnackbar } = useSnackbar();
 
-  const { handleSubmit, register, reset } = useForm<CreateGroupSchema>();
+  const {
+    handleSubmit,
+    register,
+    reset,
+    formState: { isSubmitting },
+  } = useForm<CreateGroupSchema>();
   const { createGroup } = useUserGroupCRUD();
 
   const handleOpen = () => {
@@ -35,7 +40,12 @@ const CreateGroupField = () => {
   };
 
   const onSubmit = async (data: CreateGroupSchema) => {
-    const result = await createGroup(data.name);
+    const trimmedName = data.name.trim();
+    if (!trimmedName) {
+      showSnackbar('グループ名を入力してください。', 'error');
+      return;
+    }
+    const result = await createGroup(trimmedName);
     if (result.ok) {
       showSnackbar('グループを作成しました。', 'success');
       handleClose();
@@ -72,8 +82,10 @@ const CreateGroupField = () => {
             />
           </DialogContent>
           <DialogActions>
-            <Button onClick={handleClose}>キャンセル</Button>
-            <Button type="submit" variant="contained">
+            <Button onClick={handleClose} disabled={isSubmitting}>
+              キャンセル
+            </Button>
+            <Button type="submit" variant="contained" disabled={isSubmitting}>
               作成
             </Button>
           </DialogActions>
