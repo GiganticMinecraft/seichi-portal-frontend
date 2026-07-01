@@ -24,8 +24,10 @@ const form = (
   questions: [],
   settings: {
     allow_temporary_answers: false,
+    allowed_group_ids: [],
     answer_settings: {
       acceptance_period: {},
+      answer_group_ids: [],
       visibility: 'PUBLIC',
     },
     discord_webhook_url: null,

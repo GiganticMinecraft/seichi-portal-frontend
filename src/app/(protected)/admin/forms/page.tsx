@@ -38,8 +38,8 @@ const Home = async (props: {
 
   return (
     <FormsPageContent
-      forms={forms}
-      archivedForms={archivedForms}
+      forms={forms.items}
+      archivedForms={archivedForms.items}
       labels={labels}
       createdFormId={searchParams.createdFormId}
     />

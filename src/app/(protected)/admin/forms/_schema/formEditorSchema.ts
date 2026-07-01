@@ -69,7 +69,9 @@ export const formEditorSchema = z.object({
     discord_webhook_url: z.string(),
     default_answer_title: z.string(),
     visibility: visibilitySchema,
+    allowed_group_ids: z.array(z.string()),
     answer_visibility: visibilitySchema,
+    answer_group_ids: z.array(z.string()),
     allow_temporary_answers: z.boolean(),
   }),
 });

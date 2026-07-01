@@ -24,7 +24,9 @@ export const createEmptyFormEditorValues = (): FormEditorValues => ({
     discord_webhook_url: '',
     default_answer_title: '',
     visibility: 'PRIVATE',
+    allowed_group_ids: [],
     answer_visibility: 'PRIVATE',
+    answer_group_ids: [],
     allow_temporary_answers: false,
   },
 });

@@ -32,7 +32,9 @@ const baseValues: FormEditorValues = {
     discord_webhook_url: '',
     default_answer_title: '',
     visibility: 'PUBLIC',
+    allowed_group_ids: [],
     answer_visibility: 'PUBLIC',
+    answer_group_ids: [],
     allow_temporary_answers: false,
   },
 };
@@ -116,6 +118,7 @@ describe('form request builders', () => {
       },
       settings: {
         visibility: 'PUBLIC',
+        allowed_group_ids: [],
         allow_temporary_answers: false,
         discord_webhook_url: null,
         answer_settings: {
@@ -125,6 +128,7 @@ describe('form request builders', () => {
             end_at: null,
           },
           visibility: 'PUBLIC',
+          answer_group_ids: [],
         },
       },
       questions: [

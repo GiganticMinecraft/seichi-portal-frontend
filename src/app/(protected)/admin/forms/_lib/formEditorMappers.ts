@@ -123,6 +123,8 @@ export const fromFormResponseToEditorValues = (
       default_answer_title:
         form.settings.answer_settings.default_answer_title ?? '',
       answer_visibility: toVisibility(form.settings.answer_settings.visibility),
+      answer_group_ids: form.settings.answer_settings.answer_group_ids,
+      allowed_group_ids: form.settings.allowed_group_ids,
       allow_temporary_answers: form.settings.allow_temporary_answers,
     },
   };
@@ -157,6 +159,7 @@ export const toFormUpdateBody = (
     labels: data.labels.map((label) => label.id),
     settings: {
       visibility: data.settings.visibility,
+      allowed_group_ids: data.settings.allowed_group_ids,
       allow_temporary_answers: data.settings.allow_temporary_answers,
       discord_webhook_url: toNullableNonEmptyString(
         data.settings.discord_webhook_url
@@ -167,6 +170,7 @@ export const toFormUpdateBody = (
         ),
         acceptance_period: acceptancePeriod,
         visibility: data.settings.answer_visibility,
+        answer_group_ids: data.settings.answer_group_ids,
       },
     },
   };

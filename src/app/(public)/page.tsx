@@ -13,7 +13,7 @@ const fetchPublicForms = async (): Promise<GetFormsResponse> => {
       console.error('Failed to fetch public forms:', error);
       return [];
     }
-    return data.filter((f) => f.settings.allow_temporary_answers);
+    return data.items.filter((f) => f.settings.allow_temporary_answers);
   } catch (err) {
     console.error('Network error while fetching public forms:', err);
     return [];
