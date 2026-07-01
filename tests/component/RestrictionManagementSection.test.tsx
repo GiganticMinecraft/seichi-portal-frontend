@@ -1,7 +1,7 @@
 import userEvent from '@testing-library/user-event';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import RestrictionDialogBody from '@/app/(protected)/admin/users/_components/RestrictionDialogBody';
+import RestrictionManagementSection from '@/app/(protected)/admin/users/_components/RestrictionManagementSection';
 import type {
   GetAnswerSubmitterRestrictionResponse,
   PutAnswerSubmitterRestrictionSchema,
@@ -59,7 +59,7 @@ vi.mock('@/hooks/useAnswerSubmitterRestrictionActions', () => ({
   }),
 }));
 
-describe('RestrictionDialogBody', () => {
+describe('RestrictionManagementSection', () => {
   beforeEach(() => {
     restrictionMocks.queryState.data = null;
     restrictionMocks.queryState.error = null;
@@ -72,10 +72,9 @@ describe('RestrictionDialogBody', () => {
 
   it('未制限ユーザーに理由を入力して制限を付与する', async () => {
     const user = userEvent.setup();
-    const onClose = vi.fn();
 
     renderWithProviders(
-      <RestrictionDialogBody uuid="user-uuid" onClose={onClose} />
+      <RestrictionManagementSection uuid="user-uuid" disabled={false} />
     );
 
     await user.type(screen.getByRole('textbox', { name: /理由/ }), '迷惑投稿');
@@ -86,7 +85,6 @@ describe('RestrictionDialogBody', () => {
         reason: '迷惑投稿',
       });
       expect(restrictionMocks.queryState.mutate).toHaveBeenCalledOnce();
-      expect(onClose).toHaveBeenCalledOnce();
     });
   });
 
@@ -94,7 +92,7 @@ describe('RestrictionDialogBody', () => {
     const user = userEvent.setup();
 
     renderWithProviders(
-      <RestrictionDialogBody uuid="user-uuid" onClose={vi.fn()} />
+      <RestrictionManagementSection uuid="user-uuid" disabled={false} />
     );
 
     await user.type(screen.getByRole('textbox', { name: /理由/ }), '   ');
@@ -106,7 +104,6 @@ describe('RestrictionDialogBody', () => {
 
   it('制限中ユーザーは現在の制限を表示して解除できる', async () => {
     const user = userEvent.setup();
-    const onClose = vi.fn();
     restrictionMocks.queryState.data = {
       expires_at: null,
       id: 'restriction-id',
@@ -117,7 +114,7 @@ describe('RestrictionDialogBody', () => {
     };
 
     renderWithProviders(
-      <RestrictionDialogBody uuid="user-uuid" onClose={onClose} />
+      <RestrictionManagementSection uuid="user-uuid" disabled={false} />
     );
 
     expect(screen.getByText(/理由:/)).toBeVisible();
@@ -128,7 +125,25 @@ describe('RestrictionDialogBody', () => {
     await waitFor(() => {
       expect(restrictionMocks.unrestrictUser).toHaveBeenCalledWith('user-uuid');
       expect(restrictionMocks.queryState.mutate).toHaveBeenCalledOnce();
-      expect(onClose).toHaveBeenCalledOnce();
     });
+  });
+
+  it('disabled のとき自分自身を制限・解除できない', () => {
+    restrictionMocks.queryState.data = {
+      expires_at: null,
+      id: 'restriction-id',
+      reason: '迷惑投稿',
+      restricted_at: '2026-06-29T10:00:00+09:00',
+      restricted_by: 'operator-id',
+      submitter_id: 'user-uuid',
+    };
+
+    renderWithProviders(
+      <RestrictionManagementSection uuid="user-uuid" disabled={true} />
+    );
+
+    expect(
+      screen.getByRole('button', { name: '制限を解除する' })
+    ).toBeDisabled();
   });
 });

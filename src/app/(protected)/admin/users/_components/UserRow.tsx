@@ -2,9 +2,8 @@ import { TableCell, TableRow } from '@mui/material';
 
 import type { UserListRow } from '../_lib/userListRows';
 
-import RestrictionCell from './RestrictionCell';
 import RoleChip from './RoleChip';
-import RoleSelectCell from './RoleSelectCell';
+import UserDetailCell from './UserDetailCell';
 import UserIdCell from './UserIdCell';
 import UserNameCell from './UserNameCell';
 
@@ -21,18 +20,12 @@ const UserRow = ({ row }: { row: UserListRow }) => {
       <TableCell>
         <RoleChip role={user.role} />
       </TableCell>
-      <TableCell>
-        <RoleSelectCell
-          userId={user.id}
-          currentRole={user.role}
-          disabled={!row.canManageRole}
-        />
-      </TableCell>
-      <TableCell>
-        <RestrictionCell
+      <TableCell align="center">
+        <UserDetailCell
           userId={user.id}
           userName={user.name}
-          disabled={!row.canManageRestriction}
+          canManageRole={row.canManageRole}
+          canManageRestriction={row.canManageRestriction}
         />
       </TableCell>
     </TableRow>
