@@ -117,8 +117,8 @@ const FormSettings = (props: {
       <FormGroupField
         control={props.control}
         name="settings.allowed_group_ids"
-        label="回答可能なユーザーグループ"
-        helperText="指定すると、選択したグループに所属するユーザーのみがこのフォームに回答できるようになります。未指定の場合は全員が対象になります。"
+        label="フォームを閲覧できるユーザーグループ"
+        helperText="指定すると、選択したグループに所属するユーザーのみがこのフォームを閲覧・回答できるようになります（公開設定が「公開」の場合に適用されます）。未指定の場合は全員が対象になります。"
         groupOptions={props.groupOptions}
       />
       <TextField
@@ -135,8 +135,8 @@ const FormSettings = (props: {
       <FormGroupField
         control={props.control}
         name="settings.answer_group_ids"
-        label="回答を閲覧できるユーザーグループ"
-        helperText="指定すると、選択したグループに所属するユーザーのみがこのフォームの回答を閲覧できるようになります。未指定の場合は全員が対象になります。"
+        label="回答を投稿・閲覧できるユーザーグループ"
+        helperText="指定すると、選択したグループに所属するユーザーのみがこのフォームに回答したり、回答（公開設定が「公開」の場合）を閲覧したりできるようになります。未指定の場合は全員が対象になります。"
         groupOptions={props.groupOptions}
       />
       <FormControlLabel

@@ -34,11 +34,15 @@ const FormGroupField = (props: {
       getOptionLabel={(option) => option.name}
       value={selectedGroups}
       isOptionEqualToValue={(option, value) => option.id === value.id}
-      renderOption={(renderProps, option) => (
-        <Box {...renderProps} key={option.id} component="span">
-          {option.name}
-        </Box>
-      )}
+      renderOption={(renderProps, option) => {
+        const { key, ...optionProps } = renderProps;
+
+        return (
+          <Box {...optionProps} key={key} component="span">
+            {option.name}
+          </Box>
+        );
+      }}
       renderInput={(params) => (
         <TextField
           {...params}
