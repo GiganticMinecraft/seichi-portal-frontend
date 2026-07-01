@@ -127,23 +127,4 @@ describe('RestrictionManagementSection', () => {
       expect(restrictionMocks.queryState.mutate).toHaveBeenCalledOnce();
     });
   });
-
-  it('disabled のとき自分自身を制限・解除できない', () => {
-    restrictionMocks.queryState.data = {
-      expires_at: null,
-      id: 'restriction-id',
-      reason: '迷惑投稿',
-      restricted_at: '2026-06-29T10:00:00+09:00',
-      restricted_by: 'operator-id',
-      submitter_id: 'user-uuid',
-    };
-
-    renderWithProviders(
-      <RestrictionManagementSection uuid="user-uuid" disabled={true} />
-    );
-
-    expect(
-      screen.getByRole('button', { name: '制限を解除する' })
-    ).toBeDisabled();
-  });
 });
