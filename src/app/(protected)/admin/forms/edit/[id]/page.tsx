@@ -16,7 +16,7 @@ export const metadata: Metadata = {
 const Home = async ({ params }: { params: Promise<{ id: number }> }) => {
   const { session } = await getAdminAccess();
   const { id } = await params;
-  const [form, labels] = await Promise.all([
+  const [form, labels, groups] = await Promise.all([
     requireBackendData(
       serverApiClient.GET('/api/v1/forms/{id}', {
         headers: authorizationHeader(session.token),
@@ -30,9 +30,16 @@ const Home = async ({ params }: { params: Promise<{ id: number }> }) => {
         headers: authorizationHeader(session.token),
       })
     ),
+    requireBackendData(
+      serverApiClient.GET('/api/v1/user-groups', {
+        headers: authorizationHeader(session.token),
+      })
+    ),
   ]);
 
-  return <FormEditForm form={form} labelOptions={labels} />;
+  return (
+    <FormEditForm form={form} labelOptions={labels} groupOptions={groups} />
+  );
 };
 
 export default Home;

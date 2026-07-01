@@ -15,13 +15,20 @@ export const metadata: Metadata = {
 
 const Home = async () => {
   const { session } = await getAdminAccess();
-  const labels = await requireBackendData(
-    serverApiClient.GET('/api/v1/labels/forms', {
-      headers: authorizationHeader(session.token),
-    })
-  );
+  const [labels, groups] = await Promise.all([
+    requireBackendData(
+      serverApiClient.GET('/api/v1/labels/forms', {
+        headers: authorizationHeader(session.token),
+      })
+    ),
+    requireBackendData(
+      serverApiClient.GET('/api/v1/user-groups', {
+        headers: authorizationHeader(session.token),
+      })
+    ),
+  ]);
 
-  return <FormCreateForm labelOptions={labels} />;
+  return <FormCreateForm labelOptions={labels} groupOptions={groups} />;
 };
 
 export default Home;
