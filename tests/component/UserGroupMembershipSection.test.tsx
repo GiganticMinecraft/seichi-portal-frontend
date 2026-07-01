@@ -60,6 +60,7 @@ describe('UserGroupMembershipSection', () => {
       { id: 'group-1', name: 'グループA' },
       { id: 'group-2', name: 'グループB' },
     ];
+    membershipMocks.queryState.isLoading = false;
     membershipMocks.addUserToGroup.mockResolvedValue({ success: true });
     membershipMocks.removeUserFromGroup.mockResolvedValue({ success: true });
     onChanged.mockResolvedValue();
@@ -132,5 +133,23 @@ describe('UserGroupMembershipSection', () => {
     ).toBeDisabled();
     const chip = screen.getByText('グループA').closest('.MuiChip-root');
     expect(chip?.querySelector('.MuiChip-deleteIcon')).toBeNull();
+  });
+
+  it('グループ一覧の読み込み中は追加欄を無効化する', () => {
+    membershipMocks.queryState.isLoading = true;
+    membershipMocks.queryState.data = undefined;
+
+    renderWithProviders(
+      <UserGroupMembershipSection
+        uuid="user-uuid"
+        currentGroups={[]}
+        disabled={false}
+        onChanged={onChanged}
+      />
+    );
+
+    expect(
+      screen.getByRole('combobox', { name: 'グループを追加' })
+    ).toBeDisabled();
   });
 });

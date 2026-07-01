@@ -27,7 +27,9 @@ const UserGroupMembershipSection = ({
 }) => {
   const [submitError, setSubmitError] = useState<string | null>(null);
 
-  const { data: allGroups } = useApiQuery('/api/v1/user-groups');
+  const { data: allGroups, isLoading: isGroupsLoading } = useApiQuery(
+    '/api/v1/user-groups'
+  );
   const { addUserToGroup, removeUserFromGroup } =
     useUserGroupMembershipActions();
 
@@ -89,7 +91,7 @@ const UserGroupMembershipSection = ({
         options={joinableGroups}
         getOptionLabel={(group) => group.name}
         value={null}
-        disabled={disabled}
+        disabled={disabled || isGroupsLoading}
         onChange={(_event, group) => {
           if (group) {
             void handleAdd(group);

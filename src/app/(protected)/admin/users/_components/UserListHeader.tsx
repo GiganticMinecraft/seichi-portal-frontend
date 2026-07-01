@@ -7,6 +7,8 @@ import {
   Typography,
 } from '@mui/material';
 
+import ToManageUserGroupsButton from './ToManageUserGroupsButton';
+
 const UserListHeader = ({
   count,
   search,
@@ -31,6 +33,7 @@ const UserListHeader = ({
       </Typography>
       <Chip label={`${count} 件`} size="small" color="primary" />
     </Box>
+    <ToManageUserGroupsButton />
     <TextField
       variant="standard"
       size="small"

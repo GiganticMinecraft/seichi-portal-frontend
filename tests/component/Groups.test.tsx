@@ -27,6 +27,10 @@ vi.mock('@/hooks/useUserGroupCRUD', () => ({
   }),
 }));
 
+vi.mock('@/app/_swr/useApiQuery', () => ({
+  useApiQuery: () => ({ data: undefined, error: null, isLoading: false }),
+}));
+
 vi.mock('@/app/(protected)/admin/groups/_components/GroupDetailDialog', () => ({
   default: () => null,
 }));

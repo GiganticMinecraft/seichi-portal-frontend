@@ -24,6 +24,7 @@ import { useForm } from 'react-hook-form';
 
 import ConfirmDialog from '@/app/_components/ConfirmDialog';
 import SnackbarAlert, { useSnackbar } from '@/app/_components/SnackbarAlert';
+import { useApiQuery } from '@/app/_swr/useApiQuery';
 import { useUserGroupCRUD } from '@/hooks/useUserGroupCRUD';
 import type { UserGroupSchema } from '@/lib/api-types';
 
@@ -35,6 +36,7 @@ type EditGroupSchema = {
 };
 
 const Groups = (props: { groups: UserGroupSchema[] }) => {
+  const { data: groups = props.groups } = useApiQuery('/api/v1/user-groups');
   const { snackbar, showSnackbar, closeSnackbar } = useSnackbar();
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
@@ -43,15 +45,13 @@ const Groups = (props: { groups: UserGroupSchema[] }) => {
   );
   const [detailGroup, setDetailGroup] = useState<UserGroupSchema | null>(null);
 
-  const { handleSubmit, register, reset, setValue } =
-    useForm<EditGroupSchema>();
+  const { handleSubmit, register, reset } = useForm<EditGroupSchema>();
 
   const { deleteGroup, editGroup } = useUserGroupCRUD();
 
   const handleOpenEdit = (group: UserGroupSchema) => {
     setSelectedGroup(group);
-    setValue('id', group.id);
-    setValue('name', group.name);
+    reset({ id: group.id, name: group.name });
     setEditDialogOpen(true);
   };
 
@@ -92,7 +92,7 @@ const Groups = (props: { groups: UserGroupSchema[] }) => {
     }
   };
 
-  if (props.groups.length === 0) {
+  if (groups.length === 0) {
     return (
       <Box>
         <Paper sx={{ p: 4, textAlign: 'center' }}>
@@ -121,7 +121,7 @@ const Groups = (props: { groups: UserGroupSchema[] }) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {props.groups.map((group) => (
+            {groups.map((group) => (
               <TableRow key={group.id}>
                 <TableCell component="th" scope="row">
                   {group.name}
@@ -170,7 +170,7 @@ const Groups = (props: { groups: UserGroupSchema[] }) => {
           }}
         >
           <DialogContent>
-            <TextField {...register('id')} type="hidden" />
+            <input {...register('id')} type="hidden" />
             <TextField
               {...register('name')}
               autoFocus

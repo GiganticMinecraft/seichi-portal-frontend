@@ -36,6 +36,7 @@ describe('GroupDetailDialogBody', () => {
 
     expect(screen.getByText('ユーザーA')).toBeVisible();
     expect(screen.getByText('ユーザーB')).toBeVisible();
+    expect(screen.getByRole('button', { name: '閉じる' })).toBeVisible();
   });
 
   it('所属ユーザーがいない場合は空メッセージを表示する', () => {
@@ -62,5 +63,16 @@ describe('GroupDetailDialogBody', () => {
     expect(
       screen.getByText('所属ユーザー一覧の取得に失敗しました。')
     ).toBeVisible();
+    expect(screen.getByRole('button', { name: '閉じる' })).toBeVisible();
+  });
+
+  it('読み込み中でも閉じるボタンを表示する', () => {
+    queryState.current = { data: undefined, error: null, isLoading: true };
+
+    renderWithProviders(
+      <GroupDetailDialogBody groupId="group-1" onClose={vi.fn()} />
+    );
+
+    expect(screen.getByRole('button', { name: '閉じる' })).toBeVisible();
   });
 });
