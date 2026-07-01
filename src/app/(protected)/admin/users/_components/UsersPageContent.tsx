@@ -24,13 +24,25 @@ const UsersPageContent = ({
   const [debouncedSearch, setDebouncedSearch] = useState('');
 
   useEffect(() => {
+    const trimmed = search.trim();
+    if (trimmed === '') {
+      return;
+    }
+
     const timer = setTimeout(() => {
-      setDebouncedSearch(search.trim());
+      setDebouncedSearch(trimmed);
     }, SEARCH_DEBOUNCE_MS);
     return () => {
       clearTimeout(timer);
     };
   }, [search]);
+
+  const handleSearchChange = (value: string) => {
+    setSearch(value);
+    if (value.trim() === '') {
+      setDebouncedSearch('');
+    }
+  };
 
   const isSearching = debouncedSearch !== '';
 
@@ -45,9 +57,10 @@ const UsersPageContent = ({
     initialUsers
   );
 
-  const { data: searchData } = useApiQuery(
+  const { data: searchData, isLoading: isSearchLoading } = useApiQuery(
     '/api/v1/search/users',
-    isSearching ? { query: { query: debouncedSearch } } : null
+    isSearching ? { query: { query: debouncedSearch } } : null,
+    { keepPreviousData: true }
   );
 
   const rows = isSearching
@@ -56,7 +69,12 @@ const UsersPageContent = ({
 
   return (
     <>
-      <UsersView rows={rows} search={search} onSearchChange={setSearch} />
+      <UsersView
+        rows={rows}
+        search={search}
+        onSearchChange={handleSearchChange}
+        isLoading={isSearching && isSearchLoading}
+      />
       {!isSearching && hasMore && (
         <InfiniteScrollSentinel
           sentinelRef={sentinelRef}

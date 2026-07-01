@@ -1,5 +1,6 @@
 import {
   Box,
+  LinearProgress,
   Paper,
   Table,
   TableBody,
@@ -18,10 +19,12 @@ const UsersView = ({
   rows,
   search,
   onSearchChange,
+  isLoading = false,
 }: {
   rows: UserListRow[];
   search: string;
   onSearchChange: (value: string) => void;
+  isLoading?: boolean;
 }) => {
   return (
     <Box sx={{ p: 3 }}>
@@ -30,7 +33,16 @@ const UsersView = ({
         search={search}
         onSearchChange={onSearchChange}
       />
-      <TableContainer component={Paper} variant="outlined">
+      <TableContainer
+        component={Paper}
+        variant="outlined"
+        sx={{ position: 'relative' }}
+      >
+        {isLoading && (
+          <LinearProgress
+            sx={{ position: 'absolute', top: 0, left: 0, right: 0, zIndex: 1 }}
+          />
+        )}
         <Table sx={{ tableLayout: 'fixed' }}>
           <TableHead>
             <TableRow sx={{ '& th': { fontWeight: 'bold' } }}>
