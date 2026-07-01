@@ -10,6 +10,7 @@ export type {
   AnswerComment,
   CreateFormResponse,
   CreateFormSchema,
+  CreateUserGroupSchema,
   GetAnswerLabelsResponse,
   GetAnswerResponse,
   GetAnswerSubmitterRestrictionResponse,
@@ -25,6 +26,8 @@ export type {
   GetFormsResponse,
   GetMessagesResponse,
   GetNotificationSettingsResponse,
+  GetUserGroupMembersResponse,
+  GetUserGroupsResponse,
   GetUserListPageResponse,
   GetUserNotificationSettingsResponse,
   GetUserResponse,
@@ -36,4 +39,5 @@ export type {
   PutAnswerSubmitterRestrictionSchema,
   SearchResponse,
   UpdateNotificationSettingsSchema,
+  UserGroupSchema,
 } from '@/lib/api/types';

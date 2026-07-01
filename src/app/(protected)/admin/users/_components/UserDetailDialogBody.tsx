@@ -4,7 +4,6 @@ import {
   Alert,
   Avatar,
   Box,
-  Chip,
   CircularProgress,
   DialogActions,
   DialogContent,
@@ -20,6 +19,7 @@ import CopyButton from './CopyButton';
 import RestrictionManagementSection from './RestrictionManagementSection';
 import RoleChip from './RoleChip';
 import RoleSelectCell from './RoleSelectCell';
+import UserGroupMembershipSection from './UserGroupMembershipSection';
 
 const UserDetailDialogBody = ({
   uuid,
@@ -36,6 +36,7 @@ const UserDetailDialogBody = ({
     data: user,
     error: userError,
     isLoading: isUserLoading,
+    mutate: mutateUser,
   } = useApiQuery('/api/v1/users/{uuid}', { path: { uuid } });
 
   if (isUserLoading) {
@@ -85,17 +86,12 @@ const UserDetailDialogBody = ({
 
           <Stack spacing={1}>
             <Typography variant="subtitle2">所属グループ</Typography>
-            {user.groups.length > 0 ? (
-              <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
-                {user.groups.map((group) => (
-                  <Chip key={group.id} label={group.name} size="small" />
-                ))}
-              </Box>
-            ) : (
-              <Typography variant="body2" color="text.secondary">
-                所属しているグループはありません
-              </Typography>
-            )}
+            <UserGroupMembershipSection
+              uuid={user.id}
+              currentGroups={user.groups}
+              disabled={!canManageRestriction}
+              onChanged={mutateUser}
+            />
           </Stack>
 
           <Stack spacing={1}>

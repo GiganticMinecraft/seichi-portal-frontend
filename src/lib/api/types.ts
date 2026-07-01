@@ -55,3 +55,10 @@ export type UpdateNotificationSettingsSchema =
 export type GetArchivedFormsPageResponse =
   ApiPaths['/api/v1/archived-forms']['get']['responses'][200]['content']['application/json'];
 export type GetArchivedFormsResponse = GetArchivedFormsPageResponse['items'];
+export type UserGroupSchema = ApiComponents['schemas']['UserGroupSchema'];
+export type GetUserGroupsResponse =
+  ApiPaths['/api/v1/user-groups']['get']['responses'][200]['content']['application/json'];
+export type CreateUserGroupSchema =
+  ApiPaths['/api/v1/user-groups']['post']['requestBody']['content']['application/json'];
+export type GetUserGroupMembersResponse =
+  ApiPaths['/api/v1/user-groups/{group_id}/users']['get']['responses'][200]['content']['application/json'];
