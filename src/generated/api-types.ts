@@ -429,6 +429,60 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/user-groups": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** ユーザーグループの一覧取得 */
+        get: operations["user_group_list"];
+        put?: never;
+        /** ユーザーグループの作成 */
+        post: operations["create_user_group"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/user-groups/{group_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** ユーザーグループの削除 */
+        delete: operations["delete_user_group"];
+        options?: never;
+        head?: never;
+        /** ユーザーグループの更新 */
+        patch: operations["update_user_group"];
+        trace?: never;
+    };
+    "/api/v1/user-groups/{group_id}/users/{user_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** ユーザーをグループに追加 */
+        put: operations["add_user_to_group"];
+        post?: never;
+        /** ユーザーをグループから削除 */
+        delete: operations["remove_user_from_group"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/users": {
         parameters: {
             query?: never;
@@ -557,8 +611,13 @@ export interface components {
             id: string;
             name: string;
         };
+        AnswerListPageResponse: {
+            items: components["schemas"]["FormAnswer"][];
+            next_cursor?: string | null;
+        };
         AnswerSettingsSchema: {
             acceptance_period: components["schemas"]["AnswerAcceptancePeriodSchema"];
+            answer_group_ids: string[];
             default_answer_title?: string | null;
             visibility: components["schemas"]["AnswerVisibility"];
         };
@@ -582,6 +641,10 @@ export interface components {
         };
         /** @enum {string} */
         AnswerVisibility: "PUBLIC" | "PRIVATE";
+        ArchivedFormListPageResponse: {
+            items: components["schemas"]["ArchivedFormSchema"][];
+            next_cursor?: string | null;
+        };
         ArchivedFormSchema: {
             /** Format: date-time */
             archived_at: string;
@@ -677,6 +740,10 @@ export interface components {
         FormLabelUpdateSchema: {
             name?: null | components["schemas"]["NonEmptyString"];
         };
+        FormListPageResponse: {
+            items: components["schemas"]["FormSchema"][];
+            next_cursor?: string | null;
+        };
         FormMetaSchema: {
             /** Format: date-time */
             created_at: string;
@@ -695,6 +762,7 @@ export interface components {
         };
         FormSettingsSchema: {
             allow_temporary_answers: boolean;
+            allowed_group_ids: string[];
             answer_settings: components["schemas"]["AnswerSettingsSchema"];
             discord_webhook_url?: string | null;
             visibility: string;
@@ -815,14 +883,27 @@ export interface components {
             role: components["schemas"]["Role"];
             uuid: string;
         };
+        UserGroupRequest: {
+            name: string;
+        };
+        UserGroupSchema: {
+            id: string;
+            name: string;
+        };
         UserInfoResponse: {
             discord_user_id?: string | null;
             discord_username?: string | null;
+            groups: components["schemas"]["UserGroupSchema"][];
             id: string;
             name: string;
             role: string;
         };
+        UserListPageResponse: {
+            items: components["schemas"]["UserSchema"][];
+            next_cursor?: string | null;
+        };
         UserSchema: {
+            groups: components["schemas"]["UserGroupSchema"][];
             id: string;
             name: string;
             role: string;
@@ -845,11 +926,10 @@ export interface operations {
     archived_form_list_handler: {
         parameters: {
             query?: {
-                /** @description Offset for pagination */
-                offset?: number;
-                /** @description Limit for pagination */
+                /** @description Maximum number of forms to return */
                 limit?: number;
-                /** @description Search query */
+                /** @description Cursor returned by the previous page */
+                cursor?: string;
                 query?: string;
             };
             header?: never;
@@ -864,7 +944,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ArchivedFormSchema"][];
+                    "application/json": components["schemas"]["ArchivedFormListPageResponse"];
                 };
             };
             /** @description The server could not understand the request due to invalid syntax. */
@@ -1042,10 +1122,10 @@ export interface operations {
     form_list_handler: {
         parameters: {
             query?: {
-                /** @description Offset for pagination */
-                offset?: number;
-                /** @description Limit for pagination */
+                /** @description Maximum number of forms to return */
                 limit?: number;
+                /** @description Cursor returned by the previous page */
+                cursor?: string;
             };
             header?: never;
             path?: never;
@@ -1059,7 +1139,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["FormSchema"][];
+                    "application/json": components["schemas"]["FormListPageResponse"];
                 };
             };
             /** @description The server could not understand the request due to invalid syntax. */
@@ -1171,7 +1251,12 @@ export interface operations {
     };
     get_all_answers: {
         parameters: {
-            query?: never;
+            query?: {
+                /** @description Maximum number of answers to return */
+                limit?: number;
+                /** @description Cursor returned by the previous page */
+                cursor?: string;
+            };
             header?: never;
             path?: never;
             cookie?: never;
@@ -1184,7 +1269,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["FormAnswer"][];
+                    "application/json": components["schemas"]["AnswerListPageResponse"];
                 };
             };
             /** @description The server could not understand the request due to invalid syntax. */
@@ -2243,7 +2328,12 @@ export interface operations {
     };
     get_answer_by_form_id_handler: {
         parameters: {
-            query?: never;
+            query?: {
+                /** @description Maximum number of answers to return */
+                limit?: number;
+                /** @description Cursor returned by the previous page */
+                cursor?: string;
+            };
             header?: never;
             path: {
                 /** @description Form ID */
@@ -2259,7 +2349,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["FormAnswer"][];
+                    "application/json": components["schemas"]["AnswerListPageResponse"];
                 };
             };
             /** @description The server could not understand the request due to invalid syntax. */
@@ -3639,7 +3729,7 @@ export interface operations {
             };
         };
     };
-    user_list: {
+    user_group_list: {
         parameters: {
             query?: never;
             header?: never;
@@ -3654,7 +3744,442 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["UserSchema"][];
+                    "application/json": components["schemas"]["UserGroupSchema"][];
+                };
+            };
+            /** @description The server could not understand the request due to invalid syntax. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Access is unauthorized. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Access is forbidden. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    create_user_group: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UserGroupRequest"];
+            };
+        };
+        responses: {
+            /** @description The request has succeeded. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UserGroupSchema"];
+                };
+            };
+            /** @description The resource has been created. */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UserGroupSchema"];
+                };
+            };
+            /** @description The server could not understand the request due to invalid syntax. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Access is unauthorized. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Access is forbidden. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Client error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    delete_user_group: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description User group UUID */
+                group_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The resource has been deleted. */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description The server could not understand the request due to invalid syntax. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Access is unauthorized. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Access is forbidden. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description The server cannot find the requested resource. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    update_user_group: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description User group UUID */
+                group_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UserGroupRequest"];
+            };
+        };
+        responses: {
+            /** @description The request has succeeded. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UserGroupSchema"];
+                };
+            };
+            /** @description The resource has been created. */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UserGroupSchema"];
+                };
+            };
+            /** @description The server could not understand the request due to invalid syntax. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Access is unauthorized. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Access is forbidden. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description The server cannot find the requested resource. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Client error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    add_user_to_group: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description User group UUID */
+                group_id: string;
+                /** @description User UUID */
+                user_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The request has succeeded. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UserSchema"];
+                };
+            };
+            /** @description The server could not understand the request due to invalid syntax. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Access is unauthorized. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Access is forbidden. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description The server cannot find the requested resource. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    remove_user_from_group: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description User group UUID */
+                group_id: string;
+                /** @description User UUID */
+                user_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The request has succeeded. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UserSchema"];
+                };
+            };
+            /** @description The server could not understand the request due to invalid syntax. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Access is unauthorized. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Access is forbidden. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description The server cannot find the requested resource. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    user_list: {
+        parameters: {
+            query?: {
+                /** @description Maximum number of users to return */
+                limit?: number;
+                /** @description Cursor returned by the previous page */
+                cursor?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The request has succeeded. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UserListPageResponse"];
                 };
             };
             /** @description The server could not understand the request due to invalid syntax. */

@@ -17,7 +17,7 @@ const AdminAnswerPageContent = ({ answerId }: { answerId: string }) => {
   });
 
   const { data: allAnswers } = allAnswersQuery;
-  const answers = allAnswers?.find((a) => a.id === answerId);
+  const answers = allAnswers?.items.find((a) => a.id === answerId);
 
   const formQuery = useApiQuery(
     '/api/v1/forms/{id}',
@@ -62,7 +62,7 @@ const AdminAnswerPageContent = ({ answerId }: { answerId: string }) => {
     return <LoadingCircular />;
   }
 
-  const answer = answerListQueries.allAnswers.data.find(
+  const answer = answerListQueries.allAnswers.data.items.find(
     (a) => a.id === answerId
   );
 

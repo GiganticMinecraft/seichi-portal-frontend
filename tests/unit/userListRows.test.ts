@@ -4,8 +4,8 @@ import { toUserListRows } from '@/app/(protected)/admin/users/_lib/userListRows'
 import type { GetUserListResponse } from '@/lib/api-types';
 
 const users = [
-  { id: 'self-user', name: '自分', role: 'ADMINISTRATOR' },
-  { id: 'other-user', name: '他のユーザー', role: 'STANDARD_USER' },
+  { id: 'self-user', name: '自分', role: 'ADMINISTRATOR', groups: [] },
+  { id: 'other-user', name: '他のユーザー', role: 'STANDARD_USER', groups: [] },
 ] satisfies GetUserListResponse;
 
 describe('toUserListRows', () => {

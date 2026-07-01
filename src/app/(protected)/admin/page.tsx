@@ -30,11 +30,11 @@ const Home = async () => {
 
   return (
     <DataTable
-      answerResponseWithFormTitle={answers.map((answer) => {
+      answerResponseWithFormTitle={answers.items.map((answer) => {
         return {
           ...answer,
           form_title:
-            forms.find((form) => form.id === answer.form_id)?.title ??
+            forms.items.find((form) => form.id === answer.form_id)?.title ??
             'unknown form',
         };
       })}

@@ -21,7 +21,9 @@ const Home = async () => {
     })
   );
 
-  return <UsersPageContent users={users} currentUserId={session.user.id} />;
+  return (
+    <UsersPageContent users={users.items} currentUserId={session.user.id} />
+  );
 };
 
 export default Home;

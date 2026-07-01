@@ -35,7 +35,7 @@ const Home = async ({ params }: { params: Promise<{ formId: string }> }) => {
     ),
   ]);
 
-  return <AnswersPageContent form={form} answers={answers} />;
+  return <AnswersPageContent form={form} answers={answers.items} />;
 };
 
 export default Home;

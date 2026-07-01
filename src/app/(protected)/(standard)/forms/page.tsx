@@ -21,7 +21,7 @@ const Home = async () => {
     })
   );
 
-  return <FormsPageContent forms={forms} />;
+  return <FormsPageContent forms={forms.items} />;
 };
 
 export default Home;
