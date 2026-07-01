@@ -48,10 +48,6 @@ const DashboardMenu = () => {
             label: 'Users',
             url: '/admin/users',
           },
-          {
-            label: 'Groups',
-            url: '/admin/groups',
-          },
         ].map((value) => {
           return (
             <MenuItem
