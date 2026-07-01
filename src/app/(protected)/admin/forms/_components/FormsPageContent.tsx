@@ -5,11 +5,13 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
+import InfiniteScrollSentinel from '@/app/_components/InfiniteScrollSentinel';
 import SnackbarAlert, { useSnackbar } from '@/app/_components/SnackbarAlert';
+import { useInfiniteApiQuery } from '@/app/_swr/useInfiniteApiQuery';
 import type {
-  GetArchivedFormsResponse,
+  GetArchivedFormsPageResponse,
   GetFormLabelsResponse,
-  GetFormsResponse,
+  GetFormsPageResponse,
 } from '@/lib/api-types';
 
 import { useFormListFilters } from '../_hooks/useFormListFilters';
@@ -19,13 +21,13 @@ import FormsToolbar from './FormsToolbar';
 import FormsView from './FormsView';
 
 const FormsPageContent = ({
-  forms,
-  archivedForms,
+  initialForms,
+  initialArchivedForms,
   labels,
   createdFormId,
 }: {
-  forms: GetFormsResponse;
-  archivedForms: GetArchivedFormsResponse;
+  initialForms: GetFormsPageResponse;
+  initialArchivedForms: GetArchivedFormsPageResponse;
   labels: GetFormLabelsResponse;
   createdFormId?: string | undefined;
 }) => {
@@ -35,6 +37,26 @@ const FormsPageContent = ({
   );
   const { snackbar, showSnackbar, closeSnackbar } = useSnackbar();
   const [activeTab, setActiveTab] = useState(0);
+  const {
+    items: forms,
+    hasMore: hasMoreForms,
+    isLoadingMore: isLoadingMoreForms,
+    sentinelRef: formsSentinelRef,
+  } = useInfiniteApiQuery(
+    '/api/v1/forms',
+    (cursor) => ({ query: cursor === undefined ? {} : { cursor } }),
+    initialForms
+  );
+  const {
+    items: archivedForms,
+    hasMore: hasMoreArchivedForms,
+    isLoadingMore: isLoadingMoreArchivedForms,
+    sentinelRef: archivedFormsSentinelRef,
+  } = useInfiniteApiQuery(
+    '/api/v1/archived-forms',
+    (cursor) => ({ query: cursor === undefined ? {} : { cursor } }),
+    initialArchivedForms
+  );
   const { titleSearch, setTitleSearch, setLabelFilter, filteredForms } =
     useFormListFilters(forms);
 
@@ -71,7 +93,7 @@ const FormsPageContent = ({
         }}
       >
         <Tab label="アクティブ" />
-        <Tab label={`アーカイブ済み（${archivedForms.length}）`} />
+        <Tab label="アーカイブ済み" />
       </Tabs>
       {activeTab === 0 && (
         <>
@@ -88,13 +110,27 @@ const FormsPageContent = ({
             }}
             onResult={handleArchiveResult}
           />
+          {hasMoreForms && (
+            <InfiniteScrollSentinel
+              sentinelRef={formsSentinelRef}
+              isLoadingMore={isLoadingMoreForms}
+            />
+          )}
         </>
       )}
       {activeTab === 1 && (
-        <ArchivedFormsView
-          forms={archivedForms}
-          onResult={handleRestoreResult}
-        />
+        <>
+          <ArchivedFormsView
+            forms={archivedForms}
+            onResult={handleRestoreResult}
+          />
+          {hasMoreArchivedForms && (
+            <InfiniteScrollSentinel
+              sentinelRef={archivedFormsSentinelRef}
+              isLoadingMore={isLoadingMoreArchivedForms}
+            />
+          )}
+        </>
       )}
       <Snackbar
         open={createdSnackbarOpen}

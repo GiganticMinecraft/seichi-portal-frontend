@@ -2,7 +2,11 @@
 
 import { useRouter } from 'next/navigation';
 
-import type { GetFormAnswersResponse, GetFormResponse } from '@/lib/api-types';
+import { useInfiniteApiQuery } from '@/app/_swr/useInfiniteApiQuery';
+import type {
+  GetFormAnswersPageResponse,
+  GetFormResponse,
+} from '@/lib/api-types';
 
 import { toAnswerListRows } from '../_lib/answerListRows';
 
@@ -10,18 +14,34 @@ import AnswersView from './AnswersView';
 
 const AnswersPageContent = ({
   form,
-  answers,
+  initialAnswers,
 }: {
   form: GetFormResponse;
-  answers: GetFormAnswersResponse;
+  initialAnswers: GetFormAnswersPageResponse;
 }) => {
   const router = useRouter();
+  const {
+    items: answers,
+    hasMore,
+    isLoadingMore,
+    sentinelRef,
+  } = useInfiniteApiQuery(
+    '/api/v1/forms/{id}/answers',
+    (cursor) => ({
+      path: { id: form.id },
+      query: cursor === undefined ? {} : { cursor },
+    }),
+    initialAnswers
+  );
   const rows = toAnswerListRows(answers);
 
   return (
     <AnswersView
       formTitle={form.title}
       rows={rows}
+      hasMore={hasMore}
+      isLoadingMore={isLoadingMore}
+      sentinelRef={sentinelRef}
       onAnswerClick={(answerId) => {
         router.push(`/forms/${form.id}/answers/${answerId}`);
       }}

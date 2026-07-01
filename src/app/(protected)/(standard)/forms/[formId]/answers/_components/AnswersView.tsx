@@ -8,15 +8,23 @@ import type {
   GridRowParams,
 } from '@mui/x-data-grid';
 
+import InfiniteScrollSentinel from '@/app/_components/InfiniteScrollSentinel';
+
 import type { AnswerListRow } from '../_lib/answerListRows';
 
 const AnswersView = ({
   formTitle,
   rows,
+  hasMore,
+  isLoadingMore,
+  sentinelRef,
   onAnswerClick,
 }: {
   formTitle: string;
   rows: AnswerListRow[];
+  hasMore: boolean;
+  isLoadingMore: boolean;
+  sentinelRef: React.RefObject<HTMLDivElement | null>;
   onAnswerClick: (answerId: string) => void;
 }) => {
   const handleRowClick: GridEventListener<'rowClick'> = (
@@ -39,12 +47,8 @@ const AnswersView = ({
         rows={rows}
         columns={columns}
         onRowClick={handleRowClick}
-        initialState={{
-          pagination: {
-            paginationModel: { page: 0, pageSize: 5 },
-          },
-        }}
-        pageSizeOptions={[5, 10, 25, 50, 100]}
+        autoHeight
+        hideFooter
         sx={{
           border: 0,
           '& .MuiDataGrid-columnHeaders': {
@@ -53,6 +57,12 @@ const AnswersView = ({
         }}
         disableRowSelectionOnClick
       />
+      {hasMore && (
+        <InfiniteScrollSentinel
+          sentinelRef={sentinelRef}
+          isLoadingMore={isLoadingMore}
+        />
+      )}
     </Box>
   );
 };

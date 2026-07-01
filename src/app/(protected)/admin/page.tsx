@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 
 import {
   authorizationHeader,
+  requireAllBackendPages,
   requireBackendData,
   serverApiClient,
 } from '@/lib/server/backend';
@@ -15,31 +16,22 @@ export const metadata: Metadata = {
 
 const Home = async () => {
   const { session } = await getAdminAccess();
-  const [answers, forms] = await Promise.all([
+  const [initialAnswers, forms] = await Promise.all([
     requireBackendData(
       serverApiClient.GET('/api/v1/forms/answers', {
         headers: authorizationHeader(session.token),
       })
     ),
-    requireBackendData(
+    // フォーム名の突き合わせに使う参照用データのため、一覧表示とは別に全件取得する
+    requireAllBackendPages((cursor) =>
       serverApiClient.GET('/api/v1/forms', {
         headers: authorizationHeader(session.token),
+        params: { query: cursor === undefined ? {} : { cursor } },
       })
     ),
   ]);
 
-  return (
-    <DataTable
-      answerResponseWithFormTitle={answers.items.map((answer) => {
-        return {
-          ...answer,
-          form_title:
-            forms.items.find((form) => form.id === answer.form_id)?.title ??
-            'unknown form',
-        };
-      })}
-    />
-  );
+  return <DataTable initialAnswers={initialAnswers} forms={forms} />;
 };
 
 export default Home;

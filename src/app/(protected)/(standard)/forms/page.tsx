@@ -15,13 +15,13 @@ export const metadata: Metadata = {
 
 const Home = async () => {
   const session = await requireUser();
-  const forms = await requireBackendData(
+  const initialForms = await requireBackendData(
     serverApiClient.GET('/api/v1/forms', {
       headers: authorizationHeader(session.token),
     })
   );
 
-  return <FormsPageContent forms={forms.items} />;
+  return <FormsPageContent initialForms={initialForms} />;
 };
 
 export default Home;
