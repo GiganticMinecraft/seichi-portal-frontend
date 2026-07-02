@@ -36,7 +36,7 @@ const Home = async () => {
         <CreateGroupField />
       </Stack>
       <Suspense fallback={null}>
-        <Groups groups={groups} />
+        <Groups groups={groups} currentUserId={session.user.id} />
       </Suspense>
     </Stack>
   );

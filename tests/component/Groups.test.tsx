@@ -43,7 +43,7 @@ describe('Groups', () => {
   });
 
   it('グループが無い場合は空メッセージを表示する', () => {
-    renderWithProviders(<Groups groups={[]} />);
+    renderWithProviders(<Groups groups={[]} currentUserId="current-user" />);
 
     expect(screen.getByText('グループが登録されていません。')).toBeVisible();
   });
@@ -52,7 +52,10 @@ describe('Groups', () => {
     const user = userEvent.setup();
 
     renderWithProviders(
-      <Groups groups={[{ id: 'group-1', name: 'グループA' }]} />
+      <Groups
+        groups={[{ id: 'group-1', name: 'グループA' }]}
+        currentUserId="current-user"
+      />
     );
 
     await user.click(screen.getByRole('button', { name: '編集' }));
@@ -73,7 +76,10 @@ describe('Groups', () => {
     const user = userEvent.setup();
 
     renderWithProviders(
-      <Groups groups={[{ id: 'group-1', name: 'グループA' }]} />
+      <Groups
+        groups={[{ id: 'group-1', name: 'グループA' }]}
+        currentUserId="current-user"
+      />
     );
 
     await user.click(screen.getByRole('button', { name: '削除' }));

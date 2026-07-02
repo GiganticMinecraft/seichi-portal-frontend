@@ -1,5 +1,6 @@
 'use client';
 
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import {
   Alert,
   Avatar,
@@ -8,20 +9,26 @@ import {
   Button,
   DialogActions,
   DialogContent,
+  IconButton,
   List,
   ListItem,
   ListItemAvatar,
   ListItemText,
+  Tooltip,
   Typography,
 } from '@mui/material';
+import { useState } from 'react';
 
+import UserDetailDialog from '@/app/(protected)/admin/users/_components/UserDetailDialog';
 import { useApiQuery } from '@/app/_swr/useApiQuery';
 
 const GroupDetailDialogBody = ({
   groupId,
+  currentUserId,
   onClose,
 }: {
   groupId: string;
+  currentUserId: string;
   onClose: () => void;
 }) => {
   const {
@@ -31,6 +38,11 @@ const GroupDetailDialogBody = ({
   } = useApiQuery('/api/v1/user-groups/{group_id}/users', {
     path: { group_id: groupId },
   });
+  const [selectedMember, setSelectedMember] = useState<{
+    id: string;
+    name: string;
+  } | null>(null);
+  const [userDetailOpen, setUserDetailOpen] = useState(false);
 
   const renderContent = () => {
     if (isLoading) {
@@ -51,7 +63,24 @@ const GroupDetailDialogBody = ({
       return (
         <List disablePadding>
           {members.map((member) => (
-            <ListItem key={member.id} disableGutters>
+            <ListItem
+              key={member.id}
+              disableGutters
+              secondaryAction={
+                <Tooltip title="ユーザー詳細を表示" placement="top">
+                  <IconButton
+                    size="small"
+                    aria-label="ユーザー詳細を表示"
+                    onClick={() => {
+                      setSelectedMember(member);
+                      setUserDetailOpen(true);
+                    }}
+                  >
+                    <InfoOutlinedIcon fontSize="small" />
+                  </IconButton>
+                </Tooltip>
+              }
+            >
               <ListItemAvatar>
                 <Avatar
                   alt={member.name}
@@ -84,6 +113,20 @@ const GroupDetailDialogBody = ({
       <DialogActions>
         <Button onClick={onClose}>閉じる</Button>
       </DialogActions>
+      <UserDetailDialog
+        uuid={selectedMember?.id ?? ''}
+        userName={selectedMember?.name ?? ''}
+        canManageRole={
+          selectedMember ? selectedMember.id !== currentUserId : false
+        }
+        canManageRestriction={
+          selectedMember ? selectedMember.id !== currentUserId : false
+        }
+        open={userDetailOpen}
+        onClose={() => {
+          setUserDetailOpen(false);
+        }}
+      />
     </>
   );
 };

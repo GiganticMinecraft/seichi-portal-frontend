@@ -31,7 +31,11 @@ describe('GroupDetailDialogBody', () => {
     };
 
     renderWithProviders(
-      <GroupDetailDialogBody groupId="group-1" onClose={vi.fn()} />
+      <GroupDetailDialogBody
+        groupId="group-1"
+        currentUserId="current-user"
+        onClose={vi.fn()}
+      />
     );
 
     expect(screen.getByText('ユーザーA')).toBeVisible();
@@ -43,7 +47,11 @@ describe('GroupDetailDialogBody', () => {
     queryState.current = { data: [], error: null, isLoading: false };
 
     renderWithProviders(
-      <GroupDetailDialogBody groupId="group-1" onClose={vi.fn()} />
+      <GroupDetailDialogBody
+        groupId="group-1"
+        currentUserId="current-user"
+        onClose={vi.fn()}
+      />
     );
 
     expect(screen.getByText('所属しているユーザーはいません')).toBeVisible();
@@ -57,7 +65,11 @@ describe('GroupDetailDialogBody', () => {
     };
 
     renderWithProviders(
-      <GroupDetailDialogBody groupId="group-1" onClose={vi.fn()} />
+      <GroupDetailDialogBody
+        groupId="group-1"
+        currentUserId="current-user"
+        onClose={vi.fn()}
+      />
     );
 
     expect(
@@ -70,7 +82,11 @@ describe('GroupDetailDialogBody', () => {
     queryState.current = { data: undefined, error: null, isLoading: true };
 
     renderWithProviders(
-      <GroupDetailDialogBody groupId="group-1" onClose={vi.fn()} />
+      <GroupDetailDialogBody
+        groupId="group-1"
+        currentUserId="current-user"
+        onClose={vi.fn()}
+      />
     );
 
     expect(screen.getByRole('button', { name: '閉じる' })).toBeVisible();
