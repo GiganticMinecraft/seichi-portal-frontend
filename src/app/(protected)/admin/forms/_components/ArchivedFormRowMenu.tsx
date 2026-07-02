@@ -8,6 +8,7 @@ import {
   Menu,
   MenuItem,
 } from '@mui/material';
+import type { MouseEvent } from 'react';
 import { useState } from 'react';
 
 import ConfirmDialog from '@/app/_components/ConfirmDialog';
@@ -24,7 +25,7 @@ const ArchivedFormRowMenu = ({ formId, onResult }: Props) => {
   const { restoreForm } = useFormActions();
   const menuOpen = Boolean(anchorEl);
 
-  const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
+  const handleMenuOpen = (event: MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
 

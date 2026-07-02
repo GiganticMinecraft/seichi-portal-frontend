@@ -2,6 +2,7 @@
 
 import { Box, Stack, Tab, Tabs } from '@mui/material';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import type { SyntheticEvent } from 'react';
 import { useMemo } from 'react';
 
 import CreateLabelField from '@/app/(protected)/_components/CreateLabelField';
@@ -29,7 +30,7 @@ const LabelsTabs = (props: {
     return isTabValue(tab) ? tab : 'forms';
   }, [searchParams]);
 
-  const handleChange = (_event: React.SyntheticEvent, newValue: TabValue) => {
+  const handleChange = (_event: SyntheticEvent, newValue: TabValue) => {
     const params = new URLSearchParams(searchParams.toString());
     params.set('tab', newValue);
     router.replace(`${pathname}?${params.toString()}`);

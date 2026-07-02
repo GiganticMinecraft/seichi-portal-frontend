@@ -1,11 +1,12 @@
 import { Box, CircularProgress } from '@mui/material';
+import type { RefObject } from 'react';
 
 /** 無限スクロールで次ページ読み込みをトリガーする監視対象領域 */
 const InfiniteScrollSentinel = ({
   sentinelRef,
   isLoadingMore,
 }: {
-  sentinelRef: React.RefObject<HTMLDivElement | null>;
+  sentinelRef: RefObject<HTMLDivElement | null>;
   isLoadingMore: boolean;
 }) => {
   return (
