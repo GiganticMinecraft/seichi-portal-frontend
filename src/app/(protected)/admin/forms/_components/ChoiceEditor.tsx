@@ -16,7 +16,7 @@ import { CSS } from '@dnd-kit/utilities';
 import { Add, DragIndicator } from '@mui/icons-material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { Button, IconButton, MenuItem, Stack, TextField } from '@mui/material';
-import { useController, useFieldArray } from 'react-hook-form';
+import { useController, useFieldArray, useWatch } from 'react-hook-form';
 import type { Control, UseFormRegister } from 'react-hook-form';
 
 import {
@@ -103,11 +103,115 @@ const ensureChoicesForQuestionType = (
   }
 };
 
-const ChoiceEditor = (props: {
+type ChoiceEditorProps = {
   control: Control<FormEditorValues>;
   register: UseFormRegister<FormEditorValues>;
   questionIndex: number;
+};
+
+const QuestionTypeField = (props: {
+  control: Control<FormEditorValues>;
+  questionIndex: number;
+  choiceCount: number;
+  appendChoice: () => void;
+  clearChoices: () => void;
 }) => {
+  const { field: questionTypeField } = useController({
+    control: props.control,
+    name: `questions.${props.questionIndex}.question_type`,
+  });
+
+  const handleQuestionTypeChange = (
+    nextQuestionType: FormEditorQuestion['question_type']
+  ) => {
+    questionTypeField.onChange(nextQuestionType);
+    ensureChoicesForQuestionType(
+      nextQuestionType,
+      props.choiceCount,
+      props.appendChoice,
+      props.clearChoices
+    );
+  };
+
+  return (
+    <TextField
+      {...questionTypeField}
+      value={questionTypeField.value}
+      label="質問の種類"
+      select
+      required
+      helperText="質問の種類を選択してください。"
+      onChange={(event) => {
+        const parsed = questionTypeSchema.safeParse(event.target.value);
+        if (parsed.success) {
+          handleQuestionTypeChange(parsed.data);
+        }
+      }}
+    >
+      <MenuItem value="Text">テキスト</MenuItem>
+      <MenuItem value="SingleChoice">単一選択</MenuItem>
+      <MenuItem value="MultipleChoice">複数選択</MenuItem>
+    </TextField>
+  );
+};
+
+const SortableChoiceList = (props: {
+  choiceFields: { id: string }[];
+  questionIndex: number;
+  register: UseFormRegister<FormEditorValues>;
+  moveChoice: (oldIndex: number, newIndex: number) => void;
+  removeChoice: (index: number) => void;
+  appendChoice: () => void;
+}) => {
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 5,
+      },
+    })
+  );
+
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+    if (!over || active.id === over.id) {
+      return;
+    }
+
+    const oldIndex = props.choiceFields.findIndex(
+      (field) => field.id === active.id
+    );
+    const newIndex = props.choiceFields.findIndex(
+      (field) => field.id === over.id
+    );
+    props.moveChoice(oldIndex, newIndex);
+  };
+
+  return (
+    <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
+      <SortableContext
+        items={props.choiceFields.map((field) => field.id)}
+        strategy={verticalListSortingStrategy}
+      >
+        <Stack spacing={1}>
+          {props.choiceFields.map((field, index) => (
+            <SortableChoiceItem
+              key={field.id}
+              id={field.id}
+              index={index}
+              questionIndex={props.questionIndex}
+              register={props.register}
+              removeChoice={props.removeChoice}
+              canRemove={props.choiceFields.length > 1}
+              onAppendChoice={props.appendChoice}
+            />
+          ))}
+        </Stack>
+      </SortableContext>
+    </DndContext>
+  );
+};
+
+const ChoiceEditor = (props: ChoiceEditorProps) => {
   const {
     fields: choiceFields,
     append,
@@ -118,18 +222,10 @@ const ChoiceEditor = (props: {
     name: `questions.${props.questionIndex}.choices`,
   });
 
-  const { field: questionTypeField } = useController({
+  const questionType = useWatch({
     control: props.control,
     name: `questions.${props.questionIndex}.question_type`,
   });
-
-  const sensors = useSensors(
-    useSensor(PointerSensor, {
-      activationConstraint: {
-        distance: 5,
-      },
-    })
-  );
 
   const appendChoice = () => {
     append({ id: null, choice: '' });
@@ -139,57 +235,21 @@ const ChoiceEditor = (props: {
     remove();
   };
 
-  const handleQuestionTypeChange = (
-    nextQuestionType: FormEditorQuestion['question_type']
-  ) => {
-    questionTypeField.onChange(nextQuestionType);
-    ensureChoicesForQuestionType(
-      nextQuestionType,
-      choiceFields.length,
-      appendChoice,
-      clearChoices
-    );
-  };
-
-  const handleDragEnd = (event: DragEndEvent) => {
-    const { active, over } = event;
-    if (!over || active.id === over.id) {
-      return;
-    }
-
-    const oldIndex = choiceFields.findIndex((field) => field.id === active.id);
-    const newIndex = choiceFields.findIndex((field) => field.id === over.id);
-    move(oldIndex, newIndex);
-  };
-
   const removeChoice = (choiceIndex: number) => {
     if (choiceFields.length > 1) {
       remove(choiceIndex);
     }
   };
 
-  const questionType = questionTypeField.value;
-
   return (
     <>
-      <TextField
-        {...questionTypeField}
-        value={questionType}
-        label="質問の種類"
-        select
-        required
-        helperText="質問の種類を選択してください。"
-        onChange={(event) => {
-          const parsed = questionTypeSchema.safeParse(event.target.value);
-          if (parsed.success) {
-            handleQuestionTypeChange(parsed.data);
-          }
-        }}
-      >
-        <MenuItem value="Text">テキスト</MenuItem>
-        <MenuItem value="SingleChoice">単一選択</MenuItem>
-        <MenuItem value="MultipleChoice">複数選択</MenuItem>
-      </TextField>
+      <QuestionTypeField
+        control={props.control}
+        questionIndex={props.questionIndex}
+        choiceCount={choiceFields.length}
+        appendChoice={appendChoice}
+        clearChoices={clearChoices}
+      />
       <Button
         variant="outlined"
         startIcon={<Add />}
@@ -198,27 +258,14 @@ const ChoiceEditor = (props: {
       >
         選択肢の追加
       </Button>
-      <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
-        <SortableContext
-          items={choiceFields.map((field) => field.id)}
-          strategy={verticalListSortingStrategy}
-        >
-          <Stack spacing={1}>
-            {choiceFields.map((field, index) => (
-              <SortableChoiceItem
-                key={field.id}
-                id={field.id}
-                index={index}
-                questionIndex={props.questionIndex}
-                register={props.register}
-                removeChoice={removeChoice}
-                canRemove={choiceFields.length > 1}
-                onAppendChoice={appendChoice}
-              />
-            ))}
-          </Stack>
-        </SortableContext>
-      </DndContext>
+      <SortableChoiceList
+        choiceFields={choiceFields}
+        questionIndex={props.questionIndex}
+        register={props.register}
+        moveChoice={move}
+        removeChoice={removeChoice}
+        appendChoice={appendChoice}
+      />
     </>
   );
 };
