@@ -11,8 +11,8 @@ import type {
   FormEditorQuestion,
   FormEditorQuestionIdentity,
   FormEditorValues,
-  FormVisibility,
 } from '../_schema/formEditorSchema';
+import { visibilitySchema } from '../_schema/formEditorSchema';
 
 type CreateFormBody =
   ApiPaths['/api/v1/forms']['post']['requestBody']['content']['application/json'];
@@ -22,9 +22,7 @@ type ApiAcceptancePeriod =
   GetFormResponse['settings']['answer_settings']['acceptance_period'];
 type ApiVisibility = GetFormResponse['settings']['visibility'];
 
-const toVisibility = (
-  value: ApiVisibility | null | undefined
-): FormVisibility => (value === 'PRIVATE' ? 'PRIVATE' : 'PUBLIC');
+const toVisibility = (value: ApiVisibility) => visibilitySchema.parse(value);
 
 const toNullableNonEmptyString = (value: string): string | null => {
   const trimmed = value.trim();
@@ -101,9 +99,16 @@ const toAcceptancePeriodSetting = (
   acceptancePeriod: ApiAcceptancePeriod
 ): AcceptancePeriodSetting => {
   const { start_at: startAt, end_at: endAt } = acceptancePeriod;
+  const hasStartAt = startAt !== undefined && startAt !== null;
+  const hasEndAt = endAt !== undefined && endAt !== null;
 
-  if (startAt === undefined || startAt === null) return { kind: 'none' };
-  if (endAt === undefined || endAt === null) return { kind: 'none' };
+  if (!hasStartAt && !hasEndAt) return { kind: 'none' };
+
+  if (!hasStartAt || !hasEndAt) {
+    throw new Error(
+      'Answer acceptance period must have both start_at and end_at'
+    );
+  }
 
   return {
     kind: 'specified',

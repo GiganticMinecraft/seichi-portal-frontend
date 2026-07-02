@@ -39,6 +39,47 @@ const baseValues: FormEditorValues = {
   },
 };
 
+const createFormResponse = (
+  overrides: Partial<GetFormResponse> = {}
+): GetFormResponse => ({
+  id: 'form-id',
+  title: 'Form title',
+  description: 'Form description',
+  labels: [],
+  metadata: {
+    created_at: '2026-06-01T00:00:00+09:00',
+    updated_at: '2026-06-01T00:00:00+09:00',
+  },
+  settings: {
+    visibility: 'PUBLIC',
+    allowed_group_ids: [],
+    allow_temporary_answers: false,
+    discord_webhook_url: null,
+    answer_settings: {
+      default_answer_title: null,
+      acceptance_period: {
+        start_at: null,
+        end_at: null,
+      },
+      visibility: 'PUBLIC',
+      answer_group_ids: [],
+    },
+  },
+  questions: [
+    {
+      id: 'question-id',
+      title: 'Question title',
+      description: null,
+      question_type: 'SingleChoice',
+      choices: [{ id: 1, label: 'First choice', position: 0 }],
+      is_required: false,
+      position: 0,
+      template_key: 'question_1',
+    },
+  ],
+  ...overrides,
+});
+
 describe('form request builders', () => {
   it('空のテンプレートキーと質問説明を API が受け付ける値へ正規化する', () => {
     const body = toCreateFormBody(baseValues);
@@ -107,45 +148,68 @@ describe('form request builders', () => {
   });
 
   it('フォーム取得レスポンスの選択肢 ID を画面内部表現へ保持する', () => {
-    const values = fromFormResponseToEditorValues({
-      id: 'form-id',
-      title: 'Form title',
-      description: 'Form description',
-      labels: [],
-      metadata: {
-        created_at: '2026-06-01T00:00:00+09:00',
-        updated_at: '2026-06-01T00:00:00+09:00',
-      },
-      settings: {
-        visibility: 'PUBLIC',
-        allowed_group_ids: [],
-        allow_temporary_answers: false,
-        discord_webhook_url: null,
-        answer_settings: {
-          default_answer_title: null,
-          acceptance_period: {
-            start_at: null,
-            end_at: null,
-          },
-          visibility: 'PUBLIC',
-          answer_group_ids: [],
-        },
-      },
-      questions: [
-        {
-          id: 'question-id',
-          title: 'Question title',
-          description: null,
-          question_type: 'SingleChoice',
-          choices: [{ id: 1, label: 'First choice', position: 0 }],
-          is_required: false,
-          position: 0,
-          template_key: 'question_1',
-        },
-      ],
-    } satisfies GetFormResponse);
+    const values = fromFormResponseToEditorValues(createFormResponse());
 
     expect(values.questions[0]?.choices[0]?.id).toBe(1);
+  });
+
+  it('回答期間が未設定のフォーム取得レスポンスを画面内部表現へ変換する', () => {
+    const values = fromFormResponseToEditorValues(createFormResponse());
+
+    expect(values.settings.acceptance_period).toEqual({ kind: 'none' });
+  });
+
+  it('回答期間が設定されたフォーム取得レスポンスを画面内部表現へ変換する', () => {
+    const values = fromFormResponseToEditorValues(
+      createFormResponse({
+        settings: {
+          ...createFormResponse().settings,
+          answer_settings: {
+            ...createFormResponse().settings.answer_settings,
+            acceptance_period: {
+              start_at: '2026-06-01T10:00:00+09:00',
+              end_at: '2026-06-30T23:59:00+09:00',
+            },
+          },
+        },
+      })
+    );
+
+    expect(values.settings.acceptance_period).toEqual({
+      kind: 'specified',
+      startAt: '2026-06-01T10:00',
+      endAt: '2026-06-30T23:59',
+    });
+  });
+
+  it('片方だけ欠けた回答期間は画面内部表現へ変換しない', () => {
+    const form = createFormResponse({
+      settings: {
+        ...createFormResponse().settings,
+        answer_settings: {
+          ...createFormResponse().settings.answer_settings,
+          acceptance_period: {
+            start_at: '2026-06-01T10:00:00+09:00',
+            end_at: null,
+          },
+        },
+      },
+    });
+
+    expect(() => fromFormResponseToEditorValues(form)).toThrow(
+      'Answer acceptance period must have both start_at and end_at'
+    );
+  });
+
+  it('未知の公開設定は画面内部表現へ変換しない', () => {
+    const form = createFormResponse({
+      settings: {
+        ...createFormResponse().settings,
+        visibility: 'UNKNOWN',
+      },
+    });
+
+    expect(() => fromFormResponseToEditorValues(form)).toThrow();
   });
 
   it('空の Webhook URL は null に正規化する', () => {
