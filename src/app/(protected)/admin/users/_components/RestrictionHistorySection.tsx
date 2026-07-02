@@ -34,7 +34,9 @@ const RestrictionHistorySection = ({ uuid }: { uuid: string }) => {
   return (
     <Accordion disableGutters>
       <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-        <Typography variant="subtitle2">処罰履歴（{count}件）</Typography>
+        <Typography variant="subtitle2" component="h3">
+          処罰履歴（{count}件）
+        </Typography>
       </AccordionSummary>
       <AccordionDetails>
         {isLoading && (
@@ -46,7 +48,7 @@ const RestrictionHistorySection = ({ uuid }: { uuid: string }) => {
           <Alert severity="error">処罰履歴の取得に失敗しました。</Alert>
         )}
         {history && count === 0 && (
-          <Typography variant="body2" color="text.secondary">
+          <Typography variant="body2" component="p" color="text.secondary">
             処罰履歴はありません
           </Typography>
         )}
