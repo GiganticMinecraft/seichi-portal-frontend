@@ -9,6 +9,7 @@ import {
   MenuItem,
 } from '@mui/material';
 import NextLink from 'next/link';
+import type { MouseEvent } from 'react';
 import { useState } from 'react';
 
 import ConfirmDialog from '@/app/_components/ConfirmDialog';
@@ -25,7 +26,7 @@ const FormRowMenu = ({ formId, onResult }: Props) => {
   const { archiveForm } = useFormActions();
   const menuOpen = Boolean(anchorEl);
 
-  const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
+  const handleMenuOpen = (event: MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
 
