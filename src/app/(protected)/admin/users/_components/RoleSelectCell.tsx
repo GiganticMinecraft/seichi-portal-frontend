@@ -16,6 +16,12 @@ const RoleSelectCell = ({
 }) => {
   const { updateUserRole } = useUserRoleActions();
   const [role, setRole] = useState(currentRole);
+  const [syncedRole, setSyncedRole] = useState(currentRole);
+
+  if (currentRole !== syncedRole) {
+    setSyncedRole(currentRole);
+    setRole(currentRole);
+  }
 
   return (
     <Tooltip
@@ -30,7 +36,9 @@ const RoleSelectCell = ({
           onChange={(event) => {
             const newRole = event.target.value;
             setRole(newRole);
-            void updateUserRole(userId, newRole);
+            updateUserRole(userId, newRole).catch(() => {
+              setRole(currentRole);
+            });
           }}
         >
           <MenuItem value="STANDARD_USER">通常ユーザー</MenuItem>
