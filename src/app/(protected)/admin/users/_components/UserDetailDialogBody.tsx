@@ -16,6 +16,7 @@ import {
 import { useApiQuery } from '@/app/_swr/useApiQuery';
 
 import CopyButton from './CopyButton';
+import RestrictionHistorySection from './RestrictionHistorySection';
 import RestrictionManagementSection from './RestrictionManagementSection';
 import RoleChip from './RoleChip';
 import RoleSelectCell from './RoleSelectCell';
@@ -131,6 +132,8 @@ const UserDetailDialogBody = ({
               disabled={!canManageRestriction}
             />
           </Stack>
+
+          <RestrictionHistorySection uuid={user.id} />
         </Stack>
       </DialogContent>
       <DialogActions>

@@ -588,6 +588,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/users/{uuid}/answer-submitter-restriction/history": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** 回答投稿者の回答投稿制限履歴の取得 */
+        get: operations["get_answer_submitter_restriction_history"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -654,6 +671,19 @@ export interface components {
             answer_group_ids: string[];
             default_answer_title?: string | null;
             visibility: components["schemas"]["AnswerVisibility"];
+        };
+        AnswerSubmitterRestrictionHistoryResponse: {
+            /** Format: date-time */
+            expires_at?: string | null;
+            id: string;
+            /** Format: date-time */
+            lifted_at?: string | null;
+            lifted_by?: string | null;
+            reason: string;
+            /** Format: date-time */
+            restricted_at: string;
+            restricted_by: string;
+            submitter_id: string;
         };
         AnswerSubmitterRestrictionRequest: {
             /** Format: date-time */
@@ -4747,6 +4777,74 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content?: never;
+            };
+            /** @description The server could not understand the request due to invalid syntax. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Access is unauthorized. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Access is forbidden. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description The server cannot find the requested resource. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    get_answer_submitter_restriction_history: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description User UUID */
+                uuid: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The request has succeeded. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AnswerSubmitterRestrictionHistoryResponse"][];
+                };
             };
             /** @description The server could not understand the request due to invalid syntax. */
             400: {

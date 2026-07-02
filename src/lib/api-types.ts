@@ -13,6 +13,7 @@ export type {
   CreateUserGroupSchema,
   GetAnswerLabelsResponse,
   GetAnswerResponse,
+  GetAnswerSubmitterRestrictionHistoryResponse,
   GetAnswerSubmitterRestrictionResponse,
   GetAnswersPageResponse,
   GetAnswersResponse,

@@ -39,6 +39,8 @@ export type GetAnswerSubmitterRestrictionResponse =
   ApiPaths['/api/v1/users/{uuid}/answer-submitter-restriction']['get']['responses'][200]['content']['application/json'];
 export type PutAnswerSubmitterRestrictionSchema =
   ApiPaths['/api/v1/users/{uuid}/answer-submitter-restriction']['put']['requestBody']['content']['application/json'];
+export type GetAnswerSubmitterRestrictionHistoryResponse =
+  ApiPaths['/api/v1/users/{uuid}/answer-submitter-restriction/history']['get']['responses'][200]['content']['application/json'];
 export type SearchResponse =
   ApiPaths['/api/v1/search']['get']['responses'][200]['content']['application/json'];
 export type GetUserSearchPageResponse =
