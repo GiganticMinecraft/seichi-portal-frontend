@@ -18,9 +18,13 @@ type CreateFormBody =
   ApiPaths['/api/v1/forms']['post']['requestBody']['content']['application/json'];
 type FormUpdateBody =
   ApiPaths['/api/v1/forms/{id}']['put']['requestBody']['content']['application/json'];
+type ApiAcceptancePeriod =
+  GetFormResponse['settings']['answer_settings']['acceptance_period'];
+type ApiVisibility = GetFormResponse['settings']['visibility'];
 
-const toVisibility = (value: string | null | undefined): FormVisibility =>
-  value === 'PRIVATE' ? 'PRIVATE' : 'PUBLIC';
+const toVisibility = (
+  value: ApiVisibility | null | undefined
+): FormVisibility => (value === 'PRIVATE' ? 'PRIVATE' : 'PUBLIC');
 
 const toNullableNonEmptyString = (value: string): string | null => {
   const trimmed = value.trim();
@@ -94,30 +98,32 @@ const toApiQuestion = (
 };
 
 const toAcceptancePeriodSetting = (
-  startAt: string | null | undefined,
-  endAt: string | null | undefined
-): AcceptancePeriodSetting =>
-  startAt && endAt
-    ? {
-        kind: 'specified',
-        startAt: fromStringToJSTDateTime(startAt),
-        endAt: fromStringToJSTDateTime(endAt),
-      }
-    : { kind: 'none' };
+  acceptancePeriod: ApiAcceptancePeriod
+): AcceptancePeriodSetting => {
+  const { start_at: startAt, end_at: endAt } = acceptancePeriod;
+
+  if (startAt === undefined || startAt === null) return { kind: 'none' };
+  if (endAt === undefined || endAt === null) return { kind: 'none' };
+
+  return {
+    kind: 'specified',
+    startAt: fromStringToJSTDateTime(startAt),
+    endAt: fromStringToJSTDateTime(endAt),
+  };
+};
 
 export const fromFormResponseToEditorValues = (
   form: GetFormResponse
 ): FormEditorValues => {
-  const startAt = form.settings.answer_settings.acceptance_period.start_at;
-  const endAt = form.settings.answer_settings.acceptance_period.end_at;
-
   return {
     title: form.title,
     description: form.description,
     questions: form.questions.map(toEditorQuestion),
     labels: form.labels,
     settings: {
-      acceptance_period: toAcceptancePeriodSetting(startAt, endAt),
+      acceptance_period: toAcceptancePeriodSetting(
+        form.settings.answer_settings.acceptance_period
+      ),
       discord_webhook_url: form.settings.discord_webhook_url ?? '',
       visibility: toVisibility(form.settings.visibility),
       default_answer_title:
