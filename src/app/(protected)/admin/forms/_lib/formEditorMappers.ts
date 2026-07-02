@@ -99,12 +99,10 @@ const toAcceptancePeriodSetting = (
   acceptancePeriod: ApiAcceptancePeriod
 ): AcceptancePeriodSetting => {
   const { start_at: startAt, end_at: endAt } = acceptancePeriod;
-  const hasStartAt = startAt !== undefined && startAt !== null;
-  const hasEndAt = endAt !== undefined && endAt !== null;
 
-  if (!hasStartAt && !hasEndAt) return { kind: 'none' };
+  if (startAt == null && endAt == null) return { kind: 'none' };
 
-  if (!hasStartAt || !hasEndAt) {
+  if (startAt == null || endAt == null) {
     throw new Error(
       'Answer acceptance period must have both start_at and end_at'
     );
