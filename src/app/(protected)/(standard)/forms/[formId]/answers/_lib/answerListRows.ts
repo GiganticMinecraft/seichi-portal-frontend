@@ -3,7 +3,7 @@ import type { GetFormAnswersResponse } from '@/lib/api-types';
 
 export type AnswerListRow = {
   id: string;
-  title: string | null | undefined;
+  title: string;
   date: string;
 };
 
@@ -12,6 +12,6 @@ export const toAnswerListRows = (
 ): AnswerListRow[] =>
   answers.map((answer) => ({
     id: answer.id,
-    title: answer.title,
+    title: answer.title ?? '',
     date: formatString(answer.timestamp),
   }));
