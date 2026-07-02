@@ -42,6 +42,7 @@ const GroupDetailDialogBody = ({
     id: string;
     name: string;
   } | null>(null);
+  const [userDetailOpen, setUserDetailOpen] = useState(false);
 
   const renderContent = () => {
     if (isLoading) {
@@ -69,8 +70,10 @@ const GroupDetailDialogBody = ({
                 <Tooltip title="ユーザー詳細を表示" placement="top">
                   <IconButton
                     size="small"
+                    aria-label="ユーザー詳細を表示"
                     onClick={() => {
                       setSelectedMember(member);
+                      setUserDetailOpen(true);
                     }}
                   >
                     <InfoOutlinedIcon fontSize="small" />
@@ -113,11 +116,15 @@ const GroupDetailDialogBody = ({
       <UserDetailDialog
         uuid={selectedMember?.id ?? ''}
         userName={selectedMember?.name ?? ''}
-        canManageRole={selectedMember?.id !== currentUserId}
-        canManageRestriction={selectedMember?.id !== currentUserId}
-        open={selectedMember !== null}
+        canManageRole={
+          selectedMember ? selectedMember.id !== currentUserId : false
+        }
+        canManageRestriction={
+          selectedMember ? selectedMember.id !== currentUserId : false
+        }
+        open={userDetailOpen}
         onClose={() => {
-          setSelectedMember(null);
+          setUserDetailOpen(false);
         }}
       />
     </>
