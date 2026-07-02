@@ -35,7 +35,10 @@ type EditGroupSchema = {
   name: string;
 };
 
-const Groups = (props: { groups: UserGroupSchema[] }) => {
+const Groups = (props: {
+  groups: UserGroupSchema[];
+  currentUserId: string;
+}) => {
   const { data: groups = props.groups } = useApiQuery('/api/v1/user-groups');
   const { snackbar, showSnackbar, closeSnackbar } = useSnackbar();
   const [editDialogOpen, setEditDialogOpen] = useState(false);
@@ -202,6 +205,7 @@ const Groups = (props: { groups: UserGroupSchema[] }) => {
 
       <GroupDetailDialog
         group={detailGroup}
+        currentUserId={props.currentUserId}
         onClose={() => {
           setDetailGroup(null);
         }}
