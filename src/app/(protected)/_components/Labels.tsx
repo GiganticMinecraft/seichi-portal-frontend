@@ -1,24 +1,6 @@
 'use client';
 
-import { Delete, Edit } from '@mui/icons-material';
-import {
-  Box,
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  IconButton,
-  Paper,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  TextField,
-  Typography,
-} from '@mui/material';
+import { Box, Paper, Typography } from '@mui/material';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 
@@ -26,13 +8,11 @@ import ConfirmDialog from '@/app/_components/ConfirmDialog';
 import SnackbarAlert, { useSnackbar } from '@/app/_components/SnackbarAlert';
 import { useLabelCRUD } from '@/hooks/useLabelCRUD';
 
+import NameEditDialog, { type NameEditFormValues } from './NameEditDialog';
+import NameManagementTable from './NameManagementTable';
+
 type Label = {
   id: string | number;
-  name: string;
-};
-
-type EditLabelSchema = {
-  id: string;
   name: string;
 };
 
@@ -42,8 +22,7 @@ const Labels = (props: { labels: Label[]; labelType: 'answers' | 'forms' }) => {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [selectedLabel, setSelectedLabel] = useState<Label | null>(null);
 
-  const { handleSubmit, register, reset, setValue } =
-    useForm<EditLabelSchema>();
+  const { handleSubmit, register, reset } = useForm<NameEditFormValues>();
 
   const { deleteLabel, editLabel: editLabelAction } = useLabelCRUD(
     props.labelType
@@ -51,8 +30,7 @@ const Labels = (props: { labels: Label[]; labelType: 'answers' | 'forms' }) => {
 
   const handleOpenEdit = (label: Label) => {
     setSelectedLabel(label);
-    setValue('id', String(label.id));
-    setValue('name', label.name);
+    reset({ id: String(label.id), name: label.name });
     setEditDialogOpen(true);
   };
 
@@ -72,7 +50,7 @@ const Labels = (props: { labels: Label[]; labelType: 'answers' | 'forms' }) => {
     setSelectedLabel(null);
   };
 
-  const onEdit = async (data: EditLabelSchema) => {
+  const onEdit = async (data: NameEditFormValues) => {
     const result = await editLabelAction(data.id, data.name);
     if (result.ok) {
       showSnackbar('ラベルを編集しました。', 'success');
@@ -113,73 +91,23 @@ const Labels = (props: { labels: Label[]; labelType: 'answers' | 'forms' }) => {
 
   return (
     <Box>
-      <TableContainer component={Paper}>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>ラベル名</TableCell>
-              <TableCell align="right">アクション</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {props.labels.map((label) => (
-              <TableRow key={label.id}>
-                <TableCell component="th" scope="row">
-                  {label.name}
-                </TableCell>
-                <TableCell align="right">
-                  <IconButton
-                    color="primary"
-                    onClick={() => {
-                      handleOpenEdit(label);
-                    }}
-                    aria-label="編集"
-                  >
-                    <Edit />
-                  </IconButton>
-                  <IconButton
-                    color="error"
-                    onClick={() => {
-                      handleOpenDelete(label);
-                    }}
-                    aria-label="削除"
-                  >
-                    <Delete />
-                  </IconButton>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+      <NameManagementTable
+        items={props.labels}
+        nameHeader="ラベル名"
+        onEdit={handleOpenEdit}
+        onDelete={handleOpenDelete}
+      />
 
-      <Dialog open={editDialogOpen} onClose={handleCloseEdit} fullWidth>
-        <DialogTitle>ラベルを編集</DialogTitle>
-        <Box
-          component="form"
-          onSubmit={(e) => {
-            void handleSubmit(onEdit)(e);
-          }}
-        >
-          <DialogContent>
-            <TextField {...register('id')} type="hidden" />
-            <TextField
-              {...register('name')}
-              autoFocus
-              margin="dense"
-              label="ラベル名"
-              fullWidth
-              required
-            />
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={handleCloseEdit}>キャンセル</Button>
-            <Button type="submit" variant="contained">
-              保存
-            </Button>
-          </DialogActions>
-        </Box>
-      </Dialog>
+      <NameEditDialog
+        open={editDialogOpen}
+        title="ラベルを編集"
+        nameLabel="ラベル名"
+        register={register}
+        onClose={handleCloseEdit}
+        onSubmit={(e) => {
+          void handleSubmit(onEdit)(e);
+        }}
+      />
 
       <ConfirmDialog
         open={deleteDialogOpen}

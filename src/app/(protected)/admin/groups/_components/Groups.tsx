@@ -1,27 +1,13 @@
 'use client';
 
-import { Delete, Edit, Visibility } from '@mui/icons-material';
-import {
-  Box,
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  IconButton,
-  Paper,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  TextField,
-  Typography,
-} from '@mui/material';
+import { Box, Paper, Typography } from '@mui/material';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 
+import NameEditDialog, {
+  type NameEditFormValues,
+} from '@/app/(protected)/_components/NameEditDialog';
+import NameManagementTable from '@/app/(protected)/_components/NameManagementTable';
 import ConfirmDialog from '@/app/_components/ConfirmDialog';
 import SnackbarAlert, { useSnackbar } from '@/app/_components/SnackbarAlert';
 import { useApiQuery } from '@/app/_swr/useApiQuery';
@@ -29,11 +15,6 @@ import { useUserGroupCRUD } from '@/hooks/useUserGroupCRUD';
 import type { UserGroupSchema } from '@/lib/api-types';
 
 import GroupDetailDialog from './GroupDetailDialog';
-
-type EditGroupSchema = {
-  id: string;
-  name: string;
-};
 
 const Groups = (props: {
   groups: UserGroupSchema[];
@@ -48,7 +29,7 @@ const Groups = (props: {
   );
   const [detailGroup, setDetailGroup] = useState<UserGroupSchema | null>(null);
 
-  const { handleSubmit, register, reset } = useForm<EditGroupSchema>();
+  const { handleSubmit, register, reset } = useForm<NameEditFormValues>();
 
   const { deleteGroup, editGroup } = useUserGroupCRUD();
 
@@ -74,7 +55,7 @@ const Groups = (props: {
     setSelectedGroup(null);
   };
 
-  const onEdit = async (data: EditGroupSchema) => {
+  const onEdit = async (data: NameEditFormValues) => {
     const result = await editGroup(data.id, data.name);
     if (result.ok) {
       showSnackbar('グループを編集しました。', 'success');
@@ -115,82 +96,24 @@ const Groups = (props: {
 
   return (
     <Box>
-      <TableContainer component={Paper}>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>グループ名</TableCell>
-              <TableCell align="right">アクション</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {groups.map((group) => (
-              <TableRow key={group.id}>
-                <TableCell component="th" scope="row">
-                  {group.name}
-                </TableCell>
-                <TableCell align="right">
-                  <IconButton
-                    color="default"
-                    onClick={() => {
-                      setDetailGroup(group);
-                    }}
-                    aria-label="詳細"
-                  >
-                    <Visibility />
-                  </IconButton>
-                  <IconButton
-                    color="primary"
-                    onClick={() => {
-                      handleOpenEdit(group);
-                    }}
-                    aria-label="編集"
-                  >
-                    <Edit />
-                  </IconButton>
-                  <IconButton
-                    color="error"
-                    onClick={() => {
-                      handleOpenDelete(group);
-                    }}
-                    aria-label="削除"
-                  >
-                    <Delete />
-                  </IconButton>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+      <NameManagementTable
+        items={groups}
+        nameHeader="グループ名"
+        onView={setDetailGroup}
+        onEdit={handleOpenEdit}
+        onDelete={handleOpenDelete}
+      />
 
-      <Dialog open={editDialogOpen} onClose={handleCloseEdit} fullWidth>
-        <DialogTitle>グループを編集</DialogTitle>
-        <Box
-          component="form"
-          onSubmit={(e) => {
-            void handleSubmit(onEdit)(e);
-          }}
-        >
-          <DialogContent>
-            <input {...register('id')} type="hidden" />
-            <TextField
-              {...register('name')}
-              autoFocus
-              margin="dense"
-              label="グループ名"
-              fullWidth
-              required
-            />
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={handleCloseEdit}>キャンセル</Button>
-            <Button type="submit" variant="contained">
-              保存
-            </Button>
-          </DialogActions>
-        </Box>
-      </Dialog>
+      <NameEditDialog
+        open={editDialogOpen}
+        title="グループを編集"
+        nameLabel="グループ名"
+        register={register}
+        onClose={handleCloseEdit}
+        onSubmit={(e) => {
+          void handleSubmit(onEdit)(e);
+        }}
+      />
 
       <ConfirmDialog
         open={deleteDialogOpen}
