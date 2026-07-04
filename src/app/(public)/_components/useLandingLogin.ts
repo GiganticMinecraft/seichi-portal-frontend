@@ -110,7 +110,7 @@ export const useLandingLogin = () => {
   };
 
   useEffect(() => {
-    if (errorMessage) return;
+    if (errorMessage || isLoggingIn) return;
     const account = accounts[0];
     if (!account) return;
 
@@ -134,7 +134,7 @@ export const useLandingLogin = () => {
     })().catch((error: unknown) => {
       handleFailure(LOGIN_PROCESSING_ERROR_MESSAGE, error);
     });
-  }, [accounts, errorMessage, instance, router]);
+  }, [accounts, errorMessage, isLoggingIn, instance, router]);
 
   return {
     errorMessage,
