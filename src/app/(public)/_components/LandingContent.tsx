@@ -40,10 +40,15 @@ const ProcessingState = () => (
 
 type LandingViewProps = {
   onLogin: () => void;
+  isLoggingIn: boolean;
   publicForms: GetFormsResponse;
 };
 
-const LandingView = ({ onLogin, publicForms }: LandingViewProps) => (
+const LandingView = ({
+  onLogin,
+  isLoggingIn,
+  publicForms,
+}: LandingViewProps) => (
   <Container maxWidth="md" sx={{ py: { xs: 6, md: 10 } }}>
     <Stack spacing={5} sx={{ alignItems: 'center', textAlign: 'center' }}>
       <Box>
@@ -77,6 +82,7 @@ const LandingView = ({ onLogin, publicForms }: LandingViewProps) => (
           variant="contained"
           size="large"
           onClick={onLogin}
+          disabled={isLoggingIn}
           fullWidth
           sx={{ py: 1.5 }}
         >
@@ -108,7 +114,8 @@ type LandingContentProps = {
 };
 
 export const LandingContent = ({ publicForms }: LandingContentProps) => {
-  const { errorMessage, isProcessing, handleLogin } = useLandingLogin();
+  const { errorMessage, isProcessing, isLoggingIn, handleLogin } =
+    useLandingLogin();
 
   if (errorMessage) {
     return <ErrorState errorMessage={errorMessage} />;
@@ -118,5 +125,11 @@ export const LandingContent = ({ publicForms }: LandingContentProps) => {
     return <ProcessingState />;
   }
 
-  return <LandingView onLogin={handleLogin} publicForms={publicForms} />;
+  return (
+    <LandingView
+      onLogin={handleLogin}
+      isLoggingIn={isLoggingIn}
+      publicForms={publicForms}
+    />
+  );
 };
