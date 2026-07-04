@@ -91,6 +91,7 @@ export const useLandingLogin = () => {
   const [isProcessing, setIsProcessing] = useState(false);
   const {
     errorMessage: redirectErrorMessage,
+    isLoggingIn,
     handleLogin,
     resetError,
   } = useRedirectLogin({
@@ -109,7 +110,7 @@ export const useLandingLogin = () => {
   };
 
   useEffect(() => {
-    if (errorMessage) return;
+    if (errorMessage || isLoggingIn) return;
     const account = accounts[0];
     if (!account) return;
 
@@ -133,15 +134,16 @@ export const useLandingLogin = () => {
     })().catch((error: unknown) => {
       handleFailure(LOGIN_PROCESSING_ERROR_MESSAGE, error);
     });
-  }, [accounts, errorMessage, instance, router]);
+  }, [accounts, errorMessage, isLoggingIn, instance, router]);
 
   return {
     errorMessage,
     isProcessing,
+    isLoggingIn,
     handleLogin: () => {
       resetError();
       setProcessingErrorMessage(null);
-      handleLogin();
+      void handleLogin();
     },
   };
 };
