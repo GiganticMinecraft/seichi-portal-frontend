@@ -121,7 +121,7 @@ importers:
         specifier: 9.6.1
         version: 9.6.1
       '@types/eslint-config-prettier':
-        specifier: ^6.11.1
+        specifier: ^6.11.3
         version: 6.11.3
       '@types/node':
         specifier: 24.13.2
