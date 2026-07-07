@@ -14,21 +14,18 @@ const SearchField = () => {
   return (
     <Paper
       component="form"
-      sx={{
+      sx={(theme) => ({
         p: '2px 4px',
         display: 'flex',
         alignItems: 'center',
         width: 400,
-        backgroundColor: (theme) =>
-          alpha(
-            theme.palette.common.white,
-            theme.palette.mode === 'dark' ? 0.15 : 0.85
-          ),
-        border: (theme) =>
-          theme.palette.mode === 'dark'
-            ? `1px solid ${alpha(theme.palette.common.white, 0.2)}`
-            : `1px solid ${alpha(theme.palette.text.primary, 0.2)}`,
-      }}
+        backgroundColor: alpha(theme.palette.common.white, 0.85),
+        border: `1px solid ${alpha(theme.palette.text.primary, 0.2)}`,
+        ...theme.applyStyles('dark', {
+          backgroundColor: alpha(theme.palette.common.white, 0.15),
+          border: `1px solid ${alpha(theme.palette.common.white, 0.2)}`,
+        }),
+      })}
     >
       <IconButton
         sx={{ p: '10px', color: 'text.primary' }}

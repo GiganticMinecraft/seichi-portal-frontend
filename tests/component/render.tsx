@@ -7,7 +7,7 @@ import { SWRConfig } from 'swr';
 import { getAuthedTheme } from '@/app/_providers/getAuthedTheme';
 
 const ComponentTestProviders = ({ children }: { children: ReactNode }) => (
-  <ThemeProvider theme={getAuthedTheme('light')}>
+  <ThemeProvider theme={getAuthedTheme()}>
     <CssBaseline />
     <SWRConfig value={{ provider: () => new Map() }}>{children}</SWRConfig>
   </ThemeProvider>
