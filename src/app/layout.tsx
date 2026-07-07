@@ -1,4 +1,5 @@
 import './globals.css';
+import InitColorSchemeScript from '@mui/material/InitColorSchemeScript';
 import type { ReactNode } from 'react';
 
 import { getMsalConfig } from '@/env.server';
@@ -9,8 +10,9 @@ const RootLayout = ({ children }: { children: ReactNode }) => {
   const msalConfig = getMsalConfig();
 
   return (
-    <html lang="ja">
+    <html lang="ja" suppressHydrationWarning>
       <body>
+        <InitColorSchemeScript defaultMode="system" />
         <AppProviders
           msalClientId={msalConfig.clientId}
           msalRedirectUri={msalConfig.redirectUri}
