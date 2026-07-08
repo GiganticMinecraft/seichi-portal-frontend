@@ -56,7 +56,7 @@ const EachForm = ({ form }: { form: FormItem }) => {
         {form.description && (
           <Typography
             variant="body2"
-            color="text.secondary"
+            color="textSecondary"
             sx={{
               display: '-webkit-box',
               WebkitLineClamp: 3,

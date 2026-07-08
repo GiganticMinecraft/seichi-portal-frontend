@@ -4,7 +4,7 @@ import type { GetUsersResponse } from '@/lib/api-types';
 
 const InfoRow = ({ label, value }: { label: string; value: string }) => (
   <Stack>
-    <Typography variant="caption" color="text.secondary">
+    <Typography variant="caption" color="textSecondary">
       {label}
     </Typography>
     <Typography variant="body1" sx={{ wordBreak: 'break-all' }}>

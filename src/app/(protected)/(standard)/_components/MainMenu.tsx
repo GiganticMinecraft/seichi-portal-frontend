@@ -57,7 +57,7 @@ const MainMenu = () => {
         >
           {userName ? `ようこそ、${userName} さん` : 'ようこそ'}
         </Typography>
-        <Typography variant="body1" color="text.secondary">
+        <Typography variant="body1" color="textSecondary">
           各機能にアクセスするには、下のカードをクリックしてください
         </Typography>
       </Box>
@@ -134,7 +134,7 @@ const MainMenu = () => {
                     </Typography>
                     <Typography
                       variant="body2"
-                      color="text.secondary"
+                      color="textSecondary"
                       sx={{ lineHeight: 1.6 }}
                     >
                       {item.description}

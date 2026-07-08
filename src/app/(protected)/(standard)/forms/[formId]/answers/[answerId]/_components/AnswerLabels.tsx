@@ -6,7 +6,7 @@ import type { GetAnswerResponse } from '@/lib/api-types';
 const AnswerLabels = (props: { answers: GetAnswerResponse }) => {
   if (props.answers.labels.length === 0) {
     return (
-      <Typography color="text.secondary">ラベルが設定されていません</Typography>
+      <Typography color="textSecondary">ラベルが設定されていません</Typography>
     );
   }
 

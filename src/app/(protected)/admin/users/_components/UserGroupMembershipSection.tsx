@@ -83,7 +83,7 @@ const UserGroupMembershipSection = ({
           ))}
         </Box>
       ) : (
-        <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+        <Typography variant="body2" color="textSecondary" sx={{ mb: 1 }}>
           所属しているグループはありません
         </Typography>
       )}

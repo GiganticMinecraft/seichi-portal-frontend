@@ -103,7 +103,7 @@ const UserDetailDialogBody = ({
                 {user.discord_user_id && ` (ID: ${user.discord_user_id})`}
               </Typography>
             ) : (
-              <Typography variant="body2" color="text.secondary">
+              <Typography variant="body2" color="textSecondary">
                 連携されていません
               </Typography>
             )}

@@ -111,7 +111,7 @@ const ErrorDialog = ({
               <Typography
                 variant="caption"
                 component="span"
-                color="text.secondary"
+                color="textSecondary"
               >
                 詳細情報
               </Typography>

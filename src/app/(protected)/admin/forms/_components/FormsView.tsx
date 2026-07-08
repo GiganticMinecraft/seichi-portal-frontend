@@ -42,7 +42,7 @@ const FormsView = ({ forms, onFormClick, onResult }: Props) => {
           {forms.length === 0 ? (
             <TableRow>
               <TableCell colSpan={4} align="center" sx={{ py: 4 }}>
-                <Typography color="text.secondary">
+                <Typography color="textSecondary">
                   条件に一致するフォームがありません
                 </Typography>
               </TableCell>
@@ -64,7 +64,7 @@ const FormsView = ({ forms, onFormClick, onResult }: Props) => {
                   <LabelChips labels={form.labels} />
                 </TableCell>
                 <TableCell>
-                  <Typography variant="body2" color="text.secondary">
+                  <Typography variant="body2" color="textSecondary">
                     {formatResponsePeriod(
                       toResponsePeriod(
                         form.settings.answer_settings.acceptance_period

@@ -17,7 +17,7 @@ const LinkDiscordButton = () => {
             <Typography variant="h6">Discord 連携</Typography>
             <Chip label="未連携" size="small" />
           </Stack>
-          <Typography variant="body2" color="text.secondary">
+          <Typography variant="body2" color="textSecondary">
             Discord と連携すると、回答へのメッセージ通知を受け取れます。
           </Typography>
           <Button
