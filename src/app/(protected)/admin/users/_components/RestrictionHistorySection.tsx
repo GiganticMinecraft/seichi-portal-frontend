@@ -48,7 +48,7 @@ const RestrictionHistorySection = ({ uuid }: { uuid: string }) => {
           <Alert severity="error">処罰履歴の取得に失敗しました。</Alert>
         )}
         {history && count === 0 && (
-          <Typography variant="body2" component="p" color="text.secondary">
+          <Typography variant="body2" component="p" color="textSecondary">
             処罰履歴はありません
           </Typography>
         )}

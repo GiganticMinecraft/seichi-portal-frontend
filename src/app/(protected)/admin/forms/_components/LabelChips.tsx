@@ -15,7 +15,7 @@ interface Props {
 const LabelChips = ({ labels, max = 2 }: Props) => {
   if (labels.length === 0) {
     return (
-      <Typography variant="body2" color="text.secondary">
+      <Typography variant="body2" color="textSecondary">
         —
       </Typography>
     );

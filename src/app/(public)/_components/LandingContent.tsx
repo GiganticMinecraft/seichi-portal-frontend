@@ -60,7 +60,7 @@ const LandingView = ({
         >
           Seichi Portal
         </Typography>
-        <Typography variant="body1" component="p" color="text.secondary">
+        <Typography variant="body1" component="p" color="textSecondary">
           整地鯖（GiganticMinecraft）公式のポータルサイトです。
           <br />
           フォームへの回答や各種設定をここから行えます。

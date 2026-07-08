@@ -78,7 +78,7 @@ const AnswerSubmissionForm = ({
                 <Typography variant="h6" component="span">
                   回答者情報
                 </Typography>
-                <Typography variant="body2" color="text.secondary">
+                <Typography variant="body2" color="textSecondary">
                   サインインせずに回答するため、お名前と連絡先の入力が必要です。
                 </Typography>
                 <TextField
@@ -122,7 +122,7 @@ const AnswerSubmissionForm = ({
                   )}
                 </Box>
                 {question.description && (
-                  <Box sx={{ whiteSpace: 'pre-wrap', color: 'text.secondary' }}>
+                  <Box sx={{ whiteSpace: 'pre-wrap' }}>
                     <Markdown remarkPlugins={[remarkGfm]}>
                       {question.description}
                     </Markdown>

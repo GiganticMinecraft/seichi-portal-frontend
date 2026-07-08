@@ -38,7 +38,7 @@ const ArchivedFormsView = ({ forms, onResult }: Props) => {
           {forms.length === 0 ? (
             <TableRow>
               <TableCell colSpan={4} align="center" sx={{ py: 4 }}>
-                <Typography color="text.secondary">
+                <Typography color="textSecondary">
                   アーカイブ済みのフォームはありません
                 </Typography>
               </TableCell>
@@ -53,7 +53,7 @@ const ArchivedFormsView = ({ forms, onResult }: Props) => {
                   <LabelChips labels={form.labels} />
                 </TableCell>
                 <TableCell>
-                  <Typography variant="body2" color="text.secondary">
+                  <Typography variant="body2" color="textSecondary">
                     {dayjs(form.archived_at).format('YYYY/MM/DD')}
                   </Typography>
                 </TableCell>

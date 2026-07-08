@@ -101,7 +101,7 @@ const GroupDetailDialogBody = ({
     }
 
     return (
-      <Typography variant="body2" color="text.secondary" component="p">
+      <Typography variant="body2" color="textSecondary" component="p">
         所属しているユーザーはいません
       </Typography>
     );

@@ -58,7 +58,7 @@ const ConversationList = ({
 }) => (
   <Stack spacing={2}>
     {entries.length === 0 && (
-      <Typography color="text.secondary" align="center" sx={{ mt: 4 }}>
+      <Typography color="textSecondary" align="center" sx={{ mt: 4 }}>
         {capabilities.emptyMessage}
       </Typography>
     )}

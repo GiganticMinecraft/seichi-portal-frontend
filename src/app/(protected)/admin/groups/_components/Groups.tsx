@@ -80,7 +80,7 @@ const Groups = (props: {
     return (
       <Box>
         <Paper sx={{ p: 4, textAlign: 'center' }}>
-          <Typography variant="body1" color="text.secondary">
+          <Typography variant="body1" color="textSecondary">
             グループが登録されていません。
           </Typography>
         </Paper>

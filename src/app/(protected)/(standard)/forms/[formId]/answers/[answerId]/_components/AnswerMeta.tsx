@@ -20,8 +20,11 @@ const AuthorName = ({ author }: { author: Author }) => {
       >
         <Typography>{author.temporary_user.name}</Typography>
         <Chip label="未ログイン" size="small" color="default" />
-        <Typography variant="caption" color="text.secondary">
-          連絡先: {author.temporary_user.contact_text}
+        <Typography variant="caption" color="textSecondary">
+          連絡先:{' '}
+          <Typography component="span" variant="caption" color="textPrimary">
+            {author.temporary_user.contact_text}
+          </Typography>
         </Typography>
       </Stack>
     );
@@ -39,19 +42,19 @@ const AnswerMeta = (props: {
   <Paper variant="outlined" sx={{ p: 2 }}>
     <Grid container spacing={2}>
       <Grid size={{ xs: 12, sm: 6 }}>
-        <Typography variant="caption" color="text.secondary">
+        <Typography variant="caption" color="textSecondary">
           回答者
         </Typography>
         <AuthorName author={props.answer.author} />
       </Grid>
       <Grid size={{ xs: 12, sm: 6 }}>
-        <Typography variant="caption" color="text.secondary">
+        <Typography variant="caption" color="textSecondary">
           回答日時
         </Typography>
         <Typography>{formatString(props.answer.timestamp)}</Typography>
       </Grid>
       <Grid size={{ xs: 12, sm: 6 }}>
-        <Typography variant="caption" color="text.secondary">
+        <Typography variant="caption" color="textSecondary">
           ラベル
         </Typography>
         <Box>{props.labelsSlot ?? <AnswerLabels answers={props.answer} />}</Box>

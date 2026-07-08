@@ -75,7 +75,7 @@ const Labels = (props: { labels: Label[]; labelType: 'answers' | 'forms' }) => {
     return (
       <Box>
         <Paper sx={{ p: 4, textAlign: 'center' }}>
-          <Typography variant="body1" color="text.secondary">
+          <Typography variant="body1" color="textSecondary">
             ラベルが登録されていません。
           </Typography>
         </Paper>

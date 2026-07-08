@@ -99,7 +99,7 @@ const ConversationEntryHeader = ({
             </IconButton>
           )}
         </Stack>
-        <Typography variant="caption" component="span" color="text.secondary">
+        <Typography variant="caption" component="span" color="textSecondary">
           {formatString(entry.timestamp)}
         </Typography>
       </Stack>
