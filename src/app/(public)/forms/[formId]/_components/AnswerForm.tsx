@@ -60,7 +60,7 @@ const AnswerForm = ({
   }
 
   return (
-    <Stack spacing={0}>
+    <Stack spacing={0} sx={{ width: '100%' }}>
       <SubmissionErrorAlert submissionState={submissionState} />
       <AnswerSubmissionForm
         questions={questions}
