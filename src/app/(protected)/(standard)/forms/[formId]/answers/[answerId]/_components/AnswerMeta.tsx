@@ -22,9 +22,9 @@ const AuthorName = ({ author }: { author: Author }) => {
         <Chip label="未ログイン" size="small" color="default" />
         <Typography variant="caption" color="textSecondary">
           連絡先:{' '}
-          <Typography component="span" variant="caption" color="textPrimary">
+          <Box component="span" sx={{ color: 'text.primary' }}>
             {author.temporary_user.contact_text}
-          </Typography>
+          </Box>
         </Typography>
       </Stack>
     );

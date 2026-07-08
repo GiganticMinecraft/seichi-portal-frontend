@@ -107,9 +107,10 @@ const muiColorPropConfig = {
     'no-restricted-syntax': [
       'error',
       {
-        selector: "JSXAttribute[name.name='color'] Literal[value=/^text\\./]",
+        selector:
+          "JSXAttribute[name.name='color'] Literal[value=/^[a-z]+\\./]",
         message:
-          "MUIのcolorプロパティに 'text.secondary' のようなドット区切りの文字列を渡すと、内部的に一致するスタイルバリアントがなくno-opになります（祖先要素から色を継承するだけになる）。'textSecondary' のようなキャメルケースを使うか、色分けが必要な場合は sx={{ color: 'text.secondary' }} を使ってください。",
+          "MUIのcolorプロパティに 'text.secondary' や 'primary.main' のようなドット区切りの文字列を渡すと、内部的に一致するスタイルバリアントがなくno-opになります（祖先要素から色を継承するだけになる）。'textSecondary' のようなキャメルケースを使うか、色分けが必要な場合は sx={{ color: 'text.secondary' }} を使ってください。",
       },
     ],
   },
