@@ -154,7 +154,7 @@ importers:
         specifier: ^7.1.1
         version: 7.1.1(eslint@9.39.4)
       eslint-plugin-unused-imports:
-        specifier: ^4
+        specifier: ^4.4.1
         version: 4.4.1(@typescript-eslint/eslint-plugin@8.62.0(@typescript-eslint/parser@8.62.0(eslint@9.39.4)(typescript@6.0.3))(eslint@9.39.4)(typescript@6.0.3))(eslint@9.39.4)
       jsdom:
         specifier: ^29.1.1
