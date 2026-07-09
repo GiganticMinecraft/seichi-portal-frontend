@@ -113,6 +113,57 @@ describe('useConversationEntryDeepLink', () => {
     expect(result.current.notFoundMessage).toBeUndefined();
   });
 
+  // entryId 自体が別の値に変わった場合(同一ページ内で別の直リンクに切り替わる、
+  // ブラウザの戻る操作でクエリが変わる、など)は、たとえ一度解決済みでも
+  // 新しい entryId に対して改めて解決し直す必要がある。
+  it('entryId が別の値に変わった場合は、再度解決し直す(a→b)', () => {
+    const onClose = vi.fn();
+
+    const { result, rerender } = renderHook(
+      ({ entryId }: { entryId: string }) =>
+        useConversationEntryDeepLink(
+          { entryId, onClose },
+          [makeEntry('a'), makeEntry('b')],
+          'メッセージ'
+        ),
+      { initialProps: { entryId: 'a' } }
+    );
+
+    expect(result.current.autoOpen).toBe(true);
+    expect(result.current.highlightedEntryId).toBe('a');
+
+    rerender({ entryId: 'b' });
+
+    expect(result.current.autoOpen).toBe(true);
+    expect(result.current.highlightedEntryId).toBe('b');
+    expect(result.current.notFoundMessage).toBeUndefined();
+  });
+
+  it('entryId が undefined から別の値に変わった場合も解決し直す', () => {
+    const onClose = vi.fn();
+    const initialProps: { entryId: string | undefined } = {
+      entryId: undefined,
+    };
+
+    const { result, rerender } = renderHook(
+      ({ entryId }: { entryId: string | undefined }) =>
+        useConversationEntryDeepLink(
+          { entryId, onClose },
+          [makeEntry('b')],
+          'メッセージ'
+        ),
+      { initialProps }
+    );
+
+    expect(result.current.autoOpen).toBe(false);
+    expect(result.current.highlightedEntryId).toBeUndefined();
+
+    rerender({ entryId: 'b' });
+
+    expect(result.current.autoOpen).toBe(true);
+    expect(result.current.highlightedEntryId).toBe('b');
+  });
+
   it('ハイライトは一定時間後に自動的に解除される', () => {
     const onClose = vi.fn();
 

@@ -34,13 +34,18 @@ export const getConversationEntryDomId = (entryId: string) =>
 
 /**
  * `?messageId=`/`?commentId=` などの直リンククエリと entries を突き合わせ、
- * 初回のみ自動オープン・ハイライトを発火させる共有ロジック。
+ * entryId が変わるたびに自動オープン・ハイライトを発火させる共有ロジック。
  *
  * entries は refreshInterval による再フェッチのたびに新しい参照になるため、
- * 「一度解決したら二度と発火しない」ことを保証する必要がある。ここでは
+ * 「同じ entryId に対する多重解決」は防ぐ必要がある一方、entryId 自体が
+ * 別の値に変わった場合(同一ページ内で別の直リンクに切り替わる、ブラウザの
+ * 戻る操作でクエリが変わる、など)は改めて解決し直す必要がある。
+ * そのため「一度でも解決したか」ではなく「直前に処理した entryId」を
+ * prevEntryId として保持し、entryId !== prevEntryId のときだけ処理する。
+ *
  * useEffect + setState ではなく、React が公式に案内するレンダー中に state を
- * 調整するパターン(hasResolved を見て、まだなら直接 setState する)を使う。
- * 同じレンダーの間に hasResolved も true に確定するため、無限ループにはならない。
+ * 調整するパターンを使う。同じレンダーの間に prevEntryId も確定するため、
+ * 無限ループにはならない。
  */
 export const useConversationEntryDeepLink = (
   deepLink: ConversationDeepLinkProps,
@@ -49,19 +54,30 @@ export const useConversationEntryDeepLink = (
 ): ConversationDeepLinkState => {
   const { entryId, onClose } = deepLink;
 
-  const [hasResolved, setHasResolved] = useState(false);
+  const [prevEntryId, setPrevEntryId] = useState<string>();
   const [autoOpen, setAutoOpen] = useState(false);
   const [highlightedEntryId, setHighlightedEntryId] = useState<string>();
   const [notFoundMessage, setNotFoundMessage] = useState<string>();
 
-  if (entryId !== undefined && !hasResolved) {
-    setHasResolved(true);
+  if (entryId !== prevEntryId) {
+    setPrevEntryId(entryId);
 
-    if (entries.some((entry) => entry.id === entryId)) {
-      setAutoOpen(true);
-      setHighlightedEntryId(entryId);
+    if (entryId !== undefined) {
+      if (entries.some((entry) => entry.id === entryId)) {
+        setAutoOpen(true);
+        setHighlightedEntryId(entryId);
+        setNotFoundMessage(undefined);
+      } else {
+        setAutoOpen(false);
+        setHighlightedEntryId(undefined);
+        setNotFoundMessage(
+          `指定された${notFoundLabel}が見つかりませんでした。`
+        );
+      }
     } else {
-      setNotFoundMessage(`指定された${notFoundLabel}が見つかりませんでした。`);
+      setAutoOpen(false);
+      setHighlightedEntryId(undefined);
+      setNotFoundMessage(undefined);
     }
   }
 

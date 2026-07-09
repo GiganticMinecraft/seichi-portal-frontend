@@ -81,6 +81,69 @@ describe('ConversationSurface の直リンク自動オープン', () => {
     ).not.toBeInTheDocument();
   });
 
+  it('autoOpen が true→false→true(別 entry 向け)と変化した場合、2回目の true でも自動的に開く', async () => {
+    const user = (await import('@testing-library/user-event')).default.setup();
+    const onDrawerClose = vi.fn();
+
+    // 1. entry-1 への直リンクで自動的に開く
+    const { rerender } = renderWithProviders(
+      <ConversationSurface
+        variant="drawer"
+        title="コメント"
+        triggerLabel="コメントを開く"
+        entries={entries}
+        capabilities={capabilities}
+        autoOpen
+        highlightedEntryId="entry-1"
+        onDrawerClose={onDrawerClose}
+      />
+    );
+
+    expect(
+      await screen.findByRole('heading', { name: 'コメント' })
+    ).toBeVisible();
+
+    // 2. ユーザーが閉じる(実際のページでは、これを契機に URL の
+    //    entryId クエリが消え、やがて autoOpen が false になる)。
+    await user.click(screen.getByRole('button', { name: '閉じる' }));
+    await waitFor(() => {
+      expect(
+        screen.queryByRole('heading', { name: 'コメント' })
+      ).not.toBeInTheDocument();
+    });
+
+    rerender(
+      <ConversationSurface
+        variant="drawer"
+        title="コメント"
+        triggerLabel="コメントを開く"
+        entries={entries}
+        capabilities={capabilities}
+        autoOpen={false}
+        onDrawerClose={onDrawerClose}
+      />
+    );
+
+    // 3. 別の entry(entry-2)への直リンクにより autoOpen が再び true になった場合、
+    //    ユーザーが閉じた直後の再フェッチとは異なり、今度は自動的に開き直るべき。
+    rerender(
+      <ConversationSurface
+        variant="drawer"
+        title="コメント"
+        triggerLabel="コメントを開く"
+        entries={entries}
+        capabilities={capabilities}
+        autoOpen
+        highlightedEntryId="entry-2"
+        onDrawerClose={onDrawerClose}
+      />
+    );
+
+    expect(
+      await screen.findByRole('heading', { name: 'コメント' })
+    ).toBeVisible();
+  });
+
   it('autoOpen が false の場合は自動的に開かない', () => {
     renderWithProviders(
       <ConversationSurface

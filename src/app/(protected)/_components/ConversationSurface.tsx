@@ -109,12 +109,18 @@ const ConversationSurface = ({
   const hasAutoOpenedRef = useRef(false);
 
   // autoOpen は entries の再フェッチ後も true のまま残り得るため、
-  // 「最初に true になったときだけ開く」を hasAutoOpenedRef で保証する。
+  // 「true になった直後の 1 回だけ開く」を hasAutoOpenedRef で保証する。
   // これにより、ユーザーが手動で閉じた drawer が再フェッチのたびに勝手に開き直すことはない。
+  // autoOpen が false に戻ったとき(entryId が別の値に変わった、など)は
+  // ref をリセットし、次に true になったときにまた自動で開けるようにする。
   useEffect(() => {
-    if (autoOpen && !hasAutoOpenedRef.current) {
-      hasAutoOpenedRef.current = true;
-      setOpen(true);
+    if (autoOpen) {
+      if (!hasAutoOpenedRef.current) {
+        hasAutoOpenedRef.current = true;
+        setOpen(true);
+      }
+    } else {
+      hasAutoOpenedRef.current = false;
     }
   }, [autoOpen]);
 

@@ -1,8 +1,8 @@
 'use client';
 
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { useCallback } from 'react';
+import { useSearchParams } from 'next/navigation';
 
+import { useClearQueryParam } from '@/app/(protected)/_components/useClearQueryParam';
 import ErrorDialog from '@/app/_components/ErrorDialog';
 import LoadingCircular from '@/app/_components/LoadingCircular';
 import {
@@ -22,24 +22,8 @@ const AnswerDetailsPageContent = ({
   formId: string;
   answerId: string;
 }) => {
-  const router = useRouter();
-  const pathname = usePathname();
   const searchParams = useSearchParams();
-
-  const clearQueryParam = useCallback(
-    (key: string) => {
-      if (searchParams.get(key) === null) {
-        return;
-      }
-      const params = new URLSearchParams(searchParams.toString());
-      params.delete(key);
-      const query = params.toString();
-      router.replace(query ? `${pathname}?${query}` : pathname, {
-        scroll: false,
-      });
-    },
-    [pathname, router, searchParams]
-  );
+  const clearQueryParam = useClearQueryParam();
 
   const answerQuery = useApiQuery(
     '/api/v1/forms/{form_id}/answers/{answer_id}',
