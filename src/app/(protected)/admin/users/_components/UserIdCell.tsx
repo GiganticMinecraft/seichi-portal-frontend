@@ -2,7 +2,7 @@
 
 import { Box, Tooltip, Typography } from '@mui/material';
 
-import CopyButton from './CopyButton';
+import CopyButton from '@/app/(protected)/_components/CopyButton';
 
 const UserIdCell = ({ id }: { id: string }) => (
   <Box sx={{ display: 'flex', alignItems: 'center' }}>

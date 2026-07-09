@@ -1,5 +1,8 @@
 'use client';
 
+import { useSearchParams } from 'next/navigation';
+
+import { useClearQueryParam } from '@/app/(protected)/_components/useClearQueryParam';
 import ErrorDialog from '@/app/_components/ErrorDialog';
 import LoadingCircular from '@/app/_components/LoadingCircular';
 import {
@@ -19,6 +22,9 @@ const AnswerDetailsPageContent = ({
   formId: string;
   answerId: string;
 }) => {
+  const searchParams = useSearchParams();
+  const clearQueryParam = useClearQueryParam();
+
   const answerQuery = useApiQuery(
     '/api/v1/forms/{form_id}/answers/{answer_id}',
     {
@@ -81,7 +87,23 @@ const AnswerDetailsPageContent = ({
   };
 
   return (
-    <AnswerDetailsPageView formId={formId} answerId={answerId} data={data} />
+    <AnswerDetailsPageView
+      formId={formId}
+      answerId={answerId}
+      data={data}
+      messageDeepLink={{
+        entryId: searchParams.get('messageId') ?? undefined,
+        onClose: () => {
+          clearQueryParam('messageId');
+        },
+      }}
+      commentDeepLink={{
+        entryId: searchParams.get('commentId') ?? undefined,
+        onClose: () => {
+          clearQueryParam('commentId');
+        },
+      }}
+    />
   );
 };
 

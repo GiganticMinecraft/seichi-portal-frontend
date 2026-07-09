@@ -16,10 +16,13 @@ import type {
   ConversationCapabilities,
   ConversationEntryViewModel,
 } from './conversationTypes';
+import { getConversationEntryDomId } from './useConversationEntryDeepLink';
 
 type Props = {
   entry: ConversationEntryViewModel;
   capabilities: ConversationCapabilities;
+  /** 直リンクで指定された entry かどうか。true の間だけ一時的な背景色でハイライトする。 */
+  highlighted?: boolean;
   onUpdate?: (
     entryId: string,
     body: string
@@ -34,6 +37,7 @@ type Props = {
 const ConversationEntry = ({
   entry,
   capabilities,
+  highlighted = false,
   onUpdate,
   onDelete,
 }: Props) => {
@@ -43,10 +47,14 @@ const ConversationEntry = ({
   const [snackbar, setSnackbar] = useState<{
     open: boolean;
     message: string;
-  }>({ open: false, message: '' });
+    severity: 'error' | 'success';
+  }>({ open: false, message: '', severity: 'error' });
 
   const showError = (message: string) => {
-    setSnackbar({ open: true, message });
+    setSnackbar({ open: true, message, severity: 'error' });
+  };
+  const showSuccess = (message: string) => {
+    setSnackbar({ open: true, message, severity: 'success' });
   };
   const closeSnackbar = () => {
     setSnackbar((prev) => ({ ...prev, open: false }));
@@ -100,6 +108,15 @@ const ConversationEntry = ({
     setIsEditing(false);
   };
 
+  const handleCopyLink = async (url: string) => {
+    try {
+      await navigator.clipboard.writeText(url);
+      showSuccess('リンクをコピーしました');
+    } catch {
+      showError('リンクのコピーに失敗しました。もう一度お試しください。');
+    }
+  };
+
   return (
     <>
       <Snackbar
@@ -108,11 +125,18 @@ const ConversationEntry = ({
         onClose={closeSnackbar}
         anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
       >
-        <Alert severity="error" onClose={closeSnackbar}>
+        <Alert severity={snackbar.severity} onClose={closeSnackbar}>
           {snackbar.message}
         </Alert>
       </Snackbar>
-      <Box>
+      <Box
+        id={getConversationEntryDomId(entry.id)}
+        sx={{
+          transition: 'background-color 0.6s ease',
+          bgcolor: highlighted ? 'action.selected' : 'transparent',
+          borderRadius: 1,
+        }}
+      >
         <ConversationEntryHeader
           entry={entry}
           capabilities={capabilities}
@@ -121,6 +145,7 @@ const ConversationEntry = ({
           onCloseMenu={handleCloseMenu}
           onStartEditing={handleStartEditing}
           onDelete={handleDelete}
+          onCopyLink={(url) => void handleCopyLink(url)}
         />
 
         <Box

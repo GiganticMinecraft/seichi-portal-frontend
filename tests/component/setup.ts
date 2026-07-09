@@ -9,6 +9,10 @@ afterEach(() => {
   cleanup();
 });
 
+// jsdom は scrollIntoView を実装していないため、smooth スクロールを行う component
+// (ConversationSurface の直リンク自動スクロールなど)をテストできるようにダミー実装を補う。
+Element.prototype.scrollIntoView = vi.fn();
+
 vi.mock('next/navigation', () => ({
   redirect: vi.fn(),
   usePathname: () => '/',

@@ -631,6 +631,8 @@ export interface components {
         AnswerComment: {
             commented_by: components["schemas"]["User"];
             content: string;
+            /** Format: uuid */
+            id: string;
             /** Format: date-time */
             timestamp: string;
         };

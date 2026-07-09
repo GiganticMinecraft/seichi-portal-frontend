@@ -11,6 +11,11 @@ import type {
   ConversationEntryViewModel,
 } from './conversationTypes';
 import { useCommentConversationActions } from './useConversationActions';
+import type { ConversationDeepLinkProps } from './useConversationEntryDeepLink';
+import {
+  ConversationDeepLinkNotice,
+  useConversationEntryDeepLink,
+} from './useConversationEntryDeepLink';
 
 const Comments = (props: {
   comments: AnswerComment[];
@@ -18,12 +23,13 @@ const Comments = (props: {
   answerId: string;
   currentUserId: string | undefined;
   showDeleteButton: boolean | undefined;
+  deepLink: ConversationDeepLinkProps;
 }) => {
   const actions = useCommentConversationActions(props.formId, props.answerId);
 
   const entries: ConversationEntryViewModel[] = props.comments.map(
     (comment) => ({
-      id: `${comment.commented_by.name}-${comment.timestamp}`,
+      id: comment.id,
       body: comment.content,
       authorName: comment.commented_by.name,
       authorId: comment.commented_by.uuid,
@@ -44,11 +50,21 @@ const Comments = (props: {
     composeHelperText: '',
     emptyMessage: 'コメントはまだありません',
     adminLabel: '運営',
-    actionTrigger: 'icon',
+    deepLinkQueryParam: 'commentId',
   };
+
+  const deepLinkState = useConversationEntryDeepLink(
+    props.deepLink,
+    entries,
+    'コメント'
+  );
 
   return (
     <Box>
+      <ConversationDeepLinkNotice
+        message={deepLinkState.notFoundMessage}
+        onClose={deepLinkState.dismissNotFoundMessage}
+      />
       <ConversationSurface
         variant="drawer"
         title="コメント"
@@ -56,6 +72,9 @@ const Comments = (props: {
         triggerStartIcon={<Typography component="span">💬</Typography>}
         entries={entries}
         capabilities={capabilities}
+        autoOpen={deepLinkState.autoOpen}
+        highlightedEntryId={deepLinkState.highlightedEntryId}
+        onDrawerClose={deepLinkState.onDrawerClose}
         inputForm={
           capabilities.canCompose ? (
             <Box

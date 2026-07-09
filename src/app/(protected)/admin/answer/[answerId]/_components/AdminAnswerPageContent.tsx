@@ -1,5 +1,8 @@
 'use client';
 
+import { useSearchParams } from 'next/navigation';
+
+import { useClearQueryParam } from '@/app/(protected)/_components/useClearQueryParam';
 import ErrorDialog from '@/app/_components/ErrorDialog';
 import LoadingCircular from '@/app/_components/LoadingCircular';
 import {
@@ -12,6 +15,9 @@ import AdminAnswerPageView from './AdminAnswerPageView';
 import type { AdminAnswerPageData } from './AdminAnswerPageView';
 
 const AdminAnswerPageContent = ({ answerId }: { answerId: string }) => {
+  const searchParams = useSearchParams();
+  const clearQueryParam = useClearQueryParam();
+
   const allAnswersQuery = useApiQuery('/api/v1/forms/answers', undefined, {
     refreshInterval: 1000,
   });
@@ -100,7 +106,24 @@ const AdminAnswerPageContent = ({ answerId }: { answerId: string }) => {
     comments: detailQueries.comments.data,
   };
 
-  return <AdminAnswerPageView answerId={answerId} data={data} />;
+  return (
+    <AdminAnswerPageView
+      answerId={answerId}
+      data={data}
+      messageDeepLink={{
+        entryId: searchParams.get('messageId') ?? undefined,
+        onClose: () => {
+          clearQueryParam('messageId');
+        },
+      }}
+      commentDeepLink={{
+        entryId: searchParams.get('commentId') ?? undefined,
+        onClose: () => {
+          clearQueryParam('commentId');
+        },
+      }}
+    />
+  );
 };
 
 export default AdminAnswerPageContent;

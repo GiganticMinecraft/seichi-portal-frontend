@@ -1,6 +1,6 @@
 import { Avatar, Box, Typography } from '@mui/material';
 
-import CopyButton from './CopyButton';
+import CopyButton from '@/app/(protected)/_components/CopyButton';
 
 const UserNameCell = ({ id, name }: { id: string; name: string }) => (
   <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, minWidth: 0 }}>
