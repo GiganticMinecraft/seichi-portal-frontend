@@ -9,6 +9,11 @@ import type {
 } from './conversationTypes';
 import InputMessageField from './InputMessageField';
 import { useMessageConversationActions } from './useConversationActions';
+import type { ConversationDeepLinkProps } from './useConversationEntryDeepLink';
+import {
+  ConversationDeepLinkNotice,
+  useConversationEntryDeepLink,
+} from './useConversationEntryDeepLink';
 
 type ConversationMessage = {
   id: string;
@@ -27,6 +32,7 @@ const Messages = (props: {
   answerId: string;
   title: string;
   triggerLabel: string;
+  deepLink: ConversationDeepLinkProps;
 }) => {
   const actions = useMessageConversationActions(props.formId, props.answerId);
 
@@ -50,27 +56,42 @@ const Messages = (props: {
     composeHelperText: 'Shift + Enter で改行、Enter で送信することができます。',
     emptyMessage: 'メッセージはまだありません',
     adminLabel: '運営チーム',
-    actionTrigger: 'menu',
+    deepLinkQueryParam: 'messageId',
   };
 
+  const deepLinkState = useConversationEntryDeepLink(
+    props.deepLink,
+    entries,
+    'メッセージ'
+  );
+
   return (
-    <ConversationSurface
-      variant="drawer"
-      title={props.title}
-      triggerLabel={props.triggerLabel}
-      triggerStartIcon={<MessageIcon />}
-      entries={entries}
-      capabilities={capabilities}
-      inputForm={
-        <InputMessageField
-          form_id={props.formId}
-          answer_id={props.answerId}
-          textFieldSx={{ mt: 1 }}
-        />
-      }
-      onUpdate={actions.update}
-      onDelete={actions.deleteEntry}
-    />
+    <>
+      <ConversationDeepLinkNotice
+        message={deepLinkState.notFoundMessage}
+        onClose={deepLinkState.dismissNotFoundMessage}
+      />
+      <ConversationSurface
+        variant="drawer"
+        title={props.title}
+        triggerLabel={props.triggerLabel}
+        triggerStartIcon={<MessageIcon />}
+        entries={entries}
+        capabilities={capabilities}
+        autoOpen={deepLinkState.autoOpen}
+        highlightedEntryId={deepLinkState.highlightedEntryId}
+        onDrawerClose={deepLinkState.onDrawerClose}
+        inputForm={
+          <InputMessageField
+            form_id={props.formId}
+            answer_id={props.answerId}
+            textFieldSx={{ mt: 1 }}
+          />
+        }
+        onUpdate={actions.update}
+        onDelete={actions.deleteEntry}
+      />
+    </>
   );
 };
 

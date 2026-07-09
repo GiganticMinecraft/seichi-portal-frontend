@@ -13,9 +13,9 @@ import {
   Typography,
 } from '@mui/material';
 
+import CopyButton from '@/app/(protected)/_components/CopyButton';
 import { useApiQuery } from '@/app/_swr/useApiQuery';
 
-import CopyButton from './CopyButton';
 import RestrictionHistorySection from './RestrictionHistorySection';
 import RestrictionManagementSection from './RestrictionManagementSection';
 import RoleChip from './RoleChip';

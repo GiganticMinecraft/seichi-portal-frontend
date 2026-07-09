@@ -1,5 +1,8 @@
 'use client';
 
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { useCallback } from 'react';
+
 import ErrorDialog from '@/app/_components/ErrorDialog';
 import LoadingCircular from '@/app/_components/LoadingCircular';
 import {
@@ -19,6 +22,25 @@ const AnswerDetailsPageContent = ({
   formId: string;
   answerId: string;
 }) => {
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
+  const clearQueryParam = useCallback(
+    (key: string) => {
+      if (searchParams.get(key) === null) {
+        return;
+      }
+      const params = new URLSearchParams(searchParams.toString());
+      params.delete(key);
+      const query = params.toString();
+      router.replace(query ? `${pathname}?${query}` : pathname, {
+        scroll: false,
+      });
+    },
+    [pathname, router, searchParams]
+  );
+
   const answerQuery = useApiQuery(
     '/api/v1/forms/{form_id}/answers/{answer_id}',
     {
@@ -81,7 +103,23 @@ const AnswerDetailsPageContent = ({
   };
 
   return (
-    <AnswerDetailsPageView formId={formId} answerId={answerId} data={data} />
+    <AnswerDetailsPageView
+      formId={formId}
+      answerId={answerId}
+      data={data}
+      messageDeepLink={{
+        entryId: searchParams.get('messageId') ?? undefined,
+        onClose: () => {
+          clearQueryParam('messageId');
+        },
+      }}
+      commentDeepLink={{
+        entryId: searchParams.get('commentId') ?? undefined,
+        onClose: () => {
+          clearQueryParam('commentId');
+        },
+      }}
+    />
   );
 };
 

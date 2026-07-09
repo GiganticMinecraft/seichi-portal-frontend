@@ -12,7 +12,7 @@ import {
   Typography,
 } from '@mui/material';
 import type { ReactNode } from 'react';
-import { useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 import ConversationEntry from './ConversationEntry';
 import type {
@@ -20,6 +20,9 @@ import type {
   ConversationCapabilities,
   ConversationEntryViewModel,
 } from './conversationTypes';
+import { getConversationEntryDomId } from './useConversationEntryDeepLink';
+
+const AUTO_SCROLL_DELAY_MS = 300;
 
 type Props = {
   variant: 'drawer' | 'inline';
@@ -29,6 +32,12 @@ type Props = {
   entries: ConversationEntryViewModel[];
   capabilities: ConversationCapabilities;
   inputForm?: ReactNode | undefined;
+  /** true になった最初の 1 回だけ drawer を自動的に開く(直リンク経由の自動オープン用)。 */
+  autoOpen?: boolean | undefined;
+  /** 一時的にハイライト表示し、自動スクロール先にもなる entry id。 */
+  highlightedEntryId?: string | undefined;
+  /** drawer が(手動・自動問わず)閉じられたときに呼ばれる。URL クエリの後始末に使う。 */
+  onDrawerClose?: (() => void) | undefined;
   onUpdate?:
     | ((entryId: string, body: string) => Promise<ConversationActionResult>)
     | undefined;
@@ -44,11 +53,13 @@ type Props = {
 const ConversationList = ({
   entries,
   capabilities,
+  highlightedEntryId,
   onUpdate,
   onDelete,
 }: {
   entries: ConversationEntryViewModel[];
   capabilities: ConversationCapabilities;
+  highlightedEntryId?: string | undefined;
   onUpdate?:
     | ((entryId: string, body: string) => Promise<ConversationActionResult>)
     | undefined;
@@ -67,6 +78,7 @@ const ConversationList = ({
         <ConversationEntry
           entry={entry}
           capabilities={capabilities}
+          highlighted={entry.id === highlightedEntryId}
           {...(onUpdate ? { onUpdate } : {})}
           {...(onDelete ? { onDelete } : {})}
         />
@@ -87,16 +99,50 @@ const ConversationSurface = ({
   entries,
   capabilities,
   inputForm,
+  autoOpen,
+  highlightedEntryId,
+  onDrawerClose,
   onUpdate,
   onDelete,
 }: Props) => {
   const [open, setOpen] = useState(false);
+  const hasAutoOpenedRef = useRef(false);
+
+  // autoOpen は entries の再フェッチ後も true のまま残り得るため、
+  // 「最初に true になったときだけ開く」を hasAutoOpenedRef で保証する。
+  // これにより、ユーザーが手動で閉じた drawer が再フェッチのたびに勝手に開き直すことはない。
+  useEffect(() => {
+    if (autoOpen && !hasAutoOpenedRef.current) {
+      hasAutoOpenedRef.current = true;
+      setOpen(true);
+    }
+  }, [autoOpen]);
+
+  useEffect(() => {
+    if (!open || highlightedEntryId === undefined) {
+      return;
+    }
+    const timer = setTimeout(() => {
+      document
+        .getElementById(getConversationEntryDomId(highlightedEntryId))
+        ?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }, AUTO_SCROLL_DELAY_MS);
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [open, highlightedEntryId]);
+
+  const handleClose = useCallback(() => {
+    setOpen(false);
+    onDrawerClose?.();
+  }, [onDrawerClose]);
 
   if (variant === 'inline') {
     return (
       <ConversationList
         entries={entries}
         capabilities={capabilities}
+        highlightedEntryId={highlightedEntryId}
         {...(onUpdate ? { onUpdate } : {})}
         {...(onDelete ? { onDelete } : {})}
       />
@@ -118,9 +164,7 @@ const ConversationSurface = ({
       <Drawer
         anchor="right"
         open={open}
-        onClose={() => {
-          setOpen(false);
-        }}
+        onClose={handleClose}
         slotProps={{
           paper: { sx: { width: { xs: '100%', sm: 400 } } },
         }}
@@ -137,11 +181,7 @@ const ConversationSurface = ({
           <Typography variant="h6" component="h2">
             {title}
           </Typography>
-          <IconButton
-            onClick={() => {
-              setOpen(false);
-            }}
-          >
+          <IconButton aria-label="閉じる" onClick={handleClose}>
             <CloseIcon />
           </IconButton>
         </Toolbar>
@@ -159,6 +199,7 @@ const ConversationSurface = ({
           <ConversationList
             entries={entries}
             capabilities={capabilities}
+            highlightedEntryId={highlightedEntryId}
             {...(onUpdate ? { onUpdate } : {})}
             {...(onDelete ? { onDelete } : {})}
           />

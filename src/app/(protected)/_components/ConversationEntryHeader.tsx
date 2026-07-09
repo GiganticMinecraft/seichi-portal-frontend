@@ -1,7 +1,6 @@
 'use client';
 
 import { MoreVert } from '@mui/icons-material';
-import DeleteIcon from '@mui/icons-material/Delete';
 import {
   Avatar,
   Chip,
@@ -11,6 +10,7 @@ import {
   Stack,
   Typography,
 } from '@mui/material';
+import { usePathname } from 'next/navigation';
 import type { MouseEvent } from 'react';
 
 import { formatString } from '@/generic/DateFormatter';
@@ -32,6 +32,7 @@ type Props = {
   onCloseMenu: () => void;
   onStartEditing: () => void;
   onDelete: () => Promise<void>;
+  onCopyLink: (url: string) => void;
 };
 
 const ConversationEntryHeader = ({
@@ -42,12 +43,20 @@ const ConversationEntryHeader = ({
   onCloseMenu,
   onStartEditing,
   onDelete,
+  onCopyLink,
 }: Props) => {
+  const pathname = usePathname();
   const isAdmin = entry.authorRole === 'ADMINISTRATOR';
-  const showMenuTrigger =
-    capabilities.actionTrigger === 'menu' && (entry.canEdit || entry.canDelete);
-  const showDeleteTrigger =
-    capabilities.actionTrigger === 'icon' && entry.canDelete;
+
+  // window.location.origin はレンダー中(SSR/hydration)には安全に参照できないため、
+  // 実際にクリックされた時にだけ評価する。
+  const getCopyLinkUrl = () =>
+    `${window.location.origin}${pathname}?${capabilities.deepLinkQueryParam}=${entry.id}`;
+
+  const handleCopyLink = () => {
+    onCopyLink(getCopyLinkUrl());
+    onCloseMenu();
+  };
 
   return (
     <Stack
@@ -87,45 +96,29 @@ const ConversationEntryHeader = ({
               sx={{ height: 20 }}
             />
           )}
-          {showDeleteTrigger && (
-            <IconButton
-              size="small"
-              color="error"
-              aria-label="delete"
-              sx={{ p: 0.5, ml: 'auto' }}
-              onClick={() => void onDelete()}
-            >
-              <DeleteIcon fontSize="small" />
-            </IconButton>
-          )}
         </Stack>
         <Typography variant="caption" component="span" color="textSecondary">
           {formatString(entry.timestamp)}
         </Typography>
       </Stack>
-      {showMenuTrigger && (
-        <>
-          <IconButton
-            color="primary"
-            aria-label="その他の操作"
-            onClick={onOpenMenu}
-          >
-            <MoreVert />
-          </IconButton>
-          <Menu
-            anchorEl={anchorEl}
-            open={anchorEl !== undefined}
-            onClose={onCloseMenu}
-          >
-            {entry.canEdit && (
-              <MenuItem onClick={onStartEditing}>編集</MenuItem>
-            )}
-            {entry.canDelete && (
-              <MenuItem onClick={() => void onDelete()}>削除</MenuItem>
-            )}
-          </Menu>
-        </>
-      )}
+      <IconButton
+        color="primary"
+        aria-label="その他の操作"
+        onClick={onOpenMenu}
+      >
+        <MoreVert />
+      </IconButton>
+      <Menu
+        anchorEl={anchorEl}
+        open={anchorEl !== undefined}
+        onClose={onCloseMenu}
+      >
+        {entry.canEdit && <MenuItem onClick={onStartEditing}>編集</MenuItem>}
+        <MenuItem onClick={handleCopyLink}>リンクをコピー</MenuItem>
+        {entry.canDelete && (
+          <MenuItem onClick={() => void onDelete()}>削除</MenuItem>
+        )}
+      </Menu>
     </Stack>
   );
 };

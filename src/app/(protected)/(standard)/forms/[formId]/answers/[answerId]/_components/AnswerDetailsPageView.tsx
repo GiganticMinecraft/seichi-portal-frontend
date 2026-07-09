@@ -1,6 +1,7 @@
 import { Stack, Typography } from '@mui/material';
 
 import Messages from '@/app/(protected)/_components/Messages';
+import type { ConversationDeepLinkProps } from '@/app/(protected)/_components/useConversationEntryDeepLink';
 import type {
   AnswerComment,
   GetAnswerResponse,
@@ -24,10 +25,14 @@ const AnswerDetailsPageView = ({
   formId,
   answerId,
   data,
+  messageDeepLink,
+  commentDeepLink,
 }: {
   formId: string;
   answerId: string;
   data: AnswerDetailsPageData;
+  messageDeepLink: ConversationDeepLinkProps;
+  commentDeepLink: ConversationDeepLinkProps;
 }) => (
   <Stack
     direction="column"
@@ -48,6 +53,7 @@ const AnswerDetailsPageView = ({
           answerId={answerId}
           title="メッセージ"
           triggerLabel={`メッセージ (${data.messages.length})`}
+          deepLink={messageDeepLink}
         />
       }
     />
@@ -58,6 +64,7 @@ const AnswerDetailsPageView = ({
       answerId={data.answer.id}
       currentUserId={data.currentUserId}
       showDeleteButton={undefined}
+      deepLink={commentDeepLink}
     />
   </Stack>
 );

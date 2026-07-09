@@ -3,6 +3,7 @@ import { Stack } from '@mui/material';
 import StandardAnswerDetails from '@/app/(protected)/(standard)/forms/[formId]/answers/[answerId]/_components/AnswerDetails';
 import StandardAnswerMeta from '@/app/(protected)/(standard)/forms/[formId]/answers/[answerId]/_components/AnswerMeta';
 import Messages from '@/app/(protected)/_components/Messages';
+import type { ConversationDeepLinkProps } from '@/app/(protected)/_components/useConversationEntryDeepLink';
 import type {
   AnswerComment,
   GetAnswerLabelsResponse,
@@ -31,9 +32,13 @@ export type AdminAnswerPageData = {
 const AdminAnswerPageView = ({
   answerId,
   data,
+  messageDeepLink,
+  commentDeepLink,
 }: {
   answerId: string;
   data: AdminAnswerPageData;
+  messageDeepLink: ConversationDeepLinkProps;
+  commentDeepLink: ConversationDeepLinkProps;
 }) => (
   <Stack
     direction="column"
@@ -58,6 +63,7 @@ const AdminAnswerPageView = ({
           answerId={answerId}
           title="メッセージ"
           triggerLabel={`回答者にメッセージを送信 (${data.messages.length})`}
+          deepLink={messageDeepLink}
         />
       }
     />
@@ -71,6 +77,7 @@ const AdminAnswerPageView = ({
       answerId={answerId}
       currentUserId={undefined}
       showDeleteButton
+      deepLink={commentDeepLink}
     />
   </Stack>
 );
