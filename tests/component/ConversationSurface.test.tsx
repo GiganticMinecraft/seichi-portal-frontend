@@ -161,3 +161,127 @@ describe('ConversationSurface の直リンク自動オープン', () => {
     ).not.toBeInTheDocument();
   });
 });
+
+describe('ConversationSurface の Drawer 内で編集中に Esc キーを押したときの挙動 (#837)', () => {
+  const editableEntries: ConversationEntryViewModel[] = [
+    {
+      id: 'entry-1',
+      body: 'hello',
+      authorName: 'Alice',
+      authorRole: 'USER',
+      timestamp: '2024-01-01T00:00:00Z',
+      renderMode: 'plain',
+      canDelete: false,
+      canEdit: true,
+    },
+  ];
+
+  it('編集フォーム上で Esc を押すと、編集フォームだけが閉じて Drawer は開いたままになる', async () => {
+    const user = (await import('@testing-library/user-event')).default.setup();
+    const onUpdate = vi.fn();
+
+    renderWithProviders(
+      <ConversationSurface
+        variant="drawer"
+        title="コメント"
+        triggerLabel="コメントを開く"
+        entries={editableEntries}
+        capabilities={capabilities}
+        onUpdate={onUpdate}
+      />
+    );
+
+    await user.click(screen.getByRole('button', { name: 'コメントを開く' }));
+    await screen.findByRole('heading', { name: 'コメント' });
+
+    await user.click(screen.getByRole('button', { name: 'その他の操作' }));
+    await user.click(await screen.findByRole('menuitem', { name: '編集' }));
+
+    const textbox = await screen.findByRole('textbox');
+    expect(textbox).toBeVisible();
+
+    // メニューを閉じた際のフォーカス復帰と競合しないよう、
+    // 編集フォームへ明示的にフォーカスしてから Esc を押す(実際の利用者操作としても自然な導線)。
+    await user.click(textbox);
+    await user.keyboard('{Escape}');
+
+    // 編集フォームは閉じて表示用の内容に戻る
+    await waitFor(() => {
+      expect(screen.queryByRole('textbox')).not.toBeInTheDocument();
+    });
+    expect(screen.getByText('hello')).toBeVisible();
+    // 編集は確定していない
+    expect(onUpdate).not.toHaveBeenCalled();
+
+    // Drawer 自体は開いたまま
+    expect(screen.getByRole('heading', { name: 'コメント' })).toBeVisible();
+  });
+
+  it('編集メニュー選択直後、TextField を一切操作せず Esc を押しても、編集フォームだけが閉じて Drawer は開いたままになる(フォーカス競合の再現)', async () => {
+    const user = (await import('@testing-library/user-event')).default.setup();
+    const onUpdate = vi.fn();
+
+    renderWithProviders(
+      <ConversationSurface
+        variant="drawer"
+        title="コメント"
+        triggerLabel="コメントを開く"
+        entries={editableEntries}
+        capabilities={capabilities}
+        onUpdate={onUpdate}
+      />
+    );
+
+    await user.click(screen.getByRole('button', { name: 'コメントを開く' }));
+    await screen.findByRole('heading', { name: 'コメント' });
+
+    await user.click(screen.getByRole('button', { name: 'その他の操作' }));
+    await user.click(await screen.findByRole('menuitem', { name: '編集' }));
+
+    expect(await screen.findByRole('textbox')).toBeVisible();
+
+    // ここでは意図的に TextField をクリックしない。
+    // Menu の Unstable_TrapFocus によるフォーカス復帰(元の IconButton へ戻す処理)が
+    // TextField の autoFocus と競合し、実際の DOM フォーカスは IconButton に残ったまま
+    // になり得る(#837)。この状態で Esc を押したときの挙動を検証する。
+    await user.keyboard('{Escape}');
+
+    // 編集フォームは閉じて表示用の内容に戻る
+    await waitFor(() => {
+      expect(screen.queryByRole('textbox')).not.toBeInTheDocument();
+    });
+    expect(screen.getByText('hello')).toBeVisible();
+    expect(onUpdate).not.toHaveBeenCalled();
+
+    // Drawer 自体は開いたまま
+    expect(screen.getByRole('heading', { name: 'コメント' })).toBeVisible();
+  });
+
+  it('編集フォームを開いていない状態で Esc を押すと、従来通り Drawer が閉じる', async () => {
+    const user = (await import('@testing-library/user-event')).default.setup();
+    const onDrawerClose = vi.fn();
+
+    renderWithProviders(
+      <ConversationSurface
+        variant="drawer"
+        title="コメント"
+        triggerLabel="コメントを開く"
+        entries={editableEntries}
+        capabilities={capabilities}
+        onDrawerClose={onDrawerClose}
+      />
+    );
+
+    await user.click(screen.getByRole('button', { name: 'コメントを開く' }));
+    await screen.findByRole('heading', { name: 'コメント' });
+
+    await user.keyboard('{Escape}');
+
+    await waitFor(() => {
+      expect(
+        screen.queryByRole('heading', { name: 'コメント' })
+      ).not.toBeInTheDocument();
+    });
+    expect(onDrawerClose).toHaveBeenCalledTimes(1);
+  });
+});

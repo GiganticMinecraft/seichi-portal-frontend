@@ -1,7 +1,7 @@
 'use client';
 
 import { Alert, Box, Snackbar } from '@mui/material';
-import type { MouseEvent } from 'react';
+import type { KeyboardEvent, MouseEvent } from 'react';
 import { useState } from 'react';
 
 import ConversationEntryBody from './ConversationEntryBody';
@@ -75,6 +75,24 @@ const ConversationEntry = ({
     setIsEditing(false);
   };
 
+  // 編集中に Esc でキャンセルする際、キー入力の実際のフォーカス位置に依存せず
+  // 確実に検知するための capture フェーズ handler。
+  //
+  // 背景: 「編集」メニュー選択直後は、TextField の autoFocus (commit フェーズで同期実行)と
+  // MUI Menu の Unstable_TrapFocus によるフォーカス復帰 (passive effect のクリーンアップで
+  // 非同期に実行され、フォーカスを元の IconButton へ戻す)が競合し、最終的なフォーカスが
+  // TextField ではなく IconButton に残ることがある。この状態で Esc を押すと、keydown は
+  // IconButton から発生するため、TextField 側の onKeyDown では検知できず、
+  // Drawer(MUI Modal)の Escape 検知まで伝播して Drawer ごと閉じてしまう(#837)。
+  // 祖先である本 Box の capture フェーズで検知すれば、実際に keydown が発生した要素が
+  // TextField・IconButton のどちらであっても、bubble で Drawer へ届く前に確実に止められる。
+  const handleEditKeyDownCapture = (event: KeyboardEvent<HTMLDivElement>) => {
+    if (isEditing && event.key === 'Escape') {
+      event.stopPropagation();
+      handleCancelEditing();
+    }
+  };
+
   const handleDelete = async () => {
     if (!onDelete) {
       return;
@@ -131,6 +149,7 @@ const ConversationEntry = ({
       </Snackbar>
       <Box
         id={getConversationEntryDomId(entry.id)}
+        onKeyDownCapture={handleEditKeyDownCapture}
         sx={{
           transition: 'background-color 0.6s ease',
           bgcolor: highlighted ? 'action.selected' : 'transparent',
@@ -161,7 +180,6 @@ const ConversationEntry = ({
               value={draftBody}
               onChange={setDraftBody}
               onSubmit={handleUpdate}
-              onCancel={handleCancelEditing}
             />
           ) : (
             <ConversationEntryBody entry={entry} />
