@@ -86,8 +86,21 @@ const ConversationEntry = ({
   // Drawer(MUI Modal)の Escape 検知まで伝播して Drawer ごと閉じてしまう(#837)。
   // 祖先である本 Box の capture フェーズで検知すれば、実際に keydown が発生した要素が
   // TextField・IconButton のどちらであっても、bubble で Drawer へ届く前に確実に止められる。
+  //
+  // ただし capture フェーズで奪う都合上、次の2つを除外しないと別の操作を壊す:
+  // - anchorEl が設定されている(「その他の操作」メニューが開いている)間の Esc は、
+  //   メニュー自身を閉じるための入力である。ここで奪ってしまうとメニューの Escape
+  //   クローズ(Menu 自身の onKeyDown)にイベントが届かず、メニューが閉じ残ったまま
+  //   編集だけがキャンセルされてしまう。
+  // - IME 変換中(isComposing)の Esc は変換候補のキャンセルであり、編集キャンセルの
+  //   意図ではない(Enter の確定判定と同様の理由)。
   const handleEditKeyDownCapture = (event: KeyboardEvent<HTMLDivElement>) => {
-    if (isEditing && event.key === 'Escape') {
+    if (
+      isEditing &&
+      anchorEl === undefined &&
+      event.key === 'Escape' &&
+      !event.nativeEvent.isComposing
+    ) {
       event.stopPropagation();
       handleCancelEditing();
     }
