@@ -8,9 +8,6 @@ type Props = {
   onSubmit: () => Promise<void>;
 };
 
-// Esc によるキャンセルは、フォーカス位置に依存せず確実に検知するため
-// 親の ConversationEntry 側で capture フェーズの onKeyDownCapture として処理する
-// (#837 参照)。ここでは Enter による確定のみを扱う。
 const ConversationEntryEditor = ({ value, onChange, onSubmit }: Props) => (
   <TextField
     autoFocus
