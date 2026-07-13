@@ -28,6 +28,7 @@ const capabilities: ConversationCapabilities = {
   emptyMessage: '投稿はまだありません',
   adminLabel: '運営',
   deepLinkQueryParam: 'commentId',
+  entryNoun: 'コメント',
 };
 
 describe('ConversationSurface の直リンク自動オープン', () => {

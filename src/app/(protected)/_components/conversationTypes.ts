@@ -35,4 +35,6 @@ export type ConversationCapabilities = {
   emptyMessage: string;
   adminLabel: string;
   deepLinkQueryParam: ConversationDeepLinkQueryParam;
+  /** エラーメッセージ等で使う、投稿を指す名詞(例: 'メッセージ' / 'コメント')。 */
+  entryNoun: string;
 };

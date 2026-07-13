@@ -13,11 +13,24 @@ export const useCommentConversationActions = (
   formId: string,
   answerId: string
 ) => {
-  const { sendComment, deleteComment } = useCommentActions(formId, answerId);
+  const { sendComment, deleteComment, updateComment } = useCommentActions(
+    formId,
+    answerId
+  );
 
   return {
     send: async (body: string): Promise<ConversationActionResult> => {
       const result = await sendComment(body);
+      return {
+        success: result.ok,
+        ...(result.forbidden ? { forbidden: true } : {}),
+      };
+    },
+    update: async (
+      entryId: string,
+      body: string
+    ): Promise<ConversationActionResult> => {
+      const result = await updateComment(entryId, body);
       return {
         success: result.ok,
         ...(result.forbidden ? { forbidden: true } : {}),

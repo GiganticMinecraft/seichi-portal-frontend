@@ -57,6 +57,7 @@ const Messages = (props: {
     emptyMessage: 'メッセージはまだありません',
     adminLabel: '運営チーム',
     deepLinkQueryParam: 'messageId',
+    entryNoun: 'メッセージ',
   };
 
   const deepLinkState = useConversationEntryDeepLink(

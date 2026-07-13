@@ -47,5 +47,30 @@ export const useCommentActions = (formId: string, answerId: string) => {
     return { ok: false, ...(result.forbidden ? { forbidden: true } : {}) };
   };
 
-  return { sendComment, deleteComment };
+  const updateComment = async (
+    commentId: string,
+    content: string
+  ): Promise<CommentActionResult> => {
+    const { data, error, response } = await proxyClient.PATCH(
+      '/api/v1/forms/{form_id}/answers/{answer_id}/comments/{comment_id}',
+      {
+        params: {
+          path: {
+            form_id: formId,
+            answer_id: answerId,
+            comment_id: commentId,
+          },
+        },
+        body: { content },
+      }
+    );
+    const result = handleMutationResponse(response, data, error);
+    if (result.success) {
+      return { ok: true };
+    }
+
+    return { ok: false, ...(result.forbidden ? { forbidden: true } : {}) };
+  };
+
+  return { sendComment, deleteComment, updateComment };
 };

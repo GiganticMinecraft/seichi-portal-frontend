@@ -113,7 +113,7 @@ const ConversationEntry = ({
 
     const result = await onDelete(entry.id);
     if (result.forbidden) {
-      showError('このメッセージを削除する権限がありません。');
+      showError(`この${capabilities.entryNoun}を削除する権限がありません。`);
     } else if (!result.success) {
       showError('不明なエラーが発生しました。もう一度お試しください。');
     }
@@ -127,7 +127,7 @@ const ConversationEntry = ({
 
     const result = await onUpdate(entry.id, draftBody);
     if (result.forbidden) {
-      showError('このメッセージを編集する権限がありません。');
+      showError(`この${capabilities.entryNoun}を編集する権限がありません。`);
       return;
     }
 
