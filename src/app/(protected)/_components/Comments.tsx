@@ -40,7 +40,7 @@ const Comments = (props: {
         (props.showDeleteButton ?? false) ||
         (props.currentUserId !== undefined &&
           comment.commented_by.uuid === props.currentUserId),
-      canEdit: false,
+      canEdit: comment.commented_by.uuid === props.currentUserId,
     })
   );
 
@@ -51,6 +51,7 @@ const Comments = (props: {
     emptyMessage: 'コメントはまだありません',
     adminLabel: '運営',
     deepLinkQueryParam: 'commentId',
+    entryNoun: 'コメント',
   };
 
   const deepLinkState = useConversationEntryDeepLink(
@@ -93,6 +94,7 @@ const Comments = (props: {
             </Box>
           ) : null
         }
+        onUpdate={actions.update}
         onDelete={actions.deleteEntry}
       />
     </Box>
