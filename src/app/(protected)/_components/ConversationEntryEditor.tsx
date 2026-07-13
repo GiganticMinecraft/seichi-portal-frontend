@@ -6,15 +6,9 @@ type Props = {
   value: string;
   onChange: (value: string) => void;
   onSubmit: () => Promise<void>;
-  onCancel: () => void;
 };
 
-const ConversationEntryEditor = ({
-  value,
-  onChange,
-  onSubmit,
-  onCancel,
-}: Props) => (
+const ConversationEntryEditor = ({ value, onChange, onSubmit }: Props) => (
   <TextField
     autoFocus
     value={value}
@@ -32,8 +26,6 @@ const ConversationEntryEditor = ({
       ) {
         event.preventDefault();
         void onSubmit();
-      } else if (event.key === 'Escape') {
-        onCancel();
       }
     }}
   />
