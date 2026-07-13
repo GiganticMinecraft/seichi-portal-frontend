@@ -40,7 +40,9 @@ const Comments = (props: {
         (props.showDeleteButton ?? false) ||
         (props.currentUserId !== undefined &&
           comment.commented_by.uuid === props.currentUserId),
-      canEdit: comment.commented_by.uuid === props.currentUserId,
+      canEdit:
+        props.currentUserId !== undefined &&
+        comment.commented_by.uuid === props.currentUserId,
     })
   );
 
