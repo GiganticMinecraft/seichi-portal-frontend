@@ -1,6 +1,7 @@
 'use client';
 
 import { handleMutationResponse } from '@/hooks/useApiMutation';
+import { useSingleFlightAction } from '@/hooks/useSingleFlightAction';
 import { proxyClient } from '@/lib/proxyClient';
 
 type SendMessageResult = { success: boolean; forbidden?: boolean };
@@ -22,5 +23,5 @@ export const useSendMessage = (formId: string, answerId: string) => {
     return { success: false, ...(result.forbidden ? { forbidden: true } : {}) };
   };
 
-  return { sendMessage };
+  return { sendMessage: useSingleFlightAction(sendMessage) };
 };

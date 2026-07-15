@@ -2,6 +2,7 @@
 
 import { handleMutationResponse } from '@/hooks/useApiMutation';
 import type { MutationResult } from '@/hooks/useApiMutation';
+import { useSingleFlightAction } from '@/hooks/useSingleFlightAction';
 import type { PutAnswerSubmitterRestrictionSchema } from '@/lib/api-types';
 import { proxyClient } from '@/lib/proxyClient';
 
@@ -30,5 +31,8 @@ export const useAnswerSubmitterRestrictionActions = () => {
     return handleMutationResponse(response, data, error);
   };
 
-  return { restrictUser, unrestrictUser };
+  return {
+    restrictUser: useSingleFlightAction(restrictUser),
+    unrestrictUser: useSingleFlightAction(unrestrictUser),
+  };
 };

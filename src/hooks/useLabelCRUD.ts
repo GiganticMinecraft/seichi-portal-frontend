@@ -2,6 +2,7 @@
 
 import { useSWRConfig } from 'swr';
 
+import { useSingleFlightAction } from '@/hooks/useSingleFlightAction';
 import { proxyClient } from '@/lib/proxyClient';
 
 export const useLabelCRUD = (labelType: 'answers' | 'forms') => {
@@ -74,5 +75,9 @@ export const useLabelCRUD = (labelType: 'answers' | 'forms') => {
     }
   };
 
-  return { createLabel, deleteLabel, editLabel };
+  return {
+    createLabel: useSingleFlightAction(createLabel),
+    deleteLabel: useSingleFlightAction(deleteLabel),
+    editLabel: useSingleFlightAction(editLabel),
+  };
 };

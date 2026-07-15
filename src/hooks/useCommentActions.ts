@@ -1,6 +1,7 @@
 'use client';
 
 import { handleMutationResponse } from '@/hooks/useApiMutation';
+import { useSingleFlightAction } from '@/hooks/useSingleFlightAction';
 import { proxyClient } from '@/lib/proxyClient';
 
 type CommentActionResult = { ok: boolean; forbidden?: boolean };
@@ -72,5 +73,9 @@ export const useCommentActions = (formId: string, answerId: string) => {
     return { ok: false, ...(result.forbidden ? { forbidden: true } : {}) };
   };
 
-  return { sendComment, deleteComment, updateComment };
+  return {
+    sendComment: useSingleFlightAction(sendComment),
+    deleteComment: useSingleFlightAction(deleteComment),
+    updateComment: useSingleFlightAction(updateComment),
+  };
 };

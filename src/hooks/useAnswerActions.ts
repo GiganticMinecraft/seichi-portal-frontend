@@ -1,6 +1,7 @@
 'use client';
 
 import { handleMutationResponse } from '@/hooks/useApiMutation';
+import { useSingleFlightAction } from '@/hooks/useSingleFlightAction';
 import { proxyClient } from '@/lib/proxyClient';
 
 export const useAnswerActions = (formId: string, answerId: string) => {
@@ -28,5 +29,8 @@ export const useAnswerActions = (formId: string, answerId: string) => {
     return { ok: result.success };
   };
 
-  return { updateTitle, updateLabels };
+  return {
+    updateTitle: useSingleFlightAction(updateTitle),
+    updateLabels: useSingleFlightAction(updateLabels),
+  };
 };

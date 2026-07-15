@@ -1,6 +1,7 @@
 'use client';
 
 import { handleMutationResponse } from '@/hooks/useApiMutation';
+import { useSingleFlightAction } from '@/hooks/useSingleFlightAction';
 import { proxyClient } from '@/lib/proxyClient';
 
 export const useUserRoleActions = () => {
@@ -15,5 +16,5 @@ export const useUserRoleActions = () => {
     handleMutationResponse(response, data, error);
   };
 
-  return { updateUserRole };
+  return { updateUserRole: useSingleFlightAction(updateUserRole) };
 };

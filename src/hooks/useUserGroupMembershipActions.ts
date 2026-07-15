@@ -2,6 +2,7 @@
 
 import { handleMutationResponse } from '@/hooks/useApiMutation';
 import type { MutationResult } from '@/hooks/useApiMutation';
+import { useSingleFlightAction } from '@/hooks/useSingleFlightAction';
 import { proxyClient } from '@/lib/proxyClient';
 
 export const useUserGroupMembershipActions = () => {
@@ -31,5 +32,8 @@ export const useUserGroupMembershipActions = () => {
     return handleMutationResponse(response, data, error);
   };
 
-  return { addUserToGroup, removeUserFromGroup };
+  return {
+    addUserToGroup: useSingleFlightAction(addUserToGroup),
+    removeUserFromGroup: useSingleFlightAction(removeUserFromGroup),
+  };
 };
