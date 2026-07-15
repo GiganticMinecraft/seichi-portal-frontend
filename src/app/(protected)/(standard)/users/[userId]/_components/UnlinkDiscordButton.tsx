@@ -4,12 +4,14 @@ import LinkOffIcon from '@mui/icons-material/LinkOff';
 import { Button, Chip, Stack, Typography } from '@mui/material';
 
 import { useDiscordActions } from '@/hooks/useDiscordActions';
+import { usePendingAction } from '@/hooks/usePendingAction';
 
 const UnlinkDiscordButton = () => {
   const { unlinkDiscord } = useDiscordActions();
+  const { run, pending } = usePendingAction(unlinkDiscord);
 
   const onClick = async () => {
-    await unlinkDiscord();
+    await run();
     location.reload();
   };
 
@@ -29,6 +31,7 @@ const UnlinkDiscordButton = () => {
         onClick={() => {
           void onClick();
         }}
+        disabled={pending}
         size="small"
       >
         連携を解除する

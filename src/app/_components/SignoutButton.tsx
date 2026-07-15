@@ -2,19 +2,15 @@
 
 import { Button } from '@mui/material';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+
+import { usePendingAction } from '@/hooks/usePendingAction';
 
 import { getMsalInstance } from './MsalProvider';
 
 export const SignoutButton = () => {
   const router = useRouter();
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleClick = async () => {
-    if (isSubmitting) return;
-
-    setIsSubmitting(true);
-
+  const { run, pending } = usePendingAction(async () => {
     try {
       await fetch('/api/logout', { method: 'DELETE' });
 
@@ -33,17 +29,16 @@ export const SignoutButton = () => {
       router.push('/');
     } catch (e) {
       console.error('Failed to sign out:', e);
-      setIsSubmitting(false);
     }
-  };
+  });
 
   return (
     <Button
       color="inherit"
       onClick={() => {
-        void handleClick();
+        void run();
       }}
-      disabled={isSubmitting}
+      disabled={pending}
     >
       サインアウト
     </Button>

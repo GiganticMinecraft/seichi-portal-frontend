@@ -1,5 +1,6 @@
 import { useState } from 'react';
 
+import { useSingleFlightAction } from '@/hooks/useSingleFlightAction';
 import { proxyClient } from '@/lib/proxyClient';
 
 import {
@@ -61,5 +62,5 @@ export const useCreateForm = () => {
     }
   };
 
-  return { createForm, submitState };
+  return { createForm: useSingleFlightAction(createForm), submitState };
 };

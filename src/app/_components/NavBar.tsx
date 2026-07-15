@@ -28,6 +28,7 @@ import { useState, type ReactNode } from 'react';
 
 import ThemeModeToggle from '@/app/_components/ThemeModeToggle';
 import { useOptionalCurrentUser } from '@/app/_providers/currentUser';
+import { usePendingAction } from '@/hooks/usePendingAction';
 
 import { getMsalInstance } from './MsalProvider';
 import { SigninButton } from './SigninButton';
@@ -40,34 +41,32 @@ type UserMenuProps = {
 const UserMenu = ({ user, isAdminPage }: UserMenuProps) => {
   const router = useRouter();
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
-  const [isSigningOut, setIsSigningOut] = useState(false);
 
-  const handleSignout = async () => {
-    if (isSigningOut) return;
-    setAnchorEl(null);
-    setIsSigningOut(true);
+  const { run: runSignout, pending: isSigningOut } = usePendingAction(
+    async () => {
+      setAnchorEl(null);
 
-    try {
-      await fetch('/api/logout', { method: 'DELETE' });
+      try {
+        await fetch('/api/logout', { method: 'DELETE' });
 
-      const msalInstance = getMsalInstance();
-      await msalInstance.initialize();
-      const [account] = msalInstance.getAllAccounts();
+        const msalInstance = getMsalInstance();
+        await msalInstance.initialize();
+        const [account] = msalInstance.getAllAccounts();
 
-      if (account) {
-        await msalInstance.logoutRedirect({
-          account,
-          postLogoutRedirectUri: '/',
-        });
-        return;
+        if (account) {
+          await msalInstance.logoutRedirect({
+            account,
+            postLogoutRedirectUri: '/',
+          });
+          return;
+        }
+
+        router.push('/');
+      } catch (e) {
+        console.error('Failed to sign out:', e);
       }
-
-      router.push('/');
-    } catch (e) {
-      console.error('Failed to sign out:', e);
-      setIsSigningOut(false);
     }
-  };
+  );
 
   return (
     <Box sx={{ ml: 2.5 }}>
@@ -150,7 +149,7 @@ const UserMenu = ({ user, isAdminPage }: UserMenuProps) => {
         )}
         <MenuItem
           onClick={() => {
-            void handleSignout();
+            void runSignout();
           }}
           disabled={isSigningOut}
         >

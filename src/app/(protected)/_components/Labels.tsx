@@ -7,6 +7,7 @@ import { useForm } from 'react-hook-form';
 import ConfirmDialog from '@/app/_components/ConfirmDialog';
 import SnackbarAlert, { useSnackbar } from '@/app/_components/SnackbarAlert';
 import { useLabelCRUD } from '@/hooks/useLabelCRUD';
+import { usePendingAction } from '@/hooks/usePendingAction';
 
 import NameEditDialog, { type NameEditFormValues } from './NameEditDialog';
 import NameManagementTable from './NameManagementTable';
@@ -32,6 +33,8 @@ const Labels = (props: { labels: Label[]; labelType: 'answers' | 'forms' }) => {
   const { deleteLabel, editLabel: editLabelAction } = useLabelCRUD(
     props.labelType
   );
+  const { run: runDeleteLabel, pending: deletePending } =
+    usePendingAction(deleteLabel);
 
   const handleOpenEdit = (label: Label) => {
     setSelectedLabel(label);
@@ -67,7 +70,7 @@ const Labels = (props: { labels: Label[]; labelType: 'answers' | 'forms' }) => {
 
   const onDelete = async () => {
     if (!selectedLabel) return;
-    const result = await deleteLabel(selectedLabel.id);
+    const result = await runDeleteLabel(selectedLabel.id);
     if (result.ok) {
       showSnackbar('ラベルを削除しました。', 'success');
       handleCloseDelete();
@@ -120,6 +123,7 @@ const Labels = (props: { labels: Label[]; labelType: 'answers' | 'forms' }) => {
         title="ラベルを削除"
         description={`「${selectedLabel?.name ?? ''}」を削除してもよろしいですか？この操作は元に戻せません。`}
         confirmLabel="削除"
+        pending={deletePending}
         onConfirm={() => {
           void onDelete();
         }}
