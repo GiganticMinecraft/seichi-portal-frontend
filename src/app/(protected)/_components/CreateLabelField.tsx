@@ -23,7 +23,12 @@ const CreateLabelField = (props: { labelType: 'answers' | 'forms' }) => {
   const [dialogOpen, setDialogOpen] = useState(false);
   const { snackbar, showSnackbar, closeSnackbar } = useSnackbar();
 
-  const { handleSubmit, register, reset } = useForm<CreateLabelSchema>();
+  const {
+    handleSubmit,
+    register,
+    reset,
+    formState: { isSubmitting },
+  } = useForm<CreateLabelSchema>();
   const { createLabel } = useLabelCRUD(props.labelType);
 
   const handleOpen = () => {
@@ -72,8 +77,10 @@ const CreateLabelField = (props: { labelType: 'answers' | 'forms' }) => {
             />
           </DialogContent>
           <DialogActions>
-            <Button onClick={handleClose}>キャンセル</Button>
-            <Button type="submit" variant="contained">
+            <Button onClick={handleClose} disabled={isSubmitting}>
+              キャンセル
+            </Button>
+            <Button type="submit" variant="contained" disabled={isSubmitting}>
               作成
             </Button>
           </DialogActions>

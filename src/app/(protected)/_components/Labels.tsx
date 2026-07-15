@@ -22,7 +22,12 @@ const Labels = (props: { labels: Label[]; labelType: 'answers' | 'forms' }) => {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [selectedLabel, setSelectedLabel] = useState<Label | null>(null);
 
-  const { handleSubmit, register, reset } = useForm<NameEditFormValues>();
+  const {
+    handleSubmit,
+    register,
+    reset,
+    formState: { isSubmitting },
+  } = useForm<NameEditFormValues>();
 
   const { deleteLabel, editLabel: editLabelAction } = useLabelCRUD(
     props.labelType
@@ -103,6 +108,7 @@ const Labels = (props: { labels: Label[]; labelType: 'answers' | 'forms' }) => {
         title="ラベルを編集"
         nameLabel="ラベル名"
         register={register}
+        isSubmitting={isSubmitting}
         onClose={handleCloseEdit}
         onSubmit={(e) => {
           void handleSubmit(onEdit)(e);

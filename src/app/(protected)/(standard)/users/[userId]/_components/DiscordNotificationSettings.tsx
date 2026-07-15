@@ -26,7 +26,11 @@ const DiscordNotificationSettings = (props: {
   currentSettings: GetUserNotificationSettingsResponse;
   userId: string;
 }) => {
-  const { handleSubmit, control } = useForm<NotificationSettingsFormValues>({
+  const {
+    handleSubmit,
+    control,
+    formState: { isSubmitting },
+  } = useForm<NotificationSettingsFormValues>({
     defaultValues: fromNotificationSettingsResponseToFormValues(
       props.currentSettings
     ),
@@ -81,6 +85,7 @@ const DiscordNotificationSettings = (props: {
             endIcon={<SaveAltIcon />}
             type="submit"
             sx={{ alignSelf: 'flex-start' }}
+            disabled={isSubmitting}
           >
             保存
           </Button>

@@ -39,7 +39,7 @@ const FormEditForm = (props: {
     register,
     setValue,
     setError,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm<FormEditorValues>({
     mode: 'onSubmit',
     reValidateMode: 'onBlur',
@@ -114,7 +114,12 @@ const FormEditForm = (props: {
           {isSubmitted && (
             <Alert severity="success">フォームの編集に成功しました。</Alert>
           )}
-          <Button type="submit" variant="contained" endIcon={<SendIcon />}>
+          <Button
+            type="submit"
+            variant="contained"
+            endIcon={<SendIcon />}
+            disabled={isSubmitting}
+          >
             設定内容を保存
           </Button>
         </Stack>
