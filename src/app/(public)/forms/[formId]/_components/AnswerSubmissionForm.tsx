@@ -44,7 +44,7 @@ const AnswerSubmissionForm = ({
     register,
     handleSubmit,
     reset,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm<AnswerFormInput>();
 
   const handleAnswerSubmit = async (data: AnswerFormInput) => {
@@ -150,6 +150,7 @@ const AnswerSubmissionForm = ({
               variant="contained"
               size="large"
               endIcon={<SendIcon />}
+              disabled={isSubmitting}
             >
               送信
             </Button>

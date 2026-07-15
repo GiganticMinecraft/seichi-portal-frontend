@@ -22,10 +22,15 @@ const NameEditDialog = (props: {
   title: ReactNode;
   nameLabel: string;
   register: UseFormRegister<NameEditFormValues>;
+  isSubmitting: boolean;
   onClose: () => void;
   onSubmit: NonNullable<ComponentPropsWithoutRef<'form'>['onSubmit']>;
 }) => (
-  <Dialog open={props.open} onClose={props.onClose} fullWidth>
+  <Dialog
+    open={props.open}
+    onClose={props.isSubmitting ? undefined : props.onClose}
+    fullWidth
+  >
     <DialogTitle>{props.title}</DialogTitle>
     <Box component="form" onSubmit={props.onSubmit}>
       <DialogContent>
@@ -40,8 +45,10 @@ const NameEditDialog = (props: {
         />
       </DialogContent>
       <DialogActions>
-        <Button onClick={props.onClose}>キャンセル</Button>
-        <Button type="submit" variant="contained">
+        <Button onClick={props.onClose} disabled={props.isSubmitting}>
+          キャンセル
+        </Button>
+        <Button type="submit" variant="contained" disabled={props.isSubmitting}>
           保存
         </Button>
       </DialogActions>

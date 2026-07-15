@@ -36,7 +36,12 @@ const ConversationComposer = ({
   onSend,
   textFieldSx,
 }: Props) => {
-  const { handleSubmit, register, reset } = useForm<ComposerForm>();
+  const {
+    handleSubmit,
+    register,
+    reset,
+    formState: { isSubmitting },
+  } = useForm<ComposerForm>();
   const [snackbar, setSnackbar] = useState<{
     open: boolean;
     message: string;
@@ -72,6 +77,7 @@ const ConversationComposer = ({
           <TextField
             {...register('body')}
             helperText={helperText}
+            disabled={isSubmitting}
             sx={
               textFieldSx
                 ? [{ width: '100%' }, textFieldSx].flat()
@@ -84,6 +90,9 @@ const ConversationComposer = ({
                 !event.nativeEvent.isComposing
               ) {
                 event.preventDefault();
+                if (isSubmitting) {
+                  return;
+                }
                 void handleSubmit(onSubmit)();
               }
             }}
@@ -92,7 +101,11 @@ const ConversationComposer = ({
                 inputProps: { placeholder: label },
                 endAdornment: (
                   <InputAdornment position="end">
-                    <IconButton type="submit" aria-label="送信">
+                    <IconButton
+                      type="submit"
+                      aria-label="送信"
+                      disabled={isSubmitting}
+                    >
                       <SendIcon />
                     </IconButton>
                   </InputAdornment>

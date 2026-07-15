@@ -29,7 +29,12 @@ const Groups = (props: {
   );
   const [detailGroup, setDetailGroup] = useState<UserGroupSchema | null>(null);
 
-  const { handleSubmit, register, reset } = useForm<NameEditFormValues>();
+  const {
+    handleSubmit,
+    register,
+    reset,
+    formState: { isSubmitting },
+  } = useForm<NameEditFormValues>();
 
   const { deleteGroup, editGroup } = useUserGroupCRUD();
 
@@ -109,6 +114,7 @@ const Groups = (props: {
         title="グループを編集"
         nameLabel="グループ名"
         register={register}
+        isSubmitting={isSubmitting}
         onClose={handleCloseEdit}
         onSubmit={(e) => {
           void handleSubmit(onEdit)(e);
