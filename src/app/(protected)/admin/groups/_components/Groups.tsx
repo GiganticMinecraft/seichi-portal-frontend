@@ -11,6 +11,7 @@ import NameManagementTable from '@/app/(protected)/_components/NameManagementTab
 import ConfirmDialog from '@/app/_components/ConfirmDialog';
 import SnackbarAlert, { useSnackbar } from '@/app/_components/SnackbarAlert';
 import { useApiQuery } from '@/app/_swr/useApiQuery';
+import { usePendingAction } from '@/hooks/usePendingAction';
 import { useUserGroupCRUD } from '@/hooks/useUserGroupCRUD';
 import type { UserGroupSchema } from '@/lib/api-types';
 
@@ -37,6 +38,8 @@ const Groups = (props: {
   } = useForm<NameEditFormValues>();
 
   const { deleteGroup, editGroup } = useUserGroupCRUD();
+  const { run: runDeleteGroup, pending: deletePending } =
+    usePendingAction(deleteGroup);
 
   const handleOpenEdit = (group: UserGroupSchema) => {
     setSelectedGroup(group);
@@ -72,7 +75,7 @@ const Groups = (props: {
 
   const onDelete = async () => {
     if (!selectedGroup) return;
-    const result = await deleteGroup(selectedGroup.id);
+    const result = await runDeleteGroup(selectedGroup.id);
     if (result.ok) {
       showSnackbar('グループを削除しました。', 'success');
       handleCloseDelete();
@@ -126,6 +129,7 @@ const Groups = (props: {
         title="グループを削除"
         description={`「${selectedGroup?.name ?? ''}」を削除してもよろしいですか？この操作は元に戻せません。`}
         confirmLabel="削除"
+        pending={deletePending}
         onConfirm={() => {
           void onDelete();
         }}

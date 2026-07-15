@@ -14,6 +14,7 @@ const ConfirmDialog = ({
   title,
   description,
   confirmLabel,
+  pending,
   onConfirm,
   onCancel,
 }: {
@@ -21,17 +22,20 @@ const ConfirmDialog = ({
   title: string;
   description: string;
   confirmLabel: string;
+  pending: boolean;
   onConfirm: () => void;
   onCancel: () => void;
 }) => (
-  <Dialog open={open} onClose={onCancel}>
+  <Dialog open={open} onClose={pending ? undefined : onCancel}>
     <DialogTitle>{title}</DialogTitle>
     <DialogContent>
       <DialogContentText>{description}</DialogContentText>
     </DialogContent>
     <DialogActions>
-      <Button onClick={onCancel}>キャンセル</Button>
-      <Button onClick={onConfirm} autoFocus>
+      <Button onClick={onCancel} disabled={pending}>
+        キャンセル
+      </Button>
+      <Button onClick={onConfirm} disabled={pending} autoFocus>
         {confirmLabel}
       </Button>
     </DialogActions>

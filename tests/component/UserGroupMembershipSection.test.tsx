@@ -6,6 +6,16 @@ import type { UserGroupSchema } from '@/lib/api-types';
 
 import { renderWithProviders, screen, waitFor } from './render';
 
+const deferred = <T,>() => {
+  let resolve!: (value: T) => void;
+  let reject!: (reason: unknown) => void;
+  const promise = new Promise<T>((res, rej) => {
+    resolve = res;
+    reject = rej;
+  });
+  return { promise, resolve, reject };
+};
+
 type GroupListQueryState = {
   data: UserGroupSchema[] | undefined;
   error: Error | null;
@@ -133,6 +143,76 @@ describe('UserGroupMembershipSection', () => {
     ).toBeDisabled();
     const chip = screen.getByText('グループA').closest('.MuiChip-root');
     expect(chip?.querySelector('.MuiChip-deleteIcon')).toBeNull();
+  });
+
+  it('追加処理が完了するまでの間は追加欄を無効化する', async () => {
+    const user = userEvent.setup();
+    const { promise, resolve } = deferred<{ success: boolean }>();
+    membershipMocks.addUserToGroup.mockReturnValue(promise);
+
+    renderWithProviders(
+      <UserGroupMembershipSection
+        uuid="user-uuid"
+        currentGroups={[]}
+        disabled={false}
+        onChanged={onChanged}
+      />
+    );
+
+    const combobox = screen.getByRole('combobox', { name: 'グループを追加' });
+    await user.click(combobox);
+    await user.click(await screen.findByRole('option', { name: 'グループA' }));
+
+    await waitFor(() => {
+      expect(combobox).toBeDisabled();
+    });
+
+    resolve({ success: true });
+
+    await waitFor(() => {
+      expect(combobox).not.toBeDisabled();
+    });
+  });
+
+  it('削除処理が完了するまでの間は該当 Chip の削除操作を無効化する', async () => {
+    const user = userEvent.setup();
+    const { promise, resolve } = deferred<{ success: boolean }>();
+    membershipMocks.removeUserFromGroup.mockReturnValue(promise);
+
+    renderWithProviders(
+      <UserGroupMembershipSection
+        uuid="user-uuid"
+        currentGroups={[{ id: 'group-1', name: 'グループA' }]}
+        disabled={false}
+        onChanged={onChanged}
+      />
+    );
+
+    const chip = screen.getByText('グループA').closest('.MuiChip-root');
+    if (!chip) throw new Error('Chip not found');
+    const deleteIcon = chip.querySelector('.MuiChip-deleteIcon');
+    if (!deleteIcon) throw new Error('delete icon not found');
+    await user.click(deleteIcon);
+
+    await waitFor(() => {
+      expect(
+        screen.getByText('グループA').closest('.MuiChip-root')
+      ).toHaveClass('Mui-disabled');
+    });
+    expect(
+      screen
+        .getByText('グループA')
+        .closest('.MuiChip-root')
+        ?.querySelector('.MuiChip-deleteIcon')
+    ).toBeNull();
+
+    resolve({ success: true });
+
+    await waitFor(() => {
+      expect(
+        screen.getByText('グループA').closest('.MuiChip-root')
+      ).not.toHaveClass('Mui-disabled');
+    });
   });
 
   it('グループ一覧の読み込み中は追加欄を無効化する', () => {

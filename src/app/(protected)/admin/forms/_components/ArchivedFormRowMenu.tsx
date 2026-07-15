@@ -13,6 +13,7 @@ import { useState } from 'react';
 
 import ConfirmDialog from '@/app/_components/ConfirmDialog';
 import { useFormActions } from '@/hooks/useFormActions';
+import { usePendingAction } from '@/hooks/usePendingAction';
 
 interface Props {
   formId: string;
@@ -23,6 +24,7 @@ const ArchivedFormRowMenu = ({ formId, onResult }: Props) => {
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
   const { restoreForm } = useFormActions();
+  const { run: runRestoreForm, pending } = usePendingAction(restoreForm);
   const menuOpen = Boolean(anchorEl);
 
   const handleMenuOpen = (event: MouseEvent<HTMLElement>) => {
@@ -39,8 +41,8 @@ const ArchivedFormRowMenu = ({ formId, onResult }: Props) => {
   };
 
   const handleRestoreConfirm = async () => {
+    const result = await runRestoreForm(formId);
     setDialogOpen(false);
-    const result = await restoreForm(formId);
     onResult?.(result);
   };
 
@@ -66,6 +68,7 @@ const ArchivedFormRowMenu = ({ formId, onResult }: Props) => {
         title="フォームの復元"
         description="このフォームを復元しますか？"
         confirmLabel="復元"
+        pending={pending}
         onConfirm={() => {
           void handleRestoreConfirm();
         }}

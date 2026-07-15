@@ -14,6 +14,7 @@ import { useState } from 'react';
 
 import ConfirmDialog from '@/app/_components/ConfirmDialog';
 import { useFormActions } from '@/hooks/useFormActions';
+import { usePendingAction } from '@/hooks/usePendingAction';
 
 interface Props {
   formId: string;
@@ -24,6 +25,7 @@ const FormRowMenu = ({ formId, onResult }: Props) => {
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
   const { archiveForm } = useFormActions();
+  const { run: runArchiveForm, pending } = usePendingAction(archiveForm);
   const menuOpen = Boolean(anchorEl);
 
   const handleMenuOpen = (event: MouseEvent<HTMLElement>) => {
@@ -40,8 +42,8 @@ const FormRowMenu = ({ formId, onResult }: Props) => {
   };
 
   const handleArchiveConfirm = async () => {
+    const result = await runArchiveForm(formId);
     setDialogOpen(false);
-    const result = await archiveForm(formId);
     onResult?.(result);
   };
 
@@ -77,6 +79,7 @@ const FormRowMenu = ({ formId, onResult }: Props) => {
         title="フォームのアーカイブ"
         description="このフォームをアーカイブしますか？"
         confirmLabel="アーカイブ"
+        pending={pending}
         onConfirm={() => {
           void handleArchiveConfirm();
         }}

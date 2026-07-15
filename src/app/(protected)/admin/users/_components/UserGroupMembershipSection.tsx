@@ -11,6 +11,7 @@ import {
 import { useState } from 'react';
 
 import { useApiQuery } from '@/app/_swr/useApiQuery';
+import { usePendingAction } from '@/hooks/usePendingAction';
 import { useUserGroupMembershipActions } from '@/hooks/useUserGroupMembershipActions';
 import type { UserGroupSchema } from '@/lib/api-types';
 
@@ -32,6 +33,9 @@ const UserGroupMembershipSection = ({
   );
   const { addUserToGroup, removeUserFromGroup } =
     useUserGroupMembershipActions();
+  const { run: runAdd, pending: addPending } = usePendingAction(addUserToGroup);
+  const { run: runRemove, pending: removePending } =
+    usePendingAction(removeUserFromGroup);
 
   const joinableGroups = (allGroups ?? []).filter(
     (group) => !currentGroups.some((current) => current.id === group.id)
@@ -39,7 +43,7 @@ const UserGroupMembershipSection = ({
 
   const handleAdd = async (group: UserGroupSchema) => {
     setSubmitError(null);
-    const result = await addUserToGroup(group.id, uuid);
+    const result = await runAdd(group.id, uuid);
     if (result.success) {
       await onChanged();
     } else {
@@ -49,7 +53,7 @@ const UserGroupMembershipSection = ({
 
   const handleRemove = async (group: UserGroupSchema) => {
     setSubmitError(null);
-    const result = await removeUserFromGroup(group.id, uuid);
+    const result = await runRemove(group.id, uuid);
     if (result.success) {
       await onChanged();
     } else {
@@ -71,9 +75,9 @@ const UserGroupMembershipSection = ({
               key={group.id}
               label={group.name}
               size="small"
-              disabled={disabled}
+              disabled={disabled || removePending}
               onDelete={
-                disabled
+                disabled || removePending
                   ? undefined
                   : () => {
                       void handleRemove(group);
@@ -91,7 +95,7 @@ const UserGroupMembershipSection = ({
         options={joinableGroups}
         getOptionLabel={(group) => group.name}
         value={null}
-        disabled={disabled || isGroupsLoading}
+        disabled={disabled || isGroupsLoading || addPending}
         onChange={(_event, group) => {
           if (group) {
             void handleAdd(group);
