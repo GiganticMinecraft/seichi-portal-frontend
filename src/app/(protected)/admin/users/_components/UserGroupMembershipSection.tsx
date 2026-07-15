@@ -75,9 +75,9 @@ const UserGroupMembershipSection = ({
               key={group.id}
               label={group.name}
               size="small"
-              disabled={disabled || removePending}
+              disabled={disabled || addPending || removePending}
               onDelete={
-                disabled || removePending
+                disabled || addPending || removePending
                   ? undefined
                   : () => {
                       void handleRemove(group);
@@ -95,7 +95,7 @@ const UserGroupMembershipSection = ({
         options={joinableGroups}
         getOptionLabel={(group) => group.name}
         value={null}
-        disabled={disabled || isGroupsLoading || addPending}
+        disabled={disabled || isGroupsLoading || addPending || removePending}
         onChange={(_event, group) => {
           if (group) {
             void handleAdd(group);
