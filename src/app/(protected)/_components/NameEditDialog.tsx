@@ -26,7 +26,11 @@ const NameEditDialog = (props: {
   onClose: () => void;
   onSubmit: NonNullable<ComponentPropsWithoutRef<'form'>['onSubmit']>;
 }) => (
-  <Dialog open={props.open} onClose={props.onClose} fullWidth>
+  <Dialog
+    open={props.open}
+    onClose={props.isSubmitting ? undefined : props.onClose}
+    fullWidth
+  >
     <DialogTitle>{props.title}</DialogTitle>
     <Box component="form" onSubmit={props.onSubmit}>
       <DialogContent>

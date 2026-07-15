@@ -77,6 +77,7 @@ const ConversationComposer = ({
           <TextField
             {...register('body')}
             helperText={helperText}
+            disabled={isSubmitting}
             sx={
               textFieldSx
                 ? [{ width: '100%' }, textFieldSx].flat()

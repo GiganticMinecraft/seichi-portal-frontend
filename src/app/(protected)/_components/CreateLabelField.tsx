@@ -59,7 +59,11 @@ const CreateLabelField = (props: { labelType: 'answers' | 'forms' }) => {
         新規作成
       </Button>
 
-      <Dialog open={dialogOpen} onClose={handleClose} fullWidth>
+      <Dialog
+        open={dialogOpen}
+        onClose={isSubmitting ? undefined : handleClose}
+        fullWidth
+      >
         <DialogTitle>新規ラベル作成</DialogTitle>
         <form
           onSubmit={(e) => {
