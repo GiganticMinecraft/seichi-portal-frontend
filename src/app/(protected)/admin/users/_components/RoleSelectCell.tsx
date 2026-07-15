@@ -3,7 +3,7 @@
 import { MenuItem, Select, Tooltip } from '@mui/material';
 import { useState } from 'react';
 
-import { usePendingAction } from '@/hooks/usePendingAction';
+import { useLatestWinsAction } from '@/hooks/useLatestWinsAction';
 import { useUserRoleActions } from '@/hooks/useUserRoleActions';
 
 const RoleSelectCell = ({
@@ -16,7 +16,8 @@ const RoleSelectCell = ({
   disabled: boolean;
 }) => {
   const { updateUserRole } = useUserRoleActions();
-  const { run: runUpdateUserRole, pending } = usePendingAction(updateUserRole);
+  const { run: runUpdateUserRole, pending } =
+    useLatestWinsAction(updateUserRole);
   const [role, setRole] = useState(currentRole);
   const [syncedRole, setSyncedRole] = useState(currentRole);
 
