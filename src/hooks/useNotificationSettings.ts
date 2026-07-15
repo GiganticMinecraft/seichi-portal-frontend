@@ -1,5 +1,6 @@
 'use client';
 
+import { useSingleFlightAction } from '@/hooks/useSingleFlightAction';
 import type { ApiPaths } from '@/lib/api/types';
 import { proxyClient } from '@/lib/proxyClient';
 
@@ -19,5 +20,5 @@ export const useNotificationSettings = () => {
     return { ok: response.ok };
   };
 
-  return { updateSettings };
+  return { updateSettings: useSingleFlightAction(updateSettings) };
 };

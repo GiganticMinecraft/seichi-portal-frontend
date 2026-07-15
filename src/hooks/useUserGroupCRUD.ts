@@ -2,6 +2,7 @@
 
 import { useSWRConfig } from 'swr';
 
+import { useSingleFlightAction } from '@/hooks/useSingleFlightAction';
 import { proxyClient } from '@/lib/proxyClient';
 
 export const useUserGroupCRUD = () => {
@@ -42,5 +43,9 @@ export const useUserGroupCRUD = () => {
     return { ok: response.ok };
   };
 
-  return { createGroup, editGroup, deleteGroup };
+  return {
+    createGroup: useSingleFlightAction(createGroup),
+    editGroup: useSingleFlightAction(editGroup),
+    deleteGroup: useSingleFlightAction(deleteGroup),
+  };
 };

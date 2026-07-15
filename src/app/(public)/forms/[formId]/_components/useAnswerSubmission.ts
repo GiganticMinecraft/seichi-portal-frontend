@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 
+import { useSingleFlightAction } from '@/hooks/useSingleFlightAction';
 import type { ApiPaths } from '@/lib/api/types';
 import { proxyClient } from '@/lib/proxyClient';
 
@@ -102,7 +103,7 @@ export const useAnswerSubmission = (
     });
   };
 
-  const submitAnswers = async (data: AnswerFormInput) => {
+  const submitAnswersOnce = async (data: AnswerFormInput) => {
     const { response, error } = await postAnswers(data);
 
     if (response.ok) {
@@ -136,7 +137,7 @@ export const useAnswerSubmission = (
 
   return {
     submissionState,
-    submitAnswers,
+    submitAnswers: useSingleFlightAction(submitAnswersOnce),
     resetSubmissionState,
   };
 };

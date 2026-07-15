@@ -1,6 +1,7 @@
 'use client';
 
 import { handleMutationResponse } from '@/hooks/useApiMutation';
+import { useSingleFlightAction } from '@/hooks/useSingleFlightAction';
 import { proxyClient } from '@/lib/proxyClient';
 
 export const useDiscordActions = () => {
@@ -12,5 +13,5 @@ export const useDiscordActions = () => {
     handleMutationResponse(response, data, error);
   };
 
-  return { unlinkDiscord };
+  return { unlinkDiscord: useSingleFlightAction(unlinkDiscord) };
 };

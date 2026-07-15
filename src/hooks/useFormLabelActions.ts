@@ -1,6 +1,7 @@
 'use client';
 
 import { handleMutationResponse } from '@/hooks/useApiMutation';
+import { useSingleFlightAction } from '@/hooks/useSingleFlightAction';
 import { proxyClient } from '@/lib/proxyClient';
 
 export const useFormLabelActions = (formId: string) => {
@@ -16,5 +17,5 @@ export const useFormLabelActions = (formId: string) => {
     return { ok: result.success };
   };
 
-  return { updateLabels };
+  return { updateLabels: useSingleFlightAction(updateLabels) };
 };

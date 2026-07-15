@@ -1,6 +1,7 @@
 'use client';
 
 import { handleMutationResponse } from '@/hooks/useApiMutation';
+import { useSingleFlightAction } from '@/hooks/useSingleFlightAction';
 import { proxyClient } from '@/lib/proxyClient';
 
 export const useFormActions = () => {
@@ -26,5 +27,8 @@ export const useFormActions = () => {
     return { ok: result.success };
   };
 
-  return { archiveForm, restoreForm };
+  return {
+    archiveForm: useSingleFlightAction(archiveForm),
+    restoreForm: useSingleFlightAction(restoreForm),
+  };
 };
