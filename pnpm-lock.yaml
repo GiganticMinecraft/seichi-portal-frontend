@@ -57,7 +57,7 @@ importers:
         specifier: ^4.28.5
         version: 4.28.5
       dayjs:
-        specifier: ^1.11.9
+        specifier: ^1.11.21
         version: 1.11.21
       fp-ts:
         specifier: ^2.16.8
