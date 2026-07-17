@@ -10,7 +10,7 @@ import {
   TextField,
 } from '@mui/material';
 import type { SxProps, Theme } from '@mui/material/styles';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
 import type { ConversationActionResult } from './conversationTypes';
@@ -46,6 +46,16 @@ const ConversationComposer = ({
     open: boolean;
     message: string;
   }>({ open: false, message: '' });
+  const inputRef = useRef<HTMLInputElement | HTMLTextAreaElement | null>(null);
+  const shouldRefocusRef = useRef(false);
+  const { ref: registerRef, ...bodyRegister } = register('body');
+
+  useEffect(() => {
+    if (!isSubmitting && shouldRefocusRef.current) {
+      shouldRefocusRef.current = false;
+      inputRef.current?.focus();
+    }
+  }, [isSubmitting]);
 
   const onSubmit = async (data: ComposerForm) => {
     if (data.body === '') {
@@ -56,6 +66,7 @@ const ConversationComposer = ({
 
     if (result.success) {
       reset({ body: '' });
+      shouldRefocusRef.current = true;
     } else if (result.forbidden) {
       setSnackbar({
         open: true,
@@ -75,7 +86,14 @@ const ConversationComposer = ({
       >
         <Stack spacing={1}>
           <TextField
-            {...register('body')}
+            {...bodyRegister}
+            inputRef={(
+              element: HTMLInputElement | HTMLTextAreaElement | null
+            ) => {
+              inputRef.current = element;
+              registerRef(element);
+            }}
+            autoFocus
             helperText={helperText}
             disabled={isSubmitting}
             sx={

@@ -304,6 +304,183 @@ describe('Comments のコメント編集メニュー表示条件 (canEdit)', () 
   });
 });
 
+/**
+ * ConversationComposer の autoFocus / 送信後フォーカス復元は Comments・Messages で
+ * 共有される挙動だが、Drawer の開閉タイミングや Escape キーとの競合(#837)は
+ * 実際に Drawer・ConversationSurface・ConversationEntry を組んだ状態でしか
+ * 再現できないため、Comments を経由して統合的に確認する(Messages 側は同じ
+ * ConversationComposer を同じ配線で使うだけなので、ここでの確認を重複させない)。
+ */
+describe('Comments の投稿欄オートフォーカス・フォーカス復元', () => {
+  const deferred = <T,>() => {
+    let resolve!: (value: T) => void;
+    const promise = new Promise<T>((res) => {
+      resolve = res;
+    });
+    return { promise, resolve };
+  };
+
+  it('トリガーボタンのクリックで Drawer を開いたとき、コメント入力欄に自動でフォーカスが当たる', async () => {
+    const user = userEvent.setup();
+
+    renderWithProviders(
+      <Comments
+        comments={comments}
+        formId="form-1"
+        answerId="answer-1"
+        currentUserId={undefined}
+        showDeleteButton={undefined}
+        deepLink={{ entryId: undefined, onClose: vi.fn() }}
+      />
+    );
+
+    await user.click(
+      screen.getByRole('button', {
+        name: new RegExp(`コメント \\(${comments.length}\\)`),
+      })
+    );
+
+    const composerInput =
+      await screen.findByPlaceholderText('コメントを入力...');
+    await waitFor(() => {
+      expect(composerInput).toHaveFocus();
+    });
+  });
+
+  it('直リンク経由で Drawer が自動的に開いたときも、コメント入力欄に自動でフォーカスが当たる', async () => {
+    renderWithProviders(
+      <Comments
+        comments={comments}
+        formId="form-1"
+        answerId="answer-1"
+        currentUserId={undefined}
+        showDeleteButton={undefined}
+        deepLink={{ entryId: 'comment-uuid-2', onClose: vi.fn() }}
+      />
+    );
+
+    expect(
+      await screen.findByRole('heading', { name: 'コメント' })
+    ).toBeVisible();
+
+    const composerInput =
+      await screen.findByPlaceholderText('コメントを入力...');
+    await waitFor(() => {
+      expect(composerInput).toHaveFocus();
+    });
+  });
+
+  it('コメント送信が成功した直後、入力欄にフォーカスが戻る(送信中は disabled のため解除を待ってから確認する)', async () => {
+    const user = userEvent.setup();
+    const { promise, resolve } = deferred<{ success: boolean }>();
+    sendCommentMock.mockReturnValue(promise);
+
+    renderWithProviders(
+      <Comments
+        comments={comments}
+        formId="form-1"
+        answerId="answer-1"
+        currentUserId={undefined}
+        showDeleteButton={undefined}
+        deepLink={{ entryId: undefined, onClose: vi.fn() }}
+      />
+    );
+
+    await user.click(
+      screen.getByRole('button', {
+        name: new RegExp(`コメント \\(${comments.length}\\)`),
+      })
+    );
+
+    const composerInput =
+      await screen.findByPlaceholderText('コメントを入力...');
+    await user.type(composerInput, '新しいコメント');
+    await user.click(screen.getByRole('button', { name: '送信' }));
+
+    // 送信中は disabled になり、フォーカスを当てても効かない制約がある。
+    await waitFor(() => {
+      expect(composerInput).toBeDisabled();
+    });
+
+    resolve({ success: true });
+
+    // disabled が解除されるまで待ってからフォーカスの復元を確認する。
+    await waitFor(() => {
+      expect(composerInput).not.toBeDisabled();
+    });
+    await waitFor(() => {
+      expect(composerInput).toHaveFocus();
+    });
+  });
+});
+
+/**
+ * #837: 編集フォームの autoFocus と MUI Menu の Unstable_TrapFocus によるフォーカス
+ * 復帰が競合し、Esc キーの挙動が壊れたバグの回帰テスト(tests/component/ConversationSurface.test.tsx)
+ * は、composer(投稿用入力欄)を持たない ConversationSurface 単体を対象にしている。
+ * しかし実際の画面では、Drawer 内に「投稿用入力欄(今回 autoFocus を追加)」と
+ * 「編集用入力欄(既存の autoFocus)」が同時に存在し得る(コメント編集中も Drawer 下部の
+ * 投稿欄は表示されたまま)。autoFocus を持つ要素が Drawer 内に増えたことで、この
+ * フォーカスの奪い合いが #837 と同種の Esc 誤動作を新たに引き起こさないことを、
+ * 投稿欄を実際に持つ Comments を経由して確認する。
+ */
+describe('Comments: 投稿欄(autoFocus)と編集欄(autoFocus)が同時に存在する場合の Esc キー挙動', () => {
+  it('編集メニュー選択直後、編集欄を一切操作せず Esc を押しても、編集フォームだけが閉じて Drawer(と投稿欄)は維持される', async () => {
+    const user = userEvent.setup();
+
+    renderWithProviders(
+      <Comments
+        comments={comments}
+        formId="form-1"
+        answerId="answer-1"
+        currentUserId="user-1"
+        showDeleteButton={undefined}
+        deepLink={{ entryId: undefined, onClose: vi.fn() }}
+      />
+    );
+
+    await user.click(
+      screen.getByRole('button', {
+        name: new RegExp(`コメント \\(${comments.length}\\)`),
+      })
+    );
+    // 投稿欄が Drawer 内に存在している(autoFocus を持つ要素が既に1つ増えている状態)
+    await screen.findByPlaceholderText('コメントを入力...');
+
+    const menuTriggers = await screen.findAllByRole('button', {
+      name: 'その他の操作',
+    });
+    const firstTrigger = menuTriggers[0];
+    if (firstTrigger === undefined) {
+      throw new Error('1 件目のコメントの操作メニュー button が見つかりません');
+    }
+    await user.click(firstTrigger);
+    await user.click(await screen.findByRole('menuitem', { name: '編集' }));
+
+    // 編集用 TextField と投稿用 TextField の 2 つが同時に存在する
+    const editTextbox = await screen.findByDisplayValue('はじめまして');
+    expect(editTextbox).toBeVisible();
+
+    // 意図的に編集欄をクリックせず Esc を押す(#837 が再現していた最悪ケース)
+    await user.keyboard('{Escape}');
+
+    // 編集フォームは閉じて表示用の内容に戻る
+    await waitFor(() => {
+      expect(
+        screen.queryByDisplayValue('はじめまして')
+      ).not.toBeInTheDocument();
+    });
+    expect(screen.getByText('はじめまして')).toBeVisible();
+    expect(updateCommentMock).not.toHaveBeenCalled();
+
+    // Drawer 自体・投稿欄は維持される
+    expect(screen.getByRole('heading', { name: 'コメント' })).toBeVisible();
+    expect(
+      screen.getByPlaceholderText('コメントを入力...')
+    ).toBeInTheDocument();
+  });
+});
+
 describe('Comments のコメント編集・削除の結果表示', () => {
   it('自分のコメントを編集して保存すると、update が (commentId, 新しい内容) で呼ばれ、編集フォームが閉じる', async () => {
     const user = userEvent.setup();
