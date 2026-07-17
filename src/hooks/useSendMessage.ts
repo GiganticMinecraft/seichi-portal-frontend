@@ -26,7 +26,7 @@ export const useSendMessage = (formId: string, answerId: string) => {
 
     const result = handleMutationResponse(response, data, error);
     if (result.success) {
-      await mutate(messagesKey);
+      void mutate(messagesKey).catch(() => {});
       return { success: true };
     }
     return { success: false, ...(result.forbidden ? { forbidden: true } : {}) };

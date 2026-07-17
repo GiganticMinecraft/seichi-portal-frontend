@@ -27,7 +27,7 @@ export const useCommentActions = (formId: string, answerId: string) => {
     );
     const result = handleMutationResponse(response, data, error);
     if (result.success) {
-      await mutate(commentsKey);
+      void mutate(commentsKey).catch(() => {});
       return { ok: true };
     }
 
@@ -51,7 +51,7 @@ export const useCommentActions = (formId: string, answerId: string) => {
     );
     const result = handleMutationResponse(response, data, error);
     if (result.success) {
-      await mutate(commentsKey);
+      void mutate(commentsKey).catch(() => {});
       return { ok: true };
     }
 
@@ -77,7 +77,7 @@ export const useCommentActions = (formId: string, answerId: string) => {
     );
     const result = handleMutationResponse(response, data, error);
     if (result.success) {
-      await mutate(commentsKey);
+      void mutate(commentsKey).catch(() => {});
       return { ok: true };
     }
 
