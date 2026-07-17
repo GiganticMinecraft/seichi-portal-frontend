@@ -49,7 +49,9 @@ const MarkdownText = ({ children, sx }: Props) => {
     (href: string | undefined) => (event: MouseEvent<HTMLAnchorElement>) => {
       // ホイールクリック(中クリック)以外の auxclick(右クリック等)は対象外とする
       if (event.button !== 1) return;
-      handleLinkClick(href)(event);
+      if (!isExternalHttpLink(href)) return;
+      event.preventDefault();
+      setPendingHref(href);
     };
 
   return (
