@@ -16,6 +16,7 @@ import InfiniteScrollSentinel from '@/app/_components/InfiniteScrollSentinel';
 import { useInfiniteApiQuery } from '@/app/_swr/useInfiniteApiQuery';
 import { formatString } from '@/generic/DateFormatter';
 import type { GetAnswersPageResponse, GetFormsResponse } from '@/lib/api-types';
+import { resolveAnswerTitle } from '@/lib/forms/answerTitle';
 
 interface Row {
   id: string;
@@ -50,7 +51,7 @@ const DataTable = (props: {
       answers.map((answer) => ({
         id: answer.id,
         category: formTitleById.get(answer.form_id) ?? 'unknown form',
-        title: answer.title ?? '',
+        title: resolveAnswerTitle(answer.title),
         date: formatString(answer.timestamp),
       })),
     [answers, formTitleById]

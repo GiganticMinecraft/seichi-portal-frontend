@@ -8,6 +8,7 @@ import type {
   GetFormResponse,
   GetMessagesResponse,
 } from '@/lib/api-types';
+import { resolveAnswerTitle } from '@/lib/forms/answerTitle';
 
 import AnswerDetails from './AnswerDetails';
 import AnswerMeta from './AnswerMeta';
@@ -43,7 +44,12 @@ const AnswerDetailsPageView = ({
       alignItems: 'stretch',
     }}
   >
-    <Typography variant="h4">{data.answer.title}</Typography>
+    <Typography
+      variant="h4"
+      sx={!data.answer.title ? { color: 'text.secondary' } : undefined}
+    >
+      {resolveAnswerTitle(data.answer.title)}
+    </Typography>
     <AnswerMeta
       answer={data.answer}
       messageAction={
