@@ -37,12 +37,15 @@ describe('toAnswerListRows', () => {
     ]);
   });
 
-  it('回答タイトルが null または未指定のときは空文字へ正規化する', () => {
+  it('回答タイトルが null または未指定のときは未設定を示す表示へ変換する', () => {
     const rows = toAnswerListRows([
       createAnswer({ id: 'null-title', title: null }),
       createAnswer({ id: 'missing-title' }),
     ]);
 
-    expect(rows.map((row) => row.title)).toEqual(['', '']);
+    expect(rows.map((row) => row.title)).toEqual([
+      '(タイトル未設定)',
+      '(タイトル未設定)',
+    ]);
   });
 });
