@@ -6,6 +6,13 @@ export const metadata: Metadata = {
   title: 'ホーム | Seichi Portal',
 };
 
-const Home = () => <MainMenu />;
+const Home = async ({
+  searchParams,
+}: {
+  searchParams: Promise<{ accessDenied?: string }>;
+}) => {
+  const { accessDenied } = await searchParams;
+  return <MainMenu accessDenied={accessDenied} />;
+};
 
 export default Home;

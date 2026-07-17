@@ -1,6 +1,6 @@
+import { redirect } from 'next/navigation';
 import type { ReactNode } from 'react';
 
-import ErrorDialog from '@/app/_components/ErrorDialog';
 import NavBar from '@/app/_components/NavBar';
 import { getAdminAccess } from '@/lib/server/session';
 
@@ -13,7 +13,7 @@ const RootLayout = async ({ children }: { children: ReactNode }) => {
   const adminAccess = await getAdminAccess();
 
   if (adminAccess.state === 'forbidden') {
-    return <ErrorDialog status={403} showDiagnostics={false} />;
+    redirect('/home?accessDenied=admin');
   }
 
   return (
