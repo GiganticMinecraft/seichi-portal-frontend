@@ -2,6 +2,10 @@
 
 import { Message as MessageIcon } from '@mui/icons-material';
 
+import {
+  mergeConversationListItems,
+  toDeletedEntries,
+} from './conversationListItems';
 import ConversationSurface from './ConversationSurface';
 import type {
   ConversationCapabilities,
@@ -14,6 +18,7 @@ import {
   ConversationDeepLinkNotice,
   useConversationEntryDeepLink,
 } from './useConversationEntryDeepLink';
+import { useMessageHistory } from './useConversationHistory';
 
 type ConversationMessage = {
   id: string;
@@ -32,23 +37,44 @@ const Messages = (props: {
   answerId: string;
   title: string;
   triggerLabel: string;
+  isAdmin: boolean;
   deepLink: ConversationDeepLinkProps;
 }) => {
   const actions = useMessageConversationActions(props.formId, props.answerId);
+  const { historyByTargetId, isLoading: isHistoryLoading } = useMessageHistory(
+    props.formId,
+    props.answerId
+  );
 
   const entries: ConversationEntryViewModel[] = props.messages.map(
-    (message) => ({
-      id: message.id,
-      body: message.body,
-      authorName: message.sender.name,
-      authorId: message.sender.uuid,
-      authorRole: message.sender.role,
-      timestamp: message.timestamp,
-      surface: 'flat',
-      canDelete: true,
-      canEdit: true,
-    })
+    (message) => {
+      const editHistory = isHistoryLoading
+        ? undefined
+        : historyByTargetId.get(message.id);
+
+      return {
+        id: message.id,
+        body: message.body,
+        authorName: message.sender.name,
+        authorId: message.sender.uuid,
+        authorRole: message.sender.role,
+        timestamp: message.timestamp,
+        surface: 'flat',
+        canDelete: true,
+        canEdit: true,
+        ...(editHistory !== undefined ? { editHistory } : {}),
+      };
+    }
   );
+
+  const deletedEntries = props.isAdmin
+    ? toDeletedEntries(
+        historyByTargetId,
+        new Set(props.messages.map((message) => message.id))
+      )
+    : [];
+
+  const items = mergeConversationListItems(entries, deletedEntries);
 
   const capabilities: ConversationCapabilities = {
     canCompose: true,
@@ -76,7 +102,7 @@ const Messages = (props: {
         title={props.title}
         triggerLabel={props.triggerLabel}
         triggerStartIcon={<MessageIcon />}
-        entries={entries}
+        items={items}
         capabilities={capabilities}
         autoOpen={deepLinkState.autoOpen}
         highlightedEntryId={deepLinkState.highlightedEntryId}

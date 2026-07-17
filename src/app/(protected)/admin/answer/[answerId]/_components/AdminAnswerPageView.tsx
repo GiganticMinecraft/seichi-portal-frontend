@@ -44,6 +44,7 @@ const AdminAnswerPageView = ({
   commentDeepLink: ConversationDeepLinkProps;
 }) => {
   const currentUser = useOptionalCurrentUser();
+  const isAdmin = currentUser?.role === 'ADMINISTRATOR';
 
   return (
     <Stack
@@ -69,6 +70,7 @@ const AdminAnswerPageView = ({
             answerId={answerId}
             title="メッセージ"
             triggerLabel={`回答者にメッセージを送信 (${data.messages.length})`}
+            isAdmin={isAdmin}
             deepLink={messageDeepLink}
           />
         }
@@ -83,6 +85,7 @@ const AdminAnswerPageView = ({
         answerId={answerId}
         currentUserId={currentUser?.id}
         showDeleteButton
+        isAdmin={isAdmin}
         deepLink={commentDeepLink}
       />
     </Stack>

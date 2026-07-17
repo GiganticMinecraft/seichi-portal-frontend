@@ -33,6 +33,7 @@ type Props = {
   onStartEditing: () => void;
   onDelete: () => Promise<void>;
   onCopyLink: (url: string) => void;
+  onShowHistory?: () => void;
 };
 
 const ConversationEntryHeader = ({
@@ -44,7 +45,9 @@ const ConversationEntryHeader = ({
   onStartEditing,
   onDelete,
   onCopyLink,
+  onShowHistory,
 }: Props) => {
+  const isEdited = (entry.editHistory?.length ?? 0) > 1;
   const pathname = usePathname();
   const isAdmin = entry.authorRole === 'ADMINISTRATOR';
 
@@ -99,6 +102,26 @@ const ConversationEntryHeader = ({
         </Stack>
         <Typography variant="caption" component="span" color="textSecondary">
           {formatString(entry.timestamp)}
+          {isEdited && onShowHistory && (
+            <Typography
+              component="button"
+              type="button"
+              variant="caption"
+              color="textSecondary"
+              onClick={onShowHistory}
+              sx={{
+                ml: 0.5,
+                p: 0,
+                border: 0,
+                background: 'none',
+                textDecoration: 'underline',
+                cursor: 'pointer',
+                font: 'inherit',
+              }}
+            >
+              (編集済み)
+            </Typography>
+          )}
         </Typography>
       </Stack>
       <IconButton
