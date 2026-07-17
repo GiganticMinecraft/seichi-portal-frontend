@@ -8,6 +8,7 @@ import {
   DialogContentText,
   DialogTitle,
 } from '@mui/material';
+import type { ReactNode } from 'react';
 
 const ConfirmDialog = ({
   open,
@@ -20,7 +21,7 @@ const ConfirmDialog = ({
 }: {
   open: boolean;
   title: string;
-  description: string;
+  description: ReactNode;
   confirmLabel: string;
   pending: boolean;
   onConfirm: () => void;
