@@ -73,7 +73,12 @@ const ConversationHistoryDialog = ({
     </DialogTitle>
     <DialogContent dividers sx={{ maxHeight: '70vh' }}>
       {entries.length === 0 ? (
-        <Typography color="textSecondary" align="center" sx={{ py: 2 }}>
+        <Typography
+          component="p"
+          color="textSecondary"
+          align="center"
+          sx={{ py: 2 }}
+        >
           履歴がありません
         </Typography>
       ) : (

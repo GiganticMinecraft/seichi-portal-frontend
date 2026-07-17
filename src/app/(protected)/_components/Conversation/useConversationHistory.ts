@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 
 import { useInfiniteApiQuery } from '@/app/_swr/useInfiniteApiQuery';
 import type {
@@ -128,9 +128,13 @@ export const useCommentHistory = (formId: string, answerId: string) => {
     hasMore,
     isLoadingMore
   );
+  const historyByTargetId = useMemo(
+    () => groupByTargetId(items.map(toCommentHistoryViewModel)),
+    [items]
+  );
 
   return {
-    historyByTargetId: groupByTargetId(items.map(toCommentHistoryViewModel)),
+    historyByTargetId,
     isLoading: !hasCompletedInitialLoad,
   };
 };
@@ -151,9 +155,13 @@ export const useMessageHistory = (formId: string, answerId: string) => {
     hasMore,
     isLoadingMore
   );
+  const historyByTargetId = useMemo(
+    () => groupByTargetId(items.map(toMessageHistoryViewModel)),
+    [items]
+  );
 
   return {
-    historyByTargetId: groupByTargetId(items.map(toMessageHistoryViewModel)),
+    historyByTargetId,
     isLoading: !hasCompletedInitialLoad,
   };
 };

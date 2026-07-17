@@ -105,6 +105,7 @@ const ConversationEntryHeader = ({
           {isEdited && onShowHistory && (
             <Typography
               component="button"
+              type="button"
               variant="caption"
               color="textSecondary"
               onClick={onShowHistory}

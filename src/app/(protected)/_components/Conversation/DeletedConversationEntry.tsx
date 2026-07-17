@@ -3,7 +3,7 @@
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutlineOutlined';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import { Box, Collapse, IconButton, Stack, Typography } from '@mui/material';
+import { Box, Collapse, Stack, Typography } from '@mui/material';
 import { useState } from 'react';
 
 import MarkdownText from '@/app/_components/MarkdownText';
@@ -40,25 +40,33 @@ const DeletedConversationEntry = ({ entry, entryNoun }: Props) => {
       <Stack
         direction="row"
         spacing={1}
-        sx={{ alignItems: 'center', cursor: 'pointer' }}
+        component="button"
+        type="button"
+        aria-expanded={expanded}
         onClick={() => {
           setExpanded((prev) => !prev);
+        }}
+        sx={{
+          alignItems: 'center',
+          width: '100%',
+          border: 0,
+          background: 'none',
+          p: 0,
+          cursor: 'pointer',
+          textAlign: 'left',
+          color: 'inherit',
+          font: 'inherit',
         }}
       >
         <DeleteOutlineIcon fontSize="small" color="disabled" />
         <Typography variant="body2" color="textSecondary" sx={{ flex: 1 }}>
           削除された{entryNoun}({entry.authorName})
         </Typography>
-        <IconButton
-          size="small"
-          aria-label={expanded ? '折りたたむ' : '展開する'}
-        >
-          {expanded ? (
-            <ExpandLessIcon fontSize="small" />
-          ) : (
-            <ExpandMoreIcon fontSize="small" />
-          )}
-        </IconButton>
+        {expanded ? (
+          <ExpandLessIcon fontSize="small" />
+        ) : (
+          <ExpandMoreIcon fontSize="small" />
+        )}
       </Stack>
       <Collapse in={expanded}>
         <Box
