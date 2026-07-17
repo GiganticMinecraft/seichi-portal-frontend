@@ -1,7 +1,7 @@
 import userEvent from '@testing-library/user-event';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import UserGroupMembershipSection from '@/app/(protected)/admin/users/_components/UserGroupMembershipSection';
+import UserGroupMembershipSection from '@/app/(protected)/admin/users/_components/UserDetailDialog/UserGroupMembershipSection';
 import type { UserGroupSchema } from '@/lib/api-types';
 
 import { renderWithProviders, screen, waitFor } from './render';

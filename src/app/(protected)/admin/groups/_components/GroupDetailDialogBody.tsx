@@ -19,7 +19,7 @@ import {
 } from '@mui/material';
 import { useState } from 'react';
 
-import UserDetailDialog from '@/app/(protected)/admin/users/_components/UserDetailDialog';
+import UserDetailDialog from '@/app/(protected)/admin/users/_components/UserDetailDialog/UserDetailDialog';
 import { useApiQuery } from '@/app/_swr/useApiQuery';
 
 const GroupDetailDialogBody = ({

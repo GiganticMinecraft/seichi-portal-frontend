@@ -8,7 +8,7 @@ import type { Control } from 'react-hook-form';
 
 import type { GetFormLabelsResponse } from '@/lib/api-types';
 
-import type { FormEditorValues } from '../_schema/formEditorSchema';
+import type { FormEditorValues } from '../../_schema/formEditorSchema';
 
 const FormLabelField = (props: {
   control: Control<FormEditorValues>;

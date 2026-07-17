@@ -16,9 +16,10 @@ import {
 import CopyButton from '@/app/(protected)/_components/CopyButton';
 import { useApiQuery } from '@/app/_swr/useApiQuery';
 
+import RoleChip from '../RoleChip';
+
 import RestrictionHistorySection from './RestrictionHistorySection';
 import RestrictionManagementSection from './RestrictionManagementSection';
-import RoleChip from './RoleChip';
 import RoleSelectCell from './RoleSelectCell';
 import UserGroupMembershipSection from './UserGroupMembershipSection';
 

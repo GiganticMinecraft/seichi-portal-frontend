@@ -1,1 +1,1 @@
-export { default } from '../../../_components/QuestionEditor';
+export { default } from '../../../_components/FormEditor/QuestionEditor';

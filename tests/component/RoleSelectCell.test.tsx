@@ -1,7 +1,7 @@
 import userEvent from '@testing-library/user-event';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import RoleSelectCell from '@/app/(protected)/admin/users/_components/RoleSelectCell';
+import RoleSelectCell from '@/app/(protected)/admin/users/_components/UserDetailDialog/RoleSelectCell';
 
 import { renderWithProviders, screen, waitFor } from './render';
 

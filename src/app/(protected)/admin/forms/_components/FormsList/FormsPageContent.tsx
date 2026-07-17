@@ -12,7 +12,7 @@ import type {
   GetFormsResponse,
 } from '@/lib/api-types';
 
-import { useFormListFilters } from '../_hooks/useFormListFilters';
+import { useFormListFilters } from '../../_hooks/useFormListFilters';
 
 import ArchivedFormsView from './ArchivedFormsView';
 import FormsToolbar from './FormsToolbar';

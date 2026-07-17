@@ -20,7 +20,7 @@ import type {
   GetUserGroupsResponse,
 } from '@/lib/api-types';
 
-import type { FormEditorValues } from '../_schema/formEditorSchema';
+import type { FormEditorValues } from '../../_schema/formEditorSchema';
 
 import FormGroupField from './FormGroupField';
 import FormLabelField from './FormLabelField';

@@ -1,1 +1,1 @@
-export { default } from '../../_components/FormEditorLayout';
+export { default } from '../../_components/FormEditor/FormEditorLayout';

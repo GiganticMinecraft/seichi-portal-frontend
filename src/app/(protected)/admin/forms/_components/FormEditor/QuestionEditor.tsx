@@ -11,7 +11,7 @@ import {
 import Checkbox from '@mui/material/Checkbox';
 import type { Control, UseFormRegister } from 'react-hook-form';
 
-import type { FormEditorValues } from '../_schema/formEditorSchema';
+import type { FormEditorValues } from '../../_schema/formEditorSchema';
 
 import ChoiceEditor from './ChoiceEditor';
 

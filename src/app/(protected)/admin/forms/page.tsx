@@ -8,7 +8,7 @@ import {
 } from '@/lib/server/backend';
 import { getAdminAccess } from '@/lib/server/session';
 
-import FormsPageContent from './_components/FormsPageContent';
+import FormsPageContent from './_components/FormsList/FormsPageContent';
 
 export const metadata: Metadata = {
   title: 'フォーム管理 | Seichi Portal',

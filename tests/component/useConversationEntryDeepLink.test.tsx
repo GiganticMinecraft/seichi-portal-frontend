@@ -1,8 +1,8 @@
 import { act, renderHook } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import type { ConversationEntryViewModel } from '@/app/(protected)/_components/conversationTypes';
-import { useConversationEntryDeepLink } from '@/app/(protected)/_components/useConversationEntryDeepLink';
+import type { ConversationEntryViewModel } from '@/app/(protected)/_components/Conversation/conversationTypes';
+import { useConversationEntryDeepLink } from '@/app/(protected)/_components/Conversation/useConversationEntryDeepLink';
 
 const makeEntry = (id: string): ConversationEntryViewModel => ({
   id,

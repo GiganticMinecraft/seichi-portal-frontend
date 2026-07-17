@@ -10,7 +10,7 @@ import {
   TableRow,
 } from '@mui/material';
 
-import type { UserListRow } from '../_lib/userListRows';
+import type { UserListRow } from '../../_lib/userListRows';
 
 import UserListHeader from './UserListHeader';
 import UserRow from './UserRow';

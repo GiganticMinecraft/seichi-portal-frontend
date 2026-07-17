@@ -1,7 +1,7 @@
 import userEvent from '@testing-library/user-event';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import Comments from '@/app/(protected)/_components/Comments';
+import Comments from '@/app/(protected)/_components/Conversation/Comments';
 import type { AnswerComment } from '@/lib/api-types';
 
 import { renderWithProviders, screen, waitFor, within } from './render';
@@ -10,13 +10,16 @@ const sendCommentMock = vi.hoisted(() => vi.fn());
 const deleteCommentMock = vi.hoisted(() => vi.fn());
 const updateCommentMock = vi.hoisted(() => vi.fn());
 
-vi.mock('@/app/(protected)/_components/useConversationActions', () => ({
-  useCommentConversationActions: () => ({
-    send: sendCommentMock,
-    update: updateCommentMock,
-    deleteEntry: deleteCommentMock,
-  }),
-}));
+vi.mock(
+  '@/app/(protected)/_components/Conversation/useConversationActions',
+  () => ({
+    useCommentConversationActions: () => ({
+      send: sendCommentMock,
+      update: updateCommentMock,
+      deleteEntry: deleteCommentMock,
+    }),
+  })
+);
 
 afterEach(() => {
   vi.clearAllMocks();
