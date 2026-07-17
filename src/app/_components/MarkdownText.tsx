@@ -1,9 +1,12 @@
 'use client';
 
-import { Box } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import type { SxProps, Theme } from '@mui/material/styles';
+import { type MouseEvent, useState } from 'react';
 import Markdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+
+import ConfirmDialog from './ConfirmDialog';
 
 const defaultSx: SxProps<Theme> = {
   whiteSpace: 'pre-wrap',
@@ -23,8 +26,19 @@ type Props = {
  * Markdown 本文を描画する共通 component。
  * img 要素はトラッキングピクセル等の情報漏洩対策として一律描画せず、alt テキストのみ表示する。
  * a 要素は tabnabbing 対策として新しいタブで開く。
+ * また、リンク文言と実際の遷移先を偽装される(例: `[https://example.com](https://evil.example)`)
+ * リスクに備え、クリック時に実際の遷移先 URL を提示する確認ダイアログを挟んでから遷移する。
  */
 const MarkdownText = ({ children, sx }: Props) => {
+  const [pendingHref, setPendingHref] = useState<string | null>(null);
+
+  const handleLinkClick =
+    (href: string | undefined) => (event: MouseEvent<HTMLAnchorElement>) => {
+      if (!href) return;
+      event.preventDefault();
+      setPendingHref(href);
+    };
+
   return (
     <Box sx={sx ? [defaultSx, sx].flat() : defaultSx}>
       <Markdown
@@ -32,7 +46,12 @@ const MarkdownText = ({ children, sx }: Props) => {
         components={{
           img: ({ alt }) => <>{alt ? `[image: ${alt}]` : '[image]'}</>,
           a: ({ href, children: linkChildren }) => (
-            <a href={href} target="_blank" rel="noopener noreferrer">
+            <a
+              href={href}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={handleLinkClick(href)}
+            >
               {linkChildren}
             </a>
           ),
@@ -40,6 +59,32 @@ const MarkdownText = ({ children, sx }: Props) => {
       >
         {children}
       </Markdown>
+      <ConfirmDialog
+        open={pendingHref !== null}
+        title="外部サイトに移動します"
+        description={
+          <>
+            表示されているリンク文言と実際の遷移先が異なる場合があります。以下の遷移先を確認のうえ移動してください。
+            <Typography
+              component="span"
+              sx={{ display: 'block', wordBreak: 'break-all', mt: 1 }}
+            >
+              {pendingHref}
+            </Typography>
+          </>
+        }
+        confirmLabel="移動する"
+        pending={false}
+        onConfirm={() => {
+          if (pendingHref) {
+            window.open(pendingHref, '_blank', 'noopener,noreferrer');
+          }
+          setPendingHref(null);
+        }}
+        onCancel={() => {
+          setPendingHref(null);
+        }}
+      />
     </Box>
   );
 };
