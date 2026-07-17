@@ -32,12 +32,23 @@ const isExternalHttpLink = (href: string | undefined): href is string =>
  * また、リンク文言と実際の遷移先を偽装される(例: `[https://example.com](https://evil.example)`)
  * リスクに備え、外部(http/https)リンクのクリック時のみ実際の遷移先 URL を提示する確認ダイアログを
  * 挟んでから遷移する。相対パスやページ内アンカーなど同一オリジンへの内部リンクは対象外とする。
+ * ホイールクリック(中クリック)は click イベントではなく auxclick イベントとして発火するため、
+ * onAuxClick でも同様に確認ダイアログを挟む。
  */
 const MarkdownText = ({ children, sx }: Props) => {
   const [pendingHref, setPendingHref] = useState<string | null>(null);
 
   const handleLinkClick =
     (href: string | undefined) => (event: MouseEvent<HTMLAnchorElement>) => {
+      if (!isExternalHttpLink(href)) return;
+      event.preventDefault();
+      setPendingHref(href);
+    };
+
+  const handleLinkAuxClick =
+    (href: string | undefined) => (event: MouseEvent<HTMLAnchorElement>) => {
+      // ホイールクリック(中クリック)以外の auxclick(右クリック等)は対象外とする
+      if (event.button !== 1) return;
       if (!isExternalHttpLink(href)) return;
       event.preventDefault();
       setPendingHref(href);
@@ -55,6 +66,7 @@ const MarkdownText = ({ children, sx }: Props) => {
               target="_blank"
               rel="noopener noreferrer"
               onClick={handleLinkClick(href)}
+              onAuxClick={handleLinkAuxClick(href)}
             >
               {linkChildren}
             </a>
