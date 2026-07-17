@@ -124,6 +124,38 @@ describe('Comments', () => {
     expect(await screen.findByText('リンクをコピーしました')).toBeVisible();
   });
 
+  it('コメント本文は Markdown として解釈され、強調記法が実際の要素として描画される(#833)', async () => {
+    const user = userEvent.setup();
+    const markdownComments: AnswerComment[] = [
+      {
+        id: 'comment-uuid-markdown',
+        content: '**重要**な連絡です',
+        commented_by: { name: 'Alice', role: 'STANDARD_USER', uuid: 'user-1' },
+        timestamp: '2024-01-01T00:00:00Z',
+      },
+    ];
+
+    renderWithProviders(
+      <Comments
+        comments={markdownComments}
+        formId="form-1"
+        answerId="answer-1"
+        currentUserId={undefined}
+        showDeleteButton={undefined}
+        deepLink={{ entryId: undefined, onClose: vi.fn() }}
+      />
+    );
+
+    await user.click(
+      screen.getByRole('button', {
+        name: new RegExp(`コメント \\(${markdownComments.length}\\)`),
+      })
+    );
+
+    const strong = await screen.findByText('重要');
+    expect(strong.tagName).toBe('STRONG');
+  });
+
   it('独立したコピーアイコンは表示されない(誤操作防止のため三点リーダーメニュー経由のみ)', async () => {
     const user = userEvent.setup();
 

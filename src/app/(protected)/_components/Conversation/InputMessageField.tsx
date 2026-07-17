@@ -24,7 +24,7 @@ const InputMessageField = (props: {
     >
       <ConversationComposer
         label="メッセージを入力してください"
-        helperText="Shift + Enter で改行、Enter で送信することができます。"
+        helperText="Shift + Enter で改行、Enter で送信することができます。Markdown に対応しています。"
         onSend={actions.send}
         {...(props.textFieldSx ? { textFieldSx: props.textFieldSx } : {})}
       />

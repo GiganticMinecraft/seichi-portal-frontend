@@ -13,6 +13,7 @@ import {
   Typography,
 } from '@mui/material';
 
+import MarkdownText from '@/app/_components/MarkdownText';
 import { useApiQuery } from '@/app/_swr/useApiQuery';
 import { formatString } from '@/generic/DateFormatter';
 import {
@@ -60,8 +61,9 @@ const RestrictionHistorySection = ({ uuid }: { uuid: string }) => {
               return (
                 <Stack key={item.id} spacing={0.5}>
                   <Typography component="p">
-                    <strong>理由:</strong> {item.reason}
+                    <strong>理由:</strong>
                   </Typography>
+                  <MarkdownText>{item.reason}</MarkdownText>
                   <Typography component="p">
                     <strong>制限日時:</strong>{' '}
                     {formatString(item.restricted_at)}

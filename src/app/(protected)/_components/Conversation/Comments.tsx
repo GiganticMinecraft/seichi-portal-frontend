@@ -35,7 +35,7 @@ const Comments = (props: {
       authorId: comment.commented_by.uuid,
       authorRole: comment.commented_by.role,
       timestamp: comment.timestamp,
-      renderMode: 'plain',
+      surface: 'bubble',
       canDelete:
         (props.showDeleteButton ?? false) ||
         (props.currentUserId !== undefined &&
@@ -49,7 +49,7 @@ const Comments = (props: {
   const capabilities: ConversationCapabilities = {
     canCompose: true,
     composeLabel: 'コメントを入力...',
-    composeHelperText: '',
+    composeHelperText: 'Markdown に対応しています。',
     emptyMessage: 'コメントはまだありません',
     deepLinkQueryParam: 'commentId',
     entryNoun: 'コメント',

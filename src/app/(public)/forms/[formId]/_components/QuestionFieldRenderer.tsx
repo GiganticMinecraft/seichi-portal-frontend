@@ -41,13 +41,16 @@ const QuestionFieldRenderer = ({
   switch (question.question_type) {
     case 'Text':
       return (
-        <Input
-          {...register(questionId)}
-          className="materialUIInput"
-          required={question.is_required}
-          multiline
-          fullWidth
-        />
+        <FormControl fullWidth>
+          <Input
+            {...register(questionId)}
+            className="materialUIInput"
+            required={question.is_required}
+            multiline
+            fullWidth
+          />
+          <FormHelperText>Markdown に対応しています。</FormHelperText>
+        </FormControl>
       );
     case 'SingleChoice':
       return (

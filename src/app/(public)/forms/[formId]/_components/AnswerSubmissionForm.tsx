@@ -11,9 +11,8 @@ import {
   Typography,
 } from '@mui/material';
 import { useForm } from 'react-hook-form';
-import Markdown from 'react-markdown';
-import remarkGfm from 'remark-gfm';
 
+import MarkdownText from '@/app/_components/MarkdownText';
 import type { GetQuestionsResponse } from '@/lib/api-types';
 
 import { TEMPORARY_USER_FIELDS } from './answerFormTypes';
@@ -61,11 +60,7 @@ const AnswerSubmissionForm = ({
       <Typography variant="h4" component="h1" gutterBottom>
         {title}
       </Typography>
-      {description && (
-        <Box sx={{ whiteSpace: 'pre-wrap', mb: 4 }}>
-          <Markdown remarkPlugins={[remarkGfm]}>{description}</Markdown>
-        </Box>
-      )}
+      {description && <MarkdownText sx={{ mb: 4 }}>{description}</MarkdownText>}
       <form
         onSubmit={(e) => {
           void handleSubmit(handleAnswerSubmit)(e);
@@ -122,11 +117,7 @@ const AnswerSubmissionForm = ({
                   )}
                 </Box>
                 {question.description && (
-                  <Box sx={{ whiteSpace: 'pre-wrap' }}>
-                    <Markdown remarkPlugins={[remarkGfm]}>
-                      {question.description}
-                    </Markdown>
-                  </Box>
+                  <MarkdownText>{question.description}</MarkdownText>
                 )}
                 <QuestionFieldRenderer
                   question={question}

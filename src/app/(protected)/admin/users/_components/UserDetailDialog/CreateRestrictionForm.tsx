@@ -53,7 +53,9 @@ const CreateRestrictionForm = ({
                 size="small"
                 disabled={disabled}
                 error={Boolean(fieldState.error)}
-                helperText={fieldState.error?.message}
+                helperText={
+                  fieldState.error?.message ?? 'Markdown に対応しています。'
+                }
               />
             )}
           />

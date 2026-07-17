@@ -1,9 +1,9 @@
 'use client';
 
-import { Box, Paper, Typography } from '@mui/material';
+import { Paper } from '@mui/material';
 import { alpha } from '@mui/material/styles';
-import Markdown from 'react-markdown';
-import remarkGfm from 'remark-gfm';
+
+import MarkdownText from '@/app/_components/MarkdownText';
 
 import type { ConversationEntryViewModel } from './conversationTypes';
 
@@ -16,32 +16,20 @@ const ConversationEntryBody = ({ entry }: Props) => {
 
   return (
     <Paper
-      variant={entry.renderMode === 'plain' ? 'outlined' : undefined}
+      variant={entry.surface === 'bubble' ? 'outlined' : undefined}
       sx={(theme) => ({
-        p: entry.renderMode === 'plain' ? 1.5 : 0,
+        p: entry.surface === 'bubble' ? 1.5 : 0,
         backgroundColor:
-          entry.renderMode === 'plain'
+          entry.surface === 'bubble'
             ? isAdmin
               ? alpha(theme.palette.success.main, 0.08)
               : theme.palette.grey[50]
             : 'transparent',
-        borderRadius: entry.renderMode === 'plain' ? 2 : 0,
+        borderRadius: entry.surface === 'bubble' ? 2 : 0,
         boxShadow: 'none',
       })}
     >
-      {entry.renderMode === 'markdown' ? (
-        <Box sx={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>
-          <Markdown remarkPlugins={[remarkGfm]}>{entry.body}</Markdown>
-        </Box>
-      ) : (
-        <Typography
-          variant="body2"
-          component="p"
-          sx={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}
-        >
-          {entry.body}
-        </Typography>
-      )}
+      <MarkdownText>{entry.body}</MarkdownText>
     </Paper>
   );
 };
