@@ -117,6 +117,24 @@ describe('MarkdownText', () => {
       });
     });
 
+    it('ホイールクリック(中クリック)でも確認ダイアログを表示し、既定では遷移しない', async () => {
+      const user = userEvent.setup();
+      const openSpy = vi.spyOn(window, 'open').mockReturnValue(null);
+
+      renderWithProviders(
+        <MarkdownText>{'[リンク](https://example.com/path)'}</MarkdownText>
+      );
+
+      const link = screen.getByRole('link', { name: 'リンク' });
+      await user.pointer({ keys: '[MouseMiddle]', target: link });
+
+      const dialog = await screen.findByRole('dialog');
+      expect(
+        within(dialog).getByText('https://example.com/path')
+      ).toBeVisible();
+      expect(openSpy).not.toHaveBeenCalled();
+    });
+
     it.each([
       ['相対パス', '/dashboard'],
       ['ページ内アンカー', '#section-1'],
