@@ -116,5 +116,21 @@ describe('MarkdownText', () => {
         expect(screen.queryByRole('dialog')).toBeNull();
       });
     });
+
+    it.each([
+      ['相対パス', '/dashboard'],
+      ['ページ内アンカー', '#section-1'],
+    ])(
+      '同一オリジンへの内部リンク(%s)をクリックしても確認ダイアログは表示されない',
+      async (_label, href) => {
+        const user = userEvent.setup();
+
+        renderWithProviders(<MarkdownText>{`[リンク](${href})`}</MarkdownText>);
+
+        await user.click(screen.getByRole('link', { name: 'リンク' }));
+
+        expect(screen.queryByRole('dialog')).toBeNull();
+      }
+    );
   });
 });

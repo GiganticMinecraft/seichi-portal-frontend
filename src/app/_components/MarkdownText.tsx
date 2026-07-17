@@ -22,19 +22,23 @@ type Props = {
   sx?: SxProps<Theme>;
 };
 
+const isExternalHttpLink = (href: string | undefined): href is string =>
+  href !== undefined && /^https?:\/\//i.test(href);
+
 /**
  * Markdown 本文を描画する共通 component。
  * img 要素はトラッキングピクセル等の情報漏洩対策として一律描画せず、alt テキストのみ表示する。
  * a 要素は tabnabbing 対策として新しいタブで開く。
  * また、リンク文言と実際の遷移先を偽装される(例: `[https://example.com](https://evil.example)`)
- * リスクに備え、クリック時に実際の遷移先 URL を提示する確認ダイアログを挟んでから遷移する。
+ * リスクに備え、外部(http/https)リンクのクリック時のみ実際の遷移先 URL を提示する確認ダイアログを
+ * 挟んでから遷移する。相対パスやページ内アンカーなど同一オリジンへの内部リンクは対象外とする。
  */
 const MarkdownText = ({ children, sx }: Props) => {
   const [pendingHref, setPendingHref] = useState<string | null>(null);
 
   const handleLinkClick =
     (href: string | undefined) => (event: MouseEvent<HTMLAnchorElement>) => {
-      if (!href) return;
+      if (!isExternalHttpLink(href)) return;
       event.preventDefault();
       setPendingHref(href);
     };
