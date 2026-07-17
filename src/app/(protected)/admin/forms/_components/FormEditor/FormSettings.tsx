@@ -45,6 +45,7 @@ const BasicFormSettings = ({
       label="フォームの説明"
       required
       multiline
+      helperText="Markdown に対応しています。"
     />
     <FormLabelField control={control} labelOptions={labelOptions} />
   </>

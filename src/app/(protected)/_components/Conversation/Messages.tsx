@@ -44,7 +44,7 @@ const Messages = (props: {
       authorId: message.sender.uuid,
       authorRole: message.sender.role,
       timestamp: message.timestamp,
-      renderMode: 'markdown',
+      surface: 'flat',
       canDelete: true,
       canEdit: true,
     })

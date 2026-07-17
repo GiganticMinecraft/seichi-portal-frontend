@@ -10,7 +10,7 @@ const makeEntry = (id: string): ConversationEntryViewModel => ({
   authorName: 'author',
   authorRole: 'USER',
   timestamp: '2024-01-01T00:00:00Z',
-  renderMode: 'plain',
+  surface: 'bubble',
   canDelete: false,
   canEdit: false,
 });
