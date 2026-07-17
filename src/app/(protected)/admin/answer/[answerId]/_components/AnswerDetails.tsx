@@ -17,6 +17,7 @@ import type {
   GetAnswerLabelsResponse,
   GetAnswerResponse,
 } from '@/lib/api-types';
+import { resolveAnswerTitle } from '@/lib/forms/answerTitle';
 
 export const AdminAnswerTitle = (props: { answer: GetAnswerResponse }) => {
   const { handleSubmit, register } = useForm<{ title: string }>();
@@ -53,8 +54,12 @@ export const AdminAnswerTitle = (props: { answer: GetAnswerResponse }) => {
           sx={{ minWidth: 280, flexGrow: 1 }}
         />
       ) : (
-        <Typography variant="h4" component="h1">
-          {title}
+        <Typography
+          variant="h4"
+          component="h1"
+          sx={!title?.trim() ? { color: 'text.secondary' } : undefined}
+        >
+          {resolveAnswerTitle(title)}
         </Typography>
       )}
       {isEditing ? (

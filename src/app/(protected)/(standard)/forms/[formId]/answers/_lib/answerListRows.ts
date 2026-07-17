@@ -1,5 +1,6 @@
 import { formatString } from '@/generic/DateFormatter';
 import type { GetFormAnswersResponse } from '@/lib/api-types';
+import { resolveAnswerTitle } from '@/lib/forms/answerTitle';
 
 export type AnswerListRow = {
   id: string;
@@ -12,6 +13,6 @@ export const toAnswerListRows = (
 ): AnswerListRow[] =>
   answers.map((answer) => ({
     id: answer.id,
-    title: answer.title ?? '',
+    title: resolveAnswerTitle(answer.title),
     date: formatString(answer.timestamp),
   }));
