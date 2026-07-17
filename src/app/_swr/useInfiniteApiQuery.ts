@@ -18,6 +18,11 @@ type KeysetPath = {
   [P in GetPaths]: GetResponse<P> extends KeysetPage ? P : never;
 }[GetPaths];
 
+export type UseInfiniteApiQueryOptions = {
+  /** ミリ秒間隔で全ページを再取得し続ける。指定しなければ再取得しない。 */
+  refreshInterval?: number;
+};
+
 /**
  * Keyset Pagination エンドポイントを無限スクロールで読み進めるための hook。
  * IntersectionObserver でスクロール終端の検知まで面倒を見て、監視対象の ref を返す。
@@ -25,7 +30,8 @@ type KeysetPath = {
 export const useInfiniteApiQuery = <P extends KeysetPath>(
   path: P,
   buildParams: (cursor: string | undefined) => GetParams<P>,
-  initialPage: GetResponse<P>
+  initialPage: GetResponse<P>,
+  options?: UseInfiniteApiQueryOptions
 ) => {
   const hasHydrated = useHasHydrated();
 
@@ -51,7 +57,17 @@ export const useInfiniteApiQuery = <P extends KeysetPath>(
     getKey,
     // eslint-disable-next-line @typescript-eslint/consistent-type-assertions, @typescript-eslint/no-unsafe-type-assertion -- タプルキーの分割代入で P が失われ unknown に収束するため、呼び出し境界で戻す
     ([p, params]) => typedFetcher(p, params) as Promise<GetResponse<P>>,
-    { fallbackData: [initialPage] }
+    {
+      fallbackData: [initialPage],
+      ...(options?.refreshInterval !== undefined
+        ? {
+            refreshInterval: options.refreshInterval,
+            // refreshInterval は既定で先頭ページのみを再検証するため、
+            // 全ページ分をまとめて再取得する。
+            revalidateAll: true,
+          }
+        : {}),
+    }
   );
 
   type ItemsOf<T> = T extends { items: infer I } ? I : never;

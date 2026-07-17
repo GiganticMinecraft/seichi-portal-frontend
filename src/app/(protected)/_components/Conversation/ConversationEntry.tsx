@@ -11,6 +11,7 @@ import {
   CONVERSATION_ENTRY_AVATAR_SIZE,
   CONVERSATION_ENTRY_HEADER_SPACING,
 } from './conversationEntryLayout';
+import ConversationHistoryDialog from './ConversationHistoryDialog';
 import type {
   ConversationActionResult,
   ConversationCapabilities,
@@ -44,6 +45,7 @@ const ConversationEntry = ({
   const [anchorEl, setAnchorEl] = useState<HTMLElement>();
   const [draftBody, setDraftBody] = useState(entry.body);
   const [isEditing, setIsEditing] = useState(false);
+  const [isHistoryOpen, setIsHistoryOpen] = useState(false);
   const [snackbar, setSnackbar] = useState<{
     open: boolean;
     message: string;
@@ -178,6 +180,9 @@ const ConversationEntry = ({
           onStartEditing={handleStartEditing}
           onDelete={handleDelete}
           onCopyLink={(url) => void handleCopyLink(url)}
+          onShowHistory={() => {
+            setIsHistoryOpen(true);
+          }}
         />
 
         <Box
@@ -199,6 +204,15 @@ const ConversationEntry = ({
           )}
         </Box>
       </Box>
+
+      <ConversationHistoryDialog
+        open={isHistoryOpen}
+        onClose={() => {
+          setIsHistoryOpen(false);
+        }}
+        title={`${capabilities.entryNoun}の編集履歴`}
+        entries={entry.editHistory ?? []}
+      />
     </>
   );
 };

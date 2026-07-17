@@ -142,6 +142,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/forms/{form_id}/answers/{answer_id}/comments/history": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** コメントの変更履歴を取得 */
+        get: operations["get_comment_history"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/forms/{form_id}/answers/{answer_id}/comments/{comment_id}": {
         parameters: {
             query?: never;
@@ -172,6 +189,23 @@ export interface paths {
         put?: never;
         /** メッセージの作成 */
         post: operations["post_message_handler"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/forms/{form_id}/answers/{answer_id}/messages/history": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** メッセージの変更履歴を取得 */
+        get: operations["get_message_history"];
+        put?: never;
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -738,6 +772,24 @@ export interface components {
             /** Format: int32 */
             position: number;
         };
+        CommentHistoryPageResponse: {
+            items: components["schemas"]["CommentHistoryResponseEntry"][];
+            next_cursor?: string | null;
+        };
+        CommentHistoryResponseEntry: {
+            action: components["schemas"]["HistoryAction"];
+            /** Format: uuid */
+            comment_id: string;
+            content: string;
+            /** Format: uuid */
+            id: string;
+            /** Format: date-time */
+            operated_at: string;
+            operated_by: components["schemas"]["HistoryUser"];
+            original_author: components["schemas"]["HistoryUser"];
+            /** Format: date-time */
+            original_timestamp: string;
+        };
         CommentPostSchema: {
             content: components["schemas"]["NonEmptyString"];
         };
@@ -848,6 +900,14 @@ export interface components {
             settings?: null | components["schemas"]["FormSettingsSchema"];
             title?: string | null;
         };
+        /** @enum {string} */
+        HistoryAction: "CREATE" | "UPDATE" | "DELETE";
+        HistoryUser: {
+            /** Format: uuid */
+            id: string;
+            name: string;
+            role: components["schemas"]["Role"];
+        };
         MessageContentSchema: {
             body: string;
             /** Format: uuid */
@@ -855,6 +915,24 @@ export interface components {
             sender: components["schemas"]["SenderSchema"];
             /** Format: date-time */
             timestamp: string;
+        };
+        MessageHistoryPageResponse: {
+            items: components["schemas"]["MessageHistoryResponseEntry"][];
+            next_cursor?: string | null;
+        };
+        MessageHistoryResponseEntry: {
+            action: components["schemas"]["HistoryAction"];
+            body: string;
+            /** Format: uuid */
+            id: string;
+            /** Format: uuid */
+            message_id: string;
+            /** Format: date-time */
+            operated_at: string;
+            operated_by: components["schemas"]["HistoryUser"];
+            original_author: components["schemas"]["HistoryUser"];
+            /** Format: date-time */
+            original_timestamp: string;
         };
         MessageUpdateSchema: {
             body?: string | null;
@@ -1771,6 +1849,78 @@ export interface operations {
             };
         };
     };
+    get_comment_history: {
+        parameters: {
+            query?: {
+                /** @description Maximum number of history entries to return */
+                limit?: number;
+                /** @description Cursor returned by the previous page */
+                cursor?: string;
+            };
+            header?: never;
+            path: {
+                form_id: string;
+                answer_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CommentHistoryPageResponse"];
+                };
+            };
+            /** @description The server could not understand the request due to invalid syntax. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Access is unauthorized. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Access is forbidden. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description The server cannot find the requested resource. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
     delete_form_comment_handler: {
         parameters: {
             query?: never;
@@ -2075,6 +2225,78 @@ export interface operations {
             };
             /** @description Client error */
             422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    get_message_history: {
+        parameters: {
+            query?: {
+                /** @description Maximum number of history entries to return */
+                limit?: number;
+                /** @description Cursor returned by the previous page */
+                cursor?: string;
+            };
+            header?: never;
+            path: {
+                form_id: string;
+                answer_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MessageHistoryPageResponse"];
+                };
+            };
+            /** @description The server could not understand the request due to invalid syntax. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Access is unauthorized. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Access is forbidden. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description The server cannot find the requested resource. */
+            404: {
                 headers: {
                     [name: string]: unknown;
                 };

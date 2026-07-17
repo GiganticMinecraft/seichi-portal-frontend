@@ -20,6 +20,7 @@ export type AnswerDetailsPageData = {
   messages: GetMessagesResponse;
   comments: AnswerComment[];
   currentUserId: string | undefined;
+  isAdmin: boolean;
 };
 
 const AnswerDetailsPageView = ({
@@ -60,6 +61,7 @@ const AnswerDetailsPageView = ({
           answerId={answerId}
           title="メッセージ"
           triggerLabel={`メッセージ (${data.messages.length})`}
+          isAdmin={data.isAdmin}
           deepLink={messageDeepLink}
         />
       }
@@ -71,6 +73,7 @@ const AnswerDetailsPageView = ({
       answerId={data.answer.id}
       currentUserId={data.currentUserId}
       showDeleteButton={undefined}
+      isAdmin={data.isAdmin}
       deepLink={commentDeepLink}
     />
   </Stack>

@@ -84,6 +84,7 @@ const AnswerDetailsPageContent = ({
     messages: requiredQueries.messages.data,
     comments: requiredQueries.comments.data,
     currentUserId: currentUser?.id,
+    isAdmin: currentUser?.role === 'ADMINISTRATOR',
   };
 
   return (

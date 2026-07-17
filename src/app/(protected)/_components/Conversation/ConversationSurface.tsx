@@ -18,8 +18,9 @@ import ConversationEntry from './ConversationEntry';
 import type {
   ConversationActionResult,
   ConversationCapabilities,
-  ConversationEntryViewModel,
+  ConversationListItem,
 } from './conversationTypes';
+import DeletedConversationEntry from './DeletedConversationEntry';
 import { getConversationEntryDomId } from './useConversationEntryDeepLink';
 
 const AUTO_SCROLL_DELAY_MS = 300;
@@ -29,7 +30,7 @@ type Props = {
   title?: string | undefined;
   triggerLabel?: string | undefined;
   triggerStartIcon?: ReactNode | undefined;
-  entries: ConversationEntryViewModel[];
+  items: ConversationListItem[];
   capabilities: ConversationCapabilities;
   inputForm?: ReactNode | undefined;
   /** true になった最初の 1 回だけ drawer を自動的に開く(直リンク経由の自動オープン用)。 */
@@ -51,13 +52,13 @@ type Props = {
  * drawer / inline のレイアウト差分と空状態、入力フォームの配置をここへ集約する。
  */
 const ConversationList = ({
-  entries,
+  items,
   capabilities,
   highlightedEntryId,
   onUpdate,
   onDelete,
 }: {
-  entries: ConversationEntryViewModel[];
+  items: ConversationListItem[];
   capabilities: ConversationCapabilities;
   highlightedEntryId?: string | undefined;
   onUpdate?:
@@ -68,20 +69,27 @@ const ConversationList = ({
     | undefined;
 }) => (
   <Stack spacing={2}>
-    {entries.length === 0 && (
+    {items.length === 0 && (
       <Typography color="textSecondary" align="center" sx={{ mt: 4 }}>
         {capabilities.emptyMessage}
       </Typography>
     )}
-    {entries.map((entry) => (
-      <Stack key={entry.id} spacing={2}>
-        <ConversationEntry
-          entry={entry}
-          capabilities={capabilities}
-          highlighted={entry.id === highlightedEntryId}
-          {...(onUpdate ? { onUpdate } : {})}
-          {...(onDelete ? { onDelete } : {})}
-        />
+    {items.map((item) => (
+      <Stack key={item.entry.id} spacing={2}>
+        {item.kind === 'entry' ? (
+          <ConversationEntry
+            entry={item.entry}
+            capabilities={capabilities}
+            highlighted={item.entry.id === highlightedEntryId}
+            {...(onUpdate ? { onUpdate } : {})}
+            {...(onDelete ? { onDelete } : {})}
+          />
+        ) : (
+          <DeletedConversationEntry
+            entry={item.entry}
+            entryNoun={capabilities.entryNoun}
+          />
+        )}
         <Divider />
       </Stack>
     ))}
@@ -96,7 +104,7 @@ const ConversationSurface = ({
   title,
   triggerLabel,
   triggerStartIcon,
-  entries,
+  items,
   capabilities,
   inputForm,
   autoOpen,
@@ -146,7 +154,7 @@ const ConversationSurface = ({
   if (variant === 'inline') {
     return (
       <ConversationList
-        entries={entries}
+        items={items}
         capabilities={capabilities}
         highlightedEntryId={highlightedEntryId}
         {...(onUpdate ? { onUpdate } : {})}
@@ -203,7 +211,7 @@ const ConversationSurface = ({
           }}
         >
           <ConversationList
-            entries={entries}
+            items={items}
             capabilities={capabilities}
             highlightedEntryId={highlightedEntryId}
             {...(onUpdate ? { onUpdate } : {})}

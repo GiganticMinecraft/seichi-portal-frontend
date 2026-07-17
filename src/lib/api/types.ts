@@ -4,6 +4,10 @@ export type ApiPaths = paths;
 export type ApiComponents = components;
 
 export type AnswerComment = components['schemas']['AnswerComment'];
+export type CommentHistoryResponseEntry =
+  components['schemas']['CommentHistoryResponseEntry'];
+export type MessageHistoryResponseEntry =
+  components['schemas']['MessageHistoryResponseEntry'];
 
 export type GetQuestionsResponse =
   components['schemas']['QuestionResponseSchema'][];
@@ -28,6 +32,10 @@ export type GetAnswerLabelsResponse =
   ApiPaths['/api/v1/labels/answers']['get']['responses'][200]['content']['application/json'];
 export type GetMessagesResponse =
   ApiPaths['/api/v1/forms/{form_id}/answers/{answer_id}/messages']['get']['responses'][200]['content']['application/json'];
+export type GetCommentHistoryResponse =
+  ApiPaths['/api/v1/forms/{form_id}/answers/{answer_id}/comments/history']['get']['responses'][200]['content']['application/json'];
+export type GetMessageHistoryResponse =
+  ApiPaths['/api/v1/forms/{form_id}/answers/{answer_id}/messages/history']['get']['responses'][200]['content']['application/json'];
 export type GetUsersResponse =
   ApiPaths['/api/v1/users/me']['get']['responses'][200]['content']['application/json'];
 export type GetUserResponse =
