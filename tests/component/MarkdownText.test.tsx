@@ -35,4 +35,14 @@ describe('MarkdownText', () => {
     expect(container.querySelector('img')).not.toBeInTheDocument();
     expect(screen.getByText('[image]')).toBeVisible();
   });
+
+  it('リンクは tabnabbing 対策として新しいタブで開く', () => {
+    renderWithProviders(
+      <MarkdownText>{'[リンク](https://example.com)'}</MarkdownText>
+    );
+
+    const link = screen.getByRole('link', { name: 'リンク' });
+    expect(link).toHaveAttribute('target', '_blank');
+    expect(link).toHaveAttribute('rel', 'noopener noreferrer');
+  });
 });
