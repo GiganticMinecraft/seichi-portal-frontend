@@ -9,10 +9,16 @@ export const metadata: Metadata = {
 const Home = async ({
   searchParams,
 }: {
-  searchParams: Promise<{ accessDenied?: string }>;
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) => {
   const { accessDenied } = await searchParams;
-  return <MainMenu accessDenied={accessDenied} />;
+  return (
+    <MainMenu
+      accessDenied={
+        Array.isArray(accessDenied) ? accessDenied[0] : accessDenied
+      }
+    />
+  );
 };
 
 export default Home;

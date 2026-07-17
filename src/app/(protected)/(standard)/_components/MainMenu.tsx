@@ -52,7 +52,7 @@ const MainMenu = ({ accessDenied }: { accessDenied?: string | undefined }) => {
   const { snackbar, showSnackbar, closeSnackbar } = useSnackbar();
 
   useEffect(() => {
-    if (accessDenied != null) {
+    if (accessDenied) {
       showSnackbar('このページを表示する権限がありません。', 'warning');
       router.replace('/home', { scroll: false });
     }
