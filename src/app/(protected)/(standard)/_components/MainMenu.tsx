@@ -14,7 +14,10 @@ import {
   useTheme,
 } from '@mui/material';
 import NextLink from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
 
+import SnackbarAlert, { useSnackbar } from '@/app/_components/SnackbarAlert';
 import { useCurrentUser } from '@/app/_providers/currentUser';
 
 const menuItems = [
@@ -41,126 +44,143 @@ const menuItems = [
   },
 ];
 
-const MainMenu = () => {
+const MainMenu = ({ accessDenied }: { accessDenied?: string | undefined }) => {
   const theme = useTheme();
   const user = useCurrentUser();
   const userName = user.name;
+  const router = useRouter();
+  const { snackbar, showSnackbar, closeSnackbar } = useSnackbar();
+
+  useEffect(() => {
+    if (accessDenied) {
+      showSnackbar('このページを表示する権限がありません。', 'warning');
+      router.replace('/home', { scroll: false });
+    }
+  }, [accessDenied, router, showSnackbar]);
 
   return (
-    <Container maxWidth="md" sx={{ py: 5 }}>
-      <Box sx={{ mb: 5, textAlign: 'center' }}>
-        <Typography
-          variant="h5"
-          component="h1"
-          sx={{ fontWeight: 700 }}
-          gutterBottom
+    <>
+      <Container maxWidth="md" sx={{ py: 5 }}>
+        <Box sx={{ mb: 5, textAlign: 'center' }}>
+          <Typography
+            variant="h5"
+            component="h1"
+            sx={{ fontWeight: 700 }}
+            gutterBottom
+          >
+            {userName ? `ようこそ、${userName} さん` : 'ようこそ'}
+          </Typography>
+          <Typography variant="body1" color="textSecondary">
+            各機能にアクセスするには、下のカードをクリックしてください
+          </Typography>
+        </Box>
+
+        <Box
+          sx={{
+            display: 'grid',
+            gridTemplateColumns: {
+              xs: '1fr',
+              sm: 'repeat(2, 1fr)',
+              md: 'repeat(3, 1fr)',
+            },
+            gap: 3,
+            alignItems: 'stretch',
+          }}
         >
-          {userName ? `ようこそ、${userName} さん` : 'ようこそ'}
-        </Typography>
-        <Typography variant="body1" color="textSecondary">
-          各機能にアクセスするには、下のカードをクリックしてください
-        </Typography>
-      </Box>
-
-      <Box
-        sx={{
-          display: 'grid',
-          gridTemplateColumns: {
-            xs: '1fr',
-            sm: 'repeat(2, 1fr)',
-            md: 'repeat(3, 1fr)',
-          },
-          gap: 3,
-          alignItems: 'stretch',
-        }}
-      >
-        {menuItems.map((item) => {
-          const Icon = item.icon;
-          return (
-            <Card
-              key={item.href}
-              elevation={2}
-              sx={{
-                height: '100%',
-                borderRadius: 3,
-                transition: 'transform 0.2s ease, box-shadow 0.2s ease',
-                '&:hover': {
-                  transform: 'translateY(-4px)',
-                  boxShadow: theme.shadows[6],
-                },
-              }}
-            >
-              <CardActionArea
-                component={NextLink}
-                href={item.href}
-                sx={{ height: '100%' }}
+          {menuItems.map((item) => {
+            const Icon = item.icon;
+            return (
+              <Card
+                key={item.href}
+                elevation={2}
+                sx={{
+                  height: '100%',
+                  borderRadius: 3,
+                  transition: 'transform 0.2s ease, box-shadow 0.2s ease',
+                  '&:hover': {
+                    transform: 'translateY(-4px)',
+                    boxShadow: theme.shadows[6],
+                  },
+                }}
               >
-                <CardContent
-                  sx={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    textAlign: 'center',
-                    height: '100%',
-                    py: 4,
-                    px: 3,
-                    gap: 1.5,
-                  }}
+                <CardActionArea
+                  component={NextLink}
+                  href={item.href}
+                  sx={{ height: '100%' }}
                 >
-                  <Box
-                    sx={{
-                      width: 56,
-                      height: 56,
-                      borderRadius: '50%',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      backgroundColor: `${item.color}14`,
-                      color: item.color,
-                      mb: 1,
-                    }}
-                  >
-                    <Icon sx={{ fontSize: 28 }} />
-                  </Box>
-
-                  <Box sx={{ flexGrow: 1 }}>
-                    <Typography
-                      variant="h6"
-                      component="h2"
-                      sx={{ fontWeight: 700 }}
-                      gutterBottom
-                    >
-                      {item.title}
-                    </Typography>
-                    <Typography
-                      variant="body2"
-                      color="textSecondary"
-                      sx={{ lineHeight: 1.6 }}
-                    >
-                      {item.description}
-                    </Typography>
-                  </Box>
-
-                  <Box
+                  <CardContent
                     sx={{
                       display: 'flex',
+                      flexDirection: 'column',
                       alignItems: 'center',
-                      color: item.color,
-                      fontWeight: 600,
-                      fontSize: '0.875rem',
-                      gap: 0.5,
+                      textAlign: 'center',
+                      height: '100%',
+                      py: 4,
+                      px: 3,
+                      gap: 1.5,
                     }}
                   >
-                    詳細を見る
-                    <ArrowForwardIcon sx={{ fontSize: 18 }} />
-                  </Box>
-                </CardContent>
-              </CardActionArea>
-            </Card>
-          );
-        })}
-      </Box>
-    </Container>
+                    <Box
+                      sx={{
+                        width: 56,
+                        height: 56,
+                        borderRadius: '50%',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        backgroundColor: `${item.color}14`,
+                        color: item.color,
+                        mb: 1,
+                      }}
+                    >
+                      <Icon sx={{ fontSize: 28 }} />
+                    </Box>
+
+                    <Box sx={{ flexGrow: 1 }}>
+                      <Typography
+                        variant="h6"
+                        component="h2"
+                        sx={{ fontWeight: 700 }}
+                        gutterBottom
+                      >
+                        {item.title}
+                      </Typography>
+                      <Typography
+                        variant="body2"
+                        color="textSecondary"
+                        sx={{ lineHeight: 1.6 }}
+                      >
+                        {item.description}
+                      </Typography>
+                    </Box>
+
+                    <Box
+                      sx={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        color: item.color,
+                        fontWeight: 600,
+                        fontSize: '0.875rem',
+                        gap: 0.5,
+                      }}
+                    >
+                      詳細を見る
+                      <ArrowForwardIcon sx={{ fontSize: 18 }} />
+                    </Box>
+                  </CardContent>
+                </CardActionArea>
+              </Card>
+            );
+          })}
+        </Box>
+      </Container>
+      <SnackbarAlert
+        open={snackbar.open}
+        message={snackbar.message}
+        severity={snackbar.severity}
+        onClose={closeSnackbar}
+      />
+    </>
   );
 };
 
