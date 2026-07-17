@@ -90,7 +90,7 @@ const ConversationEntryHeader = ({
               avatar={
                 <Avatar src="/server-icon.png" sx={{ width: 18, height: 18 }} />
               }
-              label={capabilities.adminLabel}
+              label="運営チーム"
               color="success"
               size="small"
               sx={{ height: 20 }}

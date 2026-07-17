@@ -51,7 +51,6 @@ const Comments = (props: {
     composeLabel: 'コメントを入力...',
     composeHelperText: '',
     emptyMessage: 'コメントはまだありません',
-    adminLabel: '運営',
     deepLinkQueryParam: 'commentId',
     entryNoun: 'コメント',
   };
