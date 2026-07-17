@@ -55,7 +55,6 @@ const Messages = (props: {
     composeLabel: 'メッセージを入力してください',
     composeHelperText: 'Shift + Enter で改行、Enter で送信することができます。',
     emptyMessage: 'メッセージはまだありません',
-    adminLabel: '運営チーム',
     deepLinkQueryParam: 'messageId',
     entryNoun: 'メッセージ',
   };

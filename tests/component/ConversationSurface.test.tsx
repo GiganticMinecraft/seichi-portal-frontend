@@ -26,7 +26,6 @@ const capabilities: ConversationCapabilities = {
   composeLabel: '',
   composeHelperText: '',
   emptyMessage: '投稿はまだありません',
-  adminLabel: '運営',
   deepLinkQueryParam: 'commentId',
   entryNoun: 'コメント',
 };
