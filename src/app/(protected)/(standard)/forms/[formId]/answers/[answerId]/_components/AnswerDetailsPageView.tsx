@@ -46,7 +46,8 @@ const AnswerDetailsPageView = ({
   >
     <Typography
       variant="h4"
-      sx={!data.answer.title ? { color: 'text.secondary' } : undefined}
+      component="h1"
+      sx={!data.answer.title?.trim() ? { color: 'text.secondary' } : undefined}
     >
       {resolveAnswerTitle(data.answer.title)}
     </Typography>

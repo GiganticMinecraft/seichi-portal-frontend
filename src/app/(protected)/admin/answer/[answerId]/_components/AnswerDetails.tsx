@@ -57,7 +57,7 @@ export const AdminAnswerTitle = (props: { answer: GetAnswerResponse }) => {
         <Typography
           variant="h4"
           component="h1"
-          sx={!title ? { color: 'text.secondary' } : undefined}
+          sx={!title?.trim() ? { color: 'text.secondary' } : undefined}
         >
           {resolveAnswerTitle(title)}
         </Typography>
