@@ -23,7 +23,7 @@ import {
   questionTypeSchema,
   type FormEditorQuestion,
   type FormEditorValues,
-} from '../_schema/formEditorSchema';
+} from '../../_schema/formEditorSchema';
 
 const SortableChoiceItem = (props: {
   id: string;

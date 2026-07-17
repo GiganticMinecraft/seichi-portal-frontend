@@ -1,10 +1,10 @@
 import { describe, expect, it, vi } from 'vitest';
 
-import ConversationSurface from '@/app/(protected)/_components/ConversationSurface';
+import ConversationSurface from '@/app/(protected)/_components/Conversation/ConversationSurface';
 import type {
   ConversationCapabilities,
   ConversationEntryViewModel,
-} from '@/app/(protected)/_components/conversationTypes';
+} from '@/app/(protected)/_components/Conversation/conversationTypes';
 
 import { fireEvent, renderWithProviders, screen, waitFor } from './render';
 

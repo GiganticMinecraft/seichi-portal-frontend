@@ -1,7 +1,7 @@
 import userEvent from '@testing-library/user-event';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import ArchivedFormRowMenu from '@/app/(protected)/admin/forms/_components/ArchivedFormRowMenu';
+import ArchivedFormRowMenu from '@/app/(protected)/admin/forms/_components/FormsList/ArchivedFormRowMenu';
 
 import { renderWithProviders, screen, waitFor, within } from './render';
 

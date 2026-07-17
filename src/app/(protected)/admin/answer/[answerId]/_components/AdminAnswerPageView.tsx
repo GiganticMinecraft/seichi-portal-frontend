@@ -4,8 +4,8 @@ import { Stack } from '@mui/material';
 
 import StandardAnswerDetails from '@/app/(protected)/(standard)/forms/[formId]/answers/[answerId]/_components/AnswerDetails';
 import StandardAnswerMeta from '@/app/(protected)/(standard)/forms/[formId]/answers/[answerId]/_components/AnswerMeta';
-import Messages from '@/app/(protected)/_components/Messages';
-import type { ConversationDeepLinkProps } from '@/app/(protected)/_components/useConversationEntryDeepLink';
+import Messages from '@/app/(protected)/_components/Conversation/Messages';
+import type { ConversationDeepLinkProps } from '@/app/(protected)/_components/Conversation/useConversationEntryDeepLink';
 import { useOptionalCurrentUser } from '@/app/_providers/currentUser';
 import type {
   AnswerComment,

@@ -19,10 +19,10 @@ import type {
   GetUserGroupsResponse,
 } from '@/lib/api-types';
 
-import FormEditorLayout from '../../_components/FormEditorLayout';
-import FormSettings from '../../_components/FormSettings';
-import QuestionEditor from '../../_components/QuestionEditor';
-import QuestionList from '../../_components/QuestionList';
+import FormEditorLayout from '../../_components/FormEditor/FormEditorLayout';
+import FormSettings from '../../_components/FormEditor/FormSettings';
+import QuestionEditor from '../../_components/FormEditor/QuestionEditor';
+import QuestionList from '../../_components/FormEditor/QuestionList';
 import {
   createEmptyFormEditorQuestion,
   createEmptyFormEditorValues,

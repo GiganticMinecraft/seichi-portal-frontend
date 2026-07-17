@@ -2,7 +2,7 @@ import userEvent from '@testing-library/user-event';
 import { useForm } from 'react-hook-form';
 import { describe, expect, it } from 'vitest';
 
-import ChoiceEditor from '@/app/(protected)/admin/forms/_components/ChoiceEditor';
+import ChoiceEditor from '@/app/(protected)/admin/forms/_components/FormEditor/ChoiceEditor';
 import { createEmptyFormEditorValues } from '@/app/(protected)/admin/forms/_lib/formEditorDefaults';
 import type { FormEditorValues } from '@/app/(protected)/admin/forms/_schema/formEditorSchema';
 

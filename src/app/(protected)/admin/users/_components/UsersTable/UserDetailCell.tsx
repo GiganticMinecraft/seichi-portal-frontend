@@ -4,7 +4,7 @@ import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import { IconButton, Tooltip } from '@mui/material';
 import { useState } from 'react';
 
-import UserDetailDialog from './UserDetailDialog';
+import UserDetailDialog from '../UserDetailDialog/UserDetailDialog';
 
 const UserDetailCell = ({
   userId,

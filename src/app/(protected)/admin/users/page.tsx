@@ -7,7 +7,7 @@ import {
 } from '@/lib/server/backend';
 import { getAdminAccess } from '@/lib/server/session';
 
-import UsersPageContent from './_components/UsersPageContent';
+import UsersPageContent from './_components/UsersTable/UsersPageContent';
 
 export const metadata: Metadata = {
   title: 'ユーザー管理 | Seichi Portal',

@@ -7,7 +7,7 @@ import { useApiQuery } from '@/app/_swr/useApiQuery';
 import { useInfiniteApiQuery } from '@/app/_swr/useInfiniteApiQuery';
 import type { GetUserListPageResponse } from '@/lib/api-types';
 
-import { toUserListRows } from '../_lib/userListRows';
+import { toUserListRows } from '../../_lib/userListRows';
 
 import UsersView from './UsersView';
 

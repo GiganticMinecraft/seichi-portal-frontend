@@ -4,7 +4,7 @@ import { describe, expect, it } from 'vitest';
 import {
   restrictionFormSchema,
   toRestrictionRequest,
-} from '@/app/(protected)/admin/users/_components/restrictionForm';
+} from '@/app/(protected)/admin/users/_components/UserDetailDialog/restrictionForm';
 
 describe('restrictionFormSchema', () => {
   it('空の理由は弾く', () => {

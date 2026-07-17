@@ -1,1 +1,1 @@
-export { default } from '../../_components/FormLabelField';
+export { default } from '../../_components/FormEditor/FormLabelField';

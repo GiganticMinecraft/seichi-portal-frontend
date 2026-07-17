@@ -1,7 +1,7 @@
 import { Stack, Typography } from '@mui/material';
 
-import Messages from '@/app/(protected)/_components/Messages';
-import type { ConversationDeepLinkProps } from '@/app/(protected)/_components/useConversationEntryDeepLink';
+import Messages from '@/app/(protected)/_components/Conversation/Messages';
+import type { ConversationDeepLinkProps } from '@/app/(protected)/_components/Conversation/useConversationEntryDeepLink';
 import type {
   AnswerComment,
   GetAnswerResponse,

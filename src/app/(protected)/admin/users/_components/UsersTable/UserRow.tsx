@@ -1,8 +1,8 @@
 import { TableCell, TableRow } from '@mui/material';
 
-import type { UserListRow } from '../_lib/userListRows';
+import type { UserListRow } from '../../_lib/userListRows';
+import RoleChip from '../RoleChip';
 
-import RoleChip from './RoleChip';
 import UserDetailCell from './UserDetailCell';
 import UserIdCell from './UserIdCell';
 import UserNameCell from './UserNameCell';

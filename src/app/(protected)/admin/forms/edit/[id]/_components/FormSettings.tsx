@@ -1,1 +1,1 @@
-export { default } from '../../../_components/FormSettings';
+export { default } from '../../../_components/FormEditor/FormSettings';

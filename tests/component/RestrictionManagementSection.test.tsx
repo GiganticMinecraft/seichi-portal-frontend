@@ -1,7 +1,7 @@
 import userEvent from '@testing-library/user-event';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import RestrictionManagementSection from '@/app/(protected)/admin/users/_components/RestrictionManagementSection';
+import RestrictionManagementSection from '@/app/(protected)/admin/users/_components/UserDetailDialog/RestrictionManagementSection';
 import type {
   GetAnswerSubmitterRestrictionResponse,
   PutAnswerSubmitterRestrictionSchema,
