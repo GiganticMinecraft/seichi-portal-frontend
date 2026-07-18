@@ -7,17 +7,3 @@ export const userInfoResponseSchema = z.object({
   name: z.string(),
   role: z.string(),
 });
-
-export const searchFormItemSchema = z.object({
-  title: z.string(),
-  id: z.string(),
-});
-
-export const searchAnswerItemSchema = z.object({
-  answer: z.string(),
-  answer_id: z.string(),
-});
-
-export const searchUserItemSchema = z.object({ name: z.string() });
-
-export const searchLabelItemSchema = z.object({ name: z.string() });

@@ -1,5 +1,6 @@
 'use client';
 
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 import InfiniteScrollSentinel from '@/app/_components/InfiniteScrollSentinel';
@@ -20,8 +21,22 @@ const UsersPageContent = ({
   initialUsers: GetUserListPageResponse;
   currentUserId: string;
 }) => {
-  const [search, setSearch] = useState('');
-  const [debouncedSearch, setDebouncedSearch] = useState('');
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const [autoOpenUserId] = useState(() => searchParams.get('userId'));
+  const [autoOpenUserName] = useState(() => searchParams.get('userName'));
+
+  const [search, setSearch] = useState(autoOpenUserName ?? '');
+  const [debouncedSearch, setDebouncedSearch] = useState(
+    autoOpenUserName ?? ''
+  );
+
+  useEffect(() => {
+    if (autoOpenUserId) {
+      router.replace(pathname);
+    }
+  }, [autoOpenUserId, pathname, router]);
 
   useEffect(() => {
     const trimmed = search.trim();
@@ -74,6 +89,7 @@ const UsersPageContent = ({
         search={search}
         onSearchChange={handleSearchChange}
         isLoading={isSearching && isSearchLoading}
+        autoOpenUserId={autoOpenUserId}
       />
       {!isSearching && hasMore && (
         <InfiniteScrollSentinel

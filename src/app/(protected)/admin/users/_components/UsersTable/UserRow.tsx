@@ -7,7 +7,13 @@ import UserDetailCell from './UserDetailCell';
 import UserIdCell from './UserIdCell';
 import UserNameCell from './UserNameCell';
 
-const UserRow = ({ row }: { row: UserListRow }) => {
+const UserRow = ({
+  row,
+  autoOpen = false,
+}: {
+  row: UserListRow;
+  autoOpen?: boolean;
+}) => {
   const { user } = row;
   return (
     <TableRow hover sx={{ '&:last-child td': { border: 0 } }}>
@@ -26,6 +32,7 @@ const UserRow = ({ row }: { row: UserListRow }) => {
           userName={user.name}
           canManageRole={row.canManageRole}
           canManageRestriction={row.canManageRestriction}
+          autoOpen={autoOpen}
         />
       </TableCell>
     </TableRow>

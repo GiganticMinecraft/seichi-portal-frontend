@@ -11,13 +11,15 @@ const UserDetailCell = ({
   userName,
   canManageRole,
   canManageRestriction,
+  autoOpen = false,
 }: {
   userId: string;
   userName: string;
   canManageRole: boolean;
   canManageRestriction: boolean;
+  autoOpen?: boolean;
 }) => {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(() => autoOpen);
 
   return (
     <Tooltip title="詳細を表示" placement="top">

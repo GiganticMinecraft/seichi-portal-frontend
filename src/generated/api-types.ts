@@ -793,25 +793,16 @@ export interface components {
         CommentPostSchema: {
             content: components["schemas"]["NonEmptyString"];
         };
-        CommentSchema: {
-            /** Format: uuid */
-            answer_id: string;
-            /** Format: uuid */
-            commented_by: string;
-            content: string;
-            /** Format: uuid */
-            id: string;
-        };
         CommentUpdateSchema: {
             content?: null | components["schemas"]["NonEmptyString"];
         };
         CrossSearchResult: {
-            answers: unknown[];
-            comments: components["schemas"]["CommentSchema"][];
-            forms: unknown[];
-            label_for_answers: unknown[];
-            label_for_forms: unknown[];
-            users: unknown[];
+            answers: components["schemas"]["FormAnswer"][];
+            comments: components["schemas"]["SearchCommentSchema"][];
+            forms: components["schemas"]["FormSchema"][];
+            label_for_answers: components["schemas"]["AnswerLabelResponseSchema"][];
+            label_for_forms: components["schemas"]["FormLabelResponseSchema"][];
+            users: components["schemas"]["UserSchema"][];
         };
         DiscordOAuthToken: {
             token: string;
@@ -992,6 +983,10 @@ export interface components {
         };
         /** @enum {string} */
         Role: "STANDARD_USER" | "ADMINISTRATOR";
+        SearchCommentSchema: components["schemas"]["AnswerComment"] & {
+            /** Format: uuid */
+            answer_id: string;
+        };
         SelectQuestionResponseSchema: components["schemas"]["QuestionDefinitionResponseSchema"] & {
             choices: components["schemas"]["ChoiceResponseSchema"][];
         };
