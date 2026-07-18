@@ -103,7 +103,7 @@ const SearchField = () => {
           typeof option === 'string' ? option : option.title
         }
         onInputChange={(_event, value, reason) => {
-          if (reason === 'input') {
+          if (reason === 'input' || reason === 'clear') {
             handleInputChange(value);
           }
         }}

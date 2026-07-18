@@ -31,9 +31,16 @@ const SearchPageContent = () => {
   const query = searchParams.get('q') ?? '';
   const [selectedRowId, setSelectedRowId] = useState<number | null>(null);
 
-  const { data, isLoading, error } = useApiQuery('/api/v1/search', {
-    query: { query },
-  });
+  const [prevQuery, setPrevQuery] = useState(query);
+  if (query !== prevQuery) {
+    setPrevQuery(query);
+    setSelectedRowId(null);
+  }
+
+  const { data, isLoading, error } = useApiQuery(
+    '/api/v1/search',
+    query.trim() !== '' ? { query: { query } } : null
+  );
 
   if (error) {
     return <ErrorDialog />;

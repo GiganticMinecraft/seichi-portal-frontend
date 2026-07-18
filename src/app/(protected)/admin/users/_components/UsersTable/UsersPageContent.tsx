@@ -24,13 +24,23 @@ const UsersPageContent = ({
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const [autoOpenUserId] = useState(() => searchParams.get('userId'));
-  const [autoOpenUserName] = useState(() => searchParams.get('userName'));
+  const autoOpenUserId = searchParams.get('userId');
+  const autoOpenUserName = searchParams.get('userName');
 
   const [search, setSearch] = useState(autoOpenUserName ?? '');
   const [debouncedSearch, setDebouncedSearch] = useState(
     autoOpenUserName ?? ''
   );
+
+  const [prevAutoOpenUserName, setPrevAutoOpenUserName] =
+    useState(autoOpenUserName);
+  if (autoOpenUserName !== prevAutoOpenUserName) {
+    setPrevAutoOpenUserName(autoOpenUserName);
+    if (autoOpenUserName) {
+      setSearch(autoOpenUserName);
+      setDebouncedSearch(autoOpenUserName);
+    }
+  }
 
   useEffect(() => {
     if (autoOpenUserId) {
