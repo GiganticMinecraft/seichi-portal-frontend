@@ -20,11 +20,13 @@ const UsersView = ({
   search,
   onSearchChange,
   isLoading = false,
+  autoOpenUserId = null,
 }: {
   rows: UserListRow[];
   search: string;
   onSearchChange: (value: string) => void;
   isLoading?: boolean;
+  autoOpenUserId?: string | null;
 }) => {
   return (
     <Box sx={{ p: 3 }}>
@@ -56,7 +58,11 @@ const UsersView = ({
           </TableHead>
           <TableBody>
             {rows.map((row) => (
-              <UserRow key={row.user.id} row={row} />
+              <UserRow
+                key={row.user.id}
+                row={row}
+                autoOpen={row.user.id === autoOpenUserId}
+              />
             ))}
           </TableBody>
         </Table>

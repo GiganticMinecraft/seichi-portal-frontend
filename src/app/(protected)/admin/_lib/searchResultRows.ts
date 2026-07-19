@@ -1,10 +1,7 @@
-import {
-  searchAnswerItemSchema,
-  searchFormItemSchema,
-  searchLabelItemSchema,
-  searchUserItemSchema,
-} from '@/lib/api-types';
+import type { ChipProps } from '@mui/material';
+
 import type { SearchResponse } from '@/lib/api-types';
+import { resolveAnswerTitle } from '@/lib/forms/answerTitle';
 
 export interface SearchResultRow {
   id: number;
@@ -19,70 +16,57 @@ export interface SearchResultRow {
   url: string;
 }
 
+export const SEARCH_RESULT_CATEGORY_COLOR: Record<
+  SearchResultRow['category'],
+  ChipProps['color']
+> = {
+  フォーム: 'primary',
+  回答: 'secondary',
+  ユーザー: 'success',
+  フォーム用ラベル: 'info',
+  回答用ラベル: 'info',
+  コメント: 'warning',
+};
+
 type SearchResultRowWithoutId = Omit<SearchResultRow, 'id'>;
 
 export const toSearchResultRows = (data: SearchResponse): SearchResultRow[] =>
   [
-    data.forms.flatMap((form): SearchResultRowWithoutId[] => {
-      const result = searchFormItemSchema.safeParse(form);
-      return result.success
-        ? [
-            {
-              category: 'フォーム',
-              title: result.data.title,
-              url: `/admin/forms/edit/${result.data.id}`,
-            },
-          ]
-        : [];
-    }),
-    data.answers.flatMap((answer): SearchResultRowWithoutId[] => {
-      const result = searchAnswerItemSchema.safeParse(answer);
-      return result.success
-        ? [
-            {
-              category: '回答',
-              title: result.data.answer,
-              url: `/admin/answer/${result.data.answer_id}`,
-            },
-          ]
-        : [];
-    }),
-    data.users.flatMap((user): SearchResultRowWithoutId[] => {
-      const result = searchUserItemSchema.safeParse(user);
-      return result.success
-        ? [
-            {
-              category: 'ユーザー',
-              title: result.data.name,
-              url: `/admin/users/`,
-            },
-          ]
-        : [];
-    }),
-    data.label_for_forms.flatMap((label): SearchResultRowWithoutId[] => {
-      const result = searchLabelItemSchema.safeParse(label);
-      return result.success
-        ? [
-            {
-              category: 'フォーム用ラベル',
-              title: result.data.name,
-              url: `/admin/labels?tab=forms`,
-            },
-          ]
-        : [];
-    }),
-    data.label_for_answers.flatMap((label): SearchResultRowWithoutId[] => {
-      const result = searchLabelItemSchema.safeParse(label);
-      return result.success
-        ? [
-            {
-              category: '回答用ラベル',
-              title: result.data.name,
-              url: `/admin/labels?tab=answers`,
-            },
-          ]
-        : [];
-    }),
+    data.forms.map(
+      (form): SearchResultRowWithoutId => ({
+        category: 'フォーム',
+        title: form.title,
+        url: `/admin/forms/edit/${form.id}`,
+      })
+    ),
+    data.answers.map(
+      (answer): SearchResultRowWithoutId => ({
+        category: '回答',
+        title: resolveAnswerTitle(answer.title),
+        url: `/admin/answer/${answer.id}`,
+      })
+    ),
+    data.users.map(
+      (user): SearchResultRowWithoutId => ({
+        category: 'ユーザー',
+        title: user.name,
+        url: `/admin/users?userId=${user.id}&userName=${encodeURIComponent(user.name)}`,
+      })
+    ),
+    data.label_for_forms.map(
+      (label): SearchResultRowWithoutId => ({
+        category: 'フォーム用ラベル',
+        title: label.name,
+        url: `/admin/labels?tab=forms`,
+      })
+    ),
+    data.label_for_answers.map(
+      (label): SearchResultRowWithoutId => ({
+        category: '回答用ラベル',
+        title: label.name,
+        url: `/admin/labels?tab=answers`,
+      })
+    ),
     data.comments.map(
       (comment): SearchResultRowWithoutId => ({
         category: 'コメント',
