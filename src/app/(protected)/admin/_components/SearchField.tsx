@@ -71,6 +71,7 @@ const SearchField = () => {
 
   return (
     <Paper
+      suppressHydrationWarning
       sx={(theme) => ({
         p: '2px 4px',
         display: 'flex',
