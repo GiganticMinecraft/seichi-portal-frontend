@@ -102,6 +102,9 @@ const SearchField = () => {
         getOptionLabel={(option) =>
           typeof option === 'string' ? option : option.title
         }
+        getOptionKey={(option) =>
+          typeof option === 'string' ? option : option.id
+        }
         onInputChange={(_event, value, reason) => {
           if (reason === 'input' || reason === 'clear') {
             handleInputChange(value);
