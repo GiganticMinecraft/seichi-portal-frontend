@@ -155,6 +155,7 @@ const SearchField = () => {
               htmlInput: {
                 ...params.slotProps.htmlInput,
                 'aria-label': 'search...',
+                suppressHydrationWarning: true,
               },
             }}
             sx={{ ml: 1, flex: 1 }}
