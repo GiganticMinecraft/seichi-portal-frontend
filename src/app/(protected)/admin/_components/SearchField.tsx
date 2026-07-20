@@ -139,7 +139,13 @@ const SearchField = () => {
                 size="small"
                 variant="outlined"
               />
-              <Typography key="title" variant="body2" noWrap sx={{ flex: 1 }}>
+              <Typography
+                key="title"
+                component="span"
+                variant="body2"
+                noWrap
+                sx={{ flex: 1 }}
+              >
                 {option.title}
               </Typography>
             </Stack>
