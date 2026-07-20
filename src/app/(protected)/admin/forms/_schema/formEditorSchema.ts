@@ -2,6 +2,22 @@ import { z } from 'zod';
 
 const requiredStringSchema = z.string().trim().min(1, '入力してください。');
 
+const templateKeyPattern = /^[A-Za-z0-9_-]{1,255}$/;
+const reservedTemplateKeys = new Set(['username', 'form_name']);
+
+const templateKeySchema = z
+  .string()
+  .refine(
+    (value) => value.trim() === '' || templateKeyPattern.test(value.trim()),
+    {
+      message:
+        'テンプレートキーは半角英数字・_・- のみ使用できます（1〜255文字）。',
+    }
+  )
+  .refine((value) => !reservedTemplateKeys.has(value.trim()), {
+    message: 'username と form_name は予約語のため使用できません。',
+  });
+
 export const questionTypeSchema = z.enum([
   'Text',
   'SingleChoice',
@@ -34,7 +50,7 @@ export const formEditorQuestionSchema = z
     choices: choiceSchema.array(),
     is_required: z.boolean(),
     position: z.number().int().gte(0),
-    template_key: z.string(),
+    template_key: templateKeySchema,
   })
   .superRefine((question, context) => {
     if (question.question_type !== 'Text' && question.choices.length === 0) {

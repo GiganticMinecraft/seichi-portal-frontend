@@ -49,7 +49,7 @@ const QuestionEditor = (props: {
       <TextField
         {...props.register(`questions.${props.questionIndex}.template_key`)}
         label="テンプレートキー"
-        helperText="テンプレートで識別するためのキーです。空欄のままでも構いません。"
+        helperText="回答タイトルへの埋め込みに使う識別キーです。半角英数字・_・- のみ使用できます（1〜255文字）。username と form_name は予約語のため使用できません。空欄のままでも構いません。"
       />
       <FormControlLabel
         label="この質問への回答を必須にする"
