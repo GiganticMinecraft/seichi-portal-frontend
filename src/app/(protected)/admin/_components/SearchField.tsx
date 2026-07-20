@@ -133,12 +133,19 @@ const SearchField = () => {
               sx={{ alignItems: 'center', width: '100%' }}
             >
               <Chip
+                key="category"
                 label={option.category}
                 color={SEARCH_RESULT_CATEGORY_COLOR[option.category]}
                 size="small"
                 variant="outlined"
               />
-              <Typography variant="body2" noWrap sx={{ flex: 1 }}>
+              <Typography
+                key="title"
+                component="span"
+                variant="body2"
+                noWrap
+                sx={{ flex: 1 }}
+              >
                 {option.title}
               </Typography>
             </Stack>
