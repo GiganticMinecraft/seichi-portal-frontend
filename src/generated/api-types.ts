@@ -445,6 +445,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/search/answers": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** 回答検索を行う */
+        get: operations["search_answers"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/search/users": {
         parameters: {
             query?: never;
@@ -701,6 +718,9 @@ export interface components {
         AnswerListPageResponse: {
             items: components["schemas"]["FormAnswer"][];
             next_cursor?: string | null;
+        };
+        AnswerSearchResult: {
+            answers: components["schemas"]["FormAnswer"][];
         };
         AnswerSettingsSchema: {
             acceptance_period: components["schemas"]["AnswerAcceptancePeriodSchema"];
@@ -3845,6 +3865,67 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["CrossSearchResult"];
+                };
+            };
+            /** @description The server could not understand the request due to invalid syntax. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Access is unauthorized. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Access is forbidden. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    search_answers: {
+        parameters: {
+            query: {
+                /** @description Search query */
+                query: string;
+                /** @description Limit results to the specified form */
+                form_id?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The request has succeeded. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AnswerSearchResult"];
                 };
             };
             /** @description The server could not understand the request due to invalid syntax. */
