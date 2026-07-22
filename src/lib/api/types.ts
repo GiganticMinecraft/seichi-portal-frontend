@@ -54,6 +54,8 @@ export type SearchResponse =
 export type GetUserSearchPageResponse =
   ApiPaths['/api/v1/search/users']['get']['responses'][200]['content']['application/json'];
 export type GetUserSearchResponse = GetUserSearchPageResponse['users'];
+export type AnswerSearchResponse =
+  ApiPaths['/api/v1/search/answers']['get']['responses'][200]['content']['application/json'];
 export type GetNotificationSettingsResponse =
   ApiPaths['/api/v1/notifications/settings/me']['get']['responses'][200]['content']['application/json'];
 export type GetUserNotificationSettingsResponse =

@@ -1,6 +1,14 @@
 'use client';
 
-import { Box, CircularProgress, Typography } from '@mui/material';
+import { Search } from '@mui/icons-material';
+import {
+  Box,
+  CircularProgress,
+  InputAdornment,
+  LinearProgress,
+  TextField,
+  Typography,
+} from '@mui/material';
 import { DataGrid, gridClasses, useGridApiRef } from '@mui/x-data-grid';
 import type {
   GridColDef,
@@ -16,6 +24,9 @@ const SCROLL_END_THRESHOLD_PX = 200;
 const AnswersView = ({
   formTitle,
   rows,
+  search,
+  onSearchChange,
+  isSearchLoading = false,
   hasMore,
   isLoadingMore,
   onLoadMore,
@@ -23,6 +34,9 @@ const AnswersView = ({
 }: {
   formTitle: string;
   rows: AnswerListRow[];
+  search: string;
+  onSearchChange: (value: string) => void;
+  isSearchLoading?: boolean;
   hasMore: boolean;
   isLoadingMore: boolean;
   onLoadMore: () => void;
@@ -65,31 +79,68 @@ const AnswersView = ({
 
   return (
     <Box sx={{ width: '100%' }}>
-      <Typography variant="h5" component="h1" sx={{ mb: 2 }}>
-        {formTitle}
-      </Typography>
-      <DataGrid
-        apiRef={apiRef}
-        rows={rows}
-        columns={columns}
-        onRowClick={handleRowClick}
+      <Box
         sx={{
-          border: 0,
-          height: 560,
-          '& .MuiDataGrid-columnHeaders': {
-            backgroundColor: 'action.hover',
-          },
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          flexWrap: 'wrap',
+          gap: 2,
+          mb: 2,
         }}
-        disableRowSelectionOnClick
-        slots={{
-          footer: () =>
-            isLoadingMore ? (
-              <Box sx={{ display: 'flex', justifyContent: 'center', p: 1 }}>
-                <CircularProgress size={20} />
-              </Box>
-            ) : null,
-        }}
-      />
+      >
+        <Typography variant="h5" component="h1">
+          {formTitle}
+        </Typography>
+        <TextField
+          variant="standard"
+          size="small"
+          label="回答内容を検索"
+          value={search}
+          onChange={(e) => {
+            onSearchChange(e.target.value);
+          }}
+          sx={{ minWidth: 240 }}
+          slotProps={{
+            input: {
+              startAdornment: (
+                <InputAdornment position="start">
+                  <Search fontSize="small" />
+                </InputAdornment>
+              ),
+            },
+          }}
+        />
+      </Box>
+      <Box sx={{ position: 'relative' }}>
+        {isSearchLoading && (
+          <LinearProgress
+            sx={{ position: 'absolute', top: 0, left: 0, right: 0, zIndex: 1 }}
+          />
+        )}
+        <DataGrid
+          apiRef={apiRef}
+          rows={rows}
+          columns={columns}
+          onRowClick={handleRowClick}
+          sx={{
+            border: 0,
+            height: 560,
+            '& .MuiDataGrid-columnHeaders': {
+              backgroundColor: 'action.hover',
+            },
+          }}
+          disableRowSelectionOnClick
+          slots={{
+            footer: () =>
+              isLoadingMore ? (
+                <Box sx={{ display: 'flex', justifyContent: 'center', p: 1 }}>
+                  <CircularProgress size={20} />
+                </Box>
+              ) : null,
+          }}
+        />
+      </Box>
     </Box>
   );
 };
