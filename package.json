@@ -47,7 +47,7 @@
     "remark-gfm": "^4.0.0",
     "swr": "^2.4.2",
     "ts-pattern": "^5.9.0",
-    "zod": "^4"
+    "zod": "^4.4.3"
   },
   "devDependencies": {
     "@eslint/compat": "^2.1.0",
