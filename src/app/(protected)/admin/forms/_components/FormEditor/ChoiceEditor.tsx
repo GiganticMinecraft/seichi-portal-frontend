@@ -25,6 +25,8 @@ import {
   type FormEditorValues,
 } from '../../_schema/formEditorSchema';
 
+import FieldLabel from './FieldLabel';
+
 const SortableChoiceItem = (props: {
   id: string;
   index: number;
@@ -50,39 +52,37 @@ const SortableChoiceItem = (props: {
   };
 
   return (
-    <Stack
-      direction="row"
-      ref={setNodeRef}
-      style={style}
-      spacing={1}
-      sx={{ alignItems: 'center' }}
-    >
-      <IconButton size="small" {...attributes} {...listeners}>
-        <DragIndicator fontSize="small" />
-      </IconButton>
-      <TextField
-        {...props.register(
-          `questions.${props.questionIndex}.choices.${props.index}.choice`
-        )}
-        label={`選択肢${props.index + 1}`}
-        required
-        fullWidth
-        onKeyDown={(event) => {
-          if (event.key === 'Enter' && !event.nativeEvent.isComposing) {
-            event.preventDefault();
-            props.onAppendChoice();
-          }
-        }}
-      />
-      <IconButton
-        size="small"
-        onClick={() => {
-          props.removeChoice(props.index);
-        }}
-        disabled={!props.canRemove}
-      >
-        <DeleteIcon fontSize="small" />
-      </IconButton>
+    <Stack ref={setNodeRef} style={style} spacing={0.5}>
+      <FieldLabel label={`選択肢${props.index + 1}`} required />
+      <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
+        <IconButton size="small" {...attributes} {...listeners}>
+          <DragIndicator fontSize="small" />
+        </IconButton>
+        <TextField
+          {...props.register(
+            `questions.${props.questionIndex}.choices.${props.index}.choice`
+          )}
+          fullWidth
+          slotProps={{
+            htmlInput: { 'aria-label': `選択肢${props.index + 1}` },
+          }}
+          onKeyDown={(event) => {
+            if (event.key === 'Enter' && !event.nativeEvent.isComposing) {
+              event.preventDefault();
+              props.onAppendChoice();
+            }
+          }}
+        />
+        <IconButton
+          size="small"
+          onClick={() => {
+            props.removeChoice(props.index);
+          }}
+          disabled={!props.canRemove}
+        >
+          <DeleteIcon fontSize="small" />
+        </IconButton>
+      </Stack>
     </Stack>
   );
 };
@@ -134,24 +134,27 @@ const QuestionTypeField = (props: {
   };
 
   return (
-    <TextField
-      {...questionTypeField}
-      value={questionTypeField.value}
-      label="質問の種類"
-      select
-      required
-      helperText="質問の種類を選択してください。"
-      onChange={(event) => {
-        const parsed = questionTypeSchema.safeParse(event.target.value);
-        if (parsed.success) {
-          handleQuestionTypeChange(parsed.data);
-        }
-      }}
-    >
-      <MenuItem value="Text">テキスト</MenuItem>
-      <MenuItem value="SingleChoice">単一選択</MenuItem>
-      <MenuItem value="MultipleChoice">複数選択</MenuItem>
-    </TextField>
+    <Stack spacing={0.5}>
+      <FieldLabel label="質問の種類" required />
+      <TextField
+        {...questionTypeField}
+        value={questionTypeField.value}
+        select
+        fullWidth
+        helperText="質問の種類を選択してください。"
+        slotProps={{ select: { 'aria-label': '質問の種類' } }}
+        onChange={(event) => {
+          const parsed = questionTypeSchema.safeParse(event.target.value);
+          if (parsed.success) {
+            handleQuestionTypeChange(parsed.data);
+          }
+        }}
+      >
+        <MenuItem value="Text">テキスト</MenuItem>
+        <MenuItem value="SingleChoice">単一選択</MenuItem>
+        <MenuItem value="MultipleChoice">複数選択</MenuItem>
+      </TextField>
+    </Stack>
   );
 };
 
