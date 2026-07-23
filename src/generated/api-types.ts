@@ -497,6 +497,24 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/settings/global-discord-webhook": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** グローバル Discord Webhook 設定の取得 */
+        get: operations["get_global_discord_webhook"];
+        /** グローバル Discord Webhook 設定の更新 */
+        put: operations["update_global_discord_webhook"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/user-groups": {
         parameters: {
             query?: never;
@@ -910,6 +928,13 @@ export interface components {
             questions?: components["schemas"]["QuestionSchema"][] | null;
             settings?: null | components["schemas"]["FormSettingsSchema"];
             title?: string | null;
+        };
+        GlobalDiscordWebhookStatusSchema: {
+            enabled: boolean;
+        };
+        GlobalDiscordWebhookUpdateSchema: {
+            /** @description Discord Webhook URL。`null` を指定すると通知を無効化する。 */
+            url: string | null;
         };
         /** @enum {string} */
         HistoryAction: "CREATE" | "UPDATE" | "DELETE";
@@ -4137,6 +4162,109 @@ export interface operations {
             };
             /** @description Client error */
             422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    get_global_discord_webhook: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GlobalDiscordWebhookStatusSchema"];
+                };
+            };
+            /** @description Access is unauthorized. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Access is forbidden. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    update_global_discord_webhook: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["GlobalDiscordWebhookUpdateSchema"];
+            };
+        };
+        responses: {
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description The server could not understand the request due to invalid syntax. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Access is unauthorized. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Access is forbidden. */
+            403: {
                 headers: {
                     [name: string]: unknown;
                 };

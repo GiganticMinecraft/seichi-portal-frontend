@@ -48,6 +48,10 @@ const DashboardMenu = () => {
             label: 'Users',
             url: '/admin/users',
           },
+          {
+            label: 'Webhooks',
+            url: '/admin/webhooks',
+          },
         ].map((value) => {
           return (
             <MenuItem
