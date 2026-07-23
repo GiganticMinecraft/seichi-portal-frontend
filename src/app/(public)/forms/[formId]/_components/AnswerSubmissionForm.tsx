@@ -4,7 +4,6 @@ import SendIcon from '@mui/icons-material/Send';
 import {
   Box,
   Button,
-  Chip,
   Paper,
   Stack,
   TextField,
@@ -13,6 +12,7 @@ import {
 import { useForm } from 'react-hook-form';
 
 import MarkdownText from '@/app/_components/MarkdownText';
+import RequiredChip from '@/app/_components/RequiredChip';
 import type { GetQuestionsResponse } from '@/lib/api-types';
 
 import { TEMPORARY_USER_FIELDS } from './answerFormTypes';
@@ -108,12 +108,7 @@ const AnswerSubmissionForm = ({
                     {question.title}
                   </Typography>
                   {question.is_required && (
-                    <Chip
-                      size="small"
-                      color="error"
-                      label="必須"
-                      sx={{ ml: 1, verticalAlign: 'middle' }}
-                    />
+                    <RequiredChip sx={{ ml: 1, verticalAlign: 'middle' }} />
                   )}
                 </Box>
                 {question.description && (
