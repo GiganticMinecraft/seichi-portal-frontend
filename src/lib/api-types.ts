@@ -22,6 +22,7 @@ export type {
   GetFormResponse,
   GetFormsPageResponse,
   GetFormsResponse,
+  GetGlobalDiscordWebhookResponse,
   GetMessageHistoryResponse,
   GetMessagesResponse,
   GetNotificationSettingsResponse,
@@ -38,6 +39,7 @@ export type {
   MessageHistoryResponseEntry,
   PutAnswerSubmitterRestrictionSchema,
   SearchResponse,
+  UpdateGlobalDiscordWebhookSchema,
   UpdateNotificationSettingsSchema,
   UserGroupSchema,
 } from '@/lib/api/types';

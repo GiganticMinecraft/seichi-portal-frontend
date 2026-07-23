@@ -74,3 +74,7 @@ export type CreateUserGroupSchema =
   ApiPaths['/api/v1/user-groups']['post']['requestBody']['content']['application/json'];
 export type GetUserGroupMembersResponse =
   ApiPaths['/api/v1/user-groups/{group_id}/users']['get']['responses'][200]['content']['application/json'];
+export type GetGlobalDiscordWebhookResponse =
+  ApiPaths['/api/v1/settings/global-discord-webhook']['get']['responses'][200]['content']['application/json'];
+export type UpdateGlobalDiscordWebhookSchema =
+  ApiPaths['/api/v1/settings/global-discord-webhook']['put']['requestBody']['content']['application/json'];
