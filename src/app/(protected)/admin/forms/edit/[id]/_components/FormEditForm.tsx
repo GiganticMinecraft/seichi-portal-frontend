@@ -10,6 +10,7 @@ import {
   Container,
   Stack,
 } from '@mui/material';
+import { useState } from 'react';
 import { useFieldArray, useForm } from 'react-hook-form';
 
 import type {
@@ -24,7 +25,10 @@ import QuestionEditor from '../../../_components/FormEditor/QuestionEditor';
 import QuestionList from '../../../_components/FormEditor/QuestionList';
 import { useUpdateFormSubmission } from '../../../_hooks/useUpdateFormSubmission';
 import { createEmptyFormEditorQuestion } from '../../../_lib/formEditorDefaults';
-import { fromFormResponseToEditorValues } from '../../../_lib/formRequestBuilders';
+import {
+  fromFormResponseToEditorValues,
+  nextDiscordWebhookEnabled,
+} from '../../../_lib/formRequestBuilders';
 import type { FormEditorValues } from '../../../_schema/formEditorSchema';
 import { formEditorSchema } from '../../../_schema/formEditorSchema';
 
@@ -47,6 +51,10 @@ const FormEditForm = (props: {
     defaultValues: fromFormResponseToEditorValues(props.form),
   });
 
+  const [discordWebhookEnabled, setDiscordWebhookEnabled] = useState(
+    props.form.settings.discord_webhook_enabled
+  );
+
   const { fields, append, remove, move } = useFieldArray({
     control,
     keyName: 'reacthookform-id',
@@ -66,7 +74,14 @@ const FormEditForm = (props: {
         type: 'manual',
         message: result.errorMessage,
       });
+      return;
     }
+
+    setDiscordWebhookEnabled((current) =>
+      nextDiscordWebhookEnabled(current, data.settings)
+    );
+    setValue('settings.discord_webhook_url', '');
+    setValue('settings.discord_webhook_disabled', false);
   };
 
   return (
@@ -90,6 +105,7 @@ const FormEditForm = (props: {
                 setValue={setValue}
                 labelOptions={props.labelOptions}
                 groupOptions={props.groupOptions}
+                discordWebhookEnabled={discordWebhookEnabled}
               />
             </CardContent>
             <QuestionList

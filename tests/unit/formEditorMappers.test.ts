@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 
 import {
   fromFormResponseToEditorValues,
+  nextDiscordWebhookEnabled,
   toCreateFormBody,
   toFormUpdateBody,
 } from '@/app/(protected)/admin/forms/_lib/formRequestBuilders';
@@ -30,6 +31,7 @@ const baseValues: FormEditorValues = {
   settings: {
     acceptance_period: { kind: 'none' },
     discord_webhook_url: '',
+    discord_webhook_disabled: false,
     default_answer_title: '',
     visibility: 'PUBLIC',
     allowed_group_ids: [],
@@ -54,7 +56,7 @@ const createFormResponse = (
     visibility: 'PUBLIC',
     allowed_group_ids: [],
     allow_temporary_answers: false,
-    discord_webhook_url: null,
+    discord_webhook_enabled: false,
     answer_settings: {
       default_answer_title: null,
       acceptance_period: {
@@ -63,6 +65,7 @@ const createFormResponse = (
       },
       visibility: 'PUBLIC',
       answer_group_ids: [],
+      hide_author: false,
     },
   },
   questions: [
@@ -78,6 +81,41 @@ const createFormResponse = (
     },
   ],
   ...overrides,
+});
+
+describe('nextDiscordWebhookEnabled', () => {
+  it('無効化チェックが入っていれば false になる', () => {
+    expect(
+      nextDiscordWebhookEnabled(true, {
+        discord_webhook_disabled: true,
+        discord_webhook_url: 'https://discord.com/api/webhooks/1/token',
+      })
+    ).toBe(false);
+  });
+
+  it('URL入力があれば true になる', () => {
+    expect(
+      nextDiscordWebhookEnabled(false, {
+        discord_webhook_disabled: false,
+        discord_webhook_url: 'https://discord.com/api/webhooks/1/token',
+      })
+    ).toBe(true);
+  });
+
+  it('どちらも触っていなければ現在の状態を維持する', () => {
+    expect(
+      nextDiscordWebhookEnabled(true, {
+        discord_webhook_disabled: false,
+        discord_webhook_url: '',
+      })
+    ).toBe(true);
+    expect(
+      nextDiscordWebhookEnabled(false, {
+        discord_webhook_disabled: false,
+        discord_webhook_url: '',
+      })
+    ).toBe(false);
+  });
 });
 
 describe('form request builders', () => {
@@ -201,6 +239,20 @@ describe('form request builders', () => {
     );
   });
 
+  it('Webhook 設定済みのフォーム取得レスポンスでも、URL入力欄は常に空から始まる', () => {
+    const values = fromFormResponseToEditorValues(
+      createFormResponse({
+        settings: {
+          ...createFormResponse().settings,
+          discord_webhook_enabled: true,
+        },
+      })
+    );
+
+    expect(values.settings.discord_webhook_url).toBe('');
+    expect(values.settings.discord_webhook_disabled).toBe(false);
+  });
+
   it('未知の公開設定は画面内部表現へ変換しない', () => {
     const form = createFormResponse({
       settings: {
@@ -212,13 +264,64 @@ describe('form request builders', () => {
     expect(() => fromFormResponseToEditorValues(form)).toThrow();
   });
 
-  it('空の Webhook URL は null に正規化する', () => {
+  it('Webhook URL を触らず未入力・未チェックのまま保存すると、キー自体を送らず現在の設定を維持する', () => {
     const body = toFormUpdateBody(
       {
         ...baseValues,
         settings: {
           ...baseValues.settings,
           discord_webhook_url: '',
+          discord_webhook_disabled: false,
+        },
+      },
+      false
+    );
+
+    expect(body.settings).not.toHaveProperty('discord_webhook_url');
+  });
+
+  it('新しい Webhook URL を入力して保存すると、そのURLを送信する', () => {
+    const body = toFormUpdateBody(
+      {
+        ...baseValues,
+        settings: {
+          ...baseValues.settings,
+          discord_webhook_url: ' https://discord.com/api/webhooks/1/token ',
+          discord_webhook_disabled: false,
+        },
+      },
+      false
+    );
+
+    expect(body.settings?.discord_webhook_url).toBe(
+      'https://discord.com/api/webhooks/1/token'
+    );
+  });
+
+  it('Webhook 無効化にチェックを入れて保存すると null を送信する', () => {
+    const body = toFormUpdateBody(
+      {
+        ...baseValues,
+        settings: {
+          ...baseValues.settings,
+          discord_webhook_url: '',
+          discord_webhook_disabled: true,
+        },
+      },
+      false
+    );
+
+    expect(body.settings?.discord_webhook_url).toBeNull();
+  });
+
+  it('URL入力と無効化チェックが両方埋まっている場合は無効化が優先される', () => {
+    const body = toFormUpdateBody(
+      {
+        ...baseValues,
+        settings: {
+          ...baseValues.settings,
+          discord_webhook_url: 'https://discord.com/api/webhooks/1/token',
+          discord_webhook_disabled: true,
         },
       },
       false
@@ -239,7 +342,7 @@ describe('form request builders', () => {
       false
     );
 
-    expect(body.settings?.answer_settings.default_answer_title).toBeNull();
+    expect(body.settings?.answer_settings?.default_answer_title).toBeNull();
   });
 
   it('未ログイン回答の許可設定を更新ボディへ反映する', () => {
@@ -273,7 +376,7 @@ describe('form request builders', () => {
       false
     );
 
-    expect(body.settings?.answer_settings.acceptance_period).toMatchObject({
+    expect(body.settings?.answer_settings?.acceptance_period).toMatchObject({
       start_at: '2026-06-01T10:00:00+09:00',
       end_at: '2026-06-30T23:59:00+09:00',
     });

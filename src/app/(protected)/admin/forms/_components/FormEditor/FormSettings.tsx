@@ -2,6 +2,7 @@
 
 import {
   Checkbox,
+  Chip,
   FormControlLabel,
   MenuItem,
   Stack,
@@ -32,6 +33,7 @@ type FormSettingsProps = {
   setValue: UseFormSetValue<FormEditorValues>;
   labelOptions: GetFormLabelsResponse;
   groupOptions: GetUserGroupsResponse;
+  discordWebhookEnabled: boolean;
 };
 
 const BasicFormSettings = ({
@@ -160,10 +162,19 @@ const AnswerSettings = ({
   register,
   control,
   groupOptions,
-}: Pick<FormSettingsProps, 'register' | 'control' | 'groupOptions'>) => {
+  discordWebhookEnabled,
+}: Pick<
+  FormSettingsProps,
+  'register' | 'control' | 'groupOptions' | 'discordWebhookEnabled'
+>) => {
   const { field: answerVisibilityField } = useController({
     control,
     name: 'settings.answer_visibility',
+  });
+
+  const discordWebhookDisabled = useWatch({
+    control,
+    name: 'settings.discord_webhook_disabled',
   });
 
   return (
@@ -194,11 +205,30 @@ const AnswerSettings = ({
         control={<Checkbox {...register('settings.allow_temporary_answers')} />}
       />
       <Stack spacing={0.5}>
-        <FieldLabel label="Webhook URL" />
+        <Stack spacing={1} direction="row" sx={{ alignItems: 'center' }}>
+          <FieldLabel label="Webhook URL" />
+          <Chip
+            label={discordWebhookEnabled ? '設定済み' : '未設定'}
+            color={discordWebhookEnabled ? 'success' : 'default'}
+            size="small"
+          />
+        </Stack>
         <TextField
           {...register('settings.discord_webhook_url')}
           type="url"
+          disabled={discordWebhookDisabled}
+          helperText={
+            discordWebhookDisabled
+              ? '無効化にチェックが入っているため、この入力内容は無視されます。'
+              : '新しく設定する Webhook URL を入力してください。空欄のまま保存すると現在の設定を維持します。'
+          }
           slotProps={{ htmlInput: { 'aria-label': 'Webhook URL' } }}
+        />
+        <FormControlLabel
+          label="Webhook 通知を無効化する(URL入力より優先されます)"
+          control={
+            <Checkbox {...register('settings.discord_webhook_disabled')} />
+          }
         />
       </Stack>
       <Stack spacing={0.5}>
@@ -239,6 +269,7 @@ const FormSettings = (props: FormSettingsProps) => {
         register={props.register}
         control={props.control}
         groupOptions={props.groupOptions}
+        discordWebhookEnabled={props.discordWebhookEnabled}
       />
     </Stack>
   );

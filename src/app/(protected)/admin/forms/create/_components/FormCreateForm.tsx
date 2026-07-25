@@ -90,6 +90,7 @@ const FormCreateForm = (props: {
               setValue={setValue}
               labelOptions={props.labelOptions}
               groupOptions={props.groupOptions}
+              discordWebhookEnabled={false}
             />
           </CardContent>
           <QuestionList

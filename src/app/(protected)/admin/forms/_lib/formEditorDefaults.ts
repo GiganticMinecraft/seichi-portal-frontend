@@ -22,6 +22,7 @@ export const createEmptyFormEditorValues = (): FormEditorValues => ({
   settings: {
     acceptance_period: { kind: 'none' },
     discord_webhook_url: '',
+    discord_webhook_disabled: false,
     default_answer_title: '[$form_name] $username さんの回答',
     visibility: 'PRIVATE',
     allowed_group_ids: [],

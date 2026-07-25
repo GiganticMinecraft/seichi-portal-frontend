@@ -127,7 +127,8 @@ export const fromFormResponseToEditorValues = (
       acceptance_period: toAcceptancePeriodSetting(
         form.settings.answer_settings.acceptance_period
       ),
-      discord_webhook_url: form.settings.discord_webhook_url ?? '',
+      discord_webhook_url: '',
+      discord_webhook_disabled: false,
       visibility: toVisibility(form.settings.visibility),
       default_answer_title:
         form.settings.answer_settings.default_answer_title ?? '',
@@ -137,6 +138,19 @@ export const fromFormResponseToEditorValues = (
       allow_temporary_answers: form.settings.allow_temporary_answers,
     },
   };
+};
+
+export const nextDiscordWebhookEnabled = (
+  current: boolean,
+  settings: Pick<
+    FormEditorValues['settings'],
+    'discord_webhook_disabled' | 'discord_webhook_url'
+  >
+): boolean => {
+  if (settings.discord_webhook_disabled) return false;
+  if (settings.discord_webhook_url.trim() !== '') return true;
+
+  return current;
 };
 
 export const toCreateFormBody = (data: FormEditorValues): CreateFormBody => ({
@@ -170,9 +184,11 @@ export const toFormUpdateBody = (
       visibility: data.settings.visibility,
       allowed_group_ids: data.settings.allowed_group_ids,
       allow_temporary_answers: data.settings.allow_temporary_answers,
-      discord_webhook_url: toNullableNonEmptyString(
-        data.settings.discord_webhook_url
-      ),
+      ...(data.settings.discord_webhook_disabled
+        ? { discord_webhook_url: null }
+        : data.settings.discord_webhook_url.trim() !== ''
+          ? { discord_webhook_url: data.settings.discord_webhook_url.trim() }
+          : {}),
       answer_settings: {
         default_answer_title: toNullableNonEmptyString(
           data.settings.default_answer_title
@@ -180,6 +196,8 @@ export const toFormUpdateBody = (
         acceptance_period: acceptancePeriod,
         visibility: data.settings.answer_visibility,
         answer_group_ids: data.settings.answer_group_ids,
+        // UI未実装のため常にfalseで送信する。回答者を隠す設定はこのフォームからは変更できない。
+        hide_author: false,
       },
     },
   };
