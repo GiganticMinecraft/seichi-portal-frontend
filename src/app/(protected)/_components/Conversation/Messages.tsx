@@ -102,6 +102,7 @@ const Messages = (props: {
         title={props.title}
         triggerLabel={props.triggerLabel}
         triggerStartIcon={<MessageIcon />}
+        triggerDescription="回答者と運営チームの間でやり取りするための機能です。回答者と運営チーム以外は閲覧できません。"
         items={items}
         capabilities={capabilities}
         autoOpen={deepLinkState.autoOpen}

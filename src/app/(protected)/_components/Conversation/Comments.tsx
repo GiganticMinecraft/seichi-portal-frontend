@@ -98,6 +98,7 @@ const Comments = (props: {
         title="コメント"
         triggerLabel={`コメント (${entries.length})`}
         triggerStartIcon={<Typography component="span">💬</Typography>}
+        triggerDescription="回答について議論したり、メモを残したりするための機能です。基本的に、この回答を閲覧できる人であれば誰でも閲覧できます。"
         items={items}
         capabilities={capabilities}
         autoOpen={deepLinkState.autoOpen}
