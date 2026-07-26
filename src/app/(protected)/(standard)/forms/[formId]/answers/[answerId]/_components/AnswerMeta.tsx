@@ -30,6 +30,10 @@ const AuthorName = ({ author }: { author: Author }) => {
     );
   }
 
+  if (author.type === 'ANONYMOUS') {
+    return <Chip label="匿名" size="small" color="default" />;
+  }
+
   return <Typography>{author.user.name}</Typography>;
 };
 

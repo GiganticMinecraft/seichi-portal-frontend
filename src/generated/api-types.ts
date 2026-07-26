@@ -696,6 +696,9 @@ export interface components {
             temporary_user: components["schemas"]["TemporaryAnswerAuthor"];
             /** @enum {string} */
             type: "TEMPORARY_USER";
+        } | {
+            /** @enum {string} */
+            type: "ANONYMOUS";
         };
         AnswerComment: {
             commented_by: components["schemas"]["User"];
@@ -744,6 +747,7 @@ export interface components {
             acceptance_period: components["schemas"]["AnswerAcceptancePeriodSchema"];
             answer_group_ids: string[];
             default_answer_title?: string | null;
+            hide_author: boolean;
             visibility: components["schemas"]["AnswerVisibility"];
         };
         AnswerSubmitterRestrictionHistoryResponse: {
@@ -793,7 +797,7 @@ export interface components {
             labels: components["schemas"]["FormLabelResponseSchema"][];
             metadata: components["schemas"]["FormMetaSchema"];
             questions: components["schemas"]["QuestionResponseSchema"][];
-            settings: components["schemas"]["FormSettingsSchema"];
+            settings: components["schemas"]["FormSettingsResponseSchema"];
             title: string;
         };
         ChoiceResponseSchema: {
@@ -904,15 +908,23 @@ export interface components {
             labels: components["schemas"]["FormLabelResponseSchema"][];
             metadata: components["schemas"]["FormMetaSchema"];
             questions: components["schemas"]["QuestionResponseSchema"][];
-            settings: components["schemas"]["FormSettingsSchema"];
+            settings: components["schemas"]["FormSettingsResponseSchema"];
             title: string;
         };
-        FormSettingsSchema: {
+        FormSettingsResponseSchema: {
             allow_temporary_answers: boolean;
             allowed_group_ids: string[];
             answer_settings: components["schemas"]["AnswerSettingsSchema"];
-            discord_webhook_url?: string | null;
+            discord_webhook_enabled: boolean;
             visibility: string;
+        };
+        FormSettingsSchema: {
+            allow_temporary_answers?: boolean | null;
+            allowed_group_ids?: string[] | null;
+            answer_settings?: null | components["schemas"]["AnswerSettingsSchema"];
+            /** @description Discord Webhook URL。キーを省略すると変更なし、`null` を指定すると通知を無効化する。 */
+            discord_webhook_url?: string | null;
+            visibility?: string | null;
         };
         FormUpdateSchema: {
             description?: string | null;

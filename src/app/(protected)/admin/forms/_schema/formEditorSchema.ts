@@ -81,6 +81,7 @@ export const formEditorSchema = z.object({
   settings: z.object({
     acceptance_period: acceptancePeriodSchema,
     discord_webhook_url: z.string(),
+    discord_webhook_disabled: z.boolean(),
     default_answer_title: z.string(),
     visibility: visibilitySchema,
     allowed_group_ids: z.array(z.string()),
