@@ -21,6 +21,7 @@ const QuestionEditor = (props: {
   register: UseFormRegister<FormEditorValues>;
   removeQuestion: (index: number) => void;
   questionIndex: number;
+  removeDisabled: boolean;
 }) => {
   return (
     <Stack spacing={2}>
@@ -30,6 +31,7 @@ const QuestionEditor = (props: {
       <Button
         variant="outlined"
         startIcon={<DeleteIcon />}
+        disabled={props.removeDisabled}
         onClick={() => {
           props.removeQuestion(props.questionIndex);
         }}

@@ -102,6 +102,7 @@ const FormCreateForm = (props: {
                   register={register}
                   removeQuestion={remove}
                   questionIndex={index}
+                  removeDisabled={fields.length <= 1}
                 />
               ),
             }))}
