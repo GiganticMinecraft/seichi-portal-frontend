@@ -136,6 +136,7 @@ export const fromFormResponseToEditorValues = (
       answer_group_ids: form.settings.answer_settings.answer_group_ids,
       allowed_group_ids: form.settings.allowed_group_ids,
       allow_temporary_answers: form.settings.allow_temporary_answers,
+      hide_author: form.settings.answer_settings.hide_author,
     },
   };
 };
@@ -196,8 +197,7 @@ export const toFormUpdateBody = (
         acceptance_period: acceptancePeriod,
         visibility: data.settings.answer_visibility,
         answer_group_ids: data.settings.answer_group_ids,
-        // UI未実装のため常にfalseで送信する。回答者を隠す設定はこのフォームからは変更できない。
-        hide_author: false,
+        hide_author: data.settings.hide_author,
       },
     },
   };
