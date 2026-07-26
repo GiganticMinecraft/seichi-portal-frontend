@@ -3,6 +3,7 @@
 import {
   Checkbox,
   Chip,
+  Divider,
   FormControlLabel,
   MenuItem,
   Stack,
@@ -36,6 +37,15 @@ type FormSettingsProps = {
   discordWebhookEnabled: boolean;
 };
 
+const SectionHeading = ({ label }: { label: string }) => (
+  <Stack spacing={1}>
+    <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>
+      {label}
+    </Typography>
+    <Divider />
+  </Stack>
+);
+
 const BasicFormSettings = ({
   register,
   control,
@@ -63,6 +73,50 @@ const BasicFormSettings = ({
     <FormLabelField control={control} labelOptions={labelOptions} />
   </>
 );
+
+const FormVisibilitySettings = ({
+  control,
+  groupOptions,
+}: Pick<FormSettingsProps, 'control' | 'groupOptions'>) => {
+  const { field: visibilityField } = useController({
+    control,
+    name: 'settings.visibility',
+  });
+
+  const visibility = useWatch({ control, name: 'settings.visibility' });
+  const isPrivate = visibility === 'PRIVATE';
+
+  return (
+    <>
+      <Stack spacing={0.5}>
+        <FieldLabel label="フォーム公開設定（誰が回答できるか）" required />
+        <TextField
+          {...visibilityField}
+          value={visibilityField.value}
+          helperText="この設定を公開にすると、一般ユーザーがこのフォームに回答できるようになります。"
+          select
+          fullWidth
+          slotProps={{ select: { 'aria-label': 'フォーム公開設定' } }}
+        >
+          <MenuItem value="PUBLIC">公開</MenuItem>
+          <MenuItem value="PRIVATE">非公開</MenuItem>
+        </TextField>
+      </Stack>
+      <FormGroupField
+        control={control}
+        name="settings.allowed_group_ids"
+        label="フォームを閲覧できるユーザーグループ"
+        helperText={
+          isPrivate
+            ? 'フォーム公開設定が「非公開」のため、この設定は適用されません。'
+            : '指定すると、選択したグループに所属するユーザーのみがこのフォームを閲覧・回答できるようになります。未指定の場合は全員が対象になります。'
+        }
+        groupOptions={groupOptions}
+        disabled={isPrivate}
+      />
+    </>
+  );
+};
 
 const AcceptancePeriodSettings = ({
   register,
@@ -122,65 +176,35 @@ const AcceptancePeriodSettings = ({
   );
 };
 
-const FormVisibilitySettings = ({
-  control,
-  groupOptions,
-}: Pick<FormSettingsProps, 'control' | 'groupOptions'>) => {
-  const { field: visibilityField } = useController({
-    control,
-    name: 'settings.visibility',
-  });
-
-  return (
-    <>
-      <Stack spacing={0.5}>
-        <FieldLabel label="フォーム公開設定" required />
-        <TextField
-          {...visibilityField}
-          value={visibilityField.value}
-          helperText="この設定を公開にすると、一般ユーザーがこのフォームに回答できるようになります。"
-          select
-          fullWidth
-          slotProps={{ select: { 'aria-label': 'フォーム公開設定' } }}
-        >
-          <MenuItem value="PUBLIC">公開</MenuItem>
-          <MenuItem value="PRIVATE">非公開</MenuItem>
-        </TextField>
-      </Stack>
-      <FormGroupField
-        control={control}
-        name="settings.allowed_group_ids"
-        label="フォームを閲覧できるユーザーグループ"
-        helperText="指定すると、選択したグループに所属するユーザーのみがこのフォームを閲覧・回答できるようになります（公開設定が「公開」の場合に適用されます）。未指定の場合は全員が対象になります。"
-        groupOptions={groupOptions}
-      />
-    </>
-  );
-};
-
 const AnswerSettings = ({
   register,
   control,
   groupOptions,
-  discordWebhookEnabled,
-}: Pick<
-  FormSettingsProps,
-  'register' | 'control' | 'groupOptions' | 'discordWebhookEnabled'
->) => {
+}: Pick<FormSettingsProps, 'register' | 'control' | 'groupOptions'>) => {
   const { field: answerVisibilityField } = useController({
     control,
     name: 'settings.answer_visibility',
   });
 
-  const discordWebhookDisabled = useWatch({
+  const answerVisibility = useWatch({
     control,
-    name: 'settings.discord_webhook_disabled',
+    name: 'settings.answer_visibility',
   });
+  const answerGroupIds = useWatch({
+    control,
+    name: 'settings.answer_group_ids',
+  });
+
+  const hideAuthorHasNoEffect =
+    answerVisibility === 'PRIVATE' && answerGroupIds.length === 0;
 
   return (
     <>
       <Stack spacing={0.5}>
-        <FieldLabel label="回答の公開設定" required />
+        <FieldLabel
+          label="回答の公開設定（回答結果を誰が見られるか）"
+          required
+        />
         <TextField
           {...answerVisibilityField}
           value={answerVisibilityField.value}
@@ -193,6 +217,22 @@ const AnswerSettings = ({
           <MenuItem value="PRIVATE">非公開</MenuItem>
         </TextField>
       </Stack>
+      <Stack spacing={0}>
+        <FormControlLabel
+          label="回答者を隠して公開する"
+          control={
+            <Checkbox
+              {...register('settings.hide_author')}
+              disabled={hideAuthorHasNoEffect}
+            />
+          }
+        />
+        <Typography variant="caption" color="textSecondary">
+          {hideAuthorHasNoEffect
+            ? '回答の公開設定が「非公開」で、回答を閲覧できるユーザーグループも指定されていないため、この設定は適用されません（管理者以外は回答を閲覧できません）。'
+            : '一般ユーザーには回答者を匿名として表示します。管理者には従来どおり回答者情報が表示されます。'}
+        </Typography>
+      </Stack>
       <FormGroupField
         control={control}
         name="settings.answer_group_ids"
@@ -204,42 +244,6 @@ const AnswerSettings = ({
         label="未ログインユーザーの回答を許可する"
         control={<Checkbox {...register('settings.allow_temporary_answers')} />}
       />
-      <Stack spacing={0}>
-        <FormControlLabel
-          label="回答者を隠して公開する"
-          control={<Checkbox {...register('settings.hide_author')} />}
-        />
-        <Typography variant="caption" color="textSecondary">
-          一般ユーザーには回答者を匿名として表示します。管理者には従来どおり回答者情報が表示されます。
-        </Typography>
-      </Stack>
-      <Stack spacing={0.5}>
-        <Stack spacing={1} direction="row" sx={{ alignItems: 'center' }}>
-          <FieldLabel label="Webhook URL" />
-          <Chip
-            label={discordWebhookEnabled ? '設定済み' : '未設定'}
-            color={discordWebhookEnabled ? 'success' : 'default'}
-            size="small"
-          />
-        </Stack>
-        <TextField
-          {...register('settings.discord_webhook_url')}
-          type="url"
-          disabled={discordWebhookDisabled}
-          helperText={
-            discordWebhookDisabled
-              ? '無効化にチェックが入っているため、この入力内容は無視されます。'
-              : '新しく設定する Webhook URL を入力してください。空欄のまま保存すると現在の設定を維持します。'
-          }
-          slotProps={{ htmlInput: { 'aria-label': 'Webhook URL' } }}
-        />
-        <FormControlLabel
-          label="Webhook 通知を無効化する(URL入力より優先されます)"
-          control={
-            <Checkbox {...register('settings.discord_webhook_disabled')} />
-          }
-        />
-      </Stack>
       <Stack spacing={0.5}>
         <FieldLabel label="デフォルトの回答タイトル" />
         <TextField
@@ -254,30 +258,86 @@ const AnswerSettings = ({
   );
 };
 
+const NotificationSettings = ({
+  register,
+  control,
+  discordWebhookEnabled,
+}: Pick<
+  FormSettingsProps,
+  'register' | 'control' | 'discordWebhookEnabled'
+>) => {
+  const discordWebhookDisabled = useWatch({
+    control,
+    name: 'settings.discord_webhook_disabled',
+  });
+
+  return (
+    <Stack spacing={0.5}>
+      <Stack spacing={1} direction="row" sx={{ alignItems: 'center' }}>
+        <FieldLabel label="Webhook URL" />
+        <Chip
+          label={discordWebhookEnabled ? '設定済み' : '未設定'}
+          color={discordWebhookEnabled ? 'success' : 'default'}
+          size="small"
+        />
+      </Stack>
+      <TextField
+        {...register('settings.discord_webhook_url')}
+        type="url"
+        disabled={discordWebhookDisabled}
+        helperText={
+          discordWebhookDisabled
+            ? '無効化にチェックが入っているため、この入力内容は無視されます。'
+            : '新しく設定する Webhook URL を入力してください。空欄のまま保存すると現在の設定を維持します。'
+        }
+        slotProps={{ htmlInput: { 'aria-label': 'Webhook URL' } }}
+      />
+      <FormControlLabel
+        label="Webhook 通知を無効化する(URL入力より優先されます)"
+        control={
+          <Checkbox {...register('settings.discord_webhook_disabled')} />
+        }
+      />
+    </Stack>
+  );
+};
+
 const FormSettings = (props: FormSettingsProps) => {
   return (
     <Stack spacing={2}>
       <Typography variant="h6" component="h2" sx={{ fontWeight: 'bold' }}>
         フォーム設定
       </Typography>
+
+      <SectionHeading label="基本情報" />
       <BasicFormSettings
         register={props.register}
         control={props.control}
         labelOptions={props.labelOptions}
       />
+
+      <SectionHeading label="公開設定" />
+      <FormVisibilitySettings
+        control={props.control}
+        groupOptions={props.groupOptions}
+      />
+
+      <SectionHeading label="回答設定" />
       <AcceptancePeriodSettings
         register={props.register}
         control={props.control}
         setValue={props.setValue}
       />
-      <FormVisibilitySettings
-        control={props.control}
-        groupOptions={props.groupOptions}
-      />
       <AnswerSettings
         register={props.register}
         control={props.control}
         groupOptions={props.groupOptions}
+      />
+
+      <SectionHeading label="通知設定" />
+      <NotificationSettings
+        register={props.register}
+        control={props.control}
         discordWebhookEnabled={props.discordWebhookEnabled}
       />
     </Stack>

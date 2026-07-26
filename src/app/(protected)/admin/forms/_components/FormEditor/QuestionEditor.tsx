@@ -6,6 +6,7 @@ import {
   FormControlLabel,
   Stack,
   TextField,
+  Tooltip,
   Typography,
 } from '@mui/material';
 import Checkbox from '@mui/material/Checkbox';
@@ -28,16 +29,23 @@ const QuestionEditor = (props: {
       <Typography variant="h6" component="h2" sx={{ fontWeight: 'bold' }}>
         質問{props.questionIndex + 1}
       </Typography>
-      <Button
-        variant="outlined"
-        startIcon={<DeleteIcon />}
-        disabled={props.removeDisabled}
-        onClick={() => {
-          props.removeQuestion(props.questionIndex);
-        }}
+      <Tooltip
+        title={props.removeDisabled ? '質問は最低1つ必要です' : ''}
+        placement="top"
       >
-        質問の削除
-      </Button>
+        <span>
+          <Button
+            variant="outlined"
+            startIcon={<DeleteIcon />}
+            disabled={props.removeDisabled}
+            onClick={() => {
+              props.removeQuestion(props.questionIndex);
+            }}
+          >
+            質問の削除
+          </Button>
+        </span>
+      </Tooltip>
       <Stack spacing={0.5}>
         <FieldLabel label="質問タイトル" required />
         <TextField
