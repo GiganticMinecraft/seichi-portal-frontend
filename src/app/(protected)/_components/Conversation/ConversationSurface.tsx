@@ -1,6 +1,7 @@
 'use client';
 
 import CloseIcon from '@mui/icons-material/Close';
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import {
   Box,
   Button,
@@ -9,6 +10,7 @@ import {
   IconButton,
   Stack,
   Toolbar,
+  Tooltip,
   Typography,
 } from '@mui/material';
 import type { ReactNode } from 'react';
@@ -30,6 +32,8 @@ type Props = {
   title?: string | undefined;
   triggerLabel?: string | undefined;
   triggerStartIcon?: ReactNode | undefined;
+  /** trigger ボタン横の i アイコンにホバーしたときに表示する、機能の説明文。 */
+  triggerDescription?: string | undefined;
   items: ConversationListItem[];
   capabilities: ConversationCapabilities;
   inputForm?: ReactNode | undefined;
@@ -104,6 +108,7 @@ const ConversationSurface = ({
   title,
   triggerLabel,
   triggerStartIcon,
+  triggerDescription,
   items,
   capabilities,
   inputForm,
@@ -165,15 +170,24 @@ const ConversationSurface = ({
 
   return (
     <>
-      <Button
-        variant="outlined"
-        onClick={() => {
-          setOpen(true);
-        }}
-        startIcon={triggerStartIcon}
-      >
-        {triggerLabel}
-      </Button>
+      <Stack direction="row" spacing={0.5} sx={{ alignItems: 'center' }}>
+        <Button
+          variant="outlined"
+          onClick={() => {
+            setOpen(true);
+          }}
+          startIcon={triggerStartIcon}
+        >
+          {triggerLabel}
+        </Button>
+        {triggerDescription !== undefined && (
+          <Tooltip title={triggerDescription} placement="top">
+            <IconButton size="small" aria-label="この機能について">
+              <InfoOutlinedIcon fontSize="small" />
+            </IconButton>
+          </Tooltip>
+        )}
+      </Stack>
 
       <Drawer
         anchor="right"
