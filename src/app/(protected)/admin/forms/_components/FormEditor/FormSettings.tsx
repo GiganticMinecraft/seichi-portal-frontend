@@ -204,6 +204,15 @@ const AnswerSettings = ({
         label="未ログインユーザーの回答を許可する"
         control={<Checkbox {...register('settings.allow_temporary_answers')} />}
       />
+      <Stack spacing={0}>
+        <FormControlLabel
+          label="回答者を隠して公開する"
+          control={<Checkbox {...register('settings.hide_author')} />}
+        />
+        <Typography variant="caption" color="textSecondary">
+          一般ユーザーには回答者を匿名として表示します。管理者には従来どおり回答者情報が表示されます。
+        </Typography>
+      </Stack>
       <Stack spacing={0.5}>
         <Stack spacing={1} direction="row" sx={{ alignItems: 'center' }}>
           <FieldLabel label="Webhook URL" />

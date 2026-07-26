@@ -38,6 +38,7 @@ const baseValues: FormEditorValues = {
     answer_visibility: 'PUBLIC',
     answer_group_ids: [],
     allow_temporary_answers: false,
+    hide_author: false,
   },
 };
 
@@ -358,6 +359,37 @@ describe('form request builders', () => {
     );
 
     expect(body.settings?.allow_temporary_answers).toBe(true);
+  });
+
+  it('回答者を隠す設定を更新ボディへ反映する', () => {
+    const body = toFormUpdateBody(
+      {
+        ...baseValues,
+        settings: {
+          ...baseValues.settings,
+          hide_author: true,
+        },
+      },
+      false
+    );
+
+    expect(body.settings?.answer_settings?.hide_author).toBe(true);
+  });
+
+  it('回答者を隠す設定をフォーム取得レスポンスから画面内部表現へ変換する', () => {
+    const values = fromFormResponseToEditorValues(
+      createFormResponse({
+        settings: {
+          ...createFormResponse().settings,
+          answer_settings: {
+            ...createFormResponse().settings.answer_settings,
+            hide_author: true,
+          },
+        },
+      })
+    );
+
+    expect(values.settings.hide_author).toBe(true);
   });
 
   it('回答期間の画面内部表現を API の日時フィールドへ変換する', () => {

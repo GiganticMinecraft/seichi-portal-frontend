@@ -88,6 +88,7 @@ export const formEditorSchema = z.object({
     answer_visibility: visibilitySchema,
     answer_group_ids: z.array(z.string()),
     allow_temporary_answers: z.boolean(),
+    hide_author: z.boolean(),
   }),
 });
 
