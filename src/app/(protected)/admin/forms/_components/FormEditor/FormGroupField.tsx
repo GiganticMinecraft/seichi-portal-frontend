@@ -16,6 +16,7 @@ const FormGroupField = (props: {
   label: string;
   helperText: string;
   groupOptions: GetUserGroupsResponse;
+  disabled?: boolean;
 }) => {
   const { field } = useController({
     control: props.control,
@@ -30,6 +31,7 @@ const FormGroupField = (props: {
     <Autocomplete
       multiple
       id={props.name}
+      disabled={props.disabled}
       options={props.groupOptions}
       getOptionLabel={(option) => option.name}
       value={selectedGroups}
