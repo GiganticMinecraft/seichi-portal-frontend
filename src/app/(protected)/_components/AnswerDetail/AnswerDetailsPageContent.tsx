@@ -5,6 +5,7 @@ import { useSearchParams } from 'next/navigation';
 import { useClearQueryParam } from '@/app/(protected)/_components/useClearQueryParam';
 import ErrorDialog from '@/app/_components/ErrorDialog';
 import LoadingCircular from '@/app/_components/LoadingCircular';
+import { useCurrentUser } from '@/app/_providers/currentUser';
 import {
   getOptionalQueryData,
   getRequiredQueryGroupError,
@@ -24,6 +25,8 @@ const AnswerDetailsPageContent = ({
 }) => {
   const searchParams = useSearchParams();
   const clearQueryParam = useClearQueryParam();
+  const currentUser = useCurrentUser();
+  const isAdmin = currentUser.role === 'ADMINISTRATOR';
 
   const answerQuery = useApiQuery(
     '/api/v1/forms/{form_id}/answers/{answer_id}',
@@ -43,8 +46,6 @@ const AnswerDetailsPageContent = ({
     { refreshInterval: 1000 }
   );
 
-  const currentUserQuery = useApiQuery('/api/v1/users/me');
-
   const messagesQuery = useApiQuery(
     '/api/v1/forms/{form_id}/answers/{answer_id}/messages',
     {
@@ -59,6 +60,12 @@ const AnswerDetailsPageContent = ({
       path: { form_id: formId, answer_id: answerId },
     },
     { refreshInterval: 1000 }
+  );
+
+  // ラベル選択肢は管理者操作(ラベル編集)にのみ必要なため、管理者以外では取得しない
+  const labelOptionsQuery = useApiQuery(
+    '/api/v1/labels/answers',
+    isAdmin ? undefined : null
   );
 
   const requiredQueries = {
@@ -77,14 +84,14 @@ const AnswerDetailsPageContent = ({
     return <LoadingCircular />;
   }
 
-  const currentUser = getOptionalQueryData(currentUserQuery);
   const data: AnswerDetailsPageData = {
     answer: requiredQueries.answer.data,
     form: requiredQueries.form.data,
     messages: requiredQueries.messages.data,
     comments: requiredQueries.comments.data,
-    currentUserId: currentUser?.id,
-    isAdmin: currentUser?.role === 'ADMINISTRATOR',
+    currentUserId: currentUser.id,
+    isAdmin,
+    labelOptions: getOptionalQueryData(labelOptionsQuery) ?? [],
   };
 
   return (

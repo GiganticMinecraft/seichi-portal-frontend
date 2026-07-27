@@ -7,8 +7,8 @@ import { useCallback } from 'react';
  * 現在の URL から特定のクエリパラメータだけを取り除く関数を返す。
  * 対象のクエリが既に存在しない場合は何もしない(router.replace を呼ばない)。
  *
- * standard 側(AnswerDetailsPageContent)・admin 側(AdminAnswerPageContent)の
- * 両方で、直リンク(`messageId`/`commentId`)の後始末に使われる共通処理。
+ * 回答詳細ページ(AnswerDetailsPageContent、standard/admin 共通)で、
+ * 直リンク(`messageId`/`commentId`)の後始末に使われる共通処理。
  */
 export const useClearQueryParam = () => {
   const router = useRouter();

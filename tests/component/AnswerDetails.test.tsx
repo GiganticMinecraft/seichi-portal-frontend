@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import AnswerDetails from '@/app/(protected)/(standard)/forms/[formId]/answers/[answerId]/_components/AnswerDetails';
+import AnswerDetails from '@/app/(protected)/_components/AnswerDetail/AnswerDetails';
 import type { GetAnswerResponse, GetQuestionsResponse } from '@/lib/api-types';
 
 import { renderWithProviders, screen } from './render';

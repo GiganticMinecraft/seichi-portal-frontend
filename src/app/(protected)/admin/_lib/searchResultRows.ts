@@ -43,7 +43,7 @@ export const toSearchResultRows = (data: SearchResponse): SearchResultRow[] =>
       (answer): SearchResultRowWithoutId => ({
         category: '回答',
         title: resolveAnswerTitle(answer.title),
-        url: `/admin/answer/${answer.id}`,
+        url: `/admin/forms/${answer.form_id}/answers/${answer.id}`,
       })
     ),
     data.users.map(
@@ -71,7 +71,7 @@ export const toSearchResultRows = (data: SearchResponse): SearchResultRow[] =>
       (comment): SearchResultRowWithoutId => ({
         category: 'コメント',
         title: comment.content,
-        url: `/admin/answer/${comment.answer_id}`,
+        url: `/admin/forms/${comment.form_id}/answers/${comment.answer_id}`,
       })
     ),
   ]

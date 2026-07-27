@@ -1043,6 +1043,8 @@ export interface components {
         SearchCommentSchema: components["schemas"]["AnswerComment"] & {
             /** Format: uuid */
             answer_id: string;
+            /** Format: uuid */
+            form_id: string;
         };
         SelectQuestionResponseSchema: components["schemas"]["QuestionDefinitionResponseSchema"] & {
             choices: components["schemas"]["ChoiceResponseSchema"][];

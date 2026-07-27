@@ -6,14 +6,14 @@ import {
   requireBackendData,
   serverApiClient,
 } from '@/lib/server/backend';
-import { requireUser } from '@/lib/server/session';
+import { getAdminAccess } from '@/lib/server/session';
 
 export const metadata: Metadata = {
   title: '回答一覧 | Seichi Portal',
 };
 
 const Home = async ({ params }: { params: Promise<{ formId: string }> }) => {
-  const session = await requireUser();
+  const { session } = await getAdminAccess();
   const { formId } = await params;
   const [initialAnswers, form] = await Promise.all([
     requireBackendData(
@@ -38,7 +38,7 @@ const Home = async ({ params }: { params: Promise<{ formId: string }> }) => {
     <AnswersPageContent
       form={form}
       initialAnswers={initialAnswers}
-      answersBasePath={`/forms/${formId}/answers`}
+      answersBasePath={`/admin/forms/${formId}/answers`}
     />
   );
 };

@@ -20,6 +20,7 @@ import { resolveAnswerTitle } from '@/lib/forms/answerTitle';
 
 interface Row {
   id: string;
+  formId: string;
   category: string;
   title: string;
   date: string;
@@ -50,6 +51,7 @@ const DataTable = (props: {
     () =>
       answers.map((answer) => ({
         id: answer.id,
+        formId: answer.form_id,
         category: formTitleById.get(answer.form_id) ?? 'unknown form',
         title: resolveAnswerTitle(answer.title),
         date: formatString(answer.timestamp),
@@ -57,8 +59,8 @@ const DataTable = (props: {
     [answers, formTitleById]
   );
 
-  const handleRowClick = (rowId: string) => {
-    router.push(`/admin/answer/${rowId}`);
+  const handleRowClick = (row: Row) => {
+    router.push(`/admin/forms/${row.formId}/answers/${row.id}`);
   };
 
   return (
@@ -77,7 +79,7 @@ const DataTable = (props: {
               key={row.id}
               hover
               onClick={() => {
-                handleRowClick(row.id);
+                handleRowClick(row);
               }}
               sx={{ cursor: 'pointer' }}
             >

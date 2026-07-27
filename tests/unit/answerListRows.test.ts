@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { toAnswerListRows } from '@/app/(protected)/(standard)/forms/[formId]/answers/_lib/answerListRows';
+import { toAnswerListRows } from '@/app/(protected)/_components/AnswersList/answerListRows';
 import type { GetFormAnswersResponse } from '@/lib/api-types';
 
 const createAnswer = (
