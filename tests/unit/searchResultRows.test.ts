@@ -68,6 +68,7 @@ const createComment = (
 ): SearchResponse['comments'][number] => ({
   id: 'comment-id',
   answer_id: 'comment-answer-id',
+  form_id: 'form-id',
   commented_by: { uuid: 'user-id', name: 'ユーザー', role: 'STANDARD_USER' },
   content: 'コメント本文',
   timestamp: '2026-06-01T10:00:00+09:00',
@@ -89,6 +90,7 @@ describe('toSearchResultRows', () => {
       comments: [
         createComment({
           answer_id: 'comment-answer-id',
+          form_id: 'comment-form-id',
           content: 'コメント本文',
         }),
       ],
@@ -105,7 +107,7 @@ describe('toSearchResultRows', () => {
         id: 1,
         category: '回答',
         title: '回答タイトル',
-        url: '/admin/answer/answer-id',
+        url: '/admin/forms/form-id/answers/answer-id',
       },
       {
         id: 2,
@@ -129,7 +131,7 @@ describe('toSearchResultRows', () => {
         id: 5,
         category: 'コメント',
         title: 'コメント本文',
-        url: '/admin/answer/comment-answer-id',
+        url: '/admin/forms/comment-form-id/answers/comment-answer-id',
       },
     ]);
   });

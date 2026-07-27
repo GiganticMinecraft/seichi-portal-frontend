@@ -84,7 +84,7 @@ const FormsPageContent = ({
           <FormsView
             forms={filteredForms}
             onFormClick={(formId) => {
-              router.push(`/forms/${formId}/answers`);
+              router.push(`/admin/forms/${formId}/answers`);
             }}
             onResult={handleArchiveResult}
           />

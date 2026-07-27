@@ -1,26 +1,33 @@
 import { Stack, Typography } from '@mui/material';
 
+import Comments from '@/app/(protected)/_components/Conversation/Comments';
 import Messages from '@/app/(protected)/_components/Conversation/Messages';
 import type { ConversationDeepLinkProps } from '@/app/(protected)/_components/Conversation/useConversationEntryDeepLink';
 import type {
   AnswerComment,
+  GetAnswerLabelsResponse,
   GetAnswerResponse,
   GetFormResponse,
   GetMessagesResponse,
 } from '@/lib/api-types';
 import { resolveAnswerTitle } from '@/lib/forms/answerTitle';
 
+import {
+  AdminAnswerLabelManagementButton,
+  AdminAnswerLabels,
+  AdminAnswerTitle,
+} from './AnswerAdminControls';
 import AnswerDetails from './AnswerDetails';
 import AnswerMeta from './AnswerMeta';
-import Comments from './Comments';
 
 export type AnswerDetailsPageData = {
   answer: GetAnswerResponse;
   form: GetFormResponse;
   messages: GetMessagesResponse;
   comments: AnswerComment[];
-  currentUserId: string | undefined;
+  currentUserId: string;
   isAdmin: boolean;
+  labelOptions: GetAnswerLabelsResponse;
 };
 
 const AnswerDetailsPageView = ({
@@ -45,22 +52,43 @@ const AnswerDetailsPageView = ({
       alignItems: 'stretch',
     }}
   >
-    <Typography
-      variant="h4"
-      component="h1"
-      sx={!data.answer.title?.trim() ? { color: 'text.secondary' } : undefined}
-    >
-      {resolveAnswerTitle(data.answer.title)}
-    </Typography>
+    {data.isAdmin ? (
+      <AdminAnswerTitle answer={data.answer} />
+    ) : (
+      <Typography
+        variant="h4"
+        component="h1"
+        sx={
+          !data.answer.title?.trim() ? { color: 'text.secondary' } : undefined
+        }
+      >
+        {resolveAnswerTitle(data.answer.title)}
+      </Typography>
+    )}
     <AnswerMeta
       answer={data.answer}
+      labelsSlot={
+        data.isAdmin ? (
+          <AdminAnswerLabels
+            labelOptions={data.labelOptions}
+            answer={data.answer}
+          />
+        ) : undefined
+      }
+      extraActions={
+        data.isAdmin ? <AdminAnswerLabelManagementButton /> : undefined
+      }
       messageAction={
         <Messages
           messages={data.messages}
           formId={formId}
           answerId={answerId}
           title="メッセージ"
-          triggerLabel={`メッセージ (${data.messages.length})`}
+          triggerLabel={
+            data.isAdmin
+              ? `回答者にメッセージを送信 (${data.messages.length})`
+              : `メッセージ (${data.messages.length})`
+          }
           isAdmin={data.isAdmin}
           deepLink={messageDeepLink}
           disabled={data.answer.author.type !== 'AUTHENTICATED_USER'}
@@ -70,10 +98,10 @@ const AnswerDetailsPageView = ({
     <AnswerDetails answer={data.answer} questions={data.form.questions} />
     <Comments
       comments={data.comments}
-      formId={data.answer.form_id}
-      answerId={data.answer.id}
+      formId={formId}
+      answerId={answerId}
       currentUserId={data.currentUserId}
-      showDeleteButton={undefined}
+      showDeleteButton={data.isAdmin ? true : undefined}
       isAdmin={data.isAdmin}
       deepLink={commentDeepLink}
     />

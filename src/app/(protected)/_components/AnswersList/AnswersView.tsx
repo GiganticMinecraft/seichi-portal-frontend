@@ -17,7 +17,7 @@ import type {
 } from '@mui/x-data-grid';
 import * as React from 'react';
 
-import type { AnswerListRow } from '../_lib/answerListRows';
+import type { AnswerListRow } from './answerListRows';
 
 const SCROLL_END_THRESHOLD_PX = 200;
 

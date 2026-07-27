@@ -10,8 +10,7 @@ import type {
   GetFormResponse,
 } from '@/lib/api-types';
 
-import { toAnswerListRows } from '../_lib/answerListRows';
-
+import { toAnswerListRows } from './answerListRows';
 import AnswersView from './AnswersView';
 
 const SEARCH_DEBOUNCE_MS = 300;
@@ -19,9 +18,11 @@ const SEARCH_DEBOUNCE_MS = 300;
 const AnswersPageContent = ({
   form,
   initialAnswers,
+  answersBasePath,
 }: {
   form: GetFormResponse;
   initialAnswers: GetFormAnswersPageResponse;
+  answersBasePath: string;
 }) => {
   const router = useRouter();
   const [search, setSearch] = useState('');
@@ -87,7 +88,7 @@ const AnswersPageContent = ({
       isLoadingMore={isLoadingMore}
       onLoadMore={loadMore}
       onAnswerClick={(answerId) => {
-        router.push(`/forms/${form.id}/answers/${answerId}`);
+        router.push(`${answersBasePath}/${answerId}`);
       }}
     />
   );
