@@ -63,6 +63,7 @@ const AnswerDetailsPageView = ({
           triggerLabel={`メッセージ (${data.messages.length})`}
           isAdmin={data.isAdmin}
           deepLink={messageDeepLink}
+          disabled={data.answer.author.type !== 'AUTHENTICATED_USER'}
         />
       }
     />
