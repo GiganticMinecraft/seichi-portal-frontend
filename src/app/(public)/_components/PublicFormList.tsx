@@ -9,6 +9,7 @@ import {
 } from '@mui/material';
 import NextLink from 'next/link';
 
+import MarkdownText from '@/app/_components/MarkdownText';
 import type { GetFormsResponse } from '@/lib/api-types';
 import {
   formatResponsePeriod,
@@ -44,10 +45,10 @@ const EachForm = ({ form }: { form: FormItem }) => {
             sx={{ mb: 1.5 }}
           />
           {form.description && (
-            <Typography
-              variant="body2"
-              color="textSecondary"
+            <MarkdownText
               sx={{
+                typography: 'body2',
+                color: 'text.secondary',
                 display: '-webkit-box',
                 WebkitLineClamp: 3,
                 WebkitBoxOrient: 'vertical',
@@ -55,7 +56,7 @@ const EachForm = ({ form }: { form: FormItem }) => {
               }}
             >
               {form.description}
-            </Typography>
+            </MarkdownText>
           )}
         </CardContent>
       </CardActionArea>
