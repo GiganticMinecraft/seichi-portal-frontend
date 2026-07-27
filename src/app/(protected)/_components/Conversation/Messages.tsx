@@ -39,6 +39,8 @@ const Messages = (props: {
   triggerLabel: string;
   isAdmin: boolean;
   deepLink: ConversationDeepLinkProps;
+  /** true のとき、未ログインユーザーの回答であることを理由にメッセージ送信を無効化する。 */
+  disabled?: boolean | undefined;
 }) => {
   const actions = useMessageConversationActions(props.formId, props.answerId);
   const { historyByTargetId, isLoading: isHistoryLoading } = useMessageHistory(
@@ -103,17 +105,21 @@ const Messages = (props: {
         triggerLabel={props.triggerLabel}
         triggerStartIcon={<MessageIcon />}
         triggerDescription="回答者と運営チームの間でやり取りするための機能です。回答者と運営チーム以外は閲覧できません。"
+        triggerDisabled={props.disabled}
+        triggerDisabledReason="未ログインユーザーの回答のため、メッセージを送信できません"
         items={items}
         capabilities={capabilities}
         autoOpen={deepLinkState.autoOpen}
         highlightedEntryId={deepLinkState.highlightedEntryId}
         onDrawerClose={deepLinkState.onDrawerClose}
         inputForm={
-          <InputMessageField
-            form_id={props.formId}
-            answer_id={props.answerId}
-            textFieldSx={{ mt: 1 }}
-          />
+          props.disabled ? undefined : (
+            <InputMessageField
+              form_id={props.formId}
+              answer_id={props.answerId}
+              textFieldSx={{ mt: 1 }}
+            />
+          )
         }
         onUpdate={actions.update}
         onDelete={actions.deleteEntry}

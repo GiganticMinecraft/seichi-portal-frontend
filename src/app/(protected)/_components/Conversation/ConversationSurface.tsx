@@ -34,6 +34,10 @@ type Props = {
   triggerStartIcon?: ReactNode | undefined;
   /** trigger ボタン横の i アイコンにホバーしたときに表示する、機能の説明文。 */
   triggerDescription?: string | undefined;
+  /** true のとき trigger ボタンを disabled にする。 */
+  triggerDisabled?: boolean | undefined;
+  /** triggerDisabled が true のときに trigger ボタンのホバーで表示する理由。 */
+  triggerDisabledReason?: string | undefined;
   items: ConversationListItem[];
   capabilities: ConversationCapabilities;
   inputForm?: ReactNode | undefined;
@@ -109,6 +113,8 @@ const ConversationSurface = ({
   triggerLabel,
   triggerStartIcon,
   triggerDescription,
+  triggerDisabled,
+  triggerDisabledReason,
   items,
   capabilities,
   inputForm,
@@ -171,15 +177,23 @@ const ConversationSurface = ({
   return (
     <>
       <Stack direction="row" spacing={0.5} sx={{ alignItems: 'center' }}>
-        <Button
-          variant="outlined"
-          onClick={() => {
-            setOpen(true);
-          }}
-          startIcon={triggerStartIcon}
+        <Tooltip
+          title={triggerDisabled ? (triggerDisabledReason ?? '') : ''}
+          placement="top"
         >
-          {triggerLabel}
-        </Button>
+          <span>
+            <Button
+              variant="outlined"
+              onClick={() => {
+                setOpen(true);
+              }}
+              startIcon={triggerStartIcon}
+              disabled={triggerDisabled}
+            >
+              {triggerLabel}
+            </Button>
+          </span>
+        </Tooltip>
         {triggerDescription !== undefined && (
           <Tooltip title={triggerDescription} placement="top">
             <IconButton size="small" aria-label="この機能について">

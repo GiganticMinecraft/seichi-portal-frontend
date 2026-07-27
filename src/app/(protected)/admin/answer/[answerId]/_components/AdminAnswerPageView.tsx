@@ -72,6 +72,7 @@ const AdminAnswerPageView = ({
             triggerLabel={`回答者にメッセージを送信 (${data.messages.length})`}
             isAdmin={isAdmin}
             deepLink={messageDeepLink}
+            disabled={data.answer.author.type !== 'AUTHENTICATED_USER'}
           />
         }
       />
