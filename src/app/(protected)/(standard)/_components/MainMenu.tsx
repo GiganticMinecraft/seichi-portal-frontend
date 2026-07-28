@@ -73,7 +73,6 @@ const MainMenu = ({ accessDenied }: { accessDenied?: string | undefined }) => {
             gridTemplateColumns: {
               xs: '1fr',
               sm: 'repeat(2, 1fr)',
-              md: 'repeat(3, 1fr)',
             },
             gap: 3,
             alignItems: 'stretch',
