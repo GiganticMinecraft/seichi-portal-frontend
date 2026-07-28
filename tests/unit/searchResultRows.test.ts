@@ -41,6 +41,7 @@ const createAnswer = (
     user: { uuid: 'user-id', name: 'ユーザー', role: 'STANDARD_USER' },
   },
   labels: [],
+  publication: 'PUBLIC',
   timestamp: '2026-06-01T10:00:00+09:00',
   ...overrides,
 });

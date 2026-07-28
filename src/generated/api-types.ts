@@ -757,6 +757,8 @@ export interface components {
             items: components["schemas"]["FormAnswer"][];
             next_cursor?: string | null;
         };
+        /** @enum {string} */
+        AnswerPublication: "PUBLIC" | "PRIVATE";
         AnswerSearchResult: {
             answers: components["schemas"]["FormAnswer"][];
         };
@@ -796,6 +798,7 @@ export interface components {
             submitter_id: string;
         };
         AnswerUpdateSchema: {
+            publication?: string | null;
             title?: string | null;
         };
         /** @enum {string} */
@@ -888,6 +891,7 @@ export interface components {
             /** Format: uuid */
             id: string;
             labels: components["schemas"]["AnswerLabels"][];
+            publication: components["schemas"]["AnswerPublication"];
             /** Format: date-time */
             timestamp: string;
             title?: string | null;

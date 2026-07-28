@@ -2,6 +2,7 @@ export { errorResponseSchema } from '@/lib/api/errors';
 export type { ErrorResponse } from '@/lib/api/errors';
 export type {
   AnswerComment,
+  AnswerPublication,
   AnswerSearchResponse,
   CommentHistoryResponseEntry,
   CreateFormResponse,

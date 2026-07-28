@@ -15,6 +15,7 @@ import { resolveAnswerTitle } from '@/lib/forms/answerTitle';
 import {
   AdminAnswerLabelManagementButton,
   AdminAnswerLabels,
+  AdminAnswerPublicationToggle,
   AdminAnswerTitle,
 } from './AnswerAdminControls';
 import AnswerDetails from './AnswerDetails';
@@ -73,6 +74,11 @@ const AnswerDetailsPageView = ({
             labelOptions={data.labelOptions}
             answer={data.answer}
           />
+        ) : undefined
+      }
+      publicationSlot={
+        data.isAdmin ? (
+          <AdminAnswerPublicationToggle answer={data.answer} />
         ) : undefined
       }
       extraActions={
