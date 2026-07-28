@@ -95,6 +95,9 @@ export const AdminAnswerLabels = (props: {
     props.answer.form_id,
     props.answer.id
   );
+  const [value, setValue] = useState(() =>
+    props.answer.labels.map((label) => label.name)
+  );
 
   return (
     <Autocomplete
@@ -102,7 +105,7 @@ export const AdminAnswerLabels = (props: {
       id="label"
       options={props.labelOptions.map((label) => label.name)}
       getOptionLabel={(option) => option}
-      defaultValue={props.answer.labels.map((label) => label.name)}
+      value={value}
       renderOption={(renderProps, option) => (
         <Box {...renderProps} key={option} component="span">
           {option}
@@ -115,9 +118,10 @@ export const AdminAnswerLabels = (props: {
           sx={{ borderBottom: (theme) => `1px solid ${theme.palette.divider}` }}
         />
       )}
-      onChange={(_event, value) => {
+      onChange={(_event, newValue) => {
+        setValue(newValue);
         const selectedIds = props.labelOptions
-          .filter((label) => value.includes(label.name))
+          .filter((label) => newValue.includes(label.name))
           .map((label) => label.id);
         void updateLabels(selectedIds);
       }}
