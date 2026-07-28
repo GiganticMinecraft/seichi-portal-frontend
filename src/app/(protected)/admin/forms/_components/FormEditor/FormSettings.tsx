@@ -248,7 +248,7 @@ const AnswerSettings = ({
         <FieldLabel label="デフォルトの回答タイトル" />
         <TextField
           {...register('settings.default_answer_title')}
-          helperText="回答送信時のタイトルを設定します。$<テンプレートキー> で指定の質問の回答を、$username で回答者名を、$form_name でフォームタイトルをタイトルに埋め込むことができます。例: [$form_name] $username さんの回答"
+          helperText="回答送信時のタイトルを設定します。$テンプレートキー で指定の質問の回答を、$username で回答者名を、$form_name でフォームタイトルをタイトルに埋め込むことができます。例: [$form_name] $username さんの回答"
           slotProps={{
             htmlInput: { 'aria-label': 'デフォルトの回答タイトル' },
           }}
