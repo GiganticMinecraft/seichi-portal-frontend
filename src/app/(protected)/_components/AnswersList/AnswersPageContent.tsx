@@ -1,15 +1,17 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 import { useApiQuery } from '@/app/_swr/useApiQuery';
 import { useInfiniteApiQuery } from '@/app/_swr/useInfiniteApiQuery';
 import type {
+  GetAnswerLabelsResponse,
   GetFormAnswersPageResponse,
   GetFormResponse,
 } from '@/lib/api-types';
 
+import { filterAnswers } from './answerListFilters';
 import { toAnswerListRows } from './answerListRows';
 import AnswersView from './AnswersView';
 
@@ -27,6 +29,7 @@ const AnswersPageContent = ({
   const router = useRouter();
   const [search, setSearch] = useState('');
   const [debouncedSearch, setDebouncedSearch] = useState('');
+  const [labelFilter, setLabelFilter] = useState<GetAnswerLabelsResponse>([]);
 
   useEffect(() => {
     const trimmed = search.trim();
@@ -73,9 +76,24 @@ const AnswersPageContent = ({
     { keepPreviousData: true }
   );
 
-  const rows = isSearching
-    ? toAnswerListRows(searchData?.answers ?? [])
-    : toAnswerListRows(answers);
+  const sourceAnswers = useMemo(
+    () => (isSearching ? (searchData?.answers ?? []) : answers),
+    [isSearching, searchData, answers]
+  );
+
+  const labelOptions = useMemo(() => {
+    const byId = new Map<string, GetAnswerLabelsResponse[number]>();
+    for (const answer of sourceAnswers) {
+      for (const label of answer.labels) {
+        byId.set(label.id, label);
+      }
+    }
+    return Array.from(byId.values());
+  }, [sourceAnswers]);
+
+  const rows = toAnswerListRows(
+    filterAnswers(sourceAnswers, { labels: labelFilter })
+  );
 
   return (
     <AnswersView
@@ -84,6 +102,8 @@ const AnswersPageContent = ({
       search={search}
       onSearchChange={handleSearchChange}
       isSearchLoading={isSearching && isSearchLoading}
+      labelOptions={labelOptions}
+      onLabelFilterChange={setLabelFilter}
       hasMore={!isSearching && hasMore}
       isLoadingMore={isLoadingMore}
       onLoadMore={loadMore}
