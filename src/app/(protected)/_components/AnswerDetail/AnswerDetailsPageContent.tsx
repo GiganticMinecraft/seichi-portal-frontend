@@ -46,11 +46,20 @@ const AnswerDetailsPageContent = ({
     { refreshInterval: 1000 }
   );
 
+  const isAuthor =
+    answer !== undefined &&
+    answer.author.type === 'AUTHENTICATED_USER' &&
+    answer.author.user.uuid === currentUser.id;
+
+  // メッセージは管理者・投稿者本人にのみ閲覧権限があるため、権限がないと
+  // わかっている場合はバックエンドへリクエストしない。
+  const canAccessMessages = isAdmin || isAuthor;
+
   const messagesQuery = useApiQuery(
     '/api/v1/forms/{form_id}/answers/{answer_id}/messages',
-    {
-      path: { form_id: formId, answer_id: answerId },
-    },
+    canAccessMessages
+      ? { path: { form_id: formId, answer_id: answerId } }
+      : null,
     { refreshInterval: 1000 }
   );
 
@@ -71,7 +80,6 @@ const AnswerDetailsPageContent = ({
   const requiredQueries = {
     answer: answerQuery,
     form: formQuery,
-    messages: messagesQuery,
     comments: commentsQuery,
   };
   const queryError = getRequiredQueryGroupError(requiredQueries);
@@ -87,7 +95,7 @@ const AnswerDetailsPageContent = ({
   const data: AnswerDetailsPageData = {
     answer: requiredQueries.answer.data,
     form: requiredQueries.form.data,
-    messages: requiredQueries.messages.data,
+    messages: getOptionalQueryData(messagesQuery) ?? [],
     comments: requiredQueries.comments.data,
     currentUserId: currentUser.id,
     isAdmin,
