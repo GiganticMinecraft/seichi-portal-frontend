@@ -21,6 +21,8 @@ type KeysetPath = {
 export type UseInfiniteApiQueryOptions = {
   /** ミリ秒間隔で全ページを再取得し続ける。指定しなければ再取得しない。 */
   refreshInterval?: number;
+  /** false のとき、バックエンドへのリクエストを行わない。既定は true。 */
+  enabled?: boolean;
 };
 
 /**
@@ -42,7 +44,7 @@ export const useInfiniteApiQuery = <P extends KeysetPath>(
     _pageIndex: number,
     previousPageData: GetResponse<P> | null
   ) => {
-    if (!hasHydrated) return null;
+    if (!hasHydrated || options?.enabled === false) return null;
     const previousPage = previousPageData && asPage(previousPageData);
     if (previousPage && !previousPage.next_cursor) return null;
 

@@ -155,3 +155,60 @@ describe('AnswerDetailsPageView の isAdmin 分岐(#統合)', () => {
     expect(await screen.findByRole('menuitem', { name: '削除' })).toBeVisible();
   });
 });
+
+describe('AnswerDetailsPageView のメッセージボタンの権限制御', () => {
+  it('管理者でも投稿者本人でもない場合、メッセージボタンは disabled になる', () => {
+    renderWithProviders(
+      <AnswerDetailsPageView
+        formId="form-id"
+        answerId="answer-id"
+        data={baseData}
+        messageDeepLink={deepLink}
+        commentDeepLink={deepLink}
+      />
+    );
+
+    expect(
+      screen.getByRole('button', { name: /^メッセージ \(0\)$/ })
+    ).toBeDisabled();
+  });
+
+  it('投稿者本人の場合、メッセージボタンは disabled にならない', () => {
+    const authorData: AnswerDetailsPageData = {
+      ...baseData,
+      currentUserId: 'user-1',
+    };
+
+    renderWithProviders(
+      <AnswerDetailsPageView
+        formId="form-id"
+        answerId="answer-id"
+        data={authorData}
+        messageDeepLink={deepLink}
+        commentDeepLink={deepLink}
+      />
+    );
+
+    expect(
+      screen.getByRole('button', { name: /^メッセージ \(0\)$/ })
+    ).not.toBeDisabled();
+  });
+
+  it('管理者の場合、メッセージボタンは disabled にならない', () => {
+    const adminData: AnswerDetailsPageData = { ...baseData, isAdmin: true };
+
+    renderWithProviders(
+      <AnswerDetailsPageView
+        formId="form-id"
+        answerId="answer-id"
+        data={adminData}
+        messageDeepLink={deepLink}
+        commentDeepLink={deepLink}
+      />
+    );
+
+    expect(
+      screen.getByRole('button', { name: /^回答者にメッセージを送信 \(0\)$/ })
+    ).not.toBeDisabled();
+  });
+});

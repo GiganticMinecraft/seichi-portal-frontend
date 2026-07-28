@@ -139,8 +139,16 @@ export const useCommentHistory = (formId: string, answerId: string) => {
   };
 };
 
-/** メッセージの変更履歴を全ページ取得し、message_id ごとにグルーピングする。 */
-export const useMessageHistory = (formId: string, answerId: string) => {
+/**
+ * メッセージの変更履歴を全ページ取得し、message_id ごとにグルーピングする。
+ * enabled が false のときはバックエンドへリクエストしない
+ * (メッセージの閲覧権限がない場合に使う)。
+ */
+export const useMessageHistory = (
+  formId: string,
+  answerId: string,
+  enabled = true
+) => {
   const { items, hasMore, isLoadingMore, loadMore } = useInfiniteApiQuery(
     '/api/v1/forms/{form_id}/answers/{answer_id}/messages/history',
     (cursor) => ({
@@ -148,7 +156,7 @@ export const useMessageHistory = (formId: string, answerId: string) => {
       query: cursor === undefined ? {} : { cursor },
     }),
     EMPTY_MESSAGE_HISTORY_PAGE,
-    { refreshInterval: HISTORY_REFRESH_INTERVAL_MS }
+    { refreshInterval: HISTORY_REFRESH_INTERVAL_MS, enabled }
   );
   useAutoLoadAll(hasMore, isLoadingMore, loadMore);
   const hasCompletedInitialLoad = useHasCompletedInitialLoad(
