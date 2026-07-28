@@ -25,7 +25,11 @@ const createAnswer = (
 describe('toAnswerListRows', () => {
   it('回答一覧の行へ表示用の値を渡す', () => {
     const rows = toAnswerListRows([
-      createAnswer({ id: 'with-title', title: '回答タイトル' }),
+      createAnswer({
+        id: 'with-title',
+        title: '回答タイトル',
+        labels: [{ id: 'label-id', name: 'ラベル' }],
+      }),
     ]);
 
     expect(rows).toEqual([
@@ -33,6 +37,7 @@ describe('toAnswerListRows', () => {
         id: 'with-title',
         title: '回答タイトル',
         date: '2026年06月01日 10時00分',
+        labels: [{ id: 'label-id', name: 'ラベル' }],
       },
     ]);
   });
