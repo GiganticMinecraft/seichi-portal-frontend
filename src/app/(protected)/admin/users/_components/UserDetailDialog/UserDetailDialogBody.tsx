@@ -18,6 +18,7 @@ import { useApiQuery } from '@/app/_swr/useApiQuery';
 
 import RoleChip from '../RoleChip';
 
+import MinecraftPunishmentHistorySection from './MinecraftPunishmentHistorySection';
 import RestrictionHistorySection from './RestrictionHistorySection';
 import RestrictionManagementSection from './RestrictionManagementSection';
 import RoleSelectCell from './RoleSelectCell';
@@ -135,6 +136,7 @@ const UserDetailDialogBody = ({
           </Stack>
 
           <RestrictionHistorySection uuid={user.id} />
+          <MinecraftPunishmentHistorySection uuid={user.id} />
         </Stack>
       </DialogContent>
       <DialogActions>
