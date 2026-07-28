@@ -1,5 +1,6 @@
 'use client';
 
+import * as Sentry from '@sentry/nextjs';
 import { useEffect } from 'react';
 
 import ErrorDialog from '@/app/_components/ErrorDialog';
@@ -12,6 +13,7 @@ type AuthErrorBoundaryProps = {
 const AuthErrorBoundary = ({ error, reset }: AuthErrorBoundaryProps) => {
   useEffect(() => {
     console.error(error);
+    Sentry.captureException(error);
   }, [error]);
 
   return <ErrorDialog error={error} onRetry={reset} />;
