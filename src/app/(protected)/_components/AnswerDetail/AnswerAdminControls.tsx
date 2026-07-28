@@ -5,6 +5,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import Autocomplete from '@mui/material/Autocomplete';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
+import MenuItem from '@mui/material/MenuItem';
 import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
@@ -14,6 +15,7 @@ import { useForm } from 'react-hook-form';
 
 import { useAnswerActions } from '@/hooks/useAnswerActions';
 import type {
+  AnswerPublication,
   GetAnswerLabelsResponse,
   GetAnswerResponse,
 } from '@/lib/api-types';
@@ -84,6 +86,41 @@ export const AdminAnswerTitle = (props: { answer: GetAnswerResponse }) => {
         </Button>
       )}
     </Stack>
+  );
+};
+
+export const AdminAnswerPublicationToggle = (props: {
+  answer: GetAnswerResponse;
+}) => {
+  const [publication, setPublication] = useState(props.answer.publication);
+  const { updatePublication } = useAnswerActions(
+    props.answer.form_id,
+    props.answer.id
+  );
+
+  const onChange = async (next: AnswerPublication) => {
+    const previous = publication;
+    setPublication(next);
+    const result = await updatePublication(next);
+    if (!result.ok) {
+      setPublication(previous);
+    }
+  };
+
+  return (
+    <TextField
+      select
+      size="small"
+      value={publication}
+      onChange={(event) => {
+        void onChange(event.target.value === 'PRIVATE' ? 'PRIVATE' : 'PUBLIC');
+      }}
+      sx={{ minWidth: 140 }}
+      slotProps={{ select: { 'aria-label': 'この回答の公開状態' } }}
+    >
+      <MenuItem value="PUBLIC">公開</MenuItem>
+      <MenuItem value="PRIVATE">非公開</MenuItem>
+    </TextField>
   );
 };
 

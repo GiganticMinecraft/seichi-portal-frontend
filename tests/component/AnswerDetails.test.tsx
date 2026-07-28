@@ -36,6 +36,7 @@ const answer: GetAnswerResponse = {
   timestamp: '2024-01-01T00:00:00Z',
   title: null,
   labels: [],
+  publication: 'PUBLIC',
   author: {
     type: 'AUTHENTICATED_USER',
     user: { name: 'Alice', role: 'STANDARD_USER', uuid: 'user-1' },

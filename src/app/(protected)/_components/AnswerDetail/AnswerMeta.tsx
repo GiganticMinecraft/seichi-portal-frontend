@@ -37,10 +37,22 @@ const AuthorName = ({ author }: { author: Author }) => {
   return <Typography>{author.user.name}</Typography>;
 };
 
+const AnswerPublicationChip = ({
+  publication,
+}: {
+  publication: GetAnswerResponse['publication'];
+}) =>
+  publication === 'PRIVATE' ? (
+    <Chip label="非公開" size="small" color="warning" />
+  ) : (
+    <Chip label="公開" size="small" color="default" />
+  );
+
 const AnswerMeta = (props: {
   answer: GetAnswerResponse;
   messageAction: ReactNode;
   labelsSlot?: ReactNode;
+  publicationSlot?: ReactNode;
   extraActions?: ReactNode;
 }) => (
   <Paper variant="outlined" sx={{ p: 2 }}>
@@ -62,6 +74,16 @@ const AnswerMeta = (props: {
           ラベル
         </Typography>
         <Box>{props.labelsSlot ?? <AnswerLabels answers={props.answer} />}</Box>
+      </Grid>
+      <Grid size={{ xs: 12, sm: 6 }}>
+        <Typography variant="caption" color="textSecondary">
+          この回答の公開状態
+        </Typography>
+        <Box>
+          {props.publicationSlot ?? (
+            <AnswerPublicationChip publication={props.answer.publication} />
+          )}
+        </Box>
       </Grid>
       <Grid size={{ xs: 12, sm: 6 }}>
         <Stack
