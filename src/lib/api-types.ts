@@ -25,6 +25,7 @@ export type {
   GetGlobalDiscordWebhookResponse,
   GetMessageHistoryResponse,
   GetMessagesResponse,
+  GetMinecraftPunishmentsResponse,
   GetNotificationSettingsResponse,
   GetUserGroupMembersResponse,
   GetUserGroupsResponse,
