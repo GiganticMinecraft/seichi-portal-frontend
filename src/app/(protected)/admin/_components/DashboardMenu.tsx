@@ -41,10 +41,6 @@ const DashboardMenu = () => {
             url: '/admin/forms',
           },
           {
-            label: 'Announcements',
-            url: '/admin/announcements',
-          },
-          {
             label: 'Users',
             url: '/admin/users',
           },

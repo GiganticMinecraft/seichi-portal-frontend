@@ -2,7 +2,6 @@
 
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import AssignmentIcon from '@mui/icons-material/Assignment';
-import CampaignIcon from '@mui/icons-material/Campaign';
 import GavelIcon from '@mui/icons-material/Gavel';
 import {
   Box,
@@ -34,13 +33,6 @@ const menuItems = [
     description: '自分の処罰履歴を確認できます',
     icon: GavelIcon,
     color: '#d32f2f',
-  },
-  {
-    href: '/announcements',
-    title: 'お知らせ一覧',
-    description: '運営からのお知らせを確認できます',
-    icon: CampaignIcon,
-    color: '#388e3c',
   },
 ];
 
@@ -81,7 +73,6 @@ const MainMenu = ({ accessDenied }: { accessDenied?: string | undefined }) => {
             gridTemplateColumns: {
               xs: '1fr',
               sm: 'repeat(2, 1fr)',
-              md: 'repeat(3, 1fr)',
             },
             gap: 3,
             alignItems: 'stretch',
