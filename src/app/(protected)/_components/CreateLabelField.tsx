@@ -7,11 +7,13 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
+  Stack,
   TextField,
 } from '@mui/material';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 
+import FieldLabel from '@/app/_components/FieldLabel';
 import SnackbarAlert, { useSnackbar } from '@/app/_components/SnackbarAlert';
 import { useLabelCRUD } from '@/hooks/useLabelCRUD';
 
@@ -71,14 +73,15 @@ const CreateLabelField = (props: { labelType: 'answers' | 'forms' }) => {
           }}
         >
           <DialogContent>
-            <TextField
-              {...register('name')}
-              autoFocus
-              margin="dense"
-              label="ラベル名"
-              fullWidth
-              required
-            />
+            <Stack spacing={0.5} sx={{ mt: 1 }}>
+              <FieldLabel label="ラベル名" required />
+              <TextField
+                {...register('name')}
+                autoFocus
+                fullWidth
+                slotProps={{ htmlInput: { 'aria-label': 'ラベル名' } }}
+              />
+            </Stack>
           </DialogContent>
           <DialogActions>
             <Button onClick={handleClose} disabled={isSubmitting}>

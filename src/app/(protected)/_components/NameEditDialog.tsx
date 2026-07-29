@@ -7,10 +7,13 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
+  Stack,
   TextField,
 } from '@mui/material';
 import type { ComponentPropsWithoutRef, ReactNode } from 'react';
 import type { UseFormRegister } from 'react-hook-form';
+
+import FieldLabel from '@/app/_components/FieldLabel';
 
 export type NameEditFormValues = {
   id: string;
@@ -35,14 +38,15 @@ const NameEditDialog = (props: {
     <Box component="form" onSubmit={props.onSubmit}>
       <DialogContent>
         <input {...props.register('id')} type="hidden" />
-        <TextField
-          {...props.register('name')}
-          autoFocus
-          margin="dense"
-          label={props.nameLabel}
-          fullWidth
-          required
-        />
+        <Stack spacing={0.5} sx={{ mt: 1 }}>
+          <FieldLabel label={props.nameLabel} required />
+          <TextField
+            {...props.register('name')}
+            autoFocus
+            fullWidth
+            slotProps={{ htmlInput: { 'aria-label': props.nameLabel } }}
+          />
+        </Stack>
       </DialogContent>
       <DialogActions>
         <Button onClick={props.onClose} disabled={props.isSubmitting}>

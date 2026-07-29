@@ -5,6 +5,8 @@ import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { Controller, useForm } from 'react-hook-form';
 
+import FieldLabel from '@/app/_components/FieldLabel';
+
 import { restrictionFormSchema } from './restrictionForm';
 import type {
   RestrictionFormExpiration,
@@ -39,26 +41,28 @@ const CreateRestrictionForm = ({
       >
         <Stack spacing={2}>
           {submitError && <Alert severity="error">{submitError}</Alert>}
-          <Controller
-            name="reason"
-            control={control}
-            render={({ field, fieldState }) => (
-              <TextField
-                {...field}
-                label="理由"
-                required
-                multiline
-                minRows={2}
-                fullWidth
-                size="small"
-                disabled={disabled}
-                error={Boolean(fieldState.error)}
-                helperText={
-                  fieldState.error?.message ?? 'Markdown に対応しています。'
-                }
-              />
-            )}
-          />
+          <Stack spacing={0.5}>
+            <FieldLabel label="理由" required />
+            <Controller
+              name="reason"
+              control={control}
+              render={({ field, fieldState }) => (
+                <TextField
+                  {...field}
+                  slotProps={{ htmlInput: { 'aria-label': '理由' } }}
+                  multiline
+                  minRows={2}
+                  fullWidth
+                  size="small"
+                  disabled={disabled}
+                  error={Boolean(fieldState.error)}
+                  helperText={
+                    fieldState.error?.message ?? 'Markdown に対応しています。'
+                  }
+                />
+              )}
+            />
+          </Stack>
           <Controller
             name="expiration"
             control={control}
