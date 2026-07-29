@@ -2,15 +2,42 @@ import type { Metadata } from 'next';
 
 import {
   authorizationHeader,
+  BackendError,
   requireBackendData,
   serverApiClient,
 } from '@/lib/server/backend';
 import { getSession } from '@/lib/server/session';
 
 import AnswerForm from './_components/AnswerForm';
+import { toActiveSubmissionRestriction } from './_lib/submissionErrors';
 
 export const metadata: Metadata = {
   title: 'フォーム回答 | Seichi Portal',
+};
+
+// 自分自身の有効な投稿制限を取得する。取得できない場合(権限不足など)は
+// 制限なしとして扱い、送信時のエラー表示に判定を委ねる。
+const fetchOwnRestriction = async (session: {
+  token: string;
+  user: { id: string };
+}) => {
+  try {
+    const restriction = await requireBackendData(
+      serverApiClient.GET('/api/v1/users/{uuid}/answer-submitter-restriction', {
+        headers: authorizationHeader(session.token),
+        params: {
+          path: { uuid: session.user.id },
+        },
+      })
+    );
+
+    return toActiveSubmissionRestriction(restriction);
+  } catch (error) {
+    if (error instanceof BackendError) {
+      return null;
+    }
+    throw error;
+  }
 };
 
 const Home = async ({ params }: { params: Promise<{ formId: string }> }) => {
@@ -30,6 +57,10 @@ const Home = async ({ params }: { params: Promise<{ formId: string }> }) => {
     })
   );
 
+  const restriction = isAuthenticated
+    ? await fetchOwnRestriction(session)
+    : null;
+
   return (
     <AnswerForm
       questions={form.questions}
@@ -38,6 +69,7 @@ const Home = async ({ params }: { params: Promise<{ formId: string }> }) => {
       description={form.description}
       isAuthenticated={isAuthenticated}
       allowTemporaryAnswers={form.settings.allow_temporary_answers}
+      restriction={restriction}
     />
   );
 };

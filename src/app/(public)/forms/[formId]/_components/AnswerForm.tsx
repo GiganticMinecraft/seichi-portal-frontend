@@ -6,6 +6,8 @@ import { SigninButton } from '@/app/_components/SigninButton';
 import type { GetQuestionsResponse } from '@/lib/api-types';
 import { formatRestrictionExpiration } from '@/lib/restrictions/expiration';
 
+import type { SubmissionRestriction } from '../_lib/submissionErrors';
+
 import AnswerSubmissionForm from './AnswerSubmissionForm';
 import AnswerSubmissionSuccess from './AnswerSubmissionSuccess';
 import type { SubmissionState } from './useAnswerSubmission';
@@ -18,6 +20,7 @@ interface Props {
   description: string;
   isAuthenticated: boolean;
   allowTemporaryAnswers: boolean;
+  restriction: SubmissionRestriction | null;
 }
 
 /**
@@ -31,6 +34,7 @@ const AnswerForm = ({
   description,
   isAuthenticated,
   allowTemporaryAnswers,
+  restriction,
 }: Props) => {
   // 未ログインかつフォームが未ログイン回答を許可している場合のみ匿名回答モード。
   const isTemporary = !isAuthenticated && allowTemporaryAnswers;
@@ -61,6 +65,14 @@ const AnswerForm = ({
 
   return (
     <Stack spacing={0} sx={{ width: '100%' }}>
+      {restriction && (
+        <Alert
+          severity="error"
+          sx={{ width: '100%', maxWidth: 800, mx: 'auto', mb: 2 }}
+        >
+          <RestrictionMessage restriction={restriction} />
+        </Alert>
+      )}
       <SubmissionErrorAlert submissionState={submissionState} />
       <AnswerSubmissionForm
         questions={questions}
@@ -68,6 +80,7 @@ const AnswerForm = ({
         description={description}
         isTemporary={isTemporary}
         onSubmitAnswers={submitAnswers}
+        disabled={Boolean(restriction)}
       />
     </Stack>
   );
@@ -95,12 +108,11 @@ const SubmissionErrorAlert = ({
       const restriction = submissionState.error.restriction;
       return (
         <Alert severity="error" sx={alertSx}>
-          現在、回答の投稿が制限されています。
-          {restriction?.reason && `（理由: ${restriction.reason}）`}
-          {restriction?.expiration.kind === 'expiresAt' &&
-            ` 制限解除予定: ${formatRestrictionExpiration(
-              restriction.expiration
-            )}`}
+          {restriction ? (
+            <RestrictionMessage restriction={restriction} />
+          ) : (
+            '現在、回答の投稿が制限されています。'
+          )}
         </Alert>
       );
     }
@@ -112,5 +124,18 @@ const SubmissionErrorAlert = ({
       );
   }
 };
+
+const RestrictionMessage = ({
+  restriction,
+}: {
+  restriction: SubmissionRestriction;
+}) => (
+  <>
+    現在、回答の投稿が制限されています。
+    {restriction.reason && `（理由: ${restriction.reason}）`}
+    {restriction.expiration.kind === 'expiresAt' &&
+      ` 制限解除予定: ${formatRestrictionExpiration(restriction.expiration)}`}
+  </>
+);
 
 export default AnswerForm;
