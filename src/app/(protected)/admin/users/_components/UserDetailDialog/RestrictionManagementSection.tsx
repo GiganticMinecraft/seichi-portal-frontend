@@ -3,10 +3,10 @@
 import { useState } from 'react';
 
 import { useApiQuery } from '@/app/_swr/useApiQuery';
-import { useAnswerSubmitterRestrictionActions } from '@/hooks/useAnswerSubmitterRestrictionActions';
+import { useFormSubmissionRestrictionActions } from '@/hooks/useFormSubmissionRestrictionActions';
 
 import CreateRestrictionForm from './CreateRestrictionForm';
-import RestrictedAnswerSubmitterView from './RestrictedAnswerSubmitterView';
+import RestrictedFormSubmitterView from './RestrictedFormSubmitterView';
 import { toRestrictionRequest } from './restrictionForm';
 import type { RestrictionFormValues } from './restrictionForm';
 import RestrictionStatusFeedback from './RestrictionStatusFeedback';
@@ -21,12 +21,12 @@ const RestrictionManagementSection = ({
   const [submitError, setSubmitError] = useState<string | null>(null);
 
   const { data, error, isLoading, mutate } = useApiQuery(
-    '/api/v1/users/{uuid}/answer-submitter-restriction',
+    '/api/v1/users/{uuid}/form-submission-restriction',
     { path: { uuid } }
   );
 
   const { restrictUser, unrestrictUser } =
-    useAnswerSubmitterRestrictionActions();
+    useFormSubmissionRestrictionActions();
 
   const handleRestrict = async (values: RestrictionFormValues) => {
     setSubmitError(null);
@@ -54,7 +54,7 @@ const RestrictionManagementSection = ({
 
   if (data) {
     return (
-      <RestrictedAnswerSubmitterView
+      <RestrictedFormSubmitterView
         restriction={data}
         disabled={disabled}
         submitError={submitError}

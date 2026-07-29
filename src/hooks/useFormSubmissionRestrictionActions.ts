@@ -3,16 +3,16 @@
 import { handleMutationResponse } from '@/hooks/useApiMutation';
 import type { MutationResult } from '@/hooks/useApiMutation';
 import { useSingleFlightAction } from '@/hooks/useSingleFlightAction';
-import type { PutAnswerSubmitterRestrictionSchema } from '@/lib/api-types';
+import type { PutFormSubmissionRestrictionSchema } from '@/lib/api-types';
 import { proxyClient } from '@/lib/proxyClient';
 
-export const useAnswerSubmitterRestrictionActions = () => {
+export const useFormSubmissionRestrictionActions = () => {
   const restrictUser = async (
     uuid: string,
-    body: PutAnswerSubmitterRestrictionSchema
+    body: PutFormSubmissionRestrictionSchema
   ): Promise<MutationResult> => {
     const { data, error, response } = await proxyClient.PUT(
-      '/api/v1/users/{uuid}/answer-submitter-restriction',
+      '/api/v1/users/{uuid}/form-submission-restriction',
       {
         params: { path: { uuid } },
         body,
@@ -23,7 +23,7 @@ export const useAnswerSubmitterRestrictionActions = () => {
 
   const unrestrictUser = async (uuid: string): Promise<MutationResult> => {
     const { data, error, response } = await proxyClient.DELETE(
-      '/api/v1/users/{uuid}/answer-submitter-restriction',
+      '/api/v1/users/{uuid}/form-submission-restriction',
       {
         params: { path: { uuid } },
       }

@@ -1,3 +1,5 @@
+import dayjs from 'dayjs';
+
 import { formatString } from '@/generic/DateFormatter';
 
 export type RestrictionExpiration =
@@ -8,6 +10,11 @@ export const toRestrictionExpiration = (
   expiresAt: string | null | undefined
 ): RestrictionExpiration =>
   expiresAt ? { kind: 'expiresAt', expiresAt } : { kind: 'indefinite' };
+
+export const isRestrictionExpirationPast = (
+  expiration: RestrictionExpiration
+): boolean =>
+  expiration.kind === 'expiresAt' && dayjs(expiration.expiresAt).isBefore();
 
 export const formatRestrictionExpiration = (
   expiration: RestrictionExpiration

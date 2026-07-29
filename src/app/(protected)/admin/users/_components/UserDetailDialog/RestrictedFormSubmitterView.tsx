@@ -1,19 +1,19 @@
 import { Alert, Button, Stack, Tooltip, Typography } from '@mui/material';
 
 import { formatString } from '@/generic/DateFormatter';
-import type { GetAnswerSubmitterRestrictionResponse } from '@/lib/api-types';
+import type { GetFormSubmissionRestrictionResponse } from '@/lib/api-types';
 import {
   formatRestrictionExpiration,
   toRestrictionExpiration,
 } from '@/lib/restrictions/expiration';
 
-const RestrictedAnswerSubmitterView = ({
+const RestrictedFormSubmitterView = ({
   restriction,
   disabled,
   submitError,
   onUnrestrict,
 }: {
-  restriction: NonNullable<GetAnswerSubmitterRestrictionResponse>;
+  restriction: NonNullable<GetFormSubmissionRestrictionResponse>;
   disabled: boolean;
   submitError: string | null;
   onUnrestrict: () => Promise<void>;
@@ -56,4 +56,4 @@ const RestrictedAnswerSubmitterView = ({
   );
 };
 
-export default RestrictedAnswerSubmitterView;
+export default RestrictedFormSubmitterView;

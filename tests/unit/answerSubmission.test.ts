@@ -9,7 +9,7 @@ describe('parseSubmissionError', () => {
     expect(
       parseSubmissionError({
         detail: 'restricted',
-        errorCode: 'ANSWER_SUBMISSION_RESTRICTED',
+        errorCode: 'SUBMISSION_RESTRICTED',
         status: 403,
         title: 'Forbidden',
         type: 'about:blank',
@@ -31,7 +31,7 @@ describe('parseSubmissionError', () => {
     expect(
       parseSubmissionError({
         detail: 'restricted',
-        errorCode: 'ANSWER_SUBMISSION_RESTRICTED',
+        errorCode: 'SUBMISSION_RESTRICTED',
         status: 403,
         title: 'Forbidden',
         type: 'about:blank',
