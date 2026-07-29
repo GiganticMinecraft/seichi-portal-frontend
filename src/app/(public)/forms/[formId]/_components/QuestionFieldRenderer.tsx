@@ -21,6 +21,7 @@ type Props = {
   control: Control<AnswerFormInput>;
   register: UseFormRegister<AnswerFormInput>;
   errors: FieldErrors<AnswerFormInput>;
+  disabled?: boolean;
 };
 
 const requiredMultiSelectMessage =
@@ -35,6 +36,7 @@ const QuestionFieldRenderer = ({
   control,
   register,
   errors,
+  disabled = false,
 }: Props) => {
   const questionId = question.id;
 
@@ -48,6 +50,7 @@ const QuestionFieldRenderer = ({
             required={question.is_required}
             multiline
             fullWidth
+            disabled={disabled}
           />
           <FormHelperText>Markdown に対応しています。</FormHelperText>
         </FormControl>
@@ -76,6 +79,7 @@ const QuestionFieldRenderer = ({
                 <Select
                   {...field}
                   fullWidth
+                  disabled={disabled}
                   labelId={`select-label-${questionId}`}
                   label="選択してください"
                   value={fieldValue}
@@ -137,6 +141,7 @@ const QuestionFieldRenderer = ({
                         },
                       })}
                       value={choice.label}
+                      disabled={disabled}
                     />
                   }
                   label={choice.label}

@@ -25,6 +25,7 @@ type Props = {
   description: string;
   isTemporary: boolean;
   onSubmitAnswers: (data: AnswerFormInput) => Promise<{ ok: boolean }>;
+  disabled?: boolean;
 };
 
 /**
@@ -37,6 +38,7 @@ const AnswerSubmissionForm = ({
   description,
   isTemporary,
   onSubmitAnswers,
+  disabled = false,
 }: Props) => {
   const {
     control,
@@ -82,6 +84,7 @@ const AnswerSubmissionForm = ({
                   })}
                   label="お名前"
                   required
+                  disabled={disabled}
                   error={Boolean(errors[TEMPORARY_USER_FIELDS.name])}
                   helperText={errors[TEMPORARY_USER_FIELDS.name]?.message}
                 />
@@ -91,6 +94,7 @@ const AnswerSubmissionForm = ({
                   })}
                   label="連絡先"
                   required
+                  disabled={disabled}
                   helperText={
                     errors[TEMPORARY_USER_FIELDS.contactText]?.message ??
                     'Discord ユーザー名やメールアドレスなど、連絡が取れる情報を入力してください。'
@@ -119,6 +123,7 @@ const AnswerSubmissionForm = ({
                   control={control}
                   register={register}
                   errors={errors}
+                  disabled={disabled}
                 />
               </Stack>
             </Paper>
@@ -136,7 +141,7 @@ const AnswerSubmissionForm = ({
               variant="contained"
               size="large"
               endIcon={<SendIcon />}
-              disabled={isSubmitting}
+              disabled={isSubmitting || disabled}
             >
               送信
             </Button>

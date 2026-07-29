@@ -1,5 +1,6 @@
 import { errorResponseSchema } from '@/lib/api/errors';
 import type { ErrorRestriction } from '@/lib/api/errors';
+import type { GetAnswerSubmitterRestrictionResponse } from '@/lib/api/types';
 import { toRestrictionExpiration } from '@/lib/restrictions/expiration';
 import type { RestrictionExpiration } from '@/lib/restrictions/expiration';
 
@@ -26,6 +27,12 @@ const toSubmissionRestriction = (
   reason: restriction.reason,
   expiration: toRestrictionExpiration(restriction.expires_at),
 });
+
+// フォーム表示時点で有効な投稿制限を、送信時エラーと同じ形に揃えて事前表示に使えるようにする。
+export const toActiveSubmissionRestriction = (
+  restriction: GetAnswerSubmitterRestrictionResponse
+): SubmissionRestriction | null =>
+  restriction ? toSubmissionRestriction(restriction) : null;
 
 export const parseSubmissionError = (
   error: unknown
