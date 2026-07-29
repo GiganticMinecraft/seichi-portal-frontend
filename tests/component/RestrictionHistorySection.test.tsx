@@ -2,12 +2,12 @@ import userEvent from '@testing-library/user-event';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import RestrictionHistorySection from '@/app/(protected)/admin/users/_components/UserDetailDialog/RestrictionHistorySection';
-import type { GetAnswerSubmitterRestrictionHistoryResponse } from '@/lib/api-types';
+import type { GetFormSubmissionRestrictionHistoryResponse } from '@/lib/api-types';
 
 import { renderWithProviders, screen } from './render';
 
 type HistoryQueryState = {
-  data: GetAnswerSubmitterRestrictionHistoryResponse | undefined;
+  data: GetFormSubmissionRestrictionHistoryResponse | undefined;
   error: Error | null;
   isLoading: boolean;
 };

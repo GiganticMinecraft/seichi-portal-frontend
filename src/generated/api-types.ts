@@ -638,34 +638,34 @@ export interface paths {
         patch: operations["patch_user_role"];
         trace?: never;
     };
-    "/api/v1/users/{uuid}/answer-submitter-restriction": {
+    "/api/v1/users/{uuid}/form-submission-restriction": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        /** 回答投稿者の有効な回答投稿制限の取得 */
-        get: operations["get_answer_submitter_restriction"];
-        /** 回答投稿者の回答投稿を制限する */
-        put: operations["put_answer_submitter_restriction"];
+        /** ユーザーの有効なフォーム送信制限の取得 */
+        get: operations["get_form_submission_restriction"];
+        /** ユーザーのフォーム送信を制限する */
+        put: operations["put_form_submission_restriction"];
         post?: never;
-        /** 回答投稿者の回答投稿制限を解除する */
-        delete: operations["delete_answer_submitter_restriction"];
+        /** ユーザーのフォーム送信制限を解除する */
+        delete: operations["delete_form_submission_restriction"];
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/api/v1/users/{uuid}/answer-submitter-restriction/history": {
+    "/api/v1/users/{uuid}/form-submission-restriction/history": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        /** 回答投稿者の回答投稿制限履歴の取得 */
-        get: operations["get_answer_submitter_restriction_history"];
+        /** ユーザーのフォーム送信制限履歴の取得 */
+        get: operations["get_form_submission_restriction_history"];
         put?: never;
         post?: never;
         delete?: never;
@@ -768,34 +768,6 @@ export interface components {
             default_answer_title?: string | null;
             hide_author: boolean;
             visibility: components["schemas"]["AnswerVisibility"];
-        };
-        AnswerSubmitterRestrictionHistoryResponse: {
-            /** Format: date-time */
-            expires_at?: string | null;
-            id: string;
-            /** Format: date-time */
-            lifted_at?: string | null;
-            lifted_by?: string | null;
-            reason: string;
-            /** Format: date-time */
-            restricted_at: string;
-            restricted_by: string;
-            submitter_id: string;
-        };
-        AnswerSubmitterRestrictionRequest: {
-            /** Format: date-time */
-            expires_at?: string | null;
-            reason: string;
-        };
-        AnswerSubmitterRestrictionResponse: {
-            /** Format: date-time */
-            expires_at?: string | null;
-            id: string;
-            reason: string;
-            /** Format: date-time */
-            restricted_at: string;
-            restricted_by: string;
-            submitter_id: string;
         };
         AnswerUpdateSchema: {
             publication?: string | null;
@@ -946,6 +918,34 @@ export interface components {
             /** @description Discord Webhook URL。キーを省略すると変更なし、`null` を指定すると通知を無効化する。 */
             discord_webhook_url?: string | null;
             visibility?: string | null;
+        };
+        FormSubmissionRestrictionHistoryResponse: {
+            /** Format: date-time */
+            expires_at?: string | null;
+            id: string;
+            /** Format: date-time */
+            lifted_at?: string | null;
+            lifted_by?: string | null;
+            reason: string;
+            /** Format: date-time */
+            restricted_at: string;
+            restricted_by: string;
+            submitter_id: string;
+        };
+        FormSubmissionRestrictionRequest: {
+            /** Format: date-time */
+            expires_at?: string | null;
+            reason: string;
+        };
+        FormSubmissionRestrictionResponse: {
+            /** Format: date-time */
+            expires_at?: string | null;
+            id: string;
+            reason: string;
+            /** Format: date-time */
+            restricted_at: string;
+            restricted_by: string;
+            submitter_id: string;
         };
         FormUpdateSchema: {
             description?: string | null;
@@ -5081,7 +5081,7 @@ export interface operations {
             };
         };
     };
-    get_answer_submitter_restriction: {
+    get_form_submission_restriction: {
         parameters: {
             query?: never;
             header?: never;
@@ -5099,7 +5099,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": null | components["schemas"]["AnswerSubmitterRestrictionResponse"];
+                    "application/json": null | components["schemas"]["FormSubmissionRestrictionResponse"];
                 };
             };
             /** @description The server could not understand the request due to invalid syntax. */
@@ -5149,7 +5149,7 @@ export interface operations {
             };
         };
     };
-    put_answer_submitter_restriction: {
+    put_form_submission_restriction: {
         parameters: {
             query?: never;
             header?: never;
@@ -5161,7 +5161,7 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["AnswerSubmitterRestrictionRequest"];
+                "application/json": components["schemas"]["FormSubmissionRestrictionRequest"];
             };
         };
         responses: {
@@ -5171,7 +5171,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["AnswerSubmitterRestrictionResponse"];
+                    "application/json": components["schemas"]["FormSubmissionRestrictionResponse"];
                 };
             };
             /** @description The server could not understand the request due to invalid syntax. */
@@ -5230,7 +5230,7 @@ export interface operations {
             };
         };
     };
-    delete_answer_submitter_restriction: {
+    delete_form_submission_restriction: {
         parameters: {
             query?: never;
             header?: never;
@@ -5296,7 +5296,7 @@ export interface operations {
             };
         };
     };
-    get_answer_submitter_restriction_history: {
+    get_form_submission_restriction_history: {
         parameters: {
             query?: never;
             header?: never;
@@ -5314,7 +5314,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["AnswerSubmitterRestrictionHistoryResponse"][];
+                    "application/json": components["schemas"]["FormSubmissionRestrictionHistoryResponse"][];
                 };
             };
             /** @description The server could not understand the request due to invalid syntax. */

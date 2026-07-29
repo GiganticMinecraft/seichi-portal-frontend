@@ -44,12 +44,12 @@ export type GetUserResponse =
 export type GetUserListPageResponse =
   ApiPaths['/api/v1/users']['get']['responses'][200]['content']['application/json'];
 export type GetUserListResponse = GetUserListPageResponse['items'];
-export type GetAnswerSubmitterRestrictionResponse =
-  ApiPaths['/api/v1/users/{uuid}/answer-submitter-restriction']['get']['responses'][200]['content']['application/json'];
-export type PutAnswerSubmitterRestrictionSchema =
-  ApiPaths['/api/v1/users/{uuid}/answer-submitter-restriction']['put']['requestBody']['content']['application/json'];
-export type GetAnswerSubmitterRestrictionHistoryResponse =
-  ApiPaths['/api/v1/users/{uuid}/answer-submitter-restriction/history']['get']['responses'][200]['content']['application/json'];
+export type GetFormSubmissionRestrictionResponse =
+  ApiPaths['/api/v1/users/{uuid}/form-submission-restriction']['get']['responses'][200]['content']['application/json'];
+export type PutFormSubmissionRestrictionSchema =
+  ApiPaths['/api/v1/users/{uuid}/form-submission-restriction']['put']['requestBody']['content']['application/json'];
+export type GetFormSubmissionRestrictionHistoryResponse =
+  ApiPaths['/api/v1/users/{uuid}/form-submission-restriction/history']['get']['responses'][200]['content']['application/json'];
 export type GetMinecraftPunishmentsResponse =
   ApiPaths['/api/v1/users/{uuid}/minecraft-punishments']['get']['responses'][200]['content']['application/json'];
 export type SearchResponse =

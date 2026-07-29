@@ -23,7 +23,7 @@ const fetchOwnRestriction = async (session: {
 }) => {
   try {
     const restriction = await requireBackendData(
-      serverApiClient.GET('/api/v1/users/{uuid}/answer-submitter-restriction', {
+      serverApiClient.GET('/api/v1/users/{uuid}/form-submission-restriction', {
         headers: authorizationHeader(session.token),
         params: {
           path: { uuid: session.user.id },

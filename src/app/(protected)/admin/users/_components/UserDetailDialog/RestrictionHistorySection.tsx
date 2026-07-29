@@ -18,6 +18,7 @@ import { useApiQuery } from '@/app/_swr/useApiQuery';
 import { formatString } from '@/generic/DateFormatter';
 import {
   formatRestrictionExpiration,
+  isRestrictionExpirationPast,
   toRestrictionExpiration,
 } from '@/lib/restrictions/expiration';
 
@@ -26,7 +27,7 @@ const RestrictionHistorySection = ({ uuid }: { uuid: string }) => {
     data: history,
     error,
     isLoading,
-  } = useApiQuery('/api/v1/users/{uuid}/answer-submitter-restriction/history', {
+  } = useApiQuery('/api/v1/users/{uuid}/form-submission-restriction/history', {
     path: { uuid },
   });
 
@@ -76,7 +77,9 @@ const RestrictionHistorySection = ({ uuid }: { uuid: string }) => {
                     <strong>状態:</strong>{' '}
                     {item.lifted_at
                       ? `解除済み（${formatString(item.lifted_at)}）`
-                      : '制限中'}
+                      : isRestrictionExpirationPast(expiration)
+                        ? '期限切れ'
+                        : '制限中'}
                   </Typography>
                 </Stack>
               );

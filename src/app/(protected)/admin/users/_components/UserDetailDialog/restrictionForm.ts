@@ -2,7 +2,7 @@ import { isDayjs } from 'dayjs';
 import type { Dayjs } from 'dayjs';
 import { z } from 'zod';
 
-import type { PutAnswerSubmitterRestrictionSchema } from '@/lib/api-types';
+import type { PutFormSubmissionRestrictionSchema } from '@/lib/api-types';
 
 const restrictionExpirationSchema = z.discriminatedUnion('kind', [
   z.object({ kind: z.literal('indefinite') }),
@@ -32,8 +32,8 @@ export type RestrictionFormValues = z.output<typeof restrictionFormSchema>;
  */
 export const toRestrictionRequest = (
   values: RestrictionFormValues
-): PutAnswerSubmitterRestrictionSchema => {
-  const request: PutAnswerSubmitterRestrictionSchema = {
+): PutFormSubmissionRestrictionSchema => {
+  const request: PutFormSubmissionRestrictionSchema = {
     reason: values.reason.trim(),
   };
 

@@ -3,14 +3,14 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import RestrictionManagementSection from '@/app/(protected)/admin/users/_components/UserDetailDialog/RestrictionManagementSection';
 import type {
-  GetAnswerSubmitterRestrictionResponse,
-  PutAnswerSubmitterRestrictionSchema,
+  GetFormSubmissionRestrictionResponse,
+  PutFormSubmissionRestrictionSchema,
 } from '@/lib/api-types';
 
 import { renderWithProviders, screen, waitFor } from './render';
 
 type RestrictionQueryState = {
-  data: GetAnswerSubmitterRestrictionResponse;
+  data: GetFormSubmissionRestrictionResponse;
   error: Error | null;
   isLoading: boolean;
   mutate: ReturnType<typeof vi.fn<() => Promise<void>>>;
@@ -22,7 +22,7 @@ type RestrictionMocks = {
     typeof vi.fn<
       (
         uuid: string,
-        body: PutAnswerSubmitterRestrictionSchema
+        body: PutFormSubmissionRestrictionSchema
       ) => Promise<{ success: boolean }>
     >
   >;
@@ -42,7 +42,7 @@ const restrictionMocks = vi.hoisted<RestrictionMocks>(() => ({
     vi.fn<
       (
         uuid: string,
-        body: PutAnswerSubmitterRestrictionSchema
+        body: PutFormSubmissionRestrictionSchema
       ) => Promise<{ success: boolean }>
     >(),
   unrestrictUser: vi.fn<(uuid: string) => Promise<{ success: boolean }>>(),
@@ -52,8 +52,8 @@ vi.mock('@/app/_swr/useApiQuery', () => ({
   useApiQuery: () => restrictionMocks.queryState,
 }));
 
-vi.mock('@/hooks/useAnswerSubmitterRestrictionActions', () => ({
-  useAnswerSubmitterRestrictionActions: () => ({
+vi.mock('@/hooks/useFormSubmissionRestrictionActions', () => ({
+  useFormSubmissionRestrictionActions: () => ({
     restrictUser: restrictionMocks.restrictUser,
     unrestrictUser: restrictionMocks.unrestrictUser,
   }),
