@@ -17,6 +17,7 @@ import type {
   UseFormSetValue,
 } from 'react-hook-form';
 
+import FieldLabel from '@/app/_components/FieldLabel';
 import type {
   GetFormLabelsResponse,
   GetUserGroupsResponse,
@@ -24,7 +25,6 @@ import type {
 
 import type { FormEditorValues } from '../../_schema/formEditorSchema';
 
-import FieldLabel from './FieldLabel';
 import FormGroupField from './FormGroupField';
 import FormLabelField from './FormLabelField';
 

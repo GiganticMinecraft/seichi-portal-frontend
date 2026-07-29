@@ -19,13 +19,13 @@ import { Button, IconButton, MenuItem, Stack, TextField } from '@mui/material';
 import { useController, useFieldArray, useWatch } from 'react-hook-form';
 import type { Control, UseFormRegister } from 'react-hook-form';
 
+import FieldLabel from '@/app/_components/FieldLabel';
+
 import {
   questionTypeSchema,
   type FormEditorQuestion,
   type FormEditorValues,
 } from '../../_schema/formEditorSchema';
-
-import FieldLabel from './FieldLabel';
 
 const SortableChoiceItem = (props: {
   id: string;

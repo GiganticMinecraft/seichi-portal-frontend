@@ -12,10 +12,11 @@ import {
 import Checkbox from '@mui/material/Checkbox';
 import type { Control, UseFormRegister } from 'react-hook-form';
 
+import FieldLabel from '@/app/_components/FieldLabel';
+
 import type { FormEditorValues } from '../../_schema/formEditorSchema';
 
 import ChoiceEditor from './ChoiceEditor';
-import FieldLabel from './FieldLabel';
 
 const QuestionEditor = (props: {
   control: Control<FormEditorValues>;

@@ -7,11 +7,13 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
+  Stack,
   TextField,
 } from '@mui/material';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 
+import FieldLabel from '@/app/_components/FieldLabel';
 import SnackbarAlert, { useSnackbar } from '@/app/_components/SnackbarAlert';
 import { useUserGroupCRUD } from '@/hooks/useUserGroupCRUD';
 
@@ -72,14 +74,15 @@ const CreateGroupField = () => {
           }}
         >
           <DialogContent>
-            <TextField
-              {...register('name')}
-              autoFocus
-              margin="dense"
-              label="グループ名"
-              fullWidth
-              required
-            />
+            <Stack spacing={0.5} sx={{ mt: 1 }}>
+              <FieldLabel label="グループ名" required />
+              <TextField
+                {...register('name')}
+                autoFocus
+                fullWidth
+                slotProps={{ htmlInput: { 'aria-label': 'グループ名' } }}
+              />
+            </Stack>
           </DialogContent>
           <DialogActions>
             <Button onClick={handleClose} disabled={isSubmitting}>

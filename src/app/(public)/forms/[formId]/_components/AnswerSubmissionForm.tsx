@@ -11,6 +11,7 @@ import {
 } from '@mui/material';
 import { useForm } from 'react-hook-form';
 
+import FieldLabel from '@/app/_components/FieldLabel';
 import MarkdownText from '@/app/_components/MarkdownText';
 import RequiredChip from '@/app/_components/RequiredChip';
 import type { GetQuestionsResponse } from '@/lib/api-types';
@@ -78,29 +79,33 @@ const AnswerSubmissionForm = ({
                 <Typography variant="body2" color="textSecondary">
                   サインインせずに回答するため、お名前と連絡先の入力が必要です。
                 </Typography>
-                <TextField
-                  {...register(TEMPORARY_USER_FIELDS.name, {
-                    required: '入力してください。',
-                  })}
-                  label="お名前"
-                  required
-                  disabled={disabled}
-                  error={Boolean(errors[TEMPORARY_USER_FIELDS.name])}
-                  helperText={errors[TEMPORARY_USER_FIELDS.name]?.message}
-                />
-                <TextField
-                  {...register(TEMPORARY_USER_FIELDS.contactText, {
-                    required: '入力してください。',
-                  })}
-                  label="連絡先"
-                  required
-                  disabled={disabled}
-                  helperText={
-                    errors[TEMPORARY_USER_FIELDS.contactText]?.message ??
-                    'Discord ユーザー名やメールアドレスなど、連絡が取れる情報を入力してください。'
-                  }
-                  error={Boolean(errors[TEMPORARY_USER_FIELDS.contactText])}
-                />
+                <Stack spacing={0.5}>
+                  <FieldLabel label="お名前" required />
+                  <TextField
+                    {...register(TEMPORARY_USER_FIELDS.name, {
+                      required: '入力してください。',
+                    })}
+                    slotProps={{ htmlInput: { 'aria-label': 'お名前' } }}
+                    disabled={disabled}
+                    error={Boolean(errors[TEMPORARY_USER_FIELDS.name])}
+                    helperText={errors[TEMPORARY_USER_FIELDS.name]?.message}
+                  />
+                </Stack>
+                <Stack spacing={0.5}>
+                  <FieldLabel label="連絡先" required />
+                  <TextField
+                    {...register(TEMPORARY_USER_FIELDS.contactText, {
+                      required: '入力してください。',
+                    })}
+                    slotProps={{ htmlInput: { 'aria-label': '連絡先' } }}
+                    disabled={disabled}
+                    helperText={
+                      errors[TEMPORARY_USER_FIELDS.contactText]?.message ??
+                      'Discord ユーザー名やメールアドレスなど、連絡が取れる情報を入力してください。'
+                    }
+                    error={Boolean(errors[TEMPORARY_USER_FIELDS.contactText])}
+                  />
+                </Stack>
               </Stack>
             </Paper>
           )}
