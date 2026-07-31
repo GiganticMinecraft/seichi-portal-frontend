@@ -119,7 +119,12 @@ const AnswerDetailsPageView = ({
         }
       />
       <AnswerDetails answer={data.answer} questions={data.form.questions} />
-      <RelatedAnswers relations={data.relatedAnswers} isAdmin={data.isAdmin} />
+      <RelatedAnswers
+        relations={data.relatedAnswers}
+        isAdmin={data.isAdmin}
+        formId={formId}
+        answerId={answerId}
+      />
       <Comments
         comments={data.comments}
         formId={formId}

@@ -10,9 +10,11 @@ import { resolveAnswerTitle } from '@/lib/forms/answerTitle';
 const RelatedAnswerItem = ({
   relation,
   isAdmin,
+  onRemove,
 }: {
   relation: RelatedAnswerResponse;
   isAdmin: boolean;
+  onRemove?: (() => void) | undefined;
 }) => {
   const answerQuery = useApiQuery(
     '/api/v1/forms/{form_id}/answers/{answer_id}',
@@ -33,6 +35,7 @@ const RelatedAnswerItem = ({
       label={label}
       clickable
       variant="outlined"
+      onDelete={onRemove}
     />
   );
 };
