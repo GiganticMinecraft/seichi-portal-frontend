@@ -72,6 +72,14 @@ const AnswerDetailsPageContent = ({
     { refreshInterval: 1000 }
   );
 
+  const relatedAnswersQuery = useApiQuery(
+    '/api/v1/forms/{form_id}/answers/{answer_id}/related-answers',
+    {
+      path: { form_id: formId, answer_id: answerId },
+    },
+    { refreshInterval: 1000 }
+  );
+
   // 回答が非公開になっている場合、管理者以外はコメントの閲覧権限を持たない
   // (投稿者本人であっても例外はない)。事前に判定できないため、403は
   // コメントセクションのみを無効化する個別のエラーとして扱い、ページ全体の
@@ -88,6 +96,7 @@ const AnswerDetailsPageContent = ({
   const requiredQueries = {
     answer: answerQuery,
     form: formQuery,
+    relatedAnswers: relatedAnswersQuery,
   };
   const queryError =
     getRequiredQueryGroupError(requiredQueries) ??
@@ -111,6 +120,7 @@ const AnswerDetailsPageContent = ({
     messages: getOptionalQueryData(messagesQuery) ?? [],
     comments: commentsForbidden ? [] : (commentsQuery.data ?? []),
     commentsDisabled: commentsForbidden,
+    relatedAnswers: requiredQueries.relatedAnswers.data,
     currentUserId: currentUser.id,
     isAdmin,
     labelOptions: getOptionalQueryData(labelOptionsQuery) ?? [],

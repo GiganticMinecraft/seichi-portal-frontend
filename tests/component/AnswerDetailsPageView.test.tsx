@@ -87,6 +87,7 @@ const baseData: AnswerDetailsPageData = {
   messages: [],
   comments: [otherUserComment],
   commentsDisabled: false,
+  relatedAnswers: [],
   currentUserId: 'current-user',
   isAdmin: false,
   labelOptions: [],

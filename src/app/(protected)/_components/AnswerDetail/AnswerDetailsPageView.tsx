@@ -9,6 +9,7 @@ import type {
   GetAnswerResponse,
   GetFormResponse,
   GetMessagesResponse,
+  GetRelatedAnswersResponse,
 } from '@/lib/api-types';
 import { resolveAnswerTitle } from '@/lib/forms/answerTitle';
 
@@ -20,6 +21,7 @@ import {
 } from './AnswerAdminControls';
 import AnswerDetails from './AnswerDetails';
 import AnswerMeta from './AnswerMeta';
+import RelatedAnswers from './RelatedAnswers';
 
 export type AnswerDetailsPageData = {
   answer: GetAnswerResponse;
@@ -27,6 +29,7 @@ export type AnswerDetailsPageData = {
   messages: GetMessagesResponse;
   comments: AnswerComment[];
   commentsDisabled: boolean;
+  relatedAnswers: GetRelatedAnswersResponse;
   currentUserId: string;
   isAdmin: boolean;
   labelOptions: GetAnswerLabelsResponse;
@@ -116,6 +119,7 @@ const AnswerDetailsPageView = ({
         }
       />
       <AnswerDetails answer={data.answer} questions={data.form.questions} />
+      <RelatedAnswers relations={data.relatedAnswers} isAdmin={data.isAdmin} />
       <Comments
         comments={data.comments}
         formId={formId}
