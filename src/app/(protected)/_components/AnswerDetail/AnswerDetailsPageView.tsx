@@ -26,6 +26,7 @@ export type AnswerDetailsPageData = {
   form: GetFormResponse;
   messages: GetMessagesResponse;
   comments: AnswerComment[];
+  commentsDisabled: boolean;
   currentUserId: string;
   isAdmin: boolean;
   labelOptions: GetAnswerLabelsResponse;
@@ -123,6 +124,12 @@ const AnswerDetailsPageView = ({
         showDeleteButton={data.isAdmin ? true : undefined}
         isAdmin={data.isAdmin}
         deepLink={commentDeepLink}
+        disabled={data.commentsDisabled}
+        disabledReason={
+          data.commentsDisabled
+            ? 'この回答が非公開のため、管理者以外はコメントを閲覧できません'
+            : undefined
+        }
       />
     </Stack>
   );

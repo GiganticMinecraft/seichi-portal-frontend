@@ -12,6 +12,7 @@ import {
   isQueryGroupReady,
 } from '@/app/_swr/queryState';
 import { useApiQuery } from '@/app/_swr/useApiQuery';
+import { isHttpError } from '@/lib/httpError';
 
 import AnswerDetailsPageView from './AnswerDetailsPageView';
 import type { AnswerDetailsPageData } from './AnswerDetailsPageView';
@@ -71,6 +72,13 @@ const AnswerDetailsPageContent = ({
     { refreshInterval: 1000 }
   );
 
+  // 回答が非公開になっている場合、管理者以外はコメントの閲覧権限を持たない
+  // (投稿者本人であっても例外はない)。事前に判定できないため、403は
+  // コメントセクションのみを無効化する個別のエラーとして扱い、ページ全体の
+  // 表示を妨げないようにする。
+  const commentsForbidden =
+    isHttpError(commentsQuery.error) && commentsQuery.error.status === 403;
+
   // ラベル選択肢は管理者操作(ラベル編集)にのみ必要なため、管理者以外では取得しない
   const labelOptionsQuery = useApiQuery(
     '/api/v1/labels/answers',
@@ -80,15 +88,20 @@ const AnswerDetailsPageContent = ({
   const requiredQueries = {
     answer: answerQuery,
     form: formQuery,
-    comments: commentsQuery,
   };
-  const queryError = getRequiredQueryGroupError(requiredQueries);
+  const queryError =
+    getRequiredQueryGroupError(requiredQueries) ??
+    (commentsForbidden ? undefined : commentsQuery.error);
 
   if (queryError !== undefined) {
     return <ErrorDialog />;
   }
 
-  if (!isQueryGroupReady(requiredQueries)) {
+  const commentsReady =
+    commentsForbidden ||
+    (!commentsQuery.isLoading && commentsQuery.data !== undefined);
+
+  if (!isQueryGroupReady(requiredQueries) || !commentsReady) {
     return <LoadingCircular />;
   }
 
@@ -96,7 +109,8 @@ const AnswerDetailsPageContent = ({
     answer: requiredQueries.answer.data,
     form: requiredQueries.form.data,
     messages: getOptionalQueryData(messagesQuery) ?? [],
-    comments: requiredQueries.comments.data,
+    comments: commentsForbidden ? [] : (commentsQuery.data ?? []),
+    commentsDisabled: commentsForbidden,
     currentUserId: currentUser.id,
     isAdmin,
     labelOptions: getOptionalQueryData(labelOptionsQuery) ?? [],
