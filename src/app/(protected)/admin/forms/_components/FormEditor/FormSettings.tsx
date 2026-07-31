@@ -179,8 +179,20 @@ const AcceptancePeriodSettings = ({
 const AnswerSettings = ({
   register,
   control,
+  setValue,
   groupOptions,
-}: Pick<FormSettingsProps, 'register' | 'control' | 'groupOptions'>) => {
+}: Pick<
+  FormSettingsProps,
+  'register' | 'control' | 'setValue' | 'groupOptions'
+>) => {
+  const hideAuthor = useWatch({
+    control,
+    name: 'settings.hide_author',
+  });
+  const allowTemporaryAnswers = useWatch({
+    control,
+    name: 'settings.allow_temporary_answers',
+  });
   const { field: answerVisibilityField } = useController({
     control,
     name: 'settings.answer_visibility',
@@ -222,7 +234,10 @@ const AnswerSettings = ({
           label="回答者を隠して公開する"
           control={
             <Checkbox
-              {...register('settings.hide_author')}
+              checked={hideAuthor}
+              onChange={(_, checked) => {
+                setValue('settings.hide_author', checked);
+              }}
               disabled={hideAuthorHasNoEffect}
             />
           }
@@ -242,7 +257,14 @@ const AnswerSettings = ({
       />
       <FormControlLabel
         label="未ログインユーザーの回答を許可する"
-        control={<Checkbox {...register('settings.allow_temporary_answers')} />}
+        control={
+          <Checkbox
+            checked={allowTemporaryAnswers}
+            onChange={(_, checked) => {
+              setValue('settings.allow_temporary_answers', checked);
+            }}
+          />
+        }
       />
       <Stack spacing={0.5}>
         <FieldLabel label="デフォルトの回答タイトル" />
@@ -261,10 +283,11 @@ const AnswerSettings = ({
 const NotificationSettings = ({
   register,
   control,
+  setValue,
   discordWebhookEnabled,
 }: Pick<
   FormSettingsProps,
-  'register' | 'control' | 'discordWebhookEnabled'
+  'register' | 'control' | 'setValue' | 'discordWebhookEnabled'
 >) => {
   const discordWebhookDisabled = useWatch({
     control,
@@ -295,7 +318,12 @@ const NotificationSettings = ({
       <FormControlLabel
         label="Webhook 通知を無効化する(URL入力より優先されます)"
         control={
-          <Checkbox {...register('settings.discord_webhook_disabled')} />
+          <Checkbox
+            checked={discordWebhookDisabled}
+            onChange={(_, checked) => {
+              setValue('settings.discord_webhook_disabled', checked);
+            }}
+          />
         }
       />
     </Stack>
@@ -331,6 +359,7 @@ const FormSettings = (props: FormSettingsProps) => {
       <AnswerSettings
         register={props.register}
         control={props.control}
+        setValue={props.setValue}
         groupOptions={props.groupOptions}
       />
 
@@ -338,6 +367,7 @@ const FormSettings = (props: FormSettingsProps) => {
       <NotificationSettings
         register={props.register}
         control={props.control}
+        setValue={props.setValue}
         discordWebhookEnabled={props.discordWebhookEnabled}
       />
     </Stack>

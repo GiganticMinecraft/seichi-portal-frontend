@@ -117,38 +117,84 @@ const QuestionFieldRenderer = ({
     case 'MultipleChoice':
       return (
         <>
-          <Grid container spacing={2} sx={{ mt: 1 }}>
-            {question.choices.map((choice, index) => (
-              <Grid
-                size={{ xs: 12, sm: 6, md: 4 }}
-                key={`q-${questionId}.a-${index}`}
-              >
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      {...register(questionId, {
-                        validate: {
-                          itemMustBeChecked: (value) => {
-                            if (!question.is_required) return true;
-                            if (typeof value === 'boolean') {
-                              return requiredMultiSelectMessage;
-                            }
+          <Controller
+            control={control}
+            name={questionId}
+            defaultValue={question.choices.length === 1 ? false : []}
+            rules={{
+              validate: {
+                itemMustBeChecked: (value) => {
+                  if (!question.is_required) return true;
 
-                            return (
-                              value.length >= 1 || requiredMultiSelectMessage
-                            );
-                          },
-                        },
-                      })}
-                      value={choice.label}
-                      disabled={disabled}
-                    />
-                  }
-                  label={choice.label}
-                />
-              </Grid>
-            ))}
-          </Grid>
+                  return (
+                    (Array.isArray(value) && value.length >= 1) ||
+                    (typeof value === 'string' && value !== '') ||
+                    requiredMultiSelectMessage
+                  );
+                },
+              },
+            }}
+            render={({ field }) => {
+              const selectedValues: string[] =
+                typeof field.value === 'string'
+                  ? field.value === ''
+                    ? []
+                    : [field.value]
+                  : Array.isArray(field.value)
+                    ? field.value
+                    : [];
+              const choiceOrder = new Map(
+                question.choices.map((item, itemIndex) => [
+                  item.label,
+                  itemIndex,
+                ])
+              );
+
+              return (
+                <Grid container spacing={2} sx={{ mt: 1 }}>
+                  {question.choices.map((choice, index) => (
+                    <Grid
+                      size={{ xs: 12, sm: 6, md: 4 }}
+                      key={`q-${questionId}.a-${index}`}
+                    >
+                      <FormControlLabel
+                        control={
+                          <Checkbox
+                            checked={selectedValues.includes(choice.label)}
+                            onChange={(_, checked) => {
+                              if (question.choices.length === 1) {
+                                field.onChange(checked ? choice.label : false);
+                                return;
+                              }
+
+                              const nextValues = checked
+                                ? selectedValues.includes(choice.label)
+                                  ? selectedValues
+                                  : [...selectedValues, choice.label]
+                                : selectedValues.filter(
+                                    (value) => value !== choice.label
+                                  );
+                              const orderedValues = [...nextValues].sort(
+                                (left, right) =>
+                                  (choiceOrder.get(left) ?? -1) -
+                                  (choiceOrder.get(right) ?? -1)
+                              );
+
+                              field.onChange(orderedValues);
+                            }}
+                            onBlur={field.onBlur}
+                            ref={index === 0 ? field.ref : undefined}
+                            disabled={disabled}
+                          />
+                        }
+                        label={choice.label}
+                      />
+                    </Grid>
+                  ))}
+                </Grid>
+              );
+            }}
+          />
           {errors[questionId] && (
             <FormHelperText sx={{ color: 'error.main' }}>
               {errors[questionId].message}

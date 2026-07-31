@@ -97,6 +97,63 @@ describe('AnswerSubmissionForm', () => {
     });
   });
 
+  it('複数選択の回答を成功送信後にリセットし、次の回答を選択できる', async () => {
+    const user = userEvent.setup();
+    const onSubmitAnswers = vi
+      .fn<(data: AnswerFormInput) => Promise<{ ok: boolean }>>()
+      .mockResolvedValue({ ok: true });
+
+    renderWithProviders(
+      <AnswerSubmissionForm
+        questions={questions}
+        title="お問い合わせ"
+        description=""
+        isTemporary={false}
+        onSubmitAnswers={onSubmitAnswers}
+      />
+    );
+
+    const firstChoice = screen.getByRole('checkbox', {
+      name: '運営に相談したい',
+    });
+    const secondChoice = screen.getByRole('checkbox', {
+      name: '申請内容を確認したい',
+    });
+
+    await user.click(secondChoice);
+    await user.click(firstChoice);
+    expect(firstChoice).toBeChecked();
+    expect(secondChoice).toBeChecked();
+
+    await user.click(screen.getByRole('button', { name: '送信' }));
+
+    await waitFor(() => {
+      expect(onSubmitAnswers).toHaveBeenCalledTimes(1);
+    });
+    expect(onSubmitAnswers).toHaveBeenNthCalledWith(1, {
+      '8f98a37f-9070-4624-b161-f288769160d5': [
+        '運営に相談したい',
+        '申請内容を確認したい',
+      ],
+    });
+    expect(firstChoice).not.toBeChecked();
+    expect(
+      firstChoice.parentElement?.querySelector('[data-testid="CheckBoxIcon"]')
+    ).toBeNull();
+    expect(secondChoice).not.toBeChecked();
+
+    await user.click(secondChoice);
+    expect(secondChoice).toBeChecked();
+    await user.click(screen.getByRole('button', { name: '送信' }));
+
+    await waitFor(() => {
+      expect(onSubmitAnswers).toHaveBeenCalledTimes(2);
+    });
+    expect(onSubmitAnswers).toHaveBeenNthCalledWith(2, {
+      '8f98a37f-9070-4624-b161-f288769160d5': ['申請内容を確認したい'],
+    });
+  });
+
   it('単一選択の回答を未選択へ戻せる', async () => {
     const user = userEvent.setup();
     const onSubmitAnswers = vi

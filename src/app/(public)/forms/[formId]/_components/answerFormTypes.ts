@@ -1,6 +1,5 @@
 'use client';
 
-import type { NonEmptyArray } from '@/generic/Types';
 import type { GetQuestionsResponse } from '@/lib/api-types';
 
 /**
@@ -8,7 +7,7 @@ import type { GetQuestionsResponse } from '@/lib/api-types';
  * 質問タイプごとの違いを吸収して submit 前の共通形にしている。
  */
 export interface AnswerFormInput {
-  [key: string]: string | NonEmptyArray<string> | boolean;
+  [key: string]: string | string[] | boolean;
 }
 
 export type AnswerQuestion = GetQuestionsResponse[number];
