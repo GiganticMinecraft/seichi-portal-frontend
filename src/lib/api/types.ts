@@ -33,6 +33,9 @@ export type GetAnswerLabelsResponse =
   ApiPaths['/api/v1/labels/answers']['get']['responses'][200]['content']['application/json'];
 export type GetMessagesResponse =
   ApiPaths['/api/v1/forms/{form_id}/answers/{answer_id}/messages']['get']['responses'][200]['content']['application/json'];
+export type GetRelatedAnswersResponse =
+  ApiPaths['/api/v1/forms/{form_id}/answers/{answer_id}/related-answers']['get']['responses'][200]['content']['application/json'];
+export type RelatedAnswerResponse = GetRelatedAnswersResponse[number];
 export type GetCommentHistoryResponse =
   ApiPaths['/api/v1/forms/{form_id}/answers/{answer_id}/comments/history']['get']['responses'][200]['content']['application/json'];
 export type GetMessageHistoryResponse =

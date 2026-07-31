@@ -112,8 +112,16 @@ const toMessageHistoryViewModel = (
  * 画面の再読み込みを不要にする。 */
 const HISTORY_REFRESH_INTERVAL_MS = 1000;
 
-/** コメントの変更履歴を全ページ取得し、comment_id ごとにグルーピングする。 */
-export const useCommentHistory = (formId: string, answerId: string) => {
+/**
+ * コメントの変更履歴を全ページ取得し、comment_id ごとにグルーピングする。
+ * enabled が false のときはバックエンドへリクエストしない
+ * (コメントの閲覧権限がない場合に使う)。
+ */
+export const useCommentHistory = (
+  formId: string,
+  answerId: string,
+  enabled = true
+) => {
   const { items, hasMore, isLoadingMore, loadMore } = useInfiniteApiQuery(
     '/api/v1/forms/{form_id}/answers/{answer_id}/comments/history',
     (cursor) => ({
@@ -121,7 +129,7 @@ export const useCommentHistory = (formId: string, answerId: string) => {
       query: cursor === undefined ? {} : { cursor },
     }),
     EMPTY_COMMENT_HISTORY_PAGE,
-    { refreshInterval: HISTORY_REFRESH_INTERVAL_MS }
+    { refreshInterval: HISTORY_REFRESH_INTERVAL_MS, enabled }
   );
   useAutoLoadAll(hasMore, isLoadingMore, loadMore);
   const hasCompletedInitialLoad = useHasCompletedInitialLoad(

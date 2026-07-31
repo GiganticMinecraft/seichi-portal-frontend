@@ -30,11 +30,16 @@ const Comments = (props: {
   showDeleteButton: boolean | undefined;
   isAdmin: boolean;
   deepLink: ConversationDeepLinkProps;
+  /** true のとき、コメントの閲覧・投稿を無効化する(バックエンドへのリクエストも行わない)。 */
+  disabled?: boolean | undefined;
+  /** disabled が true のときに trigger ボタンのホバーで表示する理由。 */
+  disabledReason?: string | undefined;
 }) => {
   const actions = useCommentConversationActions(props.formId, props.answerId);
   const { historyByTargetId, isLoading: isHistoryLoading } = useCommentHistory(
     props.formId,
-    props.answerId
+    props.answerId,
+    !props.disabled
   );
 
   const entries: ConversationEntryViewModel[] = props.comments.map(
@@ -99,13 +104,15 @@ const Comments = (props: {
         triggerLabel={`コメント (${entries.length})`}
         triggerStartIcon={<Typography component="span">💬</Typography>}
         triggerDescription="回答について議論したり、メモを残したりするための機能です。基本的に、この回答を閲覧できる人であれば誰でも閲覧できます。"
+        triggerDisabled={props.disabled}
+        triggerDisabledReason={props.disabledReason}
         items={items}
         capabilities={capabilities}
         autoOpen={deepLinkState.autoOpen}
         highlightedEntryId={deepLinkState.highlightedEntryId}
         onDrawerClose={deepLinkState.onDrawerClose}
         inputForm={
-          capabilities.canCompose ? (
+          props.disabled ? null : capabilities.canCompose ? (
             <Box
               sx={{
                 p: 2,
