@@ -1,0 +1,38 @@
+**/node_modules
+**/.next
+**/.git
+**/.env*
+**/.direnv
+**/coverage
+**/test-results
+**/playwright-report
+
+# GitHub 関連(ビルドに不要)
+.github
+
+# テストツール関連(ビルドに不要)
+tests
+playwright.config.ts
+vitest.config.ts
+vitest.unit.config.ts
+vitest.component.config.ts
+
+# codegen 関連(ビルド時には src/generated の生成済み結果を使うため不要)
+scripts
+
+# その他ビルドに不要なファイル
+.editorconfig
+Dockerfile
+.dockerignore
+.gitignore
+.prettierignore
+AGENTS.md
+CLAUDE.md
+CONTRIBUTING.md
+LICENSE
+README.md
+eslint.config.mjs
+lefthook.yml
+mise.toml
+prettier.config.mjs
+tsconfig.tsbuildinfo
