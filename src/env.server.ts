@@ -25,6 +25,18 @@ export const getDebugMode = () =>
 export const getSentryDsn = () =>
   sentryDsnSchema.parse(process.env['NEXT_PUBLIC_SENTRY_DSN'] || undefined);
 
+const otelExporterOtlpEndpointSchema = z.url().optional();
+const otelSdkDisabledSchema = z.enum(['true', 'false']).default('false');
+
+export const getOtelExporterOtlpEndpoint = () =>
+  otelExporterOtlpEndpointSchema.parse(
+    process.env['OTEL_EXPORTER_OTLP_ENDPOINT'] || undefined
+  );
+
+export const getOtelSdkDisabled = () =>
+  otelSdkDisabledSchema.parse(process.env['OTEL_SDK_DISABLED'] || undefined) ===
+  'true';
+
 const msalConfigSchema = z.object({
   clientId: z.string().min(1),
   redirectUri: z.url(),

@@ -1,3 +1,4 @@
+import { context, propagation } from '@opentelemetry/api';
 import { NextResponse, type NextRequest } from 'next/server';
 
 import {
@@ -43,6 +44,15 @@ const proxyToBackend = (request: NextRequest, token: string | null) => {
   if (token) {
     headers.set('Authorization', `Bearer ${token}`);
   }
+
+  // rewrite による backend への外部 hop は Next がスパン化しないため、active な
+  // trace context を手動で注入してトレースを繋ぐ。active span が無い場合は
+  // no-op で、ブラウザ由来の traceparent がそのまま backend へ届く。
+  propagation.inject(context.active(), headers, {
+    set: (carrier, key, value) => {
+      carrier.set(key, value);
+    },
+  });
 
   return NextResponse.rewrite(
     `${backendServerUrl}${request.nextUrl.pathname.replace(
