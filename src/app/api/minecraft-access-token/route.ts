@@ -6,7 +6,12 @@ import {
   minecraftAccessTokenResponseSchema,
   xboxLiveServiceTokenResponseSchema,
 } from '@/_schemas/loginSchema';
-import { authorizationHeader, serverApiClient } from '@/lib/server/backend';
+import {
+  authorizationHeader,
+  BackendError,
+  requireBackendResponse,
+  serverApiClient,
+} from '@/lib/server/backend';
 
 const microsoftAccountTokenSchema = z.object({
   token: z.string().min(1),
@@ -43,25 +48,19 @@ export async function POST(req: NextRequest) {
       xboxServiceSecurityToken
     );
 
-    const sessionResult = await createSession(minecraftAccessTokenResult);
-    if (!sessionResult.ok) {
-      console.error(
-        'Failed to create backend session:',
-        sessionResult.status,
-        sessionResult.statusText
-      );
-      return NextResponse.json(
-        { error: 'Failed to create backend session' },
-        { status: 502 }
-      );
-    }
-
+    const sessionResponse = await createSession(minecraftAccessTokenResult);
     const nextResponse = NextResponse.json({});
-    const setCookieHeader = sessionResult.headers.get('Set-Cookie');
+    const setCookieHeader = sessionResponse.headers.get('Set-Cookie');
 
     if (setCookieHeader === null) {
+      console.error(
+        'Backend session response did not include a Set-Cookie header'
+      );
       return NextResponse.json(
-        { error: 'Backend session cookie was not returned' },
+        {
+          error: 'Backend session cookie was not returned',
+          code: 'backend_unreachable',
+        },
         { status: 502 }
       );
     }
@@ -70,15 +69,39 @@ export async function POST(req: NextRequest) {
     return nextResponse;
   } catch (error) {
     console.error('Minecraft login flow failed:', error);
+
+    if (error instanceof BackendError) {
+      const isBackendSideFailure =
+        error.code === 'network_error' || error.status >= 500;
+
+      if (isBackendSideFailure) {
+        return NextResponse.json(
+          {
+            error: 'Failed to communicate with backend service',
+            code: 'backend_unreachable',
+          },
+          { status: 503 }
+        );
+      }
+
+      return NextResponse.json(
+        { error: 'Failed to create backend session', code: 'invalid_account' },
+        { status: 502 }
+      );
+    }
+
     if (error instanceof UpstreamServiceError || error instanceof z.ZodError) {
       return NextResponse.json(
-        { error: 'Failed during upstream authentication' },
+        {
+          error: 'Failed during upstream authentication',
+          code: 'invalid_account',
+        },
         { status: 502 }
       );
     }
 
     return NextResponse.json(
-      { error: 'Unexpected error during login' },
+      { error: 'Unexpected error during login', code: 'backend_unreachable' },
       { status: 500 }
     );
   }
@@ -183,14 +206,16 @@ const createSession = async ({
   token,
   expires,
 }: Awaited<ReturnType<typeof acquireMinecraftAccessToken>>) => {
-  const { response } = await serverApiClient.POST('/api/v1/session', {
-    headers: {
-      ...authorizationHeader(token),
-    },
-    body: {
-      expires: expires,
-    },
-  });
+  const { response } = await requireBackendResponse(
+    serverApiClient.POST('/api/v1/session', {
+      headers: {
+        ...authorizationHeader(token),
+      },
+      body: {
+        expires: expires,
+      },
+    })
+  );
 
   return response;
 };
