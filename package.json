@@ -36,7 +36,7 @@
     "@mui/x-data-grid": "^9.6.0",
     "@mui/x-date-pickers": "^9.6.0",
     "@sentry/nextjs": "^10.68.0",
-    "browserslist": "^4.28.6",
+    "browserslist": "^4.28.7",
     "dayjs": "^1.11.21",
     "fp-ts": "^2.16.11",
     "next": "^16.2.11",
