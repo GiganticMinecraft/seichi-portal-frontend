@@ -184,9 +184,9 @@ export const getAuthedTheme = () =>
       },
       MuiButton: {
         styleOverrides: {
-          root: ({ theme }) => ({
+          root: {
             textTransform: 'none'
-          }),
+          },
         },
       },
     },
