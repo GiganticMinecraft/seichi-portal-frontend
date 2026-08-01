@@ -133,7 +133,7 @@ importers:
         specifier: ^16.2.11
         version: 16.2.11
       '@playwright/test':
-        specifier: ^1.61.1
+        specifier: ^1.62.0
         version: 1.62.0
       '@testing-library/jest-dom':
         specifier: ^6.9.1
