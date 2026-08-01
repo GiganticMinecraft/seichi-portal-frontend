@@ -22,6 +22,29 @@ import {
 } from './useConversationEntryDeepLink';
 import { useCommentHistory } from './useConversationHistory';
 
+const getCommentAuthor = (
+  comment: AnswerComment
+): { authorName: string; authorId: string | undefined; authorRole: string } => {
+  if (comment.source === 'IMPORTED_FROM_REDMINE') {
+    return {
+      authorName:
+        comment.redmine_author_snapshot?.display_name ?? '不明なユーザー',
+      authorId: undefined,
+      authorRole: '',
+    };
+  }
+
+  if (comment.commented_by) {
+    return {
+      authorName: comment.commented_by.name,
+      authorId: comment.commented_by.uuid,
+      authorRole: comment.commented_by.role,
+    };
+  }
+
+  return { authorName: '不明なユーザー', authorId: undefined, authorRole: '' };
+};
+
 const Comments = (props: {
   comments: AnswerComment[];
   formId: string;
@@ -47,22 +70,22 @@ const Comments = (props: {
       const editHistory = isHistoryLoading
         ? undefined
         : historyByTargetId.get(comment.id);
+      const author = getCommentAuthor(comment);
+      const isOwnComment =
+        author.authorId !== undefined &&
+        props.currentUserId !== undefined &&
+        author.authorId === props.currentUserId;
 
       return {
         id: comment.id,
         body: comment.content,
-        authorName: comment.commented_by.name,
-        authorId: comment.commented_by.uuid,
-        authorRole: comment.commented_by.role,
+        authorName: author.authorName,
+        ...(author.authorId !== undefined ? { authorId: author.authorId } : {}),
+        authorRole: author.authorRole,
         timestamp: comment.timestamp,
         surface: 'bubble',
-        canDelete:
-          (props.showDeleteButton ?? false) ||
-          (props.currentUserId !== undefined &&
-            comment.commented_by.uuid === props.currentUserId),
-        canEdit:
-          props.currentUserId !== undefined &&
-          comment.commented_by.uuid === props.currentUserId,
+        canDelete: (props.showDeleteButton ?? false) || isOwnComment,
+        canEdit: isOwnComment,
         ...(editHistory !== undefined ? { editHistory } : {}),
       };
     }
