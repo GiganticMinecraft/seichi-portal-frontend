@@ -95,9 +95,3 @@ jobs:
             --head "$BRANCH" \
             --title "Prepare release v$VERSION" \
             --body "package.json のバージョンを v$VERSION に更新します。"
-
-      - name: Start Checking workflow
-        env:
-          GH_TOKEN: ${{ github.token }}
-          BRANCH: ${{ steps.release.outputs.branch }}
-        run: gh workflow run ci.yaml --ref "$BRANCH"
