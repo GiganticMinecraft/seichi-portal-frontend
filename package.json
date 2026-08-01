@@ -44,8 +44,8 @@
     "react": "19.2.8",
     "react-dom": "19.2.8",
     "react-hook-form": "^7.45.4",
-    "react-markdown": "^10.0.0",
-    "remark-gfm": "^4.0.0",
+    "react-markdown": "^10.1.0",
+    "remark-gfm": "^4.0.1",
     "swr": "^2.4.2",
     "ts-pattern": "^5.9.0",
     "zod": "^4.4.3"

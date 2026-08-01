@@ -81,10 +81,10 @@ importers:
         specifier: ^7.45.4
         version: 7.80.0(react@19.2.8)
       react-markdown:
-        specifier: ^10.0.0
+        specifier: ^10.1.0
         version: 10.1.0(@types/react@19.2.17)(react@19.2.8)
       remark-gfm:
-        specifier: ^4.0.0
+        specifier: ^4.0.1
         version: 4.0.1
       swr:
         specifier: ^2.4.2
