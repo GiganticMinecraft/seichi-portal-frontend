@@ -6,7 +6,7 @@ import {
   setPostLoginRedirectCookie,
 } from '@/lib/postLoginRedirect';
 
-import { getBackendServerUrl } from './env.server';
+import { getBackendServerUrl, getMsalOrigin } from './env.server';
 import { getCachedToken } from './user-token/mcToken';
 
 // 未ログインでも到達してよい公開ページ。回答ページ /forms/{id} のみ
@@ -78,7 +78,7 @@ const continueWithCurrentPath = (request: NextRequest) => {
 };
 
 const redirectToLogin = (request: NextRequest) => {
-  const response = NextResponse.redirect(`${request.nextUrl.origin}/`);
+  const response = NextResponse.redirect(`${getMsalOrigin()}/`);
   setPostLoginRedirectCookie(
     response,
     getPostLoginRedirectFromRequest(request)

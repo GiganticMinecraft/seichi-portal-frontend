@@ -33,13 +33,28 @@ export const getOtelSdkDisabled = () =>
   otelSdkDisabledSchema.parse(process.env['OTEL_SDK_DISABLED'] || undefined) ===
   'true';
 
+const msalRedirectUrlSchema = z.url().refine(
+  (value) => {
+    const protocol = new URL(value).protocol;
+    return protocol === 'http:' || protocol === 'https:';
+  },
+  { message: 'MS_APP_REDIRECT_URL must use http or https' }
+);
+
+const getMsalRedirectUrl = () =>
+  msalRedirectUrlSchema.parse(process.env['MS_APP_REDIRECT_URL']);
+
+const getOrigin = (url: string) => new URL(url).origin;
+
 const msalConfigSchema = z.object({
   clientId: z.string().min(1),
-  redirectUri: z.url(),
+  redirectUri: msalRedirectUrlSchema,
 });
 
 export const getMsalConfig = () =>
   msalConfigSchema.parse({
     clientId: process.env['MS_APP_CLIENT_ID'],
-    redirectUri: process.env['MS_APP_REDIRECT_URL'],
+    redirectUri: getMsalRedirectUrl(),
   });
+
+export const getMsalOrigin = () => getOrigin(getMsalRedirectUrl());
