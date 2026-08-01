@@ -36,9 +36,7 @@ type UnavailableSession = {
 };
 
 export type SessionResult =
-  | AuthenticatedSession
-  | UnauthenticatedSession
-  | UnavailableSession;
+  AuthenticatedSession | UnauthenticatedSession | UnavailableSession;
 
 export type AdminAccessResult =
   | { state: 'allowed'; session: AuthenticatedSession }
