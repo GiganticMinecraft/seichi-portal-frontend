@@ -81,10 +81,10 @@ importers:
         specifier: ^7.45.4
         version: 7.80.0(react@19.2.7)
       react-markdown:
-        specifier: ^10.0.0
+        specifier: ^10.1.0
         version: 10.1.0(@types/react@19.2.17)(react@19.2.7)
       remark-gfm:
-        specifier: ^4.0.0
+        specifier: ^4.0.1
         version: 4.0.1
       swr:
         specifier: ^2.4.2
@@ -8754,7 +8754,7 @@ snapshots:
       browserslist: 4.28.6
       chrome-trace-event: 1.0.4
       enhanced-resolve: 5.24.3
-      es-module-lexer: 2.1.0
+      es-module-lexer: 2.3.1
       eslint-scope: 5.1.1
       events: 3.3.0
       graceful-fs: 4.2.11
