@@ -24,7 +24,7 @@ const LinkDiscordButton = () => {
             variant="contained"
             startIcon={<LinkIcon />}
             href="/api/discord"
-            sx={{ alignSelf: 'flex-start' }}
+            sx={{ alignSelf: 'flex-start', textTransform: 'none' }}
           >
             Discord と連携する
           </Button>
