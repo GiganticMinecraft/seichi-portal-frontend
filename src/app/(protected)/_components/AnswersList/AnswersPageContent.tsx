@@ -60,9 +60,9 @@ const AnswersPageContent = ({
     isLoadingMore,
     loadMore,
   } = useInfiniteApiQuery(
-    '/api/v1/forms/{id}/answers',
+    '/api/v1/forms/{form_id}/answers',
     (cursor) => ({
-      path: { id: form.id },
+      path: { form_id: form.id },
       query: cursor === undefined ? {} : { cursor },
     }),
     initialAnswers

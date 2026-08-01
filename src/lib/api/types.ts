@@ -16,11 +16,11 @@ export type GetFormsPageResponse =
   ApiPaths['/api/v1/forms']['get']['responses'][200]['content']['application/json'];
 export type GetFormsResponse = GetFormsPageResponse['items'];
 export type GetFormResponse =
-  ApiPaths['/api/v1/forms/{id}']['get']['responses'][200]['content']['application/json'];
+  ApiPaths['/api/v1/forms/{form_id}']['get']['responses'][200]['content']['application/json'];
 export type CreateFormResponse =
   ApiPaths['/api/v1/forms']['post']['responses'][201]['content']['application/json'];
 export type GetFormAnswersPageResponse =
-  ApiPaths['/api/v1/forms/{id}/answers']['get']['responses'][200]['content']['application/json'];
+  ApiPaths['/api/v1/forms/{form_id}/answers']['get']['responses'][200]['content']['application/json'];
 export type GetFormAnswersResponse = GetFormAnswersPageResponse['items'];
 export type GetAnswersPageResponse =
   ApiPaths['/api/v1/forms/answers']['get']['responses'][200]['content']['application/json'];

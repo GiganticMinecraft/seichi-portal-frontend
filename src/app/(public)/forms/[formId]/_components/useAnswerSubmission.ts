@@ -13,9 +13,9 @@ import { isTemporaryUserField, TEMPORARY_USER_FIELDS } from './answerFormTypes';
 import type { AnswerFormInput } from './answerFormTypes';
 
 type AnswerCreateBody =
-  ApiPaths['/api/v1/forms/{id}/answers']['post']['requestBody']['content']['application/json'];
+  ApiPaths['/api/v1/forms/{form_id}/answers']['post']['requestBody']['content']['application/json'];
 type TemporaryAnswerCreateBody =
-  ApiPaths['/api/v1/forms/{id}/temporary-answers']['post']['requestBody']['content']['application/json'];
+  ApiPaths['/api/v1/forms/{form_id}/temporary-answers']['post']['requestBody']['content']['application/json'];
 type AnswerContents = AnswerCreateBody['contents'];
 
 export type SubmissionState =
@@ -85,10 +85,10 @@ export const useAnswerSubmission = (
   });
 
   const postAnswers = (data: AnswerFormInput) => {
-    const params = { path: { id: formId } };
+    const params = { path: { form_id: formId } };
 
     if (isTemporary) {
-      return proxyClient.POST('/api/v1/forms/{id}/temporary-answers', {
+      return proxyClient.POST('/api/v1/forms/{form_id}/temporary-answers', {
         params,
         body: {
           contents: toAnswerContents(data),
@@ -97,7 +97,7 @@ export const useAnswerSubmission = (
       });
     }
 
-    return proxyClient.POST('/api/v1/forms/{id}/answers', {
+    return proxyClient.POST('/api/v1/forms/{form_id}/answers', {
       params,
       body: { contents: toAnswerContents(data) },
     });

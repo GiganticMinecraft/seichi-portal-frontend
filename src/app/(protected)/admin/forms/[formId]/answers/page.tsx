@@ -17,18 +17,18 @@ const Home = async ({ params }: { params: Promise<{ formId: string }> }) => {
   const { formId } = await params;
   const [initialAnswers, form] = await Promise.all([
     requireBackendData(
-      serverApiClient.GET('/api/v1/forms/{id}/answers', {
+      serverApiClient.GET('/api/v1/forms/{form_id}/answers', {
         headers: authorizationHeader(session.token),
         params: {
-          path: { id: formId },
+          path: { form_id: formId },
         },
       })
     ),
     requireBackendData(
-      serverApiClient.GET('/api/v1/forms/{id}', {
+      serverApiClient.GET('/api/v1/forms/{form_id}', {
         headers: authorizationHeader(session.token),
         params: {
-          path: { id: formId },
+          path: { form_id: formId },
         },
       })
     ),

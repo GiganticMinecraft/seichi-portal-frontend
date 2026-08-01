@@ -8,7 +8,7 @@ import type { GetFormResponse } from '@/lib/api-types';
 import { renderWithProviders, screen, waitFor } from './render';
 
 type FormUpdateBody =
-  ApiPaths['/api/v1/forms/{id}']['put']['requestBody']['content']['application/json'];
+  ApiPaths['/api/v1/forms/{form_id}']['put']['requestBody']['content']['application/json'];
 
 const { updateFormMock } = vi.hoisted(() => ({
   updateFormMock: vi

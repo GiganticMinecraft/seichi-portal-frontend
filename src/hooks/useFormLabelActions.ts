@@ -7,9 +7,9 @@ import { proxyClient } from '@/lib/proxyClient';
 export const useFormLabelActions = (formId: string) => {
   const updateLabels = async (labelIds: string[]): Promise<{ ok: boolean }> => {
     const { data, error, response } = await proxyClient.PUT(
-      '/api/v1/forms/{id}',
+      '/api/v1/forms/{form_id}',
       {
-        params: { path: { id: formId } },
+        params: { path: { form_id: formId } },
         body: { labels: labelIds },
       }
     );
