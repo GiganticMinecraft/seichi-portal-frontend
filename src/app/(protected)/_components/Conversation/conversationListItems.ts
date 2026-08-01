@@ -46,7 +46,8 @@ export const mergeConversationListItems = (
 ): ConversationListItem[] =>
   [
     ...entries.map((entry): ConversationListItem => ({ kind: 'entry', entry })),
-    ...deletedEntries.map(
-      (entry): ConversationListItem => ({ kind: 'deleted', entry })
-    ),
+    ...deletedEntries.map((entry): ConversationListItem => ({
+      kind: 'deleted',
+      entry,
+    })),
   ].sort((a, b) => a.entry.timestamp.localeCompare(b.entry.timestamp));

@@ -51,8 +51,7 @@ type Props = {
     | ((entryId: string, body: string) => Promise<ConversationActionResult>)
     | undefined;
   onDelete?:
-    | ((entryId: string) => Promise<ConversationActionResult>)
-    | undefined;
+    ((entryId: string) => Promise<ConversationActionResult>) | undefined;
 };
 
 /**
@@ -73,8 +72,7 @@ const ConversationList = ({
     | ((entryId: string, body: string) => Promise<ConversationActionResult>)
     | undefined;
   onDelete?:
-    | ((entryId: string) => Promise<ConversationActionResult>)
-    | undefined;
+    ((entryId: string) => Promise<ConversationActionResult>) | undefined;
 }) => (
   <Stack spacing={2}>
     {items.length === 0 && (
