@@ -182,5 +182,12 @@ export const getAuthedTheme = () =>
           }),
         },
       },
+      Button: {
+        styleOverrides: {
+          root: ({ theme }) => ({
+            textTransform: 'none'
+          }),
+        },
+      },
     },
   });
