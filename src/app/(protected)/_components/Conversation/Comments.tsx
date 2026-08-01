@@ -103,7 +103,6 @@ const Comments = (props: {
   const capabilities: ConversationCapabilities = {
     canCompose: true,
     composeLabel: 'コメントを入力...',
-    composeHelperText: 'Shift + Enter で改行、Enter で送信することができます。Markdown に対応しています。',
     emptyMessage: 'コメントはまだありません',
     deepLinkQueryParam: 'commentId',
     entryNoun: 'コメント',
@@ -146,7 +145,7 @@ const Comments = (props: {
             >
               <ConversationComposer
                 label={capabilities.composeLabel}
-                helperText={capabilities.composeHelperText}
+                helperText="Shift + Enter で改行、Enter で送信することができます。Markdown に対応しています。"
                 onSend={actions.send}
               />
             </Box>
