@@ -5,7 +5,7 @@ import { Box, Tooltip, Typography } from '@mui/material';
 import CopyButton from '@/app/(protected)/_components/CopyButton';
 
 const UserIdCell = ({ id }: { id: string }) => (
-  <Box sx={{ display: 'flex', alignItems: 'center' }}>
+  <Box sx={{ display: 'flex', alignItems: 'center', minWidth: 0 }}>
     <Tooltip title={id} placement="top">
       <Typography
         variant="body2"
@@ -13,7 +13,7 @@ const UserIdCell = ({ id }: { id: string }) => (
         sx={{
           fontFamily: 'monospace',
           color: 'text.secondary',
-          maxWidth: 200,
+          minWidth: 0,
           overflow: 'hidden',
           textOverflow: 'ellipsis',
           whiteSpace: 'nowrap',
