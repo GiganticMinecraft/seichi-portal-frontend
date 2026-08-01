@@ -87,6 +87,7 @@ API 型定義の正の情報源は [seichi-portal-backend](https://github.com/Gi
 
 - `src/generated/` は `pnpm codegen` で生成されるファイルだけを置きます。手動で編集しないでください。
 - バックエンドのスキーマが変わったら `pnpm codegen` を再実行してください。
+- 生成物が backend `main` のスキーマと一致しているかは CI の `OpenAPI codegen check` ジョブ（`pnpm codegen:check`）で自動検証されます。
 - 詳しい使い方は [README.md](./README.md) の「API 定義」を参照してください。
 
 ## 開発環境の起動

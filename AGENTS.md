@@ -32,6 +32,6 @@
 
 ## 重要な規約
 
-- `src/generated/` は手動編集禁止。スキーマ変更後は `pnpm codegen` を実行する。
+- `src/generated/` は手動編集禁止。スキーマ変更後は `pnpm codegen` を実行する。整合性は CI の `pnpm codegen:check` で検証される。
 - パス alias `@/*` → `./src/*`
 - 保護ルートの認証確認はサーバ側で行う。middleware は入口判定のみ。
