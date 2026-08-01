@@ -40,9 +40,9 @@ const AnswerDetailsPageContent = ({
   const { data: answer } = answerQuery;
 
   const formQuery = useApiQuery(
-    '/api/v1/forms/{id}',
+    '/api/v1/forms/{form_id}',
     {
-      path: { id: answer?.form_id ?? '' },
+      path: { form_id: answer?.form_id ?? '' },
     },
     { refreshInterval: 1000 }
   );

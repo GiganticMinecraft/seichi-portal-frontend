@@ -6,14 +6,14 @@ import type { ApiPaths } from '@/lib/api/types';
 import { proxyClient } from '@/lib/proxyClient';
 
 type FormUpdateBody =
-  ApiPaths['/api/v1/forms/{id}']['put']['requestBody']['content']['application/json'];
+  ApiPaths['/api/v1/forms/{form_id}']['put']['requestBody']['content']['application/json'];
 
 export const useFormEditActions = (formId: string) => {
   const updateForm = async (body: FormUpdateBody): Promise<{ ok: boolean }> => {
     const { data, error, response } = await proxyClient.PUT(
-      '/api/v1/forms/{id}',
+      '/api/v1/forms/{form_id}',
       {
-        params: { path: { id: formId } },
+        params: { path: { form_id: formId } },
         body,
       }
     );

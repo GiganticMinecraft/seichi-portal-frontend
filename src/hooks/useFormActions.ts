@@ -7,9 +7,9 @@ import { proxyClient } from '@/lib/proxyClient';
 export const useFormActions = () => {
   const archiveForm = async (formId: string): Promise<{ ok: boolean }> => {
     const { data, error, response } = await proxyClient.POST(
-      '/api/v1/forms/{id}/archive',
+      '/api/v1/forms/{form_id}/archive',
       {
-        params: { path: { id: formId } },
+        params: { path: { form_id: formId } },
       }
     );
     const result = handleMutationResponse(response, data, error);
@@ -18,9 +18,9 @@ export const useFormActions = () => {
 
   const restoreForm = async (formId: string): Promise<{ ok: boolean }> => {
     const { data, error, response } = await proxyClient.POST(
-      '/api/v1/archived-forms/{id}/restore',
+      '/api/v1/archived-forms/{form_id}/restore',
       {
-        params: { path: { id: formId } },
+        params: { path: { form_id: formId } },
       }
     );
     const result = handleMutationResponse(response, data, error);

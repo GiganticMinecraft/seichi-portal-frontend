@@ -39,9 +39,9 @@ export const useCreateForm = () => {
       const createdFormId = createdForm.id;
 
       const { response: setFormMetadataResponse } = await proxyClient.PUT(
-        '/api/v1/forms/{id}',
+        '/api/v1/forms/{form_id}',
         {
-          params: { path: { id: createdFormId } },
+          params: { path: { form_id: createdFormId } },
           body: toFormUpdateBody(data, false),
         }
       );

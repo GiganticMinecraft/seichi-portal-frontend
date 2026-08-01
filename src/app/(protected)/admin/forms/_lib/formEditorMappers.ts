@@ -17,7 +17,7 @@ import { visibilitySchema } from '../_schema/formEditorSchema';
 type CreateFormBody =
   ApiPaths['/api/v1/forms']['post']['requestBody']['content']['application/json'];
 type FormUpdateBody =
-  ApiPaths['/api/v1/forms/{id}']['put']['requestBody']['content']['application/json'];
+  ApiPaths['/api/v1/forms/{form_id}']['put']['requestBody']['content']['application/json'];
 type ApiAcceptancePeriod =
   GetFormResponse['settings']['answer_settings']['acceptance_period'];
 type ApiVisibility = GetFormResponse['settings']['visibility'];

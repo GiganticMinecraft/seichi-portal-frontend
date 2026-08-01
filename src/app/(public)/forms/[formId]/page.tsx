@@ -47,12 +47,12 @@ const Home = async ({ params }: { params: Promise<{ formId: string }> }) => {
 
   // ログイン時は認証ヘッダ付き、未ログイン時は匿名でフォームを取得する。
   const form = await requireBackendData(
-    serverApiClient.GET('/api/v1/forms/{id}', {
+    serverApiClient.GET('/api/v1/forms/{form_id}', {
       ...(isAuthenticated
         ? { headers: authorizationHeader(session.token) }
         : {}),
       params: {
-        path: { id: formId },
+        path: { form_id: formId },
       },
     })
   );
