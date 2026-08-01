@@ -14,6 +14,8 @@ import { normalizeRedirectTarget } from '@/lib/redirect';
 
 const LOGIN_ERROR_MESSAGE =
   'ログインに失敗しました。Minecraftアカウントに紐づいたMicrosoftアカウントでサインインしてください。';
+const BACKEND_UNREACHABLE_ERROR_MESSAGE =
+  'サーバーとの通信に失敗しました。しばらく時間を置いて再試行してください。';
 const RETRY_ERROR_MESSAGE =
   'ログインに失敗しました。時間を置いて再試行してください。';
 const LOGIN_PROCESSING_ERROR_MESSAGE = 'ログイン処理に失敗しました。';
@@ -45,14 +47,29 @@ const fetchPostLoginRedirect = async (): Promise<string> => {
   return '/';
 };
 
-const exchangeMinecraftAccessToken = async (accessToken: string) => {
+type LoginFailureReason = 'invalid_account' | 'backend_unreachable';
+
+const exchangeMinecraftAccessToken = async (
+  accessToken: string
+): Promise<{ ok: true } | { ok: false; reason: LoginFailureReason }> => {
   const response = await fetch('/api/minecraft-access-token', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ token: accessToken }),
   });
 
-  return response.ok;
+  if (response.ok) return { ok: true };
+
+  const body: unknown = await response.json().catch(() => null);
+  const reason: LoginFailureReason =
+    typeof body === 'object' &&
+    body !== null &&
+    'code' in body &&
+    body.code === 'backend_unreachable'
+      ? 'backend_unreachable'
+      : 'invalid_account';
+
+  return { ok: false, reason };
 };
 
 type CompleteLoginParams = {
@@ -61,7 +78,8 @@ type CompleteLoginParams = {
   router: ReturnType<typeof useRouter>;
 };
 
-type CompleteLoginResult = { success: true } | { success: false };
+type CompleteLoginResult =
+  { success: true } | { success: false; reason: LoginFailureReason };
 
 const completeLogin = async ({
   account,
@@ -74,12 +92,12 @@ const completeLogin = async ({
   };
 
   const tokenResponse = await instance.acquireTokenSilent(request);
-  const isLinkedMinecraftAccount = await exchangeMinecraftAccessToken(
+  const exchangeResult = await exchangeMinecraftAccessToken(
     tokenResponse.accessToken
   );
 
-  if (!isLinkedMinecraftAccount) {
-    return { success: false };
+  if (!exchangeResult.ok) {
+    return { success: false, reason: exchangeResult.reason };
   }
 
   router.push(await fetchPostLoginRedirect());
@@ -120,7 +138,11 @@ export const useLandingLogin = () => {
       try {
         const result = await completeLogin({ account, instance, router });
         if (!result.success) {
-          setProcessingErrorMessage(LOGIN_ERROR_MESSAGE);
+          setProcessingErrorMessage(
+            result.reason === 'backend_unreachable'
+              ? BACKEND_UNREACHABLE_ERROR_MESSAGE
+              : LOGIN_ERROR_MESSAGE
+          );
           setIsProcessing(false);
         }
       } catch (error) {
