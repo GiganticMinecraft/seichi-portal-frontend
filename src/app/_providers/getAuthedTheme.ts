@@ -182,5 +182,12 @@ export const getAuthedTheme = () =>
           }),
         },
       },
+      MuiButton: {
+        styleOverrides: {
+          root: {
+            textTransform: 'none',
+          },
+        },
+      },
     },
   });
