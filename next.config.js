@@ -1,5 +1,3 @@
-const { withSentryConfig } = require('@sentry/nextjs');
-
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   output: 'standalone',
@@ -14,11 +12,4 @@ const nextConfig = {
   ],
 };
 
-module.exports = withSentryConfig(nextConfig, {
-  silent: true,
-  webpack: {
-    treeshake: {
-      removeDebugLogging: true,
-    },
-  },
-});
+module.exports = nextConfig;

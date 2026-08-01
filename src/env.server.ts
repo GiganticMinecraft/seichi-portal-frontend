@@ -7,7 +7,6 @@ const discordConfigSchema = z.object({
   redirectUri: z.url(),
 });
 const debugModeSchema = z.enum(['true', 'false']).default('false');
-const sentryDsnSchema = z.url().optional();
 
 export const getBackendServerUrl = () =>
   backendServerUrlSchema.parse(process.env['BACKEND_SERVER_URL']);
@@ -21,9 +20,6 @@ export const getDiscordConfig = () =>
 
 export const getDebugMode = () =>
   debugModeSchema.parse(process.env['NEXT_PUBLIC_DEBUG_MODE']) === 'true';
-
-export const getSentryDsn = () =>
-  sentryDsnSchema.parse(process.env['NEXT_PUBLIC_SENTRY_DSN'] || undefined);
 
 const otelExporterOtlpEndpointSchema = z.url().optional();
 const otelSdkDisabledSchema = z.enum(['true', 'false']).default('false');

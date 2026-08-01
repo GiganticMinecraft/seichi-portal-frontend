@@ -1,7 +1,7 @@
 minimumReleaseAge: 10080
 # レンジ内に minimumReleaseAge を満たすバージョンが存在しない場合、エラーにせず
 # 若いバージョンへフォールバックする。Renovate / Dependabot のセキュリティ更新が
-# 若い transitive 依存（例: @sentry/nextjs 配下の rollup）に阻まれて
+# 若い transitive 依存（例: rollup）に阻まれて
 # ERR_PNPM_NO_MATURE_MATCHING_VERSION で失敗するのを防ぐ (#926)。
 minimumReleaseAgeStrict: false
 minimumReleaseAgeExclude:
@@ -16,9 +16,6 @@ overrides:
   minimatch: ^10.2.5
 
 allowBuilds:
-  # sentry-cli バイナリのダウンロード。source map アップロードは行っていないため不要
-  # （@sentry/nextjs 自体の撤去は #935）。
-  '@sentry/cli': false
   esbuild: true
   lefthook: true
   sharp: true
