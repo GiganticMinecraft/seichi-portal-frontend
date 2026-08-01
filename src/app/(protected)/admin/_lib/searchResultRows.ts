@@ -32,48 +32,36 @@ type SearchResultRowWithoutId = Omit<SearchResultRow, 'id'>;
 
 export const toSearchResultRows = (data: SearchResponse): SearchResultRow[] =>
   [
-    data.forms.map(
-      (form): SearchResultRowWithoutId => ({
-        category: 'フォーム',
-        title: form.title,
-        url: `/admin/forms/edit/${form.id}`,
-      })
-    ),
-    data.answers.map(
-      (answer): SearchResultRowWithoutId => ({
-        category: '回答',
-        title: resolveAnswerTitle(answer.title),
-        url: `/admin/forms/${answer.form_id}/answers/${answer.id}`,
-      })
-    ),
-    data.users.map(
-      (user): SearchResultRowWithoutId => ({
-        category: 'ユーザー',
-        title: user.name,
-        url: `/admin/users?userId=${user.id}&userName=${encodeURIComponent(user.name)}`,
-      })
-    ),
-    data.label_for_forms.map(
-      (label): SearchResultRowWithoutId => ({
-        category: 'フォーム用ラベル',
-        title: label.name,
-        url: `/admin/labels?tab=forms`,
-      })
-    ),
-    data.label_for_answers.map(
-      (label): SearchResultRowWithoutId => ({
-        category: '回答用ラベル',
-        title: label.name,
-        url: `/admin/labels?tab=answers`,
-      })
-    ),
-    data.comments.map(
-      (comment): SearchResultRowWithoutId => ({
-        category: 'コメント',
-        title: comment.content,
-        url: `/admin/forms/${comment.form_id}/answers/${comment.answer_id}`,
-      })
-    ),
+    data.forms.map((form): SearchResultRowWithoutId => ({
+      category: 'フォーム',
+      title: form.title,
+      url: `/admin/forms/edit/${form.id}`,
+    })),
+    data.answers.map((answer): SearchResultRowWithoutId => ({
+      category: '回答',
+      title: resolveAnswerTitle(answer.title),
+      url: `/admin/forms/${answer.form_id}/answers/${answer.id}`,
+    })),
+    data.users.map((user): SearchResultRowWithoutId => ({
+      category: 'ユーザー',
+      title: user.name,
+      url: `/admin/users?userId=${user.id}&userName=${encodeURIComponent(user.name)}`,
+    })),
+    data.label_for_forms.map((label): SearchResultRowWithoutId => ({
+      category: 'フォーム用ラベル',
+      title: label.name,
+      url: `/admin/labels?tab=forms`,
+    })),
+    data.label_for_answers.map((label): SearchResultRowWithoutId => ({
+      category: '回答用ラベル',
+      title: label.name,
+      url: `/admin/labels?tab=answers`,
+    })),
+    data.comments.map((comment): SearchResultRowWithoutId => ({
+      category: 'コメント',
+      title: comment.content,
+      url: `/admin/forms/${comment.form_id}/answers/${comment.answer_id}`,
+    })),
   ]
     .flat()
     .map((row, index) => ({ ...row, id: index }));
