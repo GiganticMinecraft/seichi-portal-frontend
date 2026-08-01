@@ -19,7 +19,7 @@ const AuthorName = ({ author }: { author: Author }) => {
         sx={{ alignItems: 'center', flexWrap: 'wrap' }}
       >
         <Typography>{author.temporary_user.name}</Typography>
-        <Chip label="未ログイン" size="small" color="default" />
+        <Chip label="未サインイン" size="small" color="default" />
         <Typography variant="caption" color="textSecondary">
           連絡先:{' '}
           <Box component="span" sx={{ color: 'text.primary' }}>

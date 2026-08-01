@@ -256,7 +256,7 @@ const AnswerSettings = ({
         groupOptions={groupOptions}
       />
       <FormControlLabel
-        label="未ログインユーザーの回答を許可する"
+        label="未サインインユーザーの回答を許可する"
         control={
           <Checkbox
             checked={allowTemporaryAnswers}

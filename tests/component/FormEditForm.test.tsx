@@ -77,7 +77,7 @@ describe('FormEditForm', () => {
       <FormEditForm form={form} labelOptions={[]} groupOptions={[]} />
     );
 
-    expectCheckedIcon('未ログインユーザーの回答を許可する');
+    expectCheckedIcon('未サインインユーザーの回答を許可する');
     expectCheckedIcon('回答者を隠して公開する');
     expectCheckedIcon('この質問への回答を必須にする');
   });

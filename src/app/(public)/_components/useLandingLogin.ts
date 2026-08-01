@@ -13,12 +13,12 @@ import { useRedirectLogin } from '@/app/_components/useRedirectLogin';
 import { normalizeRedirectTarget } from '@/lib/redirect';
 
 const LOGIN_ERROR_MESSAGE =
-  'ログインに失敗しました。Minecraftアカウントに紐づいたMicrosoftアカウントでサインインしてください。';
+  'サインインに失敗しました。Minecraftアカウントに紐づいたMicrosoftアカウントでサインインしてください。';
 const BACKEND_UNREACHABLE_ERROR_MESSAGE =
   'サーバーとの通信に失敗しました。しばらく時間を置いて再試行してください。';
 const RETRY_ERROR_MESSAGE =
-  'ログインに失敗しました。時間を置いて再試行してください。';
-const LOGIN_PROCESSING_ERROR_MESSAGE = 'ログイン処理に失敗しました。';
+  'サインインに失敗しました。時間を置いて再試行してください。';
+const LOGIN_PROCESSING_ERROR_MESSAGE = 'サインイン処理に失敗しました。';
 const LOGIN_REDIRECT_ERROR_MESSAGE = 'サインイン画面への遷移に失敗しました。';
 const loginRequest = {
   scopes: ['XboxLive.signin offline_access'],

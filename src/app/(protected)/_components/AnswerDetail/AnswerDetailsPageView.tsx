@@ -56,7 +56,7 @@ const AnswerDetailsPageView = ({
   const canAccessMessages = data.isAdmin || isAuthor;
   const messagesDisabled = !isAuthenticatedAuthor || !canAccessMessages;
   const messagesDisabledReason = !isAuthenticatedAuthor
-    ? '未ログインユーザーの回答のため、メッセージを送信できません'
+    ? '未サインインユーザーの回答のため、メッセージを送信できません'
     : 'この回答の管理者または投稿者本人のみメッセージを閲覧できます';
 
   return (
