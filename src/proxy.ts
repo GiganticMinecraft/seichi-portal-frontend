@@ -35,18 +35,22 @@ const isAnonymousAllowedApi = (request: NextRequest) => {
 
 const proxyToBackend = (request: NextRequest, token: string | null) => {
   const backendServerUrl = getBackendServerUrl();
-  const nextResponse = NextResponse.rewrite(
+
+  // Authorization はリクエストヘッダとして注入する。レスポンスヘッダ経由の
+  // 注入は undocumented な挙動依存であり、Bearer トークンがブラウザへの
+  // レスポンスにもエコーされてしまう。
+  const headers = new Headers(request.headers);
+  if (token) {
+    headers.set('Authorization', `Bearer ${token}`);
+  }
+
+  return NextResponse.rewrite(
     `${backendServerUrl}${request.nextUrl.pathname.replace(
       '/api/proxy',
       ''
-    )}${request.nextUrl.search}`
+    )}${request.nextUrl.search}`,
+    { request: { headers } }
   );
-
-  if (token) {
-    nextResponse.headers.set('Authorization', `Bearer ${token}`);
-  }
-
-  return nextResponse;
 };
 
 const continueWithCurrentPath = (request: NextRequest) => {
