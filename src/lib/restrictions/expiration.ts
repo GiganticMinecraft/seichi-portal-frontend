@@ -3,8 +3,7 @@ import dayjs from 'dayjs';
 import { formatString } from '@/generic/DateFormatter';
 
 export type RestrictionExpiration =
-  | { kind: 'indefinite' }
-  | { kind: 'expiresAt'; expiresAt: string };
+  { kind: 'indefinite' } | { kind: 'expiresAt'; expiresAt: string };
 
 export const toRestrictionExpiration = (
   expiresAt: string | null | undefined
