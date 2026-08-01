@@ -66,6 +66,7 @@ const otherUserComment: AnswerComment = {
   id: 'comment-id',
   content: 'コメント本文',
   commented_by: { name: 'Alice', role: 'STANDARD_USER', uuid: 'other-user' },
+  source: 'PORTAL',
   timestamp: '2024-01-01T00:00:00Z',
 };
 

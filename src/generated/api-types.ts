@@ -749,17 +749,27 @@ export interface components {
             /** @enum {string} */
             type: "TEMPORARY_USER";
         } | {
+            redmine_user: components["schemas"]["RedmineUserSnapshotResponse"];
+            /** @enum {string} */
+            type: "IMPORTED_FROM_REDMINE";
+        } | {
             /** @enum {string} */
             type: "ANONYMOUS";
         };
         AnswerComment: {
-            commented_by: components["schemas"]["User"];
+            commented_by?: null | components["schemas"]["User"];
             content: string;
             /** Format: uuid */
             id: string;
+            redmine_author_snapshot?: null | components["schemas"]["RedmineUserSnapshotResponse"];
+            /** Format: int64 */
+            redmine_journal_id?: number | null;
+            source: components["schemas"]["AnswerCommentSource"];
             /** Format: date-time */
             timestamp: string;
         };
+        /** @enum {string} */
+        AnswerCommentSource: "PORTAL" | "IMPORTED_FROM_REDMINE";
         AnswerContent: {
             answer: string;
             /** Format: uuid */
@@ -899,6 +909,8 @@ export interface components {
             id: string;
             labels: components["schemas"]["AnswerLabels"][];
             publication: components["schemas"]["AnswerPublication"];
+            /** Format: int64 */
+            redmine_issue_id?: number | null;
             /** Format: date-time */
             timestamp: string;
             title?: string | null;
@@ -1099,6 +1111,11 @@ export interface components {
             /** @enum {string} */
             question_type: "MultipleChoice";
         });
+        RedmineUserSnapshotResponse: {
+            display_name: string;
+            /** Format: int64 */
+            redmine_user_id?: number | null;
+        };
         RelatedAnswerRequest: {
             /** Format: uuid */
             answer_id: string;

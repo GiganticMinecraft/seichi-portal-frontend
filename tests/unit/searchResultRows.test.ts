@@ -72,6 +72,7 @@ const createComment = (
   form_id: 'form-id',
   commented_by: { uuid: 'user-id', name: 'ユーザー', role: 'STANDARD_USER' },
   content: 'コメント本文',
+  source: 'PORTAL',
   timestamp: '2026-06-01T10:00:00+09:00',
   ...overrides,
 });

@@ -34,6 +34,19 @@ const AuthorName = ({ author }: { author: Author }) => {
     return <Chip label="匿名" size="small" color="default" />;
   }
 
+  if (author.type === 'IMPORTED_FROM_REDMINE') {
+    return (
+      <Stack
+        direction="row"
+        spacing={1}
+        sx={{ alignItems: 'center', flexWrap: 'wrap' }}
+      >
+        <Typography>{author.redmine_user.display_name}</Typography>
+        <Chip label="Redmineから移行" size="small" color="default" />
+      </Stack>
+    );
+  }
+
   return <Typography>{author.user.name}</Typography>;
 };
 
