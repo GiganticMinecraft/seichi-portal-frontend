@@ -84,7 +84,6 @@ const Messages = (props: {
   const capabilities: ConversationCapabilities = {
     canCompose: true,
     composeLabel: 'メッセージを入力してください',
-    composeHelperText: 'Shift + Enter で改行、Enter で送信することができます。',
     emptyMessage: 'メッセージはまだありません',
     deepLinkQueryParam: 'messageId',
     entryNoun: 'メッセージ',

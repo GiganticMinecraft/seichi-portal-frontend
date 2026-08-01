@@ -21,7 +21,6 @@ type ComposerForm = {
 
 type Props = {
   label: string;
-  helperText: string;
   onSend: (body: string) => Promise<ConversationActionResult>;
   textFieldSx?: SxProps<Theme>;
 };
@@ -32,7 +31,6 @@ type Props = {
  */
 const ConversationComposer = ({
   label,
-  helperText,
   onSend,
   textFieldSx,
 }: Props) => {
@@ -94,7 +92,7 @@ const ConversationComposer = ({
               registerRef(element);
             }}
             autoFocus
-            helperText={helperText}
+            helperText="Shift + Enter で改行、Enter で送信することができます。Markdown に対応しています。"
             disabled={isSubmitting}
             sx={
               textFieldSx
