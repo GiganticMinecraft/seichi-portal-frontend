@@ -182,7 +182,7 @@ export const getAuthedTheme = () =>
           }),
         },
       },
-      Button: {
+      MuiButton: {
         styleOverrides: {
           root: ({ theme }) => ({
             textTransform: 'none'
