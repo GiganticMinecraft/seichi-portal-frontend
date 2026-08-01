@@ -10,6 +10,7 @@ import {
   Typography,
 } from '@mui/material';
 import Checkbox from '@mui/material/Checkbox';
+import { useController, useWatch } from 'react-hook-form';
 import type { Control, UseFormRegister } from 'react-hook-form';
 
 import FieldLabel from '@/app/_components/FieldLabel';
@@ -25,6 +26,15 @@ const QuestionEditor = (props: {
   questionIndex: number;
   removeDisabled: boolean;
 }) => {
+  const { field: isRequiredField } = useController({
+    control: props.control,
+    name: `questions.${props.questionIndex}.is_required`,
+  });
+  const isRequired = useWatch({
+    control: props.control,
+    name: `questions.${props.questionIndex}.is_required`,
+  });
+
   return (
     <Stack spacing={2}>
       <Typography variant="h6" component="h2" sx={{ fontWeight: 'bold' }}>
@@ -76,7 +86,10 @@ const QuestionEditor = (props: {
         label="この質問への回答を必須にする"
         control={
           <Checkbox
-            {...props.register(`questions.${props.questionIndex}.is_required`)}
+            checked={isRequired}
+            onChange={(_, checked) => {
+              isRequiredField.onChange(checked);
+            }}
           />
         }
       />

@@ -254,6 +254,19 @@ describe('form request builders', () => {
     expect(values.settings.discord_webhook_disabled).toBe(false);
   });
 
+  it('未ログイン回答の許可設定をフォーム取得レスポンスから画面内部表現へ変換する', () => {
+    const values = fromFormResponseToEditorValues(
+      createFormResponse({
+        settings: {
+          ...createFormResponse().settings,
+          allow_temporary_answers: true,
+        },
+      })
+    );
+
+    expect(values.settings.allow_temporary_answers).toBe(true);
+  });
+
   it('未知の公開設定は画面内部表現へ変換しない', () => {
     const form = createFormResponse({
       settings: {
