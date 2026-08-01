@@ -21,7 +21,6 @@ type ComposerForm = {
 
 type Props = {
   label: string;
-  helperText: string;
   onSend: (body: string) => Promise<ConversationActionResult>;
   textFieldSx?: SxProps<Theme>;
 };
@@ -30,12 +29,7 @@ type Props = {
  * 投稿入力フォームを共通化する component。
  * Enter / Shift+Enter の送信体験と送信エラー表示をここで統一する。
  */
-const ConversationComposer = ({
-  label,
-  helperText,
-  onSend,
-  textFieldSx,
-}: Props) => {
+const ConversationComposer = ({ label, onSend, textFieldSx }: Props) => {
   const {
     handleSubmit,
     register,
@@ -94,7 +88,7 @@ const ConversationComposer = ({
               registerRef(element);
             }}
             autoFocus
-            helperText={helperText}
+            helperText="Shift + Enter で改行、Enter で送信することができます。Markdown に対応しています。"
             disabled={isSubmitting}
             sx={
               textFieldSx

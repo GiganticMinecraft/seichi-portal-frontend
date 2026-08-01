@@ -30,7 +30,6 @@ const items = toItems(entries);
 const capabilities: ConversationCapabilities = {
   canCompose: false,
   composeLabel: '',
-  composeHelperText: '',
   emptyMessage: '投稿はまだありません',
   deepLinkQueryParam: 'commentId',
   entryNoun: 'コメント',

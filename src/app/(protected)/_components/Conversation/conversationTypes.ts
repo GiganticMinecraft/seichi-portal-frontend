@@ -76,7 +76,6 @@ export type ConversationListItem =
 export type ConversationCapabilities = {
   canCompose: boolean;
   composeLabel: string;
-  composeHelperText: string;
   emptyMessage: string;
   deepLinkQueryParam: ConversationDeepLinkQueryParam;
   /** エラーメッセージ等で使う、投稿を指す名詞(例: 'メッセージ' / 'コメント')。 */
