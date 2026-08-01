@@ -91,6 +91,7 @@ jobs:
           push: true
           build-args: |
             NEXT_PUBLIC_DEBUG_MODE=false
+            NEXT_PUBLIC_APP_VERSION=${{ needs.prepare.outputs.version }}
           tags: |
             ${{ steps.image.outputs.name }}:${{ needs.prepare.outputs.version }}
             ${{ steps.image.outputs.name }}:${{ github.sha }}

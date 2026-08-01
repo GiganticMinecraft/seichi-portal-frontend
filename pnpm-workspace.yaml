@@ -7,6 +7,10 @@ minimumReleaseAgeStrict: false
 minimumReleaseAgeExclude:
   # Renovate security update: next@16.1.7 || 16.2.3 || 16.2.6 || 16.2.11
   - next@16.1.7 || 16.2.3 || 16.2.6 || 16.2.11
+  # Faro 導入 (#933): 2.9.0 がリリース 7 日未満のため pnpm が自動追記
+  - '@grafana/faro-core@2.9.0'
+  - '@grafana/faro-web-sdk@2.9.0'
+  - '@grafana/faro-web-tracing@2.9.0'
 
 overrides:
   minimatch: ^10.2.5

@@ -1,7 +1,8 @@
 'use client';
 
-import * as Sentry from '@sentry/nextjs';
 import { useEffect } from 'react';
+
+import { pushError } from '@/lib/faro';
 
 type GlobalErrorProps = {
   error: Error & { digest?: string };
@@ -10,7 +11,7 @@ type GlobalErrorProps = {
 
 const GlobalError = ({ error, reset }: GlobalErrorProps) => {
   useEffect(() => {
-    Sentry.captureException(error);
+    pushError(error);
   }, [error]);
 
   return (
