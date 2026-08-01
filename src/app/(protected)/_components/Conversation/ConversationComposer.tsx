@@ -29,11 +29,7 @@ type Props = {
  * 投稿入力フォームを共通化する component。
  * Enter / Shift+Enter の送信体験と送信エラー表示をここで統一する。
  */
-const ConversationComposer = ({
-  label,
-  onSend,
-  textFieldSx,
-}: Props) => {
+const ConversationComposer = ({ label, onSend, textFieldSx }: Props) => {
   const {
     handleSubmit,
     register,
