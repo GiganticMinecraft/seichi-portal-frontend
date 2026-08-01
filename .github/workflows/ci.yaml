@@ -29,6 +29,17 @@ jobs:
       - name: Type check
         run: pnpm run type-check
 
+  codegen-check:
+    name: OpenAPI codegen check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: ./.github/actions/setup
+      # backend main の docs/openapi.json から型を再生成し、src/generated/ に
+      # 差分が出ないこと（生成物が最新であること）を検証する。
+      - name: Check generated API types are up to date
+        run: pnpm run codegen:check
+
   unit-test:
     name: Unit test
     runs-on: ubuntu-latest

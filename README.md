@@ -18,6 +18,16 @@ pnpm codegen
 OPENAPI_URL=http://localhost:9000/api-docs/openapi.json pnpm codegen
 ```
 
+### 生成物の整合性チェック
+
+`src/generated/` が backend `main` の OpenAPI スキーマと一致しているかは、CI（`OpenAPI codegen check` ジョブ）で `pnpm codegen:check` により自動検証されます。ローカルでも同じコマンドで確認できます。
+
+```sh
+pnpm codegen:check
+```
+
+backend 側でスキーマが更新されると、このチェックは生成物が再生成されるまで失敗します。その場合は `pnpm codegen` を実行して `src/generated/` の差分をコミットしてください。
+
 ## 開発環境とミドルウェア
 
 [CONTRIBUTING.md](./CONTRIBUTING.md)を参照してください。
