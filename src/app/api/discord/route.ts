@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
-import { getDiscordConfig } from '@/env.server';
+import { getDiscordConfig, getMsalOrigin } from '@/env.server';
 import {
   getPostLoginRedirectFromRequest,
   setPostLoginRedirectCookie,
@@ -36,10 +36,11 @@ const clearDiscordOauthStateCookie = (response: NextResponse) => {
 
 export async function GET(req: NextRequest) {
   const { clientId, clientSecret, redirectUri } = getDiscordConfig();
+  const msalOrigin = getMsalOrigin();
   const seichiPortalToken = await getCachedToken(req.cookies);
 
   if (!seichiPortalToken) {
-    const response = NextResponse.redirect(`${req.nextUrl.origin}/login`);
+    const response = NextResponse.redirect(`${msalOrigin}/login`);
     setPostLoginRedirectCookie(response, getPostLoginRedirectFromRequest(req));
     return response;
   }
@@ -66,7 +67,7 @@ export async function GET(req: NextRequest) {
 
   const storedState = req.cookies.get(DISCORD_OAUTH_STATE_COOKIE)?.value;
   if (!state || !storedState || state !== storedState) {
-    const response = NextResponse.redirect(`${req.nextUrl.origin}/badrequest`);
+    const response = NextResponse.redirect(`${msalOrigin}/badrequest`);
     clearDiscordOauthStateCookie(response);
     return response;
   }
@@ -131,7 +132,7 @@ export async function GET(req: NextRequest) {
       return response;
     }
 
-    const response = NextResponse.redirect(`${req.nextUrl.origin}/`);
+    const response = NextResponse.redirect(`${msalOrigin}/`);
     clearDiscordOauthStateCookie(response);
     return response;
   } catch (error) {
