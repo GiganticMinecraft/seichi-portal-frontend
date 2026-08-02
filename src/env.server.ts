@@ -33,6 +33,13 @@ export const getOtelSdkDisabled = () =>
   otelSdkDisabledSchema.parse(process.env['OTEL_SDK_DISABLED'] || undefined) ===
   'true';
 
+const pyroscopeServerAddressSchema = z.url().optional();
+
+export const getPyroscopeServerAddress = () =>
+  pyroscopeServerAddressSchema.parse(
+    process.env['PYROSCOPE_SERVER_ADDRESS'] || undefined
+  );
+
 const msalRedirectUrlSchema = z.url().refine(
   (value) => {
     const protocol = new URL(value).protocol;
