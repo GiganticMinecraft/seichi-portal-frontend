@@ -18,8 +18,10 @@ overrides:
   minimatch: ^10.2.5
 
 allowBuilds:
-  # @pyroscope/nodejs の native 依存 (プロファイラ本体)
-  '@datadog/pprof': true
+  # @pyroscope/nodejs の native 依存。現行版の install script は `exit 0` で
+  # prebuild 同梱のためビルド不要。将来版で本当に script が必要になった時点で
+  # 再審査する (安易に true にしない)
+  '@datadog/pprof': false
   esbuild: true
   lefthook: true
   sharp: true

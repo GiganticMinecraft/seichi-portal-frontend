@@ -33,21 +33,35 @@ const stripUrlQuerySpanProcessor: SpanProcessor = {
 // @pyroscope/nodejs は native モジュール (@datadog/pprof) に依存するため、
 // Node.js ランタイムでのみ動的 import する（edge バンドルへ含めない。
 // next.config.js の serverExternalPackages も参照）。
-const startPyroscope = async () => {
+//
+// Next.js は register() 内の例外を再 throw してサーバー起動自体を失敗させる。
+// プロファイラは任意機能なので、native モジュールのロード失敗や設定不備では
+// エラーログのみ残して本体と OTel 計装の起動を続行させる。
+export const startPyroscope = async () => {
   if (process.env['NEXT_RUNTIME'] !== 'nodejs') return;
 
-  const serverAddress = getPyroscopeServerAddress();
-  if (serverAddress === undefined) return;
+  try {
+    const serverAddress = getPyroscopeServerAddress();
+    if (serverAddress === undefined) return;
 
-  const { init, start } = await import('@pyroscope/nodejs');
-  init({
-    serverAddress,
-    appName:
-      process.env['PYROSCOPE_APPLICATION_NAME'] ?? 'seichi-portal-frontend',
-    // CPU プロファイルの取得に必要
-    wall: { collectCpuTime: true },
-  });
-  start();
+    const { init, start } = await import('@pyroscope/nodejs');
+    init({
+      serverAddress,
+      appName:
+        process.env['PYROSCOPE_APPLICATION_NAME'] ?? 'seichi-portal-frontend',
+      // CPU プロファイルの取得に必要
+      wall: { collectCpuTime: true },
+    });
+    start();
+  } catch (error) {
+    const cause = error instanceof Error ? error : new Error(String(error));
+    console.error(
+      JSON.stringify({
+        msg: 'failed to start pyroscope profiler; continuing without profiling',
+        error: { message: cause.message, stack: cause.stack },
+      })
+    );
+  }
 };
 
 export const register = async () => {
