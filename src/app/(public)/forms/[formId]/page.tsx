@@ -46,20 +46,20 @@ const Home = async ({ params }: { params: Promise<{ formId: string }> }) => {
   const { formId } = await params;
 
   // ログイン時は認証ヘッダ付き、未ログイン時は匿名でフォームを取得する。
-  const form = await requireBackendData(
-    serverApiClient.GET('/api/v1/forms/{form_id}', {
-      ...(isAuthenticated
-        ? { headers: authorizationHeader(session.token) }
-        : {}),
-      params: {
-        path: { form_id: formId },
-      },
-    })
-  );
-
-  const restriction = isAuthenticated
-    ? await fetchOwnRestriction(session)
-    : null;
+  // restriction はフォーム取得結果に依存しないため並列で取得する。
+  const [form, restriction] = await Promise.all([
+    requireBackendData(
+      serverApiClient.GET('/api/v1/forms/{form_id}', {
+        ...(isAuthenticated
+          ? { headers: authorizationHeader(session.token) }
+          : {}),
+        params: {
+          path: { form_id: formId },
+        },
+      })
+    ),
+    isAuthenticated ? fetchOwnRestriction(session) : Promise.resolve(null),
+  ]);
 
   return (
     <AnswerForm
