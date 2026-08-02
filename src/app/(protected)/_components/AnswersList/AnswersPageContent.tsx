@@ -1,10 +1,11 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 
 import { useApiQuery } from '@/app/_swr/useApiQuery';
 import { useInfiniteApiQuery } from '@/app/_swr/useInfiniteApiQuery';
+import { useDebouncedSearch } from '@/hooks/useDebouncedSearch';
 import type {
   GetAnswerLabelsResponse,
   GetFormAnswersPageResponse,
@@ -14,8 +15,6 @@ import type {
 import { filterAnswers } from './answerListFilters';
 import { toAnswerListRows } from './answerListRows';
 import AnswersView from './AnswersView';
-
-const SEARCH_DEBOUNCE_MS = 300;
 
 const AnswersPageContent = ({
   form,
@@ -27,32 +26,9 @@ const AnswersPageContent = ({
   answersBasePath: string;
 }) => {
   const router = useRouter();
-  const [search, setSearch] = useState('');
-  const [debouncedSearch, setDebouncedSearch] = useState('');
+  const { search, debouncedSearch, isSearching, handleSearchChange } =
+    useDebouncedSearch();
   const [labelFilter, setLabelFilter] = useState<GetAnswerLabelsResponse>([]);
-
-  useEffect(() => {
-    const trimmed = search.trim();
-    if (trimmed === '') {
-      return;
-    }
-
-    const timer = setTimeout(() => {
-      setDebouncedSearch(trimmed);
-    }, SEARCH_DEBOUNCE_MS);
-    return () => {
-      clearTimeout(timer);
-    };
-  }, [search]);
-
-  const handleSearchChange = (value: string) => {
-    setSearch(value);
-    if (value.trim() === '') {
-      setDebouncedSearch('');
-    }
-  };
-
-  const isSearching = debouncedSearch !== '';
 
   const {
     items: answers,

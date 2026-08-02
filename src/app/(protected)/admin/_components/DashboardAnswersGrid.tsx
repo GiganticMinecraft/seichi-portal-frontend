@@ -14,6 +14,36 @@ import type { DashboardAnswerRow } from '../_lib/dashboardAnswerRows';
 
 const SCROLL_END_THRESHOLD_PX = 200;
 
+const columns: GridColDef<DashboardAnswerRow>[] = [
+  { field: 'category', headerName: '種別', minWidth: 160, flex: 0.8 },
+  { field: 'title', headerName: 'タイトル', minWidth: 240, flex: 1.5 },
+  {
+    field: 'labels',
+    headerName: 'ラベル',
+    minWidth: 200,
+    flex: 1,
+    sortable: false,
+    renderCell: (
+      params: GridRenderCellParams<
+        DashboardAnswerRow,
+        DashboardAnswerRow['labels']
+      >
+    ) => (
+      <Stack
+        direction="row"
+        spacing={0.5}
+        useFlexGap
+        sx={{ flexWrap: 'wrap', py: 0.75 }}
+      >
+        {params.value?.map((label) => (
+          <Chip key={label.id} label={label.name} size="small" />
+        ))}
+      </Stack>
+    ),
+  },
+  { field: 'date', headerName: '日付', minWidth: 200, flex: 0.8 },
+];
+
 const DashboardAnswersGrid = ({
   rows,
   hasMore,
@@ -57,35 +87,17 @@ const DashboardAnswersGrid = ({
     onRowClick(params.row);
   };
 
-  const columns: GridColDef[] = [
-    { field: 'category', headerName: '種別', minWidth: 160, flex: 0.8 },
-    { field: 'title', headerName: 'タイトル', minWidth: 240, flex: 1.5 },
-    {
-      field: 'labels',
-      headerName: 'ラベル',
-      minWidth: 200,
-      flex: 1,
-      sortable: false,
-      renderCell: (
-        params: GridRenderCellParams<
-          DashboardAnswerRow,
-          DashboardAnswerRow['labels']
-        >
-      ) => (
-        <Stack
-          direction="row"
-          spacing={0.5}
-          useFlexGap
-          sx={{ flexWrap: 'wrap', py: 0.75 }}
-        >
-          {params.value?.map((label) => (
-            <Chip key={label.id} label={label.name} size="small" />
-          ))}
-        </Stack>
-      ),
-    },
-    { field: 'date', headerName: '日付', minWidth: 200, flex: 0.8 },
-  ];
+  const slots = React.useMemo(
+    () => ({
+      footer: () =>
+        isLoadingMore ? (
+          <Box sx={{ display: 'flex', justifyContent: 'center', p: 1 }}>
+            <CircularProgress size={20} />
+          </Box>
+        ) : null,
+    }),
+    [isLoadingMore]
+  );
 
   return (
     <Box sx={{ position: 'relative' }}>
@@ -102,14 +114,7 @@ const DashboardAnswersGrid = ({
           },
         }}
         disableRowSelectionOnClick
-        slots={{
-          footer: () =>
-            isLoadingMore ? (
-              <Box sx={{ display: 'flex', justifyContent: 'center', p: 1 }}>
-                <CircularProgress size={20} />
-              </Box>
-            ) : null,
-        }}
+        slots={slots}
       />
     </Box>
   );

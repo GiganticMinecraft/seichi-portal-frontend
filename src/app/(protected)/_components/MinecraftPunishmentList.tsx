@@ -14,8 +14,8 @@ const MinecraftPunishmentList = ({
     </Typography>
   ) : (
     <Stack divider={<Divider />} spacing={1.5}>
-      {punishments.map((item, index) => (
-        <Stack key={index} spacing={0.5}>
+      {punishments.map((item) => (
+        <Stack key={`${item.punished_at}-${item.reason}`} spacing={0.5}>
           <Typography component="p">
             <strong>理由:</strong> {item.reason}
           </Typography>
