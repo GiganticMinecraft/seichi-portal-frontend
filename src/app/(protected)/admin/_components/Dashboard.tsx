@@ -17,6 +17,7 @@ import AnswerLabelFilter from '@/app/(protected)/_components/AnswersList/AnswerL
 import { filterAnswers } from '@/app/(protected)/_components/AnswersList/answerListFilters';
 import { useApiQuery } from '@/app/_swr/useApiQuery';
 import { useInfiniteApiQuery } from '@/app/_swr/useInfiniteApiQuery';
+import { useDebouncedSearch } from '@/hooks/useDebouncedSearch';
 import type {
   GetAnswerLabelsResponse,
   GetAnswersPageResponse,
@@ -31,45 +32,20 @@ import DashboardAnswersGrid from './DashboardAnswersGrid';
 import DashboardDateRangeFilter from './DashboardDateRangeFilter';
 import DashboardFormFilter from './DashboardFormFilter';
 
-const SEARCH_DEBOUNCE_MS = 300;
-
 const DataTable = (props: {
   initialAnswers: GetAnswersPageResponse;
   forms: GetFormsResponse;
 }) => {
   const router = useRouter();
 
-  const [search, setSearch] = React.useState('');
-  const [debouncedSearch, setDebouncedSearch] = React.useState('');
+  const { search, debouncedSearch, isSearching, handleSearchChange } =
+    useDebouncedSearch();
   const [formFilter, setFormFilter] = React.useState<GetFormsResponse>([]);
   const [labelFilter, setLabelFilter] = React.useState<GetAnswerLabelsResponse>(
     []
   );
   const [startDate, setStartDate] = React.useState<Dayjs | null>(null);
   const [endDate, setEndDate] = React.useState<Dayjs | null>(null);
-
-  React.useEffect(() => {
-    const trimmed = search.trim();
-    if (trimmed === '') {
-      return;
-    }
-
-    const timer = setTimeout(() => {
-      setDebouncedSearch(trimmed);
-    }, SEARCH_DEBOUNCE_MS);
-    return () => {
-      clearTimeout(timer);
-    };
-  }, [search]);
-
-  const handleSearchChange = (value: string) => {
-    setSearch(value);
-    if (value.trim() === '') {
-      setDebouncedSearch('');
-    }
-  };
-
-  const isSearching = debouncedSearch !== '';
 
   const {
     items: answers,

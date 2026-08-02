@@ -12,7 +12,6 @@ import {
 } from '@mui/material';
 import { alpha } from '@mui/material/styles';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
 
 import {
   toSearchResultRows,
@@ -20,29 +19,18 @@ import {
   type SearchResultRow,
 } from '@/app/(protected)/admin/_lib/searchResultRows';
 import { useApiQuery } from '@/app/_swr/useApiQuery';
+import { useDebouncedSearch } from '@/hooks/useDebouncedSearch';
 
-const SEARCH_DEBOUNCE_MS = 300;
 const SUGGESTION_LIMIT = 8;
 
 const SearchField = () => {
   const router = useRouter();
-  const [searchValue, setSearchValue] = useState('');
-  const [debouncedValue, setDebouncedValue] = useState('');
-
-  useEffect(() => {
-    const trimmed = searchValue.trim();
-    if (trimmed === '') {
-      return;
-    }
-    const timer = setTimeout(() => {
-      setDebouncedValue(trimmed);
-    }, SEARCH_DEBOUNCE_MS);
-    return () => {
-      clearTimeout(timer);
-    };
-  }, [searchValue]);
-
-  const isSuggesting = debouncedValue !== '';
+  const {
+    search: searchValue,
+    debouncedSearch: debouncedValue,
+    isSearching: isSuggesting,
+    handleSearchChange: handleInputChange,
+  } = useDebouncedSearch();
 
   const { data } = useApiQuery(
     '/api/v1/search',
@@ -54,13 +42,6 @@ const SearchField = () => {
     isSuggesting && data
       ? toSearchResultRows(data).slice(0, SUGGESTION_LIMIT)
       : [];
-
-  const handleInputChange = (value: string) => {
-    setSearchValue(value);
-    if (value.trim() === '') {
-      setDebouncedValue('');
-    }
-  };
 
   const goToSearchPage = (value: string) => {
     if (value.trim() === '') {

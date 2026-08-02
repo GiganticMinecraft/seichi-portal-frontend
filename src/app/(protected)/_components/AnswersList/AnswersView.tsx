@@ -28,6 +28,32 @@ import type { AnswerListRow } from './answerListRows';
 
 const SCROLL_END_THRESHOLD_PX = 200;
 
+const columns: GridColDef<AnswerListRow>[] = [
+  { field: 'title', headerName: 'タイトル', minWidth: 240, flex: 1.5 },
+  { field: 'date', headerName: '投稿日時', minWidth: 200, flex: 0.8 },
+  {
+    field: 'labels',
+    headerName: 'ラベル',
+    minWidth: 200,
+    flex: 1,
+    sortable: false,
+    renderCell: (
+      params: GridRenderCellParams<AnswerListRow, AnswerListRow['labels']>
+    ) => (
+      <Stack
+        direction="row"
+        spacing={0.5}
+        useFlexGap
+        sx={{ flexWrap: 'wrap', py: 0.75 }}
+      >
+        {params.value?.map((label) => (
+          <Chip key={label.id} label={label.name} size="small" />
+        ))}
+      </Stack>
+    ),
+  },
+];
+
 const AnswersView = ({
   formTitle,
   rows,
@@ -83,31 +109,17 @@ const AnswersView = ({
     onAnswerClick(String(params.id));
   };
 
-  const columns: GridColDef[] = [
-    { field: 'title', headerName: 'タイトル', minWidth: 240, flex: 1.5 },
-    { field: 'date', headerName: '投稿日時', minWidth: 200, flex: 0.8 },
-    {
-      field: 'labels',
-      headerName: 'ラベル',
-      minWidth: 200,
-      flex: 1,
-      sortable: false,
-      renderCell: (
-        params: GridRenderCellParams<AnswerListRow, AnswerListRow['labels']>
-      ) => (
-        <Stack
-          direction="row"
-          spacing={0.5}
-          useFlexGap
-          sx={{ flexWrap: 'wrap', py: 0.75 }}
-        >
-          {params.value?.map((label) => (
-            <Chip key={label.id} label={label.name} size="small" />
-          ))}
-        </Stack>
-      ),
-    },
-  ];
+  const slots = React.useMemo(
+    () => ({
+      footer: () =>
+        isLoadingMore ? (
+          <Box sx={{ display: 'flex', justifyContent: 'center', p: 1 }}>
+            <CircularProgress size={20} />
+          </Box>
+        ) : null,
+    }),
+    [isLoadingMore]
+  );
 
   return (
     <Box sx={{ width: '100%' }}>
@@ -169,14 +181,7 @@ const AnswersView = ({
             },
           }}
           disableRowSelectionOnClick
-          slots={{
-            footer: () =>
-              isLoadingMore ? (
-                <Box sx={{ display: 'flex', justifyContent: 'center', p: 1 }}>
-                  <CircularProgress size={20} />
-                </Box>
-              ) : null,
-          }}
+          slots={slots}
         />
       </Box>
     </Box>

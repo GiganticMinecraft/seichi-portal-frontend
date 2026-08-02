@@ -6,13 +6,12 @@ import { useEffect, useState } from 'react';
 import InfiniteScrollSentinel from '@/app/_components/InfiniteScrollSentinel';
 import { useApiQuery } from '@/app/_swr/useApiQuery';
 import { useInfiniteApiQuery } from '@/app/_swr/useInfiniteApiQuery';
+import { useDebouncedSearch } from '@/hooks/useDebouncedSearch';
 import type { GetUserListPageResponse } from '@/lib/api-types';
 
 import { toUserListRows } from '../../_lib/userListRows';
 
 import UsersView from './UsersView';
-
-const SEARCH_DEBOUNCE_MS = 300;
 
 const UsersPageContent = ({
   initialUsers,
@@ -27,18 +26,15 @@ const UsersPageContent = ({
   const autoOpenUserId = searchParams.get('userId');
   const autoOpenUserName = searchParams.get('userName');
 
-  const [search, setSearch] = useState(autoOpenUserName ?? '');
-  const [debouncedSearch, setDebouncedSearch] = useState(
-    autoOpenUserName ?? ''
-  );
+  const { search, debouncedSearch, isSearching, handleSearchChange, setValue } =
+    useDebouncedSearch(autoOpenUserName ?? '');
 
   const [prevAutoOpenUserName, setPrevAutoOpenUserName] =
     useState(autoOpenUserName);
   if (autoOpenUserName !== prevAutoOpenUserName) {
     setPrevAutoOpenUserName(autoOpenUserName);
     if (autoOpenUserName) {
-      setSearch(autoOpenUserName);
-      setDebouncedSearch(autoOpenUserName);
+      setValue(autoOpenUserName);
     }
   }
 
@@ -47,29 +43,6 @@ const UsersPageContent = ({
       router.replace(pathname);
     }
   }, [autoOpenUserId, pathname, router]);
-
-  useEffect(() => {
-    const trimmed = search.trim();
-    if (trimmed === '') {
-      return;
-    }
-
-    const timer = setTimeout(() => {
-      setDebouncedSearch(trimmed);
-    }, SEARCH_DEBOUNCE_MS);
-    return () => {
-      clearTimeout(timer);
-    };
-  }, [search]);
-
-  const handleSearchChange = (value: string) => {
-    setSearch(value);
-    if (value.trim() === '') {
-      setDebouncedSearch('');
-    }
-  };
-
-  const isSearching = debouncedSearch !== '';
 
   const {
     items: users,

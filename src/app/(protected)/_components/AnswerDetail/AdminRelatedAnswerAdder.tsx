@@ -2,14 +2,12 @@
 
 import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
-import { useEffect, useState } from 'react';
 
 import { useApiQuery } from '@/app/_swr/useApiQuery';
+import { useDebouncedSearch } from '@/hooks/useDebouncedSearch';
 import { useRelatedAnswerActions } from '@/hooks/useRelatedAnswerActions';
 import type { AnswerSearchResponse } from '@/lib/api-types';
 import { resolveAnswerTitle } from '@/lib/forms/answerTitle';
-
-const SEARCH_DEBOUNCE_MS = 300;
 
 type SearchedAnswer = AnswerSearchResponse['answers'][number];
 
@@ -22,30 +20,8 @@ const AdminRelatedAnswerAdder = ({
   answerId: string;
   excludedAnswerIds: string[];
 }) => {
-  const [search, setSearch] = useState('');
-  const [debouncedSearch, setDebouncedSearch] = useState('');
+  const { search, debouncedSearch, handleSearchChange } = useDebouncedSearch();
   const { addRelatedAnswer } = useRelatedAnswerActions(formId, answerId);
-
-  useEffect(() => {
-    const trimmed = search.trim();
-    if (trimmed === '') {
-      return;
-    }
-
-    const timer = setTimeout(() => {
-      setDebouncedSearch(trimmed);
-    }, SEARCH_DEBOUNCE_MS);
-    return () => {
-      clearTimeout(timer);
-    };
-  }, [search]);
-
-  const handleSearchChange = (value: string) => {
-    setSearch(value);
-    if (value.trim() === '') {
-      setDebouncedSearch('');
-    }
-  };
 
   const { data, isLoading } = useApiQuery(
     '/api/v1/search/answers',
