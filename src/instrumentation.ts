@@ -3,7 +3,11 @@ import type { SpanProcessor } from '@opentelemetry/sdk-trace-base';
 import { registerOTel } from '@vercel/otel';
 import type { Instrumentation } from 'next';
 
-import { getOtelExporterOtlpEndpoint, getOtelSdkDisabled } from '@/env.server';
+import {
+  getOtelExporterOtlpEndpoint,
+  getOtelSdkDisabled,
+  getPyroscopeServerAddress,
+} from '@/env.server';
 
 // Next.js は http.target にクエリ付きの生 URL を入れるため、クエリパラメータが
 // トレース基盤へ漏れないよう落とす。
@@ -24,7 +28,45 @@ const stripUrlQuerySpanProcessor: SpanProcessor = {
   shutdown: () => Promise.resolve(),
 };
 
-export const register = () => {
+// Grafana Pyroscope への継続プロファイリング (push)。
+// PYROSCOPE_SERVER_ADDRESS 未設定（ローカル dev など）では無効。
+// @pyroscope/nodejs は native モジュール (@datadog/pprof) に依存するため、
+// Node.js ランタイムでのみ動的 import する（edge バンドルへ含めない。
+// next.config.js の serverExternalPackages も参照）。
+//
+// Next.js は register() 内の例外を再 throw してサーバー起動自体を失敗させる。
+// プロファイラは任意機能なので、native モジュールのロード失敗や設定不備では
+// エラーログのみ残して本体と OTel 計装の起動を続行させる。
+export const startPyroscope = async () => {
+  if (process.env['NEXT_RUNTIME'] !== 'nodejs') return;
+
+  try {
+    const serverAddress = getPyroscopeServerAddress();
+    if (serverAddress === undefined) return;
+
+    const { init, start } = await import('@pyroscope/nodejs');
+    init({
+      serverAddress,
+      appName:
+        process.env['PYROSCOPE_APPLICATION_NAME'] ?? 'seichi-portal-frontend',
+      // CPU プロファイルの取得に必要
+      wall: { collectCpuTime: true },
+    });
+    start();
+  } catch (error) {
+    const cause = error instanceof Error ? error : new Error(String(error));
+    console.error(
+      JSON.stringify({
+        msg: 'failed to start pyroscope profiler; continuing without profiling',
+        error: { message: cause.message, stack: cause.stack },
+      })
+    );
+  }
+};
+
+export const register = async () => {
+  await startPyroscope();
+
   // @vercel/otel はエンドポイント未設定でも localhost:4318 へ送信しようとする
   // ため、未設定時（ローカル dev など）は明示的に計装を無効化する。
   if (getOtelSdkDisabled()) return;
