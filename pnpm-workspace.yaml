@@ -15,7 +15,7 @@ minimumReleaseAgeExclude:
   - '@pyroscope/nodejs@0.6.2'
 
 overrides:
-  minimatch: ^10.2.5
+  minimatch: ^10.2.6
 
 allowBuilds:
   # @pyroscope/nodejs の native 依存。現行版の install script は `exit 0` で
