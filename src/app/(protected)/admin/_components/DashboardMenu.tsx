@@ -1,19 +1,88 @@
 'use client';
 
-import { Star } from '@mui/icons-material';
 import {
+  ExpandLess,
+  ExpandMore,
+  Groups,
+  Label,
+  Star,
+} from '@mui/icons-material';
+import {
+  Box,
   Typography,
   MenuList,
   MenuItem,
   ListItemIcon,
+  IconButton,
+  Collapse,
   Divider,
 } from '@mui/material';
 import Drawer from '@mui/material/Drawer';
 import NextLink from 'next/link';
+import type { ReactNode } from 'react';
+import { useState } from 'react';
 
 import { AUTCHED_DRAWER_WIDTH_PX } from '../../layoutConstants';
 
+type MenuChild = {
+  label: string;
+  url: string;
+  icon: ReactNode;
+};
+
+type MenuNode = {
+  label: string;
+  url: string;
+  icon: ReactNode;
+  children?: MenuChild[];
+};
+
+const MENU_ITEMS: MenuNode[] = [
+  { label: 'Dashboard', url: '/admin', icon: <Star /> },
+  {
+    label: 'Forms',
+    url: '/admin/forms',
+    icon: <Star />,
+    children: [
+      {
+        label: 'ラベルの管理',
+        url: '/admin/labels?tab=forms',
+        icon: <Label fontSize="small" />,
+      },
+    ],
+  },
+  {
+    label: 'Users',
+    url: '/admin/users',
+    icon: <Star />,
+    children: [
+      {
+        label: 'グループの管理',
+        url: '/admin/groups',
+        icon: <Groups fontSize="small" />,
+      },
+    ],
+  },
+  { label: 'Webhooks', url: '/admin/webhooks', icon: <Star /> },
+];
+
 const DashboardMenu = () => {
+  const [expandedUrls, setExpandedUrls] = useState<ReadonlySet<string>>(
+    new Set()
+  );
+
+  const toggleExpanded = (url: string) => {
+    setExpandedUrls((prev) => {
+      const next = new Set(prev);
+      if (next.has(url)) {
+        next.delete(url);
+      } else {
+        next.add(url);
+      }
+      return next;
+    });
+  };
+
   return (
     <Drawer
       variant="permanent"
@@ -31,41 +100,81 @@ const DashboardMenu = () => {
         Menu
       </Typography>
       <MenuList>
-        {[
-          {
-            label: 'Dashboard',
-            url: '/admin',
-          },
-          {
-            label: 'Forms',
-            url: '/admin/forms',
-          },
-          {
-            label: 'Users',
-            url: '/admin/users',
-          },
-          {
-            label: 'Webhooks',
-            url: '/admin/webhooks',
-          },
-        ].map((value) => {
+        {MENU_ITEMS.map((item) => {
+          const expanded = expandedUrls.has(item.url);
+
           return (
-            <MenuItem
-              key={value.url}
-              component={NextLink}
-              href={value.url}
-              sx={{ color: 'text.primary', textDecoration: 'none' }}
-            >
-              <ListItemIcon
-                sx={{
-                  color: 'text.secondary',
-                  paddingRight: '32px',
-                }}
-              >
-                <Star />
-              </ListItemIcon>
-              {value.label}
-            </MenuItem>
+            <Box key={item.url}>
+              <MenuItem sx={{ color: 'text.primary', padding: 0 }}>
+                <Box
+                  component={NextLink}
+                  href={item.url}
+                  sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    flex: 1,
+                    minWidth: 0,
+                    color: 'inherit',
+                    textDecoration: 'none',
+                    px: 2,
+                    py: '6px',
+                  }}
+                >
+                  <ListItemIcon
+                    sx={{
+                      color: 'text.secondary',
+                      paddingRight: '32px',
+                    }}
+                  >
+                    {item.icon}
+                  </ListItemIcon>
+                  {item.label}
+                </Box>
+                {item.children && (
+                  <IconButton
+                    size="small"
+                    aria-label={`${item.label}のメニューを${
+                      expanded ? '折りたたむ' : '展開する'
+                    }`}
+                    aria-expanded={expanded}
+                    onClick={() => {
+                      toggleExpanded(item.url);
+                    }}
+                    sx={{ mr: 1 }}
+                  >
+                    {expanded ? <ExpandLess /> : <ExpandMore />}
+                  </IconButton>
+                )}
+              </MenuItem>
+              {item.children && (
+                <Collapse in={expanded} timeout="auto" unmountOnExit>
+                  <MenuList disablePadding>
+                    {item.children.map((child) => (
+                      <MenuItem
+                        key={child.url}
+                        component={NextLink}
+                        href={child.url}
+                        sx={{
+                          color: 'text.primary',
+                          textDecoration: 'none',
+                          pl: 4,
+                        }}
+                      >
+                        <ListItemIcon
+                          sx={{
+                            color: 'text.secondary',
+                            paddingRight: '32px',
+                          }}
+                        >
+                          {child.icon}
+                        </ListItemIcon>
+                        {child.label}
+                      </MenuItem>
+                    ))}
+                  </MenuList>
+                </Collapse>
+              )}
+            </Box>
           );
         })}
       </MenuList>
