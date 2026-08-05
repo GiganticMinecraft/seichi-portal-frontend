@@ -25,6 +25,7 @@ import type {
 
 import type { FormEditorValues } from '../../_schema/formEditorSchema';
 
+import AnswerGroupField from './AnswerGroupField';
 import FormGroupField from './FormGroupField';
 import FormLabelField from './FormLabelField';
 
@@ -189,10 +190,6 @@ const AnswerSettings = ({
     control,
     name: 'settings.hide_author',
   });
-  const allowTemporaryAnswers = useWatch({
-    control,
-    name: 'settings.allow_temporary_answers',
-  });
   const { field: answerVisibilityField } = useController({
     control,
     name: 'settings.answer_visibility',
@@ -248,23 +245,10 @@ const AnswerSettings = ({
             : '一般ユーザーには回答者を匿名として表示します。管理者には従来どおり回答者情報が表示されます。'}
         </Typography>
       </Stack>
-      <FormGroupField
+      <AnswerGroupField
         control={control}
-        name="settings.answer_group_ids"
-        label="回答を投稿・閲覧できるユーザーグループ"
-        helperText="指定すると、選択したグループに所属するユーザーのみがこのフォームに回答したり、回答（公開設定が「公開」の場合）を閲覧したりできるようになります。未指定の場合は全員が対象になります。"
+        setValue={setValue}
         groupOptions={groupOptions}
-      />
-      <FormControlLabel
-        label="未サインインユーザーの回答を許可する"
-        control={
-          <Checkbox
-            checked={allowTemporaryAnswers}
-            onChange={(_, checked) => {
-              setValue('settings.allow_temporary_answers', checked);
-            }}
-          />
-        }
       />
       <Stack spacing={0.5}>
         <FieldLabel label="デフォルトの回答タイトル" />

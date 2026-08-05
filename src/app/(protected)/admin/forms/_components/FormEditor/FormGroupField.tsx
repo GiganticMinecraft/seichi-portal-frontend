@@ -12,7 +12,7 @@ import type { FormEditorValues } from '../../_schema/formEditorSchema';
 
 const FormGroupField = (props: {
   control: Control<FormEditorValues>;
-  name: 'settings.allowed_group_ids' | 'settings.answer_group_ids';
+  name: 'settings.allowed_group_ids';
   label: string;
   helperText: string;
   groupOptions: GetUserGroupsResponse;
@@ -34,6 +34,7 @@ const FormGroupField = (props: {
       disabled={props.disabled}
       options={props.groupOptions}
       getOptionLabel={(option) => option.name}
+      getOptionKey={(option) => option.id}
       value={selectedGroups}
       isOptionEqualToValue={(option, value) => option.id === value.id}
       renderOption={(renderProps, option) => {
