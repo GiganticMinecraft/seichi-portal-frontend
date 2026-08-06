@@ -2,6 +2,7 @@
 
 import { Button, Chip, Stack, TextField, Typography } from '@mui/material';
 import { useState } from 'react';
+import { match } from 'ts-pattern';
 
 import FieldLabel from '@/app/_components/FieldLabel';
 
@@ -26,20 +27,24 @@ const WebhookUrlField = ({
 
   const hasPendingValue = value.trim() !== '';
 
-  const chipLabel = isPendingDelete
-    ? '削除予定'
-    : hasPendingValue
-      ? '変更予定'
-      : enabled
-        ? '設定済み'
-        : '未設定';
-  const chipColor = isPendingDelete
-    ? 'error'
-    : hasPendingValue
-      ? 'info'
-      : enabled
-        ? 'success'
-        : 'default';
+  const { chipLabel, chipColor } = match({
+    isPendingDelete,
+    hasPendingValue,
+    enabled,
+  })
+    .with({ isPendingDelete: true }, () => ({
+      chipLabel: '削除予定',
+      chipColor: 'error' as const,
+    }))
+    .with({ hasPendingValue: true }, () => ({
+      chipLabel: '変更予定',
+      chipColor: 'info' as const,
+    }))
+    .with({ enabled: true }, () => ({
+      chipLabel: '設定済み',
+      chipColor: 'success' as const,
+    }))
+    .otherwise(() => ({ chipLabel: '未設定', chipColor: 'default' as const }));
 
   const cancelEditing = () => {
     onChange('');
