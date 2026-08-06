@@ -85,7 +85,7 @@ const QuestionList = (props: {
   };
 
   return (
-    <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
+    <DndContext id="question-list" sensors={sensors} onDragEnd={handleDragEnd}>
       <CardContent>
         <Typography variant="h6" component="h2" sx={{ fontWeight: 'bold' }}>
           質問一覧

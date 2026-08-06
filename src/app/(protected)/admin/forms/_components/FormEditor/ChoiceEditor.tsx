@@ -190,7 +190,11 @@ const SortableChoiceList = (props: {
   };
 
   return (
-    <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
+    <DndContext
+      id={`choice-list-${props.questionIndex}`}
+      sensors={sensors}
+      onDragEnd={handleDragEnd}
+    >
       <SortableContext
         items={props.choiceFields.map((field) => field.id)}
         strategy={verticalListSortingStrategy}
