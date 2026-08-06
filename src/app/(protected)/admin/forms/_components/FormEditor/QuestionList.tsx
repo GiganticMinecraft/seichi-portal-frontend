@@ -13,8 +13,15 @@ import {
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { DragIndicator } from '@mui/icons-material';
-import { Box, CardContent, IconButton, Stack } from '@mui/material';
+import { Add, DragIndicator } from '@mui/icons-material';
+import {
+  Box,
+  Button,
+  CardContent,
+  IconButton,
+  Stack,
+  Typography,
+} from '@mui/material';
 import type { ReactNode } from 'react';
 
 type QuestionListItem = {
@@ -56,6 +63,7 @@ const SortableQuestionWrapper = (props: {
 const QuestionList = (props: {
   items: QuestionListItem[];
   onMove: (oldIndex: number, newIndex: number) => void;
+  onAddQuestion: () => void;
 }) => {
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -77,7 +85,12 @@ const QuestionList = (props: {
   };
 
   return (
-    <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
+    <DndContext id="question-list" sensors={sensors} onDragEnd={handleDragEnd}>
+      <CardContent>
+        <Typography variant="h6" component="h2" sx={{ fontWeight: 'bold' }}>
+          質問一覧
+        </Typography>
+      </CardContent>
       <SortableContext
         items={props.items.map((item) => item.dndId)}
         strategy={verticalListSortingStrategy}
@@ -88,6 +101,16 @@ const QuestionList = (props: {
           </SortableQuestionWrapper>
         ))}
       </SortableContext>
+      <CardContent>
+        <Button
+          type="button"
+          aria-label="質問の追加"
+          onClick={props.onAddQuestion}
+          endIcon={<Add />}
+        >
+          質問の追加
+        </Button>
+      </CardContent>
     </DndContext>
   );
 };

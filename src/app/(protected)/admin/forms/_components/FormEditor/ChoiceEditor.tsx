@@ -16,7 +16,12 @@ import { CSS } from '@dnd-kit/utilities';
 import { Add, DragIndicator } from '@mui/icons-material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { Button, IconButton, MenuItem, Stack, TextField } from '@mui/material';
-import { useController, useFieldArray, useWatch } from 'react-hook-form';
+import {
+  useController,
+  useFieldArray,
+  useFormState,
+  useWatch,
+} from 'react-hook-form';
 import type { Control, UseFormRegister } from 'react-hook-form';
 
 import FieldLabel from '@/app/_components/FieldLabel';
@@ -31,6 +36,7 @@ const SortableChoiceItem = (props: {
   id: string;
   index: number;
   questionIndex: number;
+  control: Control<FormEditorValues>;
   register: UseFormRegister<FormEditorValues>;
   removeChoice: (index: number) => void;
   canRemove: boolean;
@@ -51,6 +57,13 @@ const SortableChoiceItem = (props: {
     opacity: isDragging ? 0.5 : 1,
   };
 
+  const { errors } = useFormState({
+    control: props.control,
+    name: `questions.${props.questionIndex}.choices.${props.index}.choice`,
+  });
+  const choiceError =
+    errors.questions?.[props.questionIndex]?.choices?.[props.index]?.choice;
+
   return (
     <Stack ref={setNodeRef} style={style} spacing={0.5}>
       <FieldLabel label={`選択肢${props.index + 1}`} required />
@@ -63,6 +76,8 @@ const SortableChoiceItem = (props: {
             `questions.${props.questionIndex}.choices.${props.index}.choice`
           )}
           fullWidth
+          error={Boolean(choiceError)}
+          helperText={choiceError?.message}
           slotProps={{
             htmlInput: { 'aria-label': `選択肢${props.index + 1}` },
           }}
@@ -161,6 +176,7 @@ const QuestionTypeField = (props: {
 const SortableChoiceList = (props: {
   choiceFields: { id: string }[];
   questionIndex: number;
+  control: Control<FormEditorValues>;
   register: UseFormRegister<FormEditorValues>;
   moveChoice: (oldIndex: number, newIndex: number) => void;
   removeChoice: (index: number) => void;
@@ -190,7 +206,11 @@ const SortableChoiceList = (props: {
   };
 
   return (
-    <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
+    <DndContext
+      id={`choice-list-${props.questionIndex}`}
+      sensors={sensors}
+      onDragEnd={handleDragEnd}
+    >
       <SortableContext
         items={props.choiceFields.map((field) => field.id)}
         strategy={verticalListSortingStrategy}
@@ -202,6 +222,7 @@ const SortableChoiceList = (props: {
               id={field.id}
               index={index}
               questionIndex={props.questionIndex}
+              control={props.control}
               register={props.register}
               removeChoice={props.removeChoice}
               canRemove={props.choiceFields.length > 1}
@@ -253,22 +274,22 @@ const ChoiceEditor = (props: ChoiceEditorProps) => {
         appendChoice={appendChoice}
         clearChoices={clearChoices}
       />
-      <Button
-        variant="outlined"
-        startIcon={<Add />}
-        onClick={appendChoice}
-        disabled={questionType === 'Text'}
-      >
-        選択肢の追加
-      </Button>
-      <SortableChoiceList
-        choiceFields={choiceFields}
-        questionIndex={props.questionIndex}
-        register={props.register}
-        moveChoice={move}
-        removeChoice={removeChoice}
-        appendChoice={appendChoice}
-      />
+      {questionType !== 'Text' && (
+        <>
+          <Button variant="outlined" startIcon={<Add />} onClick={appendChoice}>
+            選択肢の追加
+          </Button>
+          <SortableChoiceList
+            choiceFields={choiceFields}
+            questionIndex={props.questionIndex}
+            control={props.control}
+            register={props.register}
+            moveChoice={move}
+            removeChoice={removeChoice}
+            appendChoice={appendChoice}
+          />
+        </>
+      )}
     </>
   );
 };

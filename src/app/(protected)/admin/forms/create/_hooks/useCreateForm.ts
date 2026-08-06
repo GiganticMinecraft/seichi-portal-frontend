@@ -12,7 +12,8 @@ import type { FormEditorValues } from '../../_schema/formEditorSchema';
 type SubmitState =
   | { kind: 'idle' }
   | { kind: 'submitted'; formId: string }
-  | { kind: 'failed'; message: string };
+  | { kind: 'failed'; message: string }
+  | { kind: 'partiallyFailed'; formId: string; message: string };
 
 export const useCreateForm = () => {
   const [submitState, setSubmitState] = useState<SubmitState>({
@@ -47,8 +48,10 @@ export const useCreateForm = () => {
       );
       if (!setFormMetadataResponse.ok) {
         setSubmitState({
-          kind: 'failed',
-          message: 'フォームのメタデータの設定に失敗しました。',
+          kind: 'partiallyFailed',
+          formId: createdFormId,
+          message:
+            'フォーム自体は作成されましたが、公開範囲や回答受付期間などの詳細設定の保存に失敗しました。もう一度「フォーム作成」を押すと別のフォームが新規に作成されてしまうため、編集画面から設定をやり直してください。',
         });
         return;
       }

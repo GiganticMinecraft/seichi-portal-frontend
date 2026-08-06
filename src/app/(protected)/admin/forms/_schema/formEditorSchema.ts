@@ -60,14 +60,29 @@ export const formEditorQuestionSchema = z
     }
   });
 
-const acceptancePeriodSchema = z.discriminatedUnion('kind', [
-  z.object({ kind: z.literal('none') }),
-  z.object({
-    kind: z.literal('specified'),
-    startAt: z.string().min(1, '回答開始日を入力してください。'),
-    endAt: z.string().min(1, '回答終了日を入力してください。'),
-  }),
-]);
+const acceptancePeriodSchema = z
+  .discriminatedUnion('kind', [
+    z.object({ kind: z.literal('none') }),
+    z.object({
+      kind: z.literal('specified'),
+      startAt: z.string().min(1, '回答開始日を入力してください。'),
+      endAt: z.string().min(1, '回答終了日を入力してください。'),
+    }),
+  ])
+  .superRefine((period, context) => {
+    if (
+      period.kind !== 'specified' ||
+      period.startAt === '' ||
+      period.endAt === '' ||
+      period.startAt < period.endAt
+    ) {
+      return;
+    }
+
+    const message = '回答終了日は回答開始日より後に設定してください。';
+    context.addIssue({ code: 'custom', path: ['startAt'], message });
+    context.addIssue({ code: 'custom', path: ['endAt'], message });
+  });
 
 export type AcceptancePeriodSetting = z.infer<typeof acceptancePeriodSchema>;
 

@@ -9,7 +9,7 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { useController, useWatch } from 'react-hook-form';
+import { useController, useFormState, useWatch } from 'react-hook-form';
 import type {
   Control,
   UseFormRegister,
@@ -26,6 +26,8 @@ import type {
 import type { FormEditorValues } from '../../_schema/formEditorSchema';
 
 import AnswerGroupField from './AnswerGroupField';
+import { answerViewAudience } from './answerViewAudience';
+import AnswerViewAudienceField from './AnswerViewAudienceField';
 import FormGroupField from './FormGroupField';
 import FormLabelField from './FormLabelField';
 
@@ -52,29 +54,38 @@ const BasicFormSettings = ({
   register,
   control,
   labelOptions,
-}: Pick<FormSettingsProps, 'register' | 'control' | 'labelOptions'>) => (
-  <>
-    <Stack spacing={0.5}>
-      <FieldLabel label="フォームタイトル" required />
-      <TextField
-        {...register('title')}
-        fullWidth
-        slotProps={{ htmlInput: { 'aria-label': 'フォームタイトル' } }}
-      />
-    </Stack>
-    <Stack spacing={0.5}>
-      <FieldLabel label="フォームの説明" required />
-      <TextField
-        {...register('description')}
-        multiline
-        fullWidth
-        helperText="Markdown に対応しています。"
-        slotProps={{ htmlInput: { 'aria-label': 'フォームの説明' } }}
-      />
-    </Stack>
-    <FormLabelField control={control} labelOptions={labelOptions} />
-  </>
-);
+}: Pick<FormSettingsProps, 'register' | 'control' | 'labelOptions'>) => {
+  const { errors } = useFormState({ control });
+
+  return (
+    <>
+      <Stack spacing={0.5}>
+        <FieldLabel label="フォームタイトル" required />
+        <TextField
+          {...register('title')}
+          fullWidth
+          error={Boolean(errors.title)}
+          helperText={errors.title?.message}
+          slotProps={{ htmlInput: { 'aria-label': 'フォームタイトル' } }}
+        />
+      </Stack>
+      <Stack spacing={0.5}>
+        <FieldLabel label="フォームの説明" required />
+        <TextField
+          {...register('description')}
+          multiline
+          fullWidth
+          error={Boolean(errors.description)}
+          helperText={
+            errors.description?.message ?? 'Markdown に対応しています。'
+          }
+          slotProps={{ htmlInput: { 'aria-label': 'フォームの説明' } }}
+        />
+      </Stack>
+      <FormLabelField control={control} labelOptions={labelOptions} />
+    </>
+  );
+};
 
 const FormVisibilitySettings = ({
   control,
@@ -104,27 +115,23 @@ const FormVisibilitySettings = ({
           <MenuItem value="PRIVATE">非公開</MenuItem>
         </TextField>
       </Stack>
-      <FormGroupField
-        control={control}
-        name="settings.allowed_group_ids"
-        label="フォームを閲覧できるユーザーグループ"
-        helperText={
-          isPrivate
-            ? 'フォーム公開設定が「非公開」のため、この設定は適用されません。'
-            : '指定すると、選択したグループに所属するユーザーのみがこのフォームを閲覧・回答できるようになります。未指定の場合は全員が対象になります。'
-        }
-        groupOptions={groupOptions}
-        disabled={isPrivate}
-      />
+      {!isPrivate && (
+        <FormGroupField
+          control={control}
+          name="settings.allowed_group_ids"
+          label="フォームを閲覧できるユーザーグループ"
+          helperText="指定すると、選択したグループに所属するユーザーのみがこのフォームを閲覧・回答できるようになります。未指定の場合は全員が対象になります。"
+          groupOptions={groupOptions}
+        />
+      )}
     </>
   );
 };
 
 const AcceptancePeriodSettings = ({
-  register,
   control,
   setValue,
-}: Pick<FormSettingsProps, 'register' | 'control' | 'setValue'>) => {
+}: Pick<FormSettingsProps, 'control' | 'setValue'>) => {
   const acceptancePeriod = useWatch({
     control,
     name: 'settings.acceptance_period',
@@ -138,6 +145,15 @@ const AcceptancePeriodSettings = ({
       checked ? { kind: 'specified', startAt: '', endAt: '' } : { kind: 'none' }
     );
   };
+
+  const { field: startAtField, fieldState: startAtFieldState } = useController({
+    control,
+    name: 'settings.acceptance_period.startAt',
+  });
+  const { field: endAtField, fieldState: endAtFieldState } = useController({
+    control,
+    name: 'settings.acceptance_period.endAt',
+  });
 
   return (
     <>
@@ -153,40 +169,55 @@ const AcceptancePeriodSettings = ({
         }
       />
       {hasAcceptancePeriod && (
-        <>
-          <Stack spacing={0.5}>
-            <FieldLabel label="回答開始日" />
+        <Stack direction="row" spacing={2}>
+          <Stack spacing={0.5} sx={{ flex: 1 }}>
+            <FieldLabel label="回答開始日" required />
             <TextField
-              {...register('settings.acceptance_period.startAt')}
+              {...startAtField}
               type="datetime-local"
-              helperText="回答開始日と回答終了日はどちらも指定する必要があります。"
+              fullWidth
+              error={Boolean(startAtFieldState.error)}
+              helperText={startAtFieldState.error?.message}
               slotProps={{ htmlInput: { 'aria-label': '回答開始日' } }}
             />
           </Stack>
-          <Stack spacing={0.5}>
-            <FieldLabel label="回答終了日" />
+          <Stack spacing={0.5} sx={{ flex: 1 }}>
+            <FieldLabel label="回答終了日" required />
             <TextField
-              {...register('settings.acceptance_period.endAt')}
+              {...endAtField}
               type="datetime-local"
-              helperText="回答開始日と回答終了日はどちらも指定する必要があります。"
+              fullWidth
+              error={Boolean(endAtFieldState.error)}
+              helperText={endAtFieldState.error?.message}
               slotProps={{ htmlInput: { 'aria-label': '回答終了日' } }}
             />
           </Stack>
-        </>
+        </Stack>
       )}
     </>
   );
 };
 
-const AnswerSettings = ({
+const DefaultAnswerTitleField = ({
   register,
+}: Pick<FormSettingsProps, 'register'>) => (
+  <Stack spacing={0.5}>
+    <FieldLabel label="デフォルトの回答タイトル" />
+    <TextField
+      {...register('settings.default_answer_title')}
+      helperText="回答送信時のタイトルを設定します。$テンプレートキー で指定の質問の回答を、$username で回答者名を、$form_name でフォームタイトルをタイトルに埋め込むことができます。例: [$form_name] $username さんの回答"
+      slotProps={{
+        htmlInput: { 'aria-label': 'デフォルトの回答タイトル' },
+      }}
+    />
+  </Stack>
+);
+
+const AnswerVisibilitySettings = ({
   control,
   setValue,
   groupOptions,
-}: Pick<
-  FormSettingsProps,
-  'register' | 'control' | 'setValue' | 'groupOptions'
->) => {
+}: Pick<FormSettingsProps, 'control' | 'setValue' | 'groupOptions'>) => {
   const hideAuthor = useWatch({
     control,
     name: 'settings.hide_author',
@@ -205,8 +236,7 @@ const AnswerSettings = ({
     name: 'settings.answer_group_ids',
   });
 
-  const hideAuthorHasNoEffect =
-    answerVisibility === 'PRIVATE' && answerGroupIds.length === 0;
+  const canHideAuthor = answerVisibility !== 'PRIVATE';
 
   return (
     <>
@@ -227,40 +257,36 @@ const AnswerSettings = ({
           <MenuItem value="PRIVATE">非公開</MenuItem>
         </TextField>
       </Stack>
-      <Stack spacing={0}>
-        <FormControlLabel
-          label="回答者を隠して公開する"
-          control={
-            <Checkbox
-              checked={hideAuthor}
-              onChange={(_, checked) => {
-                setValue('settings.hide_author', checked);
-              }}
-              disabled={hideAuthorHasNoEffect}
-            />
-          }
-        />
-        <Typography variant="caption" color="textSecondary">
-          {hideAuthorHasNoEffect
-            ? '回答の公開設定が「非公開」で、回答を閲覧できるユーザーグループも指定されていないため、この設定は適用されません（管理者以外は回答を閲覧できません）。'
-            : '一般ユーザーには回答者を匿名として表示します。管理者には従来どおり回答者情報が表示されます。'}
-        </Typography>
-      </Stack>
       <AnswerGroupField
         control={control}
         setValue={setValue}
         groupOptions={groupOptions}
       />
-      <Stack spacing={0.5}>
-        <FieldLabel label="デフォルトの回答タイトル" />
-        <TextField
-          {...register('settings.default_answer_title')}
-          helperText="回答送信時のタイトルを設定します。$テンプレートキー で指定の質問の回答を、$username で回答者名を、$form_name でフォームタイトルをタイトルに埋め込むことができます。例: [$form_name] $username さんの回答"
-          slotProps={{
-            htmlInput: { 'aria-label': 'デフォルトの回答タイトル' },
-          }}
-        />
-      </Stack>
+      <AnswerViewAudienceField
+        members={answerViewAudience(
+          answerVisibility,
+          answerGroupIds,
+          groupOptions
+        )}
+      />
+      {canHideAuthor && (
+        <Stack spacing={0}>
+          <FormControlLabel
+            label="回答者を隠して公開する"
+            control={
+              <Checkbox
+                checked={hideAuthor}
+                onChange={(_, checked) => {
+                  setValue('settings.hide_author', checked);
+                }}
+              />
+            }
+          />
+          <Typography variant="caption" color="textSecondary">
+            一般ユーザーには回答者を匿名として表示します。管理者には従来どおり回答者情報が表示されます。
+          </Typography>
+        </Stack>
+      )}
     </>
   );
 };
@@ -303,20 +329,21 @@ const FormSettings = (props: FormSettingsProps) => {
         labelOptions={props.labelOptions}
       />
 
-      <SectionHeading label="公開設定" />
+      <SectionHeading label="フォームの公開設定" />
       <FormVisibilitySettings
         control={props.control}
         groupOptions={props.groupOptions}
       />
 
-      <SectionHeading label="回答設定" />
+      <SectionHeading label="回答受付設定" />
       <AcceptancePeriodSettings
-        register={props.register}
         control={props.control}
         setValue={props.setValue}
       />
-      <AnswerSettings
-        register={props.register}
+      <DefaultAnswerTitleField register={props.register} />
+
+      <SectionHeading label="回答結果の公開設定" />
+      <AnswerVisibilitySettings
         control={props.control}
         setValue={props.setValue}
         groupOptions={props.groupOptions}

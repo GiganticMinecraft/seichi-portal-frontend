@@ -10,7 +10,7 @@ import {
   Typography,
 } from '@mui/material';
 import Checkbox from '@mui/material/Checkbox';
-import { useController, useWatch } from 'react-hook-form';
+import { useController, useFormState, useWatch } from 'react-hook-form';
 import type { Control, UseFormRegister } from 'react-hook-form';
 
 import FieldLabel from '@/app/_components/FieldLabel';
@@ -34,6 +34,11 @@ const QuestionEditor = (props: {
     control: props.control,
     name: `questions.${props.questionIndex}.is_required`,
   });
+  const { errors } = useFormState({
+    control: props.control,
+    name: `questions.${props.questionIndex}.title`,
+  });
+  const titleError = errors.questions?.[props.questionIndex]?.title;
 
   return (
     <Stack spacing={2}>
@@ -62,6 +67,8 @@ const QuestionEditor = (props: {
         <TextField
           {...props.register(`questions.${props.questionIndex}.title`)}
           fullWidth
+          error={Boolean(titleError)}
+          helperText={titleError?.message}
           slotProps={{ htmlInput: { 'aria-label': '質問タイトル' } }}
         />
       </Stack>
