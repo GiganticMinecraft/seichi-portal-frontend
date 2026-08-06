@@ -118,10 +118,9 @@ const FormVisibilitySettings = ({
 };
 
 const AcceptancePeriodSettings = ({
-  register,
   control,
   setValue,
-}: Pick<FormSettingsProps, 'register' | 'control' | 'setValue'>) => {
+}: Pick<FormSettingsProps, 'control' | 'setValue'>) => {
   const acceptancePeriod = useWatch({
     control,
     name: 'settings.acceptance_period',
@@ -135,6 +134,15 @@ const AcceptancePeriodSettings = ({
       checked ? { kind: 'specified', startAt: '', endAt: '' } : { kind: 'none' }
     );
   };
+
+  const { field: startAtField, fieldState: startAtFieldState } = useController({
+    control,
+    name: 'settings.acceptance_period.startAt',
+  });
+  const { field: endAtField, fieldState: endAtFieldState } = useController({
+    control,
+    name: 'settings.acceptance_period.endAt',
+  });
 
   return (
     <>
@@ -150,26 +158,30 @@ const AcceptancePeriodSettings = ({
         }
       />
       {hasAcceptancePeriod && (
-        <>
-          <Stack spacing={0.5}>
-            <FieldLabel label="回答開始日" />
+        <Stack direction="row" spacing={2}>
+          <Stack spacing={0.5} sx={{ flex: 1 }}>
+            <FieldLabel label="回答開始日" required />
             <TextField
-              {...register('settings.acceptance_period.startAt')}
+              {...startAtField}
               type="datetime-local"
-              helperText="回答開始日と回答終了日はどちらも指定する必要があります。"
+              fullWidth
+              error={Boolean(startAtFieldState.error)}
+              helperText={startAtFieldState.error?.message}
               slotProps={{ htmlInput: { 'aria-label': '回答開始日' } }}
             />
           </Stack>
-          <Stack spacing={0.5}>
-            <FieldLabel label="回答終了日" />
+          <Stack spacing={0.5} sx={{ flex: 1 }}>
+            <FieldLabel label="回答終了日" required />
             <TextField
-              {...register('settings.acceptance_period.endAt')}
+              {...endAtField}
               type="datetime-local"
-              helperText="回答開始日と回答終了日はどちらも指定する必要があります。"
+              fullWidth
+              error={Boolean(endAtFieldState.error)}
+              helperText={endAtFieldState.error?.message}
               slotProps={{ htmlInput: { 'aria-label': '回答終了日' } }}
             />
           </Stack>
-        </>
+        </Stack>
       )}
     </>
   );
@@ -308,7 +320,6 @@ const FormSettings = (props: FormSettingsProps) => {
 
       <SectionHeading label="回答設定" />
       <AcceptancePeriodSettings
-        register={props.register}
         control={props.control}
         setValue={props.setValue}
       />
