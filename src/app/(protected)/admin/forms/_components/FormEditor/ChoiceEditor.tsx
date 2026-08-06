@@ -253,22 +253,21 @@ const ChoiceEditor = (props: ChoiceEditorProps) => {
         appendChoice={appendChoice}
         clearChoices={clearChoices}
       />
-      <Button
-        variant="outlined"
-        startIcon={<Add />}
-        onClick={appendChoice}
-        disabled={questionType === 'Text'}
-      >
-        選択肢の追加
-      </Button>
-      <SortableChoiceList
-        choiceFields={choiceFields}
-        questionIndex={props.questionIndex}
-        register={props.register}
-        moveChoice={move}
-        removeChoice={removeChoice}
-        appendChoice={appendChoice}
-      />
+      {questionType !== 'Text' && (
+        <>
+          <Button variant="outlined" startIcon={<Add />} onClick={appendChoice}>
+            選択肢の追加
+          </Button>
+          <SortableChoiceList
+            choiceFields={choiceFields}
+            questionIndex={props.questionIndex}
+            register={props.register}
+            moveChoice={move}
+            removeChoice={removeChoice}
+            appendChoice={appendChoice}
+          />
+        </>
+      )}
     </>
   );
 };

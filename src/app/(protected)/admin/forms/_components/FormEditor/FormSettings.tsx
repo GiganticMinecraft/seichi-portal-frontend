@@ -104,18 +104,15 @@ const FormVisibilitySettings = ({
           <MenuItem value="PRIVATE">非公開</MenuItem>
         </TextField>
       </Stack>
-      <FormGroupField
-        control={control}
-        name="settings.allowed_group_ids"
-        label="フォームを閲覧できるユーザーグループ"
-        helperText={
-          isPrivate
-            ? 'フォーム公開設定が「非公開」のため、この設定は適用されません。'
-            : '指定すると、選択したグループに所属するユーザーのみがこのフォームを閲覧・回答できるようになります。未指定の場合は全員が対象になります。'
-        }
-        groupOptions={groupOptions}
-        disabled={isPrivate}
-      />
+      {!isPrivate && (
+        <FormGroupField
+          control={control}
+          name="settings.allowed_group_ids"
+          label="フォームを閲覧できるユーザーグループ"
+          helperText="指定すると、選択したグループに所属するユーザーのみがこのフォームを閲覧・回答できるようになります。未指定の場合は全員が対象になります。"
+          groupOptions={groupOptions}
+        />
+      )}
     </>
   );
 };
