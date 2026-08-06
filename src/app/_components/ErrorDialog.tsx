@@ -20,6 +20,7 @@ import {
 import dayjs from 'dayjs';
 import Link from 'next/link';
 import { useState } from 'react';
+import { match, P } from 'ts-pattern';
 
 import { isAccessError } from '@/lib/accessError';
 import { isHttpError } from '@/lib/httpError';
@@ -49,41 +50,38 @@ const ErrorDialog = ({
   );
   const status =
     statusProp ??
-    (isHttpError(error)
-      ? error.status
-      : isAccessError(error)
-        ? error.status
-        : null);
+    match(error)
+      .with(P.when(isHttpError), (e) => e.status)
+      .with(P.when(isAccessError), (e) => e.status)
+      .otherwise(() => null);
 
   const resolvedTitle =
     title ??
-    (status === 401
-      ? 'セッションの有効期限が切れました'
-      : status === 403
-        ? 'このページを表示する権限がありません'
-        : status === 503
-          ? '現在このページを表示できません'
-          : 'データ取得中にエラーが発生しました');
+    match(status)
+      .with(401, () => 'セッションの有効期限が切れました')
+      .with(403, () => 'このページを表示する権限がありません')
+      .with(503, () => '現在このページを表示できません')
+      .otherwise(() => 'データ取得中にエラーが発生しました');
 
   const resolvedMessage =
     message ??
-    (status === 401
-      ? '再度サインインしてから操作をやり直してください。'
-      : status === 403
-        ? '権限のあるアカウントでサインインしてください。'
-        : status === 503
-          ? 'バックエンドに接続できないため、保護された画面を表示できません。'
-          : '連続して発生する場合は管理者に問い合わせてください。');
+    match(status)
+      .with(401, () => '再度サインインしてから操作をやり直してください。')
+      .with(403, () => '権限のあるアカウントでサインインしてください。')
+      .with(
+        503,
+        () => 'バックエンドに接続できないため、保護された画面を表示できません。'
+      )
+      .otherwise(() => '連続して発生する場合は管理者に問い合わせてください。');
 
   const iconColor =
     status === 401 || status === 403 ? 'warning' : ('error' as const);
 
-  const StatusIcon =
-    status === 403
-      ? LockOutlinedIcon
-      : status === 401
-        ? WarningAmberIcon
-        : ErrorIcon;
+  const statusIcons: Record<number, typeof ErrorIcon> = {
+    403: LockOutlinedIcon,
+    401: WarningAmberIcon,
+  };
+  const StatusIcon = (status !== null && statusIcons[status]) || ErrorIcon;
 
   return (
     <Dialog open={true} maxWidth="sm" fullWidth>

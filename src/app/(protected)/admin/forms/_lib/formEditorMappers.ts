@@ -185,11 +185,13 @@ export const toFormUpdateBody = (
       visibility: data.settings.visibility,
       allowed_group_ids: data.settings.allowed_group_ids,
       allow_temporary_answers: data.settings.allow_temporary_answers,
-      ...(data.settings.discord_webhook_disabled
-        ? { discord_webhook_url: null }
-        : data.settings.discord_webhook_url.trim() !== ''
-          ? { discord_webhook_url: data.settings.discord_webhook_url.trim() }
-          : {}),
+      ...match({
+        disabled: data.settings.discord_webhook_disabled,
+        url: data.settings.discord_webhook_url.trim(),
+      })
+        .with({ disabled: true }, () => ({ discord_webhook_url: null }))
+        .with({ url: '' }, () => ({}))
+        .otherwise(({ url }) => ({ discord_webhook_url: url })),
       answer_settings: {
         default_answer_title: toNullableNonEmptyString(
           data.settings.default_answer_title

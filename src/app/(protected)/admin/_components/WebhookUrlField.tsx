@@ -58,61 +58,64 @@ const WebhookUrlField = ({
         <Chip label={chipLabel} color={chipColor} size="small" />
       </Stack>
 
-      {isPendingDelete ? (
-        <Stack spacing={1} sx={{ alignItems: 'flex-start' }}>
-          <Typography variant="caption" color="textSecondary">
-            保存すると Webhook 設定を削除します。
-          </Typography>
-          <Button
-            size="small"
-            onClick={() => {
-              onPendingDeleteChange(false);
-            }}
-          >
-            取り消す
-          </Button>
-        </Stack>
-      ) : isEditing ? (
-        <Stack spacing={1} sx={{ alignItems: 'flex-start' }}>
-          <TextField
-            value={value}
-            onChange={(e) => {
-              onChange(e.target.value);
-            }}
-            type="url"
-            autoFocus
-            fullWidth
-            helperText="新しく設定する Webhook URL を入力してください。"
-            slotProps={{ htmlInput: { 'aria-label': label } }}
-          />
-          <Button size="small" onClick={cancelEditing}>
-            キャンセル
-          </Button>
-        </Stack>
-      ) : (
-        <Stack spacing={1} direction="row">
-          <Button
-            size="small"
-            variant="outlined"
-            onClick={() => {
-              setIsEditing(true);
-            }}
-          >
-            変更
-          </Button>
-          {enabled && (
+      {match({ isPendingDelete, isEditing })
+        .with({ isPendingDelete: true }, () => (
+          <Stack spacing={1} sx={{ alignItems: 'flex-start' }}>
+            <Typography variant="caption" color="textSecondary">
+              保存すると Webhook 設定を削除します。
+            </Typography>
             <Button
               size="small"
-              color="error"
               onClick={() => {
-                onPendingDeleteChange(true);
+                onPendingDeleteChange(false);
               }}
             >
-              削除
+              取り消す
             </Button>
-          )}
-        </Stack>
-      )}
+          </Stack>
+        ))
+        .with({ isEditing: true }, () => (
+          <Stack spacing={1} sx={{ alignItems: 'flex-start' }}>
+            <TextField
+              value={value}
+              onChange={(e) => {
+                onChange(e.target.value);
+              }}
+              type="url"
+              autoFocus
+              fullWidth
+              helperText="新しく設定する Webhook URL を入力してください。"
+              slotProps={{ htmlInput: { 'aria-label': label } }}
+            />
+            <Button size="small" onClick={cancelEditing}>
+              キャンセル
+            </Button>
+          </Stack>
+        ))
+        .otherwise(() => (
+          <Stack spacing={1} direction="row">
+            <Button
+              size="small"
+              variant="outlined"
+              onClick={() => {
+                setIsEditing(true);
+              }}
+            >
+              変更
+            </Button>
+            {enabled && (
+              <Button
+                size="small"
+                color="error"
+                onClick={() => {
+                  onPendingDeleteChange(true);
+                }}
+              >
+                削除
+              </Button>
+            )}
+          </Stack>
+        ))}
     </Stack>
   );
 };
