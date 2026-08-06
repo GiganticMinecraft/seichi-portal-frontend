@@ -5,21 +5,21 @@ import {
   Button,
   Card,
   CardContent,
-  Chip,
   Divider,
   Stack,
-  TextField,
   Typography,
 } from '@mui/material';
 import { useState } from 'react';
-import { Controller, useForm } from 'react-hook-form';
+import { useController, useForm } from 'react-hook-form';
 
+import WebhookUrlField from '@/app/(protected)/admin/_components/WebhookUrlField';
 import SnackbarAlert, { useSnackbar } from '@/app/_components/SnackbarAlert';
 import { useGlobalDiscordWebhook } from '@/hooks/useGlobalDiscordWebhook';
 import type { GetGlobalDiscordWebhookResponse } from '@/lib/api-types';
 
 import {
   defaultGlobalWebhookFormValues,
+  hasGlobalWebhookPendingChange,
   toGlobalWebhookUpdateUrl,
 } from '../_lib/globalWebhookForm';
 import type { GlobalWebhookFormValues } from '../_lib/globalWebhookForm';
@@ -37,6 +37,16 @@ const GlobalWebhookSettings = ({
     formState: { isSubmitting },
   } = useForm<GlobalWebhookFormValues>({
     defaultValues: defaultGlobalWebhookFormValues,
+  });
+
+  const { field: urlField } = useController({ control, name: 'url' });
+  const { field: disabledField } = useController({
+    control,
+    name: 'disabled',
+  });
+  const hasPendingChange = hasGlobalWebhookPendingChange({
+    url: urlField.value,
+    disabled: disabledField.value,
   });
 
   const { updateWebhook } = useGlobalDiscordWebhook();
@@ -65,41 +75,29 @@ const GlobalWebhookSettings = ({
           void handleSubmit(onSubmit)(e);
         }}
       >
-        <Stack spacing={1} direction="row" sx={{ alignItems: 'center', mb: 1 }}>
-          <Typography variant="h6" component="h2">
-            グローバル Discord Webhook
-          </Typography>
-          <Chip
-            label={enabled ? '有効' : '無効'}
-            color={enabled ? 'success' : 'default'}
-            size="small"
-          />
-        </Stack>
+        <Typography variant="h6" component="h2" sx={{ mb: 1 }}>
+          グローバル Discord Webhook
+        </Typography>
         <Divider sx={{ mb: 2 }} />
         <Stack spacing={2}>
           <Typography variant="body2" sx={{ color: 'text.secondary' }}>
             すべてのフォームの通知をまとめて送信する Discord Webhook
-            です。セキュリティのため設定済みの URL
-            は再表示されません。空欄のまま保存すると通知を無効化します。
+            です。セキュリティのため設定済みの URL は再表示されません。
           </Typography>
-          <Controller
-            name="url"
-            control={control}
-            render={({ field }) => (
-              <TextField
-                {...field}
-                label="Discord Webhook URL"
-                placeholder="https://discord.com/api/webhooks/..."
-                fullWidth
-              />
-            )}
+          <WebhookUrlField
+            label="Discord Webhook URL"
+            enabled={enabled}
+            value={urlField.value}
+            onChange={urlField.onChange}
+            isPendingDelete={disabledField.value}
+            onPendingDeleteChange={disabledField.onChange}
           />
           <Button
             variant="contained"
             endIcon={<SaveAltIcon />}
             type="submit"
             sx={{ alignSelf: 'flex-start' }}
-            disabled={isSubmitting}
+            disabled={isSubmitting || !hasPendingChange}
           >
             保存
           </Button>

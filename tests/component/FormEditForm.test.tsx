@@ -82,25 +82,60 @@ describe('FormEditForm', () => {
     expectCheckedIcon('この質問への回答を必須にする');
   });
 
-  it('Webhook 無効化のチェックで URL 入力を無効にする', async () => {
+  it('Webhook 未設定時は変更ボタンのみ表示し、削除ボタンは表示しない', () => {
+    renderWithProviders(
+      <FormEditForm form={form} labelOptions={[]} groupOptions={[]} />
+    );
+
+    expect(screen.getByText('未設定')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: '変更' })).toBeInTheDocument();
+    expect(
+      screen.queryByRole('button', { name: '削除' })
+    ).not.toBeInTheDocument();
+  });
+
+  it('変更ボタンで URL 入力欄を開き、入力すると変更予定になり、キャンセルで閉じる', async () => {
     const user = userEvent.setup();
 
     renderWithProviders(
       <FormEditForm form={form} labelOptions={[]} groupOptions={[]} />
     );
 
-    const webhookDisabled = screen.getByRole('checkbox', {
-      name: 'Webhook 通知を無効化する(URL入力より優先されます)',
-    });
+    await user.click(screen.getByRole('button', { name: '変更' }));
+
     const webhookUrl = screen.getByRole('textbox', { name: 'Webhook URL' });
+    await user.type(webhookUrl, 'https://example.com/webhook');
 
-    expect(webhookDisabled).not.toBeChecked();
-    expect(webhookUrl).not.toBeDisabled();
+    expect(screen.getByText('変更予定')).toBeInTheDocument();
 
-    await user.click(webhookDisabled);
+    await user.click(screen.getByRole('button', { name: 'キャンセル' }));
 
-    expect(webhookDisabled).toBeChecked();
-    expect(webhookUrl).toBeDisabled();
+    expect(
+      screen.queryByRole('textbox', { name: 'Webhook URL' })
+    ).not.toBeInTheDocument();
+    expect(screen.getByText('未設定')).toBeInTheDocument();
+  });
+
+  it('設定済みの Webhook で削除ボタンを押すと削除予定になり、取り消すボタンで元に戻る', async () => {
+    const user = userEvent.setup();
+    const enabledForm: GetFormResponse = {
+      ...form,
+      settings: { ...form.settings, discord_webhook_enabled: true },
+    };
+
+    renderWithProviders(
+      <FormEditForm form={enabledForm} labelOptions={[]} groupOptions={[]} />
+    );
+
+    expect(screen.getByText('設定済み')).toBeInTheDocument();
+
+    await user.click(screen.getByRole('button', { name: '削除' }));
+
+    expect(screen.getByText('削除予定')).toBeInTheDocument();
+
+    await user.click(screen.getByRole('button', { name: '取り消す' }));
+
+    expect(screen.getByText('設定済み')).toBeInTheDocument();
   });
 
   it('取得した Checkbox の値を保存データへ反映する', async () => {
