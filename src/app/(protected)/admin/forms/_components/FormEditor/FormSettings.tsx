@@ -257,11 +257,6 @@ const AnswerVisibilitySettings = ({
           <MenuItem value="PRIVATE">非公開</MenuItem>
         </TextField>
       </Stack>
-      <AnswerGroupField
-        control={control}
-        setValue={setValue}
-        groupOptions={groupOptions}
-      />
       <AnswerViewAudienceField
         members={answerViewAudience(
           answerVisibility,
@@ -335,14 +330,17 @@ const FormSettings = (props: FormSettingsProps) => {
         groupOptions={props.groupOptions}
       />
 
-      <SectionHeading label="回答受付設定" />
+      <SectionHeading label="回答設定" />
       <AcceptancePeriodSettings
         control={props.control}
         setValue={props.setValue}
       />
       <DefaultAnswerTitleField register={props.register} />
-
-      <SectionHeading label="回答結果の公開設定" />
+      <AnswerGroupField
+        control={props.control}
+        setValue={props.setValue}
+        groupOptions={props.groupOptions}
+      />
       <AnswerVisibilitySettings
         control={props.control}
         setValue={props.setValue}
