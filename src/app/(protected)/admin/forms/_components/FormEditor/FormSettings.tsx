@@ -2,7 +2,6 @@
 
 import {
   Checkbox,
-  Chip,
   Divider,
   FormControlLabel,
   MenuItem,
@@ -17,6 +16,7 @@ import type {
   UseFormSetValue,
 } from 'react-hook-form';
 
+import WebhookUrlField from '@/app/(protected)/admin/_components/WebhookUrlField';
 import FieldLabel from '@/app/_components/FieldLabel';
 import type {
   GetFormLabelsResponse,
@@ -36,6 +36,7 @@ type FormSettingsProps = {
   labelOptions: GetFormLabelsResponse;
   groupOptions: GetUserGroupsResponse;
   discordWebhookEnabled: boolean;
+  webhookSectionResetKey?: number;
 };
 
 const SectionHeading = ({ label }: { label: string }) => (
@@ -265,52 +266,26 @@ const AnswerSettings = ({
 };
 
 const NotificationSettings = ({
-  register,
   control,
-  setValue,
   discordWebhookEnabled,
-}: Pick<
-  FormSettingsProps,
-  'register' | 'control' | 'setValue' | 'discordWebhookEnabled'
->) => {
-  const discordWebhookDisabled = useWatch({
+}: Pick<FormSettingsProps, 'control' | 'discordWebhookEnabled'>) => {
+  const { field: urlField } = useController({
+    control,
+    name: 'settings.discord_webhook_url',
+  });
+  const { field: disabledField } = useController({
     control,
     name: 'settings.discord_webhook_disabled',
   });
 
   return (
-    <Stack spacing={0.5}>
-      <Stack spacing={1} direction="row" sx={{ alignItems: 'center' }}>
-        <FieldLabel label="Webhook URL" />
-        <Chip
-          label={discordWebhookEnabled ? '設定済み' : '未設定'}
-          color={discordWebhookEnabled ? 'success' : 'default'}
-          size="small"
-        />
-      </Stack>
-      <TextField
-        {...register('settings.discord_webhook_url')}
-        type="url"
-        disabled={discordWebhookDisabled}
-        helperText={
-          discordWebhookDisabled
-            ? '無効化にチェックが入っているため、この入力内容は無視されます。'
-            : '新しく設定する Webhook URL を入力してください。空欄のまま保存すると現在の設定を維持します。'
-        }
-        slotProps={{ htmlInput: { 'aria-label': 'Webhook URL' } }}
-      />
-      <FormControlLabel
-        label="Webhook 通知を無効化する(URL入力より優先されます)"
-        control={
-          <Checkbox
-            checked={discordWebhookDisabled}
-            onChange={(_, checked) => {
-              setValue('settings.discord_webhook_disabled', checked);
-            }}
-          />
-        }
-      />
-    </Stack>
+    <WebhookUrlField
+      enabled={discordWebhookEnabled}
+      value={urlField.value}
+      onChange={urlField.onChange}
+      isPendingDelete={disabledField.value}
+      onPendingDeleteChange={disabledField.onChange}
+    />
   );
 };
 
@@ -349,9 +324,8 @@ const FormSettings = (props: FormSettingsProps) => {
 
       <SectionHeading label="通知設定" />
       <NotificationSettings
-        register={props.register}
+        key={props.webhookSectionResetKey ?? 0}
         control={props.control}
-        setValue={props.setValue}
         discordWebhookEnabled={props.discordWebhookEnabled}
       />
     </Stack>

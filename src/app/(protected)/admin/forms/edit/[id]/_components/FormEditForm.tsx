@@ -54,6 +54,7 @@ const FormEditForm = (props: {
   const [discordWebhookEnabled, setDiscordWebhookEnabled] = useState(
     props.form.settings.discord_webhook_enabled
   );
+  const [webhookSectionResetKey, setWebhookSectionResetKey] = useState(0);
 
   const { fields, append, remove, move } = useFieldArray({
     control,
@@ -82,6 +83,7 @@ const FormEditForm = (props: {
     );
     setValue('settings.discord_webhook_url', '');
     setValue('settings.discord_webhook_disabled', false);
+    setWebhookSectionResetKey((key) => key + 1);
   };
 
   return (
@@ -106,6 +108,7 @@ const FormEditForm = (props: {
                 labelOptions={props.labelOptions}
                 groupOptions={props.groupOptions}
                 discordWebhookEnabled={discordWebhookEnabled}
+                webhookSectionResetKey={webhookSectionResetKey}
               />
             </CardContent>
             <QuestionList
