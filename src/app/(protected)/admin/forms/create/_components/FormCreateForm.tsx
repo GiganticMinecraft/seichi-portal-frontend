@@ -10,6 +10,7 @@ import {
   Container,
   Stack,
 } from '@mui/material';
+import NextLink from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import { useFieldArray, useForm } from 'react-hook-form';
@@ -67,7 +68,9 @@ const FormCreateForm = (props: {
       ? errors.questions.message
       : undefined;
   const submitErrorMessage =
-    submitState.kind === 'failed' ? submitState.message : undefined;
+    submitState.kind === 'failed' || submitState.kind === 'partiallyFailed'
+      ? submitState.message
+      : undefined;
 
   const addQuestion = () => {
     append(createEmptyFormEditorQuestion());
@@ -110,7 +113,21 @@ const FormCreateForm = (props: {
           />
         </Card>
         {(errors.root || submitErrorMessage) && (
-          <Alert severity="error">
+          <Alert
+            severity="error"
+            action={
+              submitState.kind === 'partiallyFailed' ? (
+                <Button
+                  component={NextLink}
+                  href={`/admin/forms/edit/${submitState.formId}`}
+                  color="inherit"
+                  size="small"
+                >
+                  編集画面へ進む
+                </Button>
+              ) : undefined
+            }
+          >
             {errors.root?.message ?? submitErrorMessage}
           </Alert>
         )}
