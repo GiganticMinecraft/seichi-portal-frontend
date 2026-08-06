@@ -26,6 +26,8 @@ import type {
 import type { FormEditorValues } from '../../_schema/formEditorSchema';
 
 import AnswerGroupField from './AnswerGroupField';
+import { answerViewAudience } from './answerViewAudience';
+import AnswerViewAudienceField from './AnswerViewAudienceField';
 import FormGroupField from './FormGroupField';
 import FormLabelField from './FormLabelField';
 
@@ -225,8 +227,7 @@ const AnswerVisibilitySettings = ({
     name: 'settings.answer_group_ids',
   });
 
-  const hideAuthorHasNoEffect =
-    answerVisibility === 'PRIVATE' && answerGroupIds.length === 0;
+  const canHideAuthor = answerVisibility !== 'PRIVATE';
 
   return (
     <>
@@ -247,30 +248,36 @@ const AnswerVisibilitySettings = ({
           <MenuItem value="PRIVATE">非公開</MenuItem>
         </TextField>
       </Stack>
-      <Stack spacing={0}>
-        <FormControlLabel
-          label="回答者を隠して公開する"
-          control={
-            <Checkbox
-              checked={hideAuthor}
-              onChange={(_, checked) => {
-                setValue('settings.hide_author', checked);
-              }}
-              disabled={hideAuthorHasNoEffect}
-            />
-          }
-        />
-        <Typography variant="caption" color="textSecondary">
-          {hideAuthorHasNoEffect
-            ? '回答の公開設定が「非公開」で、回答を閲覧できるユーザーグループも指定されていないため、この設定は適用されません（管理者以外は回答を閲覧できません）。'
-            : '一般ユーザーには回答者を匿名として表示します。管理者には従来どおり回答者情報が表示されます。'}
-        </Typography>
-      </Stack>
       <AnswerGroupField
         control={control}
         setValue={setValue}
         groupOptions={groupOptions}
       />
+      <AnswerViewAudienceField
+        members={answerViewAudience(
+          answerVisibility,
+          answerGroupIds,
+          groupOptions
+        )}
+      />
+      {canHideAuthor && (
+        <Stack spacing={0}>
+          <FormControlLabel
+            label="回答者を隠して公開する"
+            control={
+              <Checkbox
+                checked={hideAuthor}
+                onChange={(_, checked) => {
+                  setValue('settings.hide_author', checked);
+                }}
+              />
+            }
+          />
+          <Typography variant="caption" color="textSecondary">
+            一般ユーザーには回答者を匿名として表示します。管理者には従来どおり回答者情報が表示されます。
+          </Typography>
+        </Stack>
+      )}
     </>
   );
 };
