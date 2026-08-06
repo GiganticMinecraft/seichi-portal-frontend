@@ -48,6 +48,7 @@ const typescriptStrictConfig = tseslint.config({
     },
   },
   rules: {
+    'no-nested-ternary': 'error',
     '@typescript-eslint/consistent-type-assertions': [
       'error',
       {
