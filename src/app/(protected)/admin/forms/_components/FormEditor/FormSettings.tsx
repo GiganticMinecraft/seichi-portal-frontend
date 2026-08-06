@@ -187,15 +187,26 @@ const AcceptancePeriodSettings = ({
   );
 };
 
-const AnswerSettings = ({
+const DefaultAnswerTitleField = ({
   register,
+}: Pick<FormSettingsProps, 'register'>) => (
+  <Stack spacing={0.5}>
+    <FieldLabel label="デフォルトの回答タイトル" />
+    <TextField
+      {...register('settings.default_answer_title')}
+      helperText="回答送信時のタイトルを設定します。$テンプレートキー で指定の質問の回答を、$username で回答者名を、$form_name でフォームタイトルをタイトルに埋め込むことができます。例: [$form_name] $username さんの回答"
+      slotProps={{
+        htmlInput: { 'aria-label': 'デフォルトの回答タイトル' },
+      }}
+    />
+  </Stack>
+);
+
+const AnswerVisibilitySettings = ({
   control,
   setValue,
   groupOptions,
-}: Pick<
-  FormSettingsProps,
-  'register' | 'control' | 'setValue' | 'groupOptions'
->) => {
+}: Pick<FormSettingsProps, 'control' | 'setValue' | 'groupOptions'>) => {
   const hideAuthor = useWatch({
     control,
     name: 'settings.hide_author',
@@ -260,16 +271,6 @@ const AnswerSettings = ({
         setValue={setValue}
         groupOptions={groupOptions}
       />
-      <Stack spacing={0.5}>
-        <FieldLabel label="デフォルトの回答タイトル" />
-        <TextField
-          {...register('settings.default_answer_title')}
-          helperText="回答送信時のタイトルを設定します。$テンプレートキー で指定の質問の回答を、$username で回答者名を、$form_name でフォームタイトルをタイトルに埋め込むことができます。例: [$form_name] $username さんの回答"
-          slotProps={{
-            htmlInput: { 'aria-label': 'デフォルトの回答タイトル' },
-          }}
-        />
-      </Stack>
     </>
   );
 };
@@ -312,19 +313,21 @@ const FormSettings = (props: FormSettingsProps) => {
         labelOptions={props.labelOptions}
       />
 
-      <SectionHeading label="公開設定" />
+      <SectionHeading label="フォームの公開設定" />
       <FormVisibilitySettings
         control={props.control}
         groupOptions={props.groupOptions}
       />
 
-      <SectionHeading label="回答設定" />
+      <SectionHeading label="回答受付設定" />
       <AcceptancePeriodSettings
         control={props.control}
         setValue={props.setValue}
       />
-      <AnswerSettings
-        register={props.register}
+      <DefaultAnswerTitleField register={props.register} />
+
+      <SectionHeading label="回答結果の公開設定" />
+      <AnswerVisibilitySettings
         control={props.control}
         setValue={props.setValue}
         groupOptions={props.groupOptions}

@@ -14,7 +14,14 @@ import {
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { Add, DragIndicator } from '@mui/icons-material';
-import { Box, Button, CardContent, IconButton, Stack } from '@mui/material';
+import {
+  Box,
+  Button,
+  CardContent,
+  IconButton,
+  Stack,
+  Typography,
+} from '@mui/material';
 import type { ReactNode } from 'react';
 
 type QuestionListItem = {
@@ -79,6 +86,11 @@ const QuestionList = (props: {
 
   return (
     <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
+      <CardContent>
+        <Typography variant="h6" component="h2" sx={{ fontWeight: 'bold' }}>
+          質問一覧
+        </Typography>
+      </CardContent>
       <SortableContext
         items={props.items.map((item) => item.dndId)}
         strategy={verticalListSortingStrategy}
