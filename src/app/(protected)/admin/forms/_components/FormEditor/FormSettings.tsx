@@ -9,7 +9,7 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { useController, useWatch } from 'react-hook-form';
+import { useController, useFormState, useWatch } from 'react-hook-form';
 import type {
   Control,
   UseFormRegister,
@@ -54,29 +54,38 @@ const BasicFormSettings = ({
   register,
   control,
   labelOptions,
-}: Pick<FormSettingsProps, 'register' | 'control' | 'labelOptions'>) => (
-  <>
-    <Stack spacing={0.5}>
-      <FieldLabel label="フォームタイトル" required />
-      <TextField
-        {...register('title')}
-        fullWidth
-        slotProps={{ htmlInput: { 'aria-label': 'フォームタイトル' } }}
-      />
-    </Stack>
-    <Stack spacing={0.5}>
-      <FieldLabel label="フォームの説明" required />
-      <TextField
-        {...register('description')}
-        multiline
-        fullWidth
-        helperText="Markdown に対応しています。"
-        slotProps={{ htmlInput: { 'aria-label': 'フォームの説明' } }}
-      />
-    </Stack>
-    <FormLabelField control={control} labelOptions={labelOptions} />
-  </>
-);
+}: Pick<FormSettingsProps, 'register' | 'control' | 'labelOptions'>) => {
+  const { errors } = useFormState({ control });
+
+  return (
+    <>
+      <Stack spacing={0.5}>
+        <FieldLabel label="フォームタイトル" required />
+        <TextField
+          {...register('title')}
+          fullWidth
+          error={Boolean(errors.title)}
+          helperText={errors.title?.message}
+          slotProps={{ htmlInput: { 'aria-label': 'フォームタイトル' } }}
+        />
+      </Stack>
+      <Stack spacing={0.5}>
+        <FieldLabel label="フォームの説明" required />
+        <TextField
+          {...register('description')}
+          multiline
+          fullWidth
+          error={Boolean(errors.description)}
+          helperText={
+            errors.description?.message ?? 'Markdown に対応しています。'
+          }
+          slotProps={{ htmlInput: { 'aria-label': 'フォームの説明' } }}
+        />
+      </Stack>
+      <FormLabelField control={control} labelOptions={labelOptions} />
+    </>
+  );
+};
 
 const FormVisibilitySettings = ({
   control,

@@ -157,4 +157,31 @@ describe('FormEditForm', () => {
     expect(updateFormBody?.settings?.allow_temporary_answers).toBe(true);
     expect(updateFormBody?.settings?.answer_settings?.hide_author).toBe(true);
   });
+
+  it('必須項目が未入力のまま保存すると該当項目がエラー表示になる', async () => {
+    const user = userEvent.setup();
+
+    renderWithProviders(
+      <FormEditForm form={form} labelOptions={[]} groupOptions={[]} />
+    );
+
+    const titleInput = screen.getByRole('textbox', {
+      name: 'フォームタイトル',
+    });
+    await user.clear(titleInput);
+
+    const questionTitleInput = screen.getByRole('textbox', {
+      name: '質問タイトル',
+    });
+    await user.clear(questionTitleInput);
+
+    await user.click(screen.getByRole('button', { name: '設定内容を保存' }));
+
+    await waitFor(() => {
+      expect(titleInput).toHaveAttribute('aria-invalid', 'true');
+    });
+    expect(questionTitleInput).toHaveAttribute('aria-invalid', 'true');
+    expect(screen.getAllByText('入力してください。').length).toBeGreaterThan(0);
+    expect(updateFormMock).not.toHaveBeenCalled();
+  });
 });
