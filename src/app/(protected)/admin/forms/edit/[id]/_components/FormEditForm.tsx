@@ -19,7 +19,6 @@ import type {
   GetUserGroupsResponse,
 } from '@/lib/api-types';
 
-import FormEditorLayout from '../../../_components/FormEditor/FormEditorLayout';
 import FormSettings from '../../../_components/FormEditor/FormSettings';
 import QuestionEditor from '../../../_components/FormEditor/QuestionEditor';
 import QuestionList from '../../../_components/FormEditor/QuestionList';
@@ -87,64 +86,61 @@ const FormEditForm = (props: {
   };
 
   return (
-    <FormEditorLayout
-      onAddQuestion={() => {
-        append(createEmptyFormEditorQuestion());
+    <Container
+      component="form"
+      onSubmit={(e) => {
+        void handleSubmit(onSubmit)(e);
       }}
     >
-      <Container
-        component="form"
-        onSubmit={(e) => {
-          void handleSubmit(onSubmit)(e);
-        }}
-      >
-        <Stack spacing={2}>
-          <Card>
-            <CardContent>
-              <FormSettings
-                register={register}
-                control={control}
-                setValue={setValue}
-                labelOptions={props.labelOptions}
-                groupOptions={props.groupOptions}
-                discordWebhookEnabled={discordWebhookEnabled}
-                webhookSectionResetKey={webhookSectionResetKey}
-              />
-            </CardContent>
-            <QuestionList
-              items={fields.map((field, index) => ({
-                dndId: field['reacthookform-id'],
-                content: (
-                  <QuestionEditor
-                    control={control}
-                    register={register}
-                    removeQuestion={remove}
-                    questionIndex={index}
-                    removeDisabled={fields.length <= 1}
-                  />
-                ),
-              }))}
-              onMove={move}
+      <Stack spacing={2}>
+        <Card>
+          <CardContent>
+            <FormSettings
+              register={register}
+              control={control}
+              setValue={setValue}
+              labelOptions={props.labelOptions}
+              groupOptions={props.groupOptions}
+              discordWebhookEnabled={discordWebhookEnabled}
+              webhookSectionResetKey={webhookSectionResetKey}
             />
-          </Card>
-          {errors.root && <Alert severity="error">{errors.root.message}</Alert>}
-          {questionListError && (
-            <Alert severity="error">{questionListError}</Alert>
-          )}
-          {isSubmitted && (
-            <Alert severity="success">フォームの編集に成功しました。</Alert>
-          )}
-          <Button
-            type="submit"
-            variant="contained"
-            endIcon={<SendIcon />}
-            disabled={isSubmitting}
-          >
-            設定内容を保存
-          </Button>
-        </Stack>
-      </Container>
-    </FormEditorLayout>
+          </CardContent>
+          <QuestionList
+            items={fields.map((field, index) => ({
+              dndId: field['reacthookform-id'],
+              content: (
+                <QuestionEditor
+                  control={control}
+                  register={register}
+                  removeQuestion={remove}
+                  questionIndex={index}
+                  removeDisabled={fields.length <= 1}
+                />
+              ),
+            }))}
+            onMove={move}
+            onAddQuestion={() => {
+              append(createEmptyFormEditorQuestion());
+            }}
+          />
+        </Card>
+        {errors.root && <Alert severity="error">{errors.root.message}</Alert>}
+        {questionListError && (
+          <Alert severity="error">{questionListError}</Alert>
+        )}
+        {isSubmitted && (
+          <Alert severity="success">フォームの編集に成功しました。</Alert>
+        )}
+        <Button
+          type="submit"
+          variant="contained"
+          endIcon={<SendIcon />}
+          disabled={isSubmitting}
+        >
+          設定内容を保存
+        </Button>
+      </Stack>
+    </Container>
   );
 };
 

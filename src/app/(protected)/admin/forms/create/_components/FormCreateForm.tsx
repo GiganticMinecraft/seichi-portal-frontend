@@ -19,7 +19,6 @@ import type {
   GetUserGroupsResponse,
 } from '@/lib/api-types';
 
-import FormEditorLayout from '../../_components/FormEditor/FormEditorLayout';
 import FormSettings from '../../_components/FormEditor/FormSettings';
 import QuestionEditor from '../../_components/FormEditor/QuestionEditor';
 import QuestionList from '../../_components/FormEditor/QuestionList';
@@ -74,7 +73,7 @@ const FormCreateForm = (props: {
     append(createEmptyFormEditorQuestion());
   };
 
-  const formContent = (
+  return (
     <Container
       component="form"
       onSubmit={(e) => {
@@ -107,6 +106,7 @@ const FormCreateForm = (props: {
               ),
             }))}
             onMove={move}
+            onAddQuestion={addQuestion}
           />
         </Card>
         {(errors.root || submitErrorMessage) && (
@@ -127,12 +127,6 @@ const FormCreateForm = (props: {
         </Button>
       </Stack>
     </Container>
-  );
-
-  return (
-    <FormEditorLayout onAddQuestion={addQuestion}>
-      {formContent}
-    </FormEditorLayout>
   );
 };
 

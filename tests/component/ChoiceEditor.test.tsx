@@ -24,7 +24,7 @@ describe('ChoiceEditor', () => {
 
     renderWithProviders(<ChoiceEditorExample />);
 
-    expect(screen.getByRole('button', { name: '選択肢の追加' })).toBeDisabled();
+    expect(screen.queryByRole('button', { name: '選択肢の追加' })).toBeNull();
 
     await user.click(screen.getByRole('combobox', { name: /質問の種類/ }));
     await user.click(screen.getByRole('option', { name: '単一選択' }));
@@ -41,6 +41,6 @@ describe('ChoiceEditor', () => {
     await user.click(screen.getByRole('option', { name: 'テキスト' }));
 
     expect(screen.queryByRole('textbox', { name: '選択肢1' })).toBeNull();
-    expect(screen.getByRole('button', { name: '選択肢の追加' })).toBeDisabled();
+    expect(screen.queryByRole('button', { name: '選択肢の追加' })).toBeNull();
   });
 });
