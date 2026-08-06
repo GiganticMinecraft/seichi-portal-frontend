@@ -77,7 +77,7 @@ const AnswerGroupField = (props: {
         const box = (
           <Box
             {...optionProps}
-            key={isDisabled ? undefined : key}
+            key={key}
             component="span"
             sx={{
               display: 'flex',
