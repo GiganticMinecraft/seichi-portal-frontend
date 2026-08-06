@@ -12,6 +12,7 @@ import {
   Stack,
   Typography,
 } from '@mui/material';
+import { match, P } from 'ts-pattern';
 
 import MarkdownText from '@/app/_components/MarkdownText';
 import { useApiQuery } from '@/app/_swr/useApiQuery';
@@ -75,11 +76,17 @@ const RestrictionHistorySection = ({ uuid }: { uuid: string }) => {
                   </Typography>
                   <Typography component="p">
                     <strong>状態:</strong>{' '}
-                    {item.lifted_at
-                      ? `解除済み（${formatString(item.lifted_at)}）`
-                      : isRestrictionExpirationPast(expiration)
-                        ? '期限切れ'
-                        : '制限中'}
+                    {match({
+                      liftedAt: item.lifted_at,
+                      isExpired: isRestrictionExpirationPast(expiration),
+                    })
+                      .with(
+                        { liftedAt: P.string },
+                        ({ liftedAt }) =>
+                          `解除済み（${formatString(liftedAt)}）`
+                      )
+                      .with({ isExpired: true }, () => '期限切れ')
+                      .otherwise(() => '制限中')}
                   </Typography>
                 </Stack>
               );

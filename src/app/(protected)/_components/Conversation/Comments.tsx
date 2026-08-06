@@ -1,6 +1,7 @@
 'use client';
 
 import { Box, Typography } from '@mui/material';
+import { match } from 'ts-pattern';
 
 import type { AnswerComment } from '@/lib/api-types';
 
@@ -133,8 +134,12 @@ const Comments = (props: {
         autoOpen={deepLinkState.autoOpen}
         highlightedEntryId={deepLinkState.highlightedEntryId}
         onDrawerClose={deepLinkState.onDrawerClose}
-        inputForm={
-          props.disabled ? null : capabilities.canCompose ? (
+        inputForm={match({
+          disabled: props.disabled,
+          canCompose: capabilities.canCompose,
+        })
+          .with({ disabled: true }, () => null)
+          .with({ canCompose: true }, () => (
             <Box
               sx={{
                 p: 2,
@@ -148,8 +153,8 @@ const Comments = (props: {
                 onSend={actions.send}
               />
             </Box>
-          ) : null
-        }
+          ))
+          .otherwise(() => null)}
         onUpdate={actions.update}
         onDelete={actions.deleteEntry}
       />

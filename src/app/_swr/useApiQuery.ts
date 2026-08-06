@@ -2,6 +2,7 @@
 
 import useSWR from 'swr';
 import type { SWRConfiguration } from 'swr';
+import { match, P } from 'ts-pattern';
 
 import { useHasHydrated } from '@/hooks/useHasHydrated';
 
@@ -23,12 +24,12 @@ export const useApiQuery = <P extends GetPaths>(
   const hasEmptyPathParam =
     pathObj && Object.values(pathObj).some((v) => !v && v !== 0);
 
-  const key =
-    !hasHydrated || params === null || hasEmptyPathParam
-      ? null
-      : params
-        ? [path, params]
-        : [path];
+  const shouldSkip = !hasHydrated || params === null || hasEmptyPathParam;
+
+  const key = match({ shouldSkip, params })
+    .with({ shouldSkip: true }, () => null)
+    .with({ params: P.nullish }, () => [path])
+    .otherwise(({ params }) => [path, params]);
 
   return useSWR<GetResponse<P>, Error>(
     key,

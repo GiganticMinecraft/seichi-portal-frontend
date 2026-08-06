@@ -13,6 +13,7 @@ import {
 } from '@mui/material';
 import { Controller } from 'react-hook-form';
 import type { Control, FieldErrors, UseFormRegister } from 'react-hook-form';
+import { match, P } from 'ts-pattern';
 
 import type { AnswerFormInput, AnswerQuestion } from './answerFormTypes';
 
@@ -135,14 +136,11 @@ const QuestionFieldRenderer = ({
               },
             }}
             render={({ field }) => {
-              const selectedValues: string[] =
-                typeof field.value === 'string'
-                  ? field.value === ''
-                    ? []
-                    : [field.value]
-                  : Array.isArray(field.value)
-                    ? field.value
-                    : [];
+              const selectedValues: string[] = match(field.value)
+                .with('', () => [])
+                .with(P.string, (value) => [value])
+                .with(P.array(P.string), (value) => value)
+                .otherwise(() => []);
               const choiceOrder = new Map(
                 question.choices.map((item, itemIndex) => [
                   item.label,
@@ -167,13 +165,25 @@ const QuestionFieldRenderer = ({
                                 return;
                               }
 
-                              const nextValues = checked
-                                ? selectedValues.includes(choice.label)
-                                  ? selectedValues
-                                  : [...selectedValues, choice.label]
-                                : selectedValues.filter(
+                              const nextValues = match({
+                                checked,
+                                alreadySelected: selectedValues.includes(
+                                  choice.label
+                                ),
+                              })
+                                .with(
+                                  { checked: true, alreadySelected: true },
+                                  () => selectedValues
+                                )
+                                .with({ checked: true }, () => [
+                                  ...selectedValues,
+                                  choice.label,
+                                ])
+                                .otherwise(() =>
+                                  selectedValues.filter(
                                     (value) => value !== choice.label
-                                  );
+                                  )
+                                );
                               const orderedValues = [...nextValues].sort(
                                 (left, right) =>
                                   (choiceOrder.get(left) ?? -1) -
