@@ -1,7 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 import { useApiQuery } from '@/app/_swr/useApiQuery';
 import { useInfiniteApiQuery } from '@/app/_swr/useInfiniteApiQuery';
@@ -11,6 +11,7 @@ import type {
   GetFormAnswersPageResponse,
   GetFormResponse,
 } from '@/lib/api-types';
+import type { AnswerOpenState } from '@/lib/forms/answerStatus';
 
 import { filterAnswers } from './answerListFilters';
 import { toAnswerListRows } from './answerListRows';
@@ -29,6 +30,7 @@ const AnswersPageContent = ({
   const { search, debouncedSearch, isSearching, handleSearchChange } =
     useDebouncedSearch();
   const [labelFilter, setLabelFilter] = useState<GetAnswerLabelsResponse>([]);
+  const [openState, setOpenState] = useState<AnswerOpenState>('open');
 
   const {
     items: answers,
@@ -67,8 +69,21 @@ const AnswersPageContent = ({
     return Array.from(byId.values());
   }, [sourceAnswers]);
 
+  // 未完了/完了・ラベルでの絞り込みはクライアントサイドで行う。openState は常に
+  // 'open' か 'closed' のいずれかで絞り込みが有効な状態にあるため、hasMore が false
+  // になるまで残りページを読み込みきる。DataGrid の仮想スクロールは絞り込み後の
+  // 表示件数がコンテナ高さに満たないとスクロールイベントが発生せず、残りページの
+  // 自動読み込みが起きないため。
+  useEffect(() => {
+    if (!isSearching && hasMore && !isLoadingMore) {
+      loadMore();
+    }
+  }, [isSearching, hasMore, isLoadingMore, loadMore]);
+
+  const isPrefetchingForFilter = !isSearching && hasMore;
+
   const rows = toAnswerListRows(
-    filterAnswers(sourceAnswers, { labels: labelFilter })
+    filterAnswers(sourceAnswers, { labels: labelFilter, openState })
   );
 
   return (
@@ -78,8 +93,11 @@ const AnswersPageContent = ({
       search={search}
       onSearchChange={handleSearchChange}
       isSearchLoading={isSearching && isSearchLoading}
+      isPrefetchingForFilter={isPrefetchingForFilter}
       labelOptions={labelOptions}
       onLabelFilterChange={setLabelFilter}
+      openState={openState}
+      onOpenStateChange={setOpenState}
       hasMore={!isSearching && hasMore}
       isLoadingMore={isLoadingMore}
       onLoadMore={loadMore}

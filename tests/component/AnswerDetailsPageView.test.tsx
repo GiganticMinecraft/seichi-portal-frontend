@@ -78,6 +78,7 @@ const baseData: AnswerDetailsPageData = {
     title: '回答タイトル',
     labels: [],
     publication: 'PUBLIC',
+    status: 'UNADDRESSED',
     author: {
       type: 'AUTHENTICATED_USER',
       user: { name: 'Alice', role: 'STANDARD_USER', uuid: 'user-1' },

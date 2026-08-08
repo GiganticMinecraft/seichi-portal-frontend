@@ -1,5 +1,6 @@
 import { formatString } from '@/generic/DateFormatter';
 import type {
+  AnswerStatus,
   GetAnswerLabelsResponse,
   GetAnswersResponse,
 } from '@/lib/api-types';
@@ -12,6 +13,7 @@ export type DashboardAnswerRow = {
   title: string;
   date: string;
   labels: GetAnswerLabelsResponse;
+  status: AnswerStatus;
 };
 
 const UNKNOWN_FORM_TITLE = 'unknown form';
@@ -27,4 +29,5 @@ export const toDashboardAnswerRows = (
     title: resolveAnswerTitle(answer.title),
     date: formatString(answer.timestamp),
     labels: answer.labels,
+    status: answer.status,
   }));

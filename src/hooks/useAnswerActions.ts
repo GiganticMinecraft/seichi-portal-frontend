@@ -2,7 +2,7 @@
 
 import { handleMutationResponse } from '@/hooks/useApiMutation';
 import { useSingleFlightAction } from '@/hooks/useSingleFlightAction';
-import type { AnswerPublication } from '@/lib/api-types';
+import type { AnswerPublication, AnswerStatus } from '@/lib/api-types';
 import { proxyClient } from '@/lib/proxyClient';
 
 export const useAnswerActions = (formId: string, answerId: string) => {
@@ -32,6 +32,20 @@ export const useAnswerActions = (formId: string, answerId: string) => {
     return { ok: result.success };
   };
 
+  const updateStatus = async (
+    status: AnswerStatus
+  ): Promise<{ ok: boolean }> => {
+    const { data, error, response } = await proxyClient.PATCH(
+      '/api/v1/forms/{form_id}/answers/{answer_id}',
+      {
+        params: { path: { form_id: formId, answer_id: answerId } },
+        body: { status },
+      }
+    );
+    const result = handleMutationResponse(response, data, error);
+    return { ok: result.success };
+  };
+
   const updateLabels = async (labelIds: string[]): Promise<{ ok: boolean }> => {
     const { error, response } = await proxyClient.PUT(
       '/api/v1/forms/answers/{answer_id}/labels',
@@ -47,6 +61,7 @@ export const useAnswerActions = (formId: string, answerId: string) => {
   return {
     updateTitle: useSingleFlightAction(updateTitle),
     updatePublication: useSingleFlightAction(updatePublication),
+    updateStatus: useSingleFlightAction(updateStatus),
     updateLabels: useSingleFlightAction(updateLabels),
   };
 };

@@ -16,10 +16,21 @@ import { useForm } from 'react-hook-form';
 import { useAnswerActions } from '@/hooks/useAnswerActions';
 import type {
   AnswerPublication,
+  AnswerStatus,
   GetAnswerLabelsResponse,
   GetAnswerResponse,
 } from '@/lib/api-types';
+import { ANSWER_STATUS_LABEL } from '@/lib/forms/answerStatus';
 import { resolveAnswerTitle } from '@/lib/forms/answerTitle';
+
+const ANSWER_STATUS_OPTIONS: AnswerStatus[] = [
+  'UNADDRESSED',
+  'IN_PROGRESS',
+  'COMPLETED',
+];
+
+const parseAnswerStatus = (value: string): AnswerStatus =>
+  ANSWER_STATUS_OPTIONS.find((option) => option === value) ?? 'UNADDRESSED';
 
 export const AdminAnswerTitle = (props: { answer: GetAnswerResponse }) => {
   const { handleSubmit, register } = useForm<{ title: string }>();
@@ -120,6 +131,44 @@ export const AdminAnswerPublicationToggle = (props: {
     >
       <MenuItem value="PUBLIC">公開</MenuItem>
       <MenuItem value="PRIVATE">非公開</MenuItem>
+    </TextField>
+  );
+};
+
+export const AdminAnswerStatusSelect = (props: {
+  answer: GetAnswerResponse;
+}) => {
+  const [status, setStatus] = useState(props.answer.status);
+  const { updateStatus } = useAnswerActions(
+    props.answer.form_id,
+    props.answer.id
+  );
+
+  const onChange = async (next: AnswerStatus) => {
+    const previous = status;
+    setStatus(next);
+    const result = await updateStatus(next);
+    if (!result.ok) {
+      setStatus(previous);
+    }
+  };
+
+  return (
+    <TextField
+      select
+      size="small"
+      value={status}
+      onChange={(event) => {
+        void onChange(parseAnswerStatus(event.target.value));
+      }}
+      sx={{ minWidth: 140 }}
+      slotProps={{ select: { 'aria-label': '対応状況' } }}
+    >
+      {ANSWER_STATUS_OPTIONS.map((option) => (
+        <MenuItem key={option} value={option}>
+          {ANSWER_STATUS_LABEL[option]}
+        </MenuItem>
+      ))}
     </TextField>
   );
 };

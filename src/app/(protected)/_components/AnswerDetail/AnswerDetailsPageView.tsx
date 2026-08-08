@@ -17,10 +17,12 @@ import {
   AdminAnswerLabelManagementButton,
   AdminAnswerLabels,
   AdminAnswerPublicationToggle,
+  AdminAnswerStatusSelect,
   AdminAnswerTitle,
 } from './AnswerAdminControls';
 import AnswerDetails from './AnswerDetails';
 import AnswerMeta from './AnswerMeta';
+import AnswerStatusHistoryButton from './AnswerStatusHistoryButton';
 import RelatedAnswers from './RelatedAnswers';
 
 export type AnswerDetailsPageData = {
@@ -96,6 +98,14 @@ const AnswerDetailsPageView = ({
           data.isAdmin ? (
             <AdminAnswerPublicationToggle answer={data.answer} />
           ) : undefined
+        }
+        statusSlot={
+          data.isAdmin ? (
+            <AdminAnswerStatusSelect answer={data.answer} />
+          ) : undefined
+        }
+        statusHistoryAction={
+          <AnswerStatusHistoryButton formId={formId} answerId={answerId} />
         }
         extraActions={
           data.isAdmin ? <AdminAnswerLabelManagementButton /> : undefined

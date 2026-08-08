@@ -304,6 +304,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/forms/{form_id}/answers/{answer_id}/status/history": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** 回答の状態変更履歴を取得 */
+        get: operations["get_answer_status_history_handler"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/forms/{form_id}/archive": {
         parameters: {
             query?: never;
@@ -814,8 +831,24 @@ export interface components {
             hide_author: boolean;
             visibility: components["schemas"]["AnswerVisibility"];
         };
+        /** @enum {string} */
+        AnswerStatus: "UNADDRESSED" | "IN_PROGRESS" | "COMPLETED";
+        AnswerStatusHistoryPageResponse: {
+            items: components["schemas"]["AnswerStatusHistoryResponseEntry"][];
+            next_cursor?: string | null;
+        };
+        AnswerStatusHistoryResponseEntry: {
+            /** Format: date-time */
+            changed_at: string;
+            changed_by: components["schemas"]["HistoryUser"];
+            from: components["schemas"]["AnswerStatus"];
+            /** Format: uuid */
+            id: string;
+            to: components["schemas"]["AnswerStatus"];
+        };
         AnswerUpdateSchema: {
             publication?: string | null;
+            status?: string | null;
             title?: string | null;
         };
         /** @enum {string} */
@@ -911,6 +944,7 @@ export interface components {
             publication: components["schemas"]["AnswerPublication"];
             /** Format: int64 */
             redmine_issue_id?: number | null;
+            status: components["schemas"]["AnswerStatus"];
             /** Format: date-time */
             timestamp: string;
             title?: string | null;
@@ -1550,6 +1584,8 @@ export interface operations {
                 limit?: number;
                 /** @description Cursor returned by the previous page */
                 cursor?: string;
+                /** @description Limit results to the specified answer status */
+                status?: string;
             };
             header?: never;
             path?: never;
@@ -1830,6 +1866,8 @@ export interface operations {
                 limit?: number;
                 /** @description Cursor returned by the previous page */
                 cursor?: string;
+                /** @description Limit results to the specified answer status */
+                status?: string;
             };
             header?: never;
             path: {
@@ -3164,6 +3202,78 @@ export interface operations {
             };
         };
     };
+    get_answer_status_history_handler: {
+        parameters: {
+            query?: {
+                /** @description Maximum number of history entries to return */
+                limit?: number;
+                /** @description Cursor returned by the previous page */
+                cursor?: string;
+            };
+            header?: never;
+            path: {
+                form_id: string;
+                answer_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AnswerStatusHistoryPageResponse"];
+                };
+            };
+            /** @description The server could not understand the request due to invalid syntax. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Access is unauthorized. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Access is forbidden. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description The server cannot find the requested resource. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
     archive_form_handler: {
         parameters: {
             query?: never;
@@ -4283,6 +4393,8 @@ export interface operations {
                 query: string;
                 /** @description Limit results to the specified form */
                 form_id?: string;
+                /** @description Limit results to the specified answer status */
+                status?: string;
             };
             header?: never;
             path?: never;

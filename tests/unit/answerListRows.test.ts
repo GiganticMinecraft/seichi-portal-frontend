@@ -19,6 +19,7 @@ const createAnswer = (
   },
   labels: [],
   publication: 'PUBLIC',
+  status: 'UNADDRESSED',
   timestamp: '2026-06-01T10:00:00+09:00',
   ...overrides,
 });
@@ -39,6 +40,7 @@ describe('toAnswerListRows', () => {
         title: '回答タイトル',
         date: '2026年06月01日 10時00分',
         labels: [{ id: 'label-id', name: 'ラベル' }],
+        status: 'UNADDRESSED',
       },
     ]);
   });

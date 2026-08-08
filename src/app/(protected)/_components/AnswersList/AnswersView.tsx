@@ -22,15 +22,29 @@ import * as React from 'react';
 import type { Dispatch, SetStateAction } from 'react';
 
 import type { GetAnswerLabelsResponse } from '@/lib/api-types';
+import type { AnswerOpenState } from '@/lib/forms/answerStatus';
+
+import AnswerStatusChip from '../AnswerDetail/AnswerStatusChip';
 
 import AnswerLabelFilter from './AnswerLabelFilter';
 import type { AnswerListRow } from './answerListRows';
+import AnswerOpenStateTabs from './AnswerOpenStateTabs';
 
 const SCROLL_END_THRESHOLD_PX = 200;
 
 const columns: GridColDef<AnswerListRow>[] = [
   { field: 'title', headerName: 'タイトル', minWidth: 240, flex: 1.5 },
   { field: 'date', headerName: '投稿日時', minWidth: 200, flex: 0.8 },
+  {
+    field: 'status',
+    headerName: '対応状況',
+    minWidth: 120,
+    flex: 0.6,
+    sortable: false,
+    renderCell: (
+      params: GridRenderCellParams<AnswerListRow, AnswerListRow['status']>
+    ) => (params.value ? <AnswerStatusChip status={params.value} /> : null),
+  },
   {
     field: 'labels',
     headerName: 'ラベル',
@@ -60,8 +74,11 @@ const AnswersView = ({
   search,
   onSearchChange,
   isSearchLoading = false,
+  isPrefetchingForFilter = false,
   labelOptions,
   onLabelFilterChange,
+  openState,
+  onOpenStateChange,
   hasMore,
   isLoadingMore,
   onLoadMore,
@@ -72,8 +89,11 @@ const AnswersView = ({
   search: string;
   onSearchChange: (value: string) => void;
   isSearchLoading?: boolean;
+  isPrefetchingForFilter?: boolean;
   labelOptions: GetAnswerLabelsResponse;
   onLabelFilterChange: Dispatch<SetStateAction<GetAnswerLabelsResponse>>;
+  openState: AnswerOpenState;
+  onOpenStateChange: (value: AnswerOpenState) => void;
   hasMore: boolean;
   isLoadingMore: boolean;
   onLoadMore: () => void;
@@ -162,8 +182,18 @@ const AnswersView = ({
           />
         </Stack>
       </Box>
+      <AnswerOpenStateTabs value={openState} onChange={onOpenStateChange} />
+      {isPrefetchingForFilter && (
+        <Typography
+          variant="caption"
+          color="textSecondary"
+          sx={{ display: 'block', mb: 0.5 }}
+        >
+          絞り込みのため全件を読み込み中です。結果が確定するまでお待ちください。
+        </Typography>
+      )}
       <Box sx={{ position: 'relative' }}>
-        {isSearchLoading && (
+        {(isSearchLoading || isPrefetchingForFilter) && (
           <LinearProgress
             sx={{ position: 'absolute', top: 0, left: 0, right: 0, zIndex: 1 }}
           />
