@@ -66,7 +66,13 @@ const MENU_ITEMS: MenuNode[] = [
   { label: 'Webhooks', url: '/admin/webhooks', icon: <Star /> },
 ];
 
-const DashboardMenu = () => {
+type DashboardMenuProps = {
+  variant: 'permanent' | 'temporary';
+  open?: boolean;
+  onClose?: () => void;
+};
+
+const DashboardMenu = ({ variant, open, onClose }: DashboardMenuProps) => {
   const [expandedUrls, setExpandedUrls] = useState<ReadonlySet<string>>(
     new Set()
   );
@@ -85,9 +91,12 @@ const DashboardMenu = () => {
 
   return (
     <Drawer
-      variant="permanent"
+      variant={variant}
+      open={open}
+      onClose={onClose}
+      ModalProps={variant === 'temporary' ? { keepMounted: true } : undefined}
       sx={{
-        width: AUTCHED_DRAWER_WIDTH_PX,
+        ...(variant === 'permanent' && { width: AUTCHED_DRAWER_WIDTH_PX }),
         [`& .MuiDrawer-paper`]: {
           width: AUTCHED_DRAWER_WIDTH_PX,
           boxSizing: 'border-box',
@@ -109,6 +118,9 @@ const DashboardMenu = () => {
                 <Box
                   component={NextLink}
                   href={item.url}
+                  onClick={() => {
+                    onClose?.();
+                  }}
                   sx={{
                     display: 'flex',
                     alignItems: 'center',
@@ -154,6 +166,9 @@ const DashboardMenu = () => {
                         key={child.url}
                         component={NextLink}
                         href={child.url}
+                        onClick={() => {
+                          onClose?.();
+                        }}
                         sx={{
                           color: 'text.primary',
                           textDecoration: 'none',

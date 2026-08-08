@@ -19,7 +19,14 @@ const DashboardDateRangeFilter = ({
 }) => {
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
-      <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
+      <Stack
+        direction={{ xs: 'column', sm: 'row' }}
+        spacing={1}
+        sx={{
+          alignItems: { xs: 'stretch', sm: 'center' },
+          width: { xs: '100%', sm: 'auto' },
+        }}
+      >
         <DatePicker
           label="開始日"
           value={startDate}
@@ -28,7 +35,10 @@ const DashboardDateRangeFilter = ({
             textField: { variant: 'standard', size: 'small' },
             field: { clearable: true },
           }}
-          sx={{ minWidth: 160 }}
+          sx={{
+            minWidth: { xs: 0, sm: 160 },
+            width: { xs: '100%', sm: 'auto' },
+          }}
         />
         <DatePicker
           label="終了日"
@@ -38,7 +48,10 @@ const DashboardDateRangeFilter = ({
             textField: { variant: 'standard', size: 'small' },
             field: { clearable: true },
           }}
-          sx={{ minWidth: 160 }}
+          sx={{
+            minWidth: { xs: 0, sm: 160 },
+            width: { xs: '100%', sm: 'auto' },
+          }}
         />
       </Stack>
     </LocalizationProvider>

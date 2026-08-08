@@ -142,7 +142,7 @@ const AnswersView = ({
   );
 
   return (
-    <Box sx={{ width: '100%' }}>
+    <Box sx={{ width: '100%', minWidth: 0 }}>
       <Box
         sx={{
           display: 'flex',
@@ -156,7 +156,14 @@ const AnswersView = ({
         <Typography variant="h5" component="h1">
           {formTitle}
         </Typography>
-        <Stack direction="row" spacing={2} sx={{ alignItems: 'center' }}>
+        <Stack
+          direction={{ xs: 'column', sm: 'row' }}
+          spacing={2}
+          sx={{
+            alignItems: { xs: 'stretch', sm: 'center' },
+            width: { xs: '100%', sm: 'auto' },
+          }}
+        >
           <TextField
             variant="standard"
             size="small"
@@ -165,7 +172,10 @@ const AnswersView = ({
             onChange={(e) => {
               onSearchChange(e.target.value);
             }}
-            sx={{ minWidth: 240 }}
+            sx={{
+              minWidth: { xs: 0, sm: 240 },
+              width: { xs: '100%', sm: 'auto' },
+            }}
             slotProps={{
               input: {
                 startAdornment: (

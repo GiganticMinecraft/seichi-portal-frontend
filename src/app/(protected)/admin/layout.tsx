@@ -1,12 +1,9 @@
 import { redirect } from 'next/navigation';
 import type { ReactNode } from 'react';
 
-import NavBar from '@/app/_components/NavBar';
 import { getAdminAccess } from '@/lib/server/session';
 
-import styles from '../../page.module.css';
-
-import DashboardMenu from './_components/DashboardMenu';
+import AdminShell from './_components/AdminShell';
 import SearchField from './_components/SearchField';
 
 const RootLayout = async ({ children }: { children: ReactNode }) => {
@@ -16,15 +13,7 @@ const RootLayout = async ({ children }: { children: ReactNode }) => {
     redirect('/home?accessDenied=admin');
   }
 
-  return (
-    <>
-      <NavBar homeHref="/admin" searchSlot={<SearchField />} withDrawerZIndex />
-      <main className={styles['main']}>
-        <DashboardMenu />
-        {children}
-      </main>
-    </>
-  );
+  return <AdminShell searchSlot={<SearchField />}>{children}</AdminShell>;
 };
 
 export default RootLayout;

@@ -25,14 +25,18 @@ const FormsToolbar = ({
 }: Props) => {
   return (
     <Stack
-      direction="row"
+      direction={{ xs: 'column', sm: 'row' }}
       spacing={2}
-      sx={{ alignItems: 'center', width: '100%' }}
+      sx={{ alignItems: { xs: 'stretch', sm: 'center' }, width: '100%' }}
     >
       <Stack
-        direction="row"
+        direction={{ xs: 'column', sm: 'row' }}
         spacing={2}
-        sx={{ alignItems: 'center', flexGrow: 1, minWidth: 0 }}
+        sx={{
+          alignItems: { xs: 'stretch', sm: 'center' },
+          flexGrow: 1,
+          minWidth: 0,
+        }}
       >
         <TextField
           variant="standard"
@@ -42,7 +46,10 @@ const FormsToolbar = ({
           onChange={(e) => {
             onTitleSearchChange(e.target.value);
           }}
-          sx={{ minWidth: 200 }}
+          sx={{
+            minWidth: { xs: 0, sm: 200 },
+            width: { xs: '100%', sm: 'auto' },
+          }}
           slotProps={{
             input: {
               startAdornment: (
@@ -58,9 +65,17 @@ const FormsToolbar = ({
           setLabelFilter={onLabelFilterChange}
         />
       </Stack>
-      <Divider orientation="vertical" flexItem />
+      <Divider
+        orientation="vertical"
+        flexItem
+        sx={{ display: { xs: 'none', sm: 'block' } }}
+      />
       <ToManageFormLabelButton />
-      <Divider orientation="vertical" flexItem />
+      <Divider
+        orientation="vertical"
+        flexItem
+        sx={{ display: { xs: 'none', sm: 'block' } }}
+      />
       <FormCreateButton />
     </Stack>
   );

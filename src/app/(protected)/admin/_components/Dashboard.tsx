@@ -132,7 +132,7 @@ const DataTable = (props: {
   };
 
   return (
-    <Box sx={{ width: '100%' }}>
+    <Box sx={{ width: '100%', minWidth: 0 }}>
       <Stack spacing={1.5} sx={{ mb: 2 }}>
         <Typography variant="h5" component="h1">
           回答一覧
@@ -150,7 +150,10 @@ const DataTable = (props: {
             onChange={(e) => {
               handleSearchChange(e.target.value);
             }}
-            sx={{ minWidth: 240 }}
+            sx={{
+              minWidth: { xs: 0, sm: 240 },
+              width: { xs: '100%', sm: 'auto' },
+            }}
             slotProps={{
               input: {
                 startAdornment: (
