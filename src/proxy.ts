@@ -6,7 +6,11 @@ import {
   setPostLoginRedirectCookie,
 } from '@/lib/postLoginRedirect';
 
-import { getBackendServerUrl, getMsalOrigin } from './env.server';
+import {
+  getBackendServerUrl,
+  getMsalOrigin,
+  getSeichiProxyHeaders,
+} from './env.server';
 import { getCachedToken } from './user-token/mcToken';
 
 // 未ログインでも到達してよい公開ページ。回答ページ /forms/{id} のみ
@@ -34,16 +38,33 @@ const isAnonymousAllowedApi = (request: NextRequest) => {
   return false;
 };
 
-const proxyToBackend = (request: NextRequest, token: string | null) => {
-  const backendServerUrl = getBackendServerUrl();
-
+export const buildBackendRequestHeaders = (
+  incomingHeaders: HeadersInit,
+  token: string | null
+) => {
   // Authorization はリクエストヘッダとして注入する。レスポンスヘッダ経由の
   // 注入は undocumented な挙動依存であり、Bearer トークンがブラウザへの
   // レスポンスにもエコーされてしまう。
-  const headers = new Headers(request.headers);
+  const headers = new Headers(incomingHeaders);
+  // These values are server-to-backend credentials. Never forward values
+  // supplied by the browser, even when the secret is not configured.
+  headers.delete('x-seichi-proxy-secret');
+  headers.delete('x-seichi-client-ip');
+  for (const [name, value] of Object.entries(
+    getSeichiProxyHeaders(new Headers(incomingHeaders))
+  )) {
+    headers.set(name, value);
+  }
   if (token) {
     headers.set('Authorization', `Bearer ${token}`);
   }
+
+  return headers;
+};
+
+const proxyToBackend = (request: NextRequest, token: string | null) => {
+  const backendServerUrl = getBackendServerUrl();
+  const headers = buildBackendRequestHeaders(request.headers, token);
 
   // rewrite による backend への外部 hop は Next がスパン化しないため、active な
   // trace context を手動で注入してトレースを繋ぐ。active span が無い場合は

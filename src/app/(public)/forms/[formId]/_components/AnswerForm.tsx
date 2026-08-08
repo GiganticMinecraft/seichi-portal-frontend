@@ -116,6 +116,15 @@ const SubmissionErrorAlert = ({
         </Alert>
       );
     }
+    case 'rateLimited':
+      return (
+        <Alert severity="warning" sx={alertSx}>
+          回答の送信が集中しています。
+          {submissionState.error.retryAfter !== undefined
+            ? ` ${submissionState.error.retryAfter}秒後に再度お試しください。`
+            : '時間をおいて再度お試しください。'}
+        </Alert>
+      );
     case 'unknown':
       return (
         <Alert severity="error" sx={alertSx}>

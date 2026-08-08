@@ -1,6 +1,8 @@
 import { InteractionStatus } from '@azure/msal-browser';
 import userEvent from '@testing-library/user-event';
 import { useEffect, useState } from 'react';
+import { hydrateRoot } from 'react-dom/client';
+import { renderToString } from 'react-dom/server';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { SigninButton } from '@/app/_components/SigninButton';
@@ -128,6 +130,27 @@ describe('SigninButton', () => {
     await user.click(button);
     expect(loginRedirectMock).toHaveBeenCalledTimes(2);
     expect(button).toBeDisabled();
+  });
+
+  it('MSALの復元状態があってもSSRとhydration直後の属性が一致する', async () => {
+    setGlobalInProgress(InteractionStatus.Login);
+
+    const serverMarkup = renderToString(<SigninButton />);
+    const container = document.createElement('div');
+    container.innerHTML = serverMarkup;
+    document.body.appendChild(container);
+
+    const button = container.querySelector('button');
+    expect(button).not.toHaveAttribute('disabled');
+
+    const root = hydrateRoot(container, <SigninButton />);
+    await waitFor(() => {
+      expect(container.querySelector('button')).toBeDisabled();
+    });
+
+    root.unmount();
+    container.remove();
+    setGlobalInProgress(InteractionStatus.None);
   });
 
   it('AppBarとランディング中央、別々にマウントされたサインインボタン同士が連動して無効化・再有効化される', async () => {

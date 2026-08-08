@@ -19,6 +19,8 @@ mise を使えない場合は、`mise.toml` に書かれたバージョンに合
 | MS_APP_CLIENT_ID                | Microsoft アカウントログイン用の CLIENT ID                                                                 |
 | MS_APP_REDIRECT_URL             | ログイン後にリダイレクトされる URL                                                                         |
 | BACKEND_SERVER_URL              | [seichi-portal-backend](https://github.com/GiganticMinecraft/seichi-portal-backend) の URL                 |
+| SEICHI_PROXY_SECRET             | バックエンドへ匿名リクエストを中継する共有秘密値（サーバ側専用）                                           |
+| SEICHI_CLIENT_IP_HEADER        | ingress が設定するクライアント IP ヘッダー名（任意。サーバ側専用）                                          |
 | DISCORD_CLIENT_ID               | Discord 連携用 OAuth クライアント ID                                                                       |
 | DISCORD_CLIENT_SECRET           | Discord 連携用 OAuth クライアントシークレット                                                              |
 | DISCORD_REDIRECT_URI            | Discord OAuth コールバック URL                                                                             |

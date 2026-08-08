@@ -1,5 +1,7 @@
 import type { Metadata } from 'next';
+import { headers } from 'next/headers';
 
+import { getSeichiProxyHeaders } from '@/env.server';
 import {
   authorizationHeader,
   BackendError,
@@ -44,6 +46,7 @@ const Home = async ({ params }: { params: Promise<{ formId: string }> }) => {
   const session = await getSession();
   const isAuthenticated = session.state === 'authenticated';
   const { formId } = await params;
+  const requestHeaders = isAuthenticated ? undefined : await headers();
 
   // ログイン時は認証ヘッダ付き、未ログイン時は匿名でフォームを取得する。
   // restriction はフォーム取得結果に依存しないため並列で取得する。
@@ -52,7 +55,9 @@ const Home = async ({ params }: { params: Promise<{ formId: string }> }) => {
       serverApiClient.GET('/api/v1/forms/{form_id}', {
         ...(isAuthenticated
           ? { headers: authorizationHeader(session.token) }
-          : {}),
+          : {
+              headers: getSeichiProxyHeaders(requestHeaders ?? new Headers()),
+            }),
         params: {
           path: { form_id: formId },
         },

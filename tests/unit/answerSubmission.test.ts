@@ -5,6 +5,15 @@ import { toAnswerContents } from '@/app/(public)/forms/[formId]/_components/useA
 import { parseSubmissionError } from '@/app/(public)/forms/[formId]/_lib/submissionErrors';
 
 describe('parseSubmissionError', () => {
+  it('429はProblem Details本文が不正でもrate-limitとして扱いRetry-Afterを保持する', () => {
+    expect(
+      parseSubmissionError('upstream unavailable', {
+        status: 429,
+        headers: new Headers({ 'Retry-After': '4' }),
+      })
+    ).toEqual({ code: 'RATE_LIMIT_EXCEEDED', retryAfter: 4 });
+  });
+
   it('制限エラーの nullable な解除予定を送信用 model に変換する', () => {
     expect(
       parseSubmissionError({

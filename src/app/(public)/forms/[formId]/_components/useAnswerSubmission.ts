@@ -111,7 +111,7 @@ export const useAnswerSubmission = (
       return { ok: true as const };
     }
 
-    const parsed = parseSubmissionError(error);
+    const parsed = parseSubmissionError(error, response);
     const errorCode = parsed?.code ?? 'UNKNOWN';
     const submissionError = (() => {
       switch (errorCode) {
@@ -121,6 +121,13 @@ export const useAnswerSubmission = (
           return {
             kind: 'restricted',
             ...(parsed?.restriction ? { restriction: parsed.restriction } : {}),
+          } satisfies SubmissionError;
+        case 'RATE_LIMIT_EXCEEDED':
+          return {
+            kind: 'rateLimited',
+            ...(parsed?.retryAfter !== undefined
+              ? { retryAfter: parsed.retryAfter }
+              : {}),
           } satisfies SubmissionError;
         case 'UNKNOWN':
           return { kind: 'unknown' } satisfies SubmissionError;

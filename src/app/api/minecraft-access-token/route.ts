@@ -6,6 +6,7 @@ import {
   minecraftAccessTokenResponseSchema,
   xboxLiveServiceTokenResponseSchema,
 } from '@/_schemas/loginSchema';
+import { getSeichiProxyHeaders } from '@/env.server';
 import {
   authorizationHeader,
   BackendError,
@@ -48,7 +49,10 @@ export async function POST(req: NextRequest) {
       xboxServiceSecurityToken
     );
 
-    const sessionResponse = await createSession(minecraftAccessTokenResult);
+    const sessionResponse = await createSession(
+      minecraftAccessTokenResult,
+      req.headers
+    );
     const nextResponse = NextResponse.json({});
     const setCookieHeader = sessionResponse.headers.get('Set-Cookie');
 
@@ -71,6 +75,10 @@ export async function POST(req: NextRequest) {
     console.error('Minecraft login flow failed:', error);
 
     if (error instanceof BackendError) {
+      if (error.status === 429) {
+        return backendRateLimitResponse(error);
+      }
+
       const isBackendSideFailure =
         error.code === 'network_error' || error.status >= 500;
 
@@ -202,14 +210,15 @@ const acquireMinecraftAccessToken = async ({
   return { token: result.access_token, expires: result.expires_in };
 };
 
-const createSession = async ({
-  token,
-  expires,
-}: Awaited<ReturnType<typeof acquireMinecraftAccessToken>>) => {
+const createSession = async (
+  { token, expires }: Awaited<ReturnType<typeof acquireMinecraftAccessToken>>,
+  requestHeaders?: Pick<Headers, 'get'>
+) => {
   const { response } = await requireBackendResponse(
     serverApiClient.POST('/api/v1/session', {
       headers: {
         ...authorizationHeader(token),
+        ...(requestHeaders ? getSeichiProxyHeaders(requestHeaders) : {}),
       },
       body: {
         expires: expires,
@@ -218,4 +227,34 @@ const createSession = async ({
   );
 
   return response;
+};
+
+const backendRateLimitResponse = (error: BackendError) => {
+  const body = serializeBackendBody(error.body);
+  const responseHeaders = new Headers();
+  const contentType = error.headers.get('content-type');
+  if (contentType) responseHeaders.set('content-type', contentType);
+
+  for (const header of [
+    'retry-after',
+    'ratelimit-limit',
+    'ratelimit-remaining',
+    'ratelimit-reset',
+  ]) {
+    const value = error.headers.get(header);
+    if (value) responseHeaders.set(header, value);
+  }
+
+  // Keep the status and the rate-limit metadata even when the upstream body
+  // is not valid JSON. The parser at the browser boundary handles either form.
+  return new NextResponse(body, {
+    status: 429,
+    headers: responseHeaders,
+  });
+};
+
+const serializeBackendBody = (body: unknown): string => {
+  if (typeof body === 'string') return body;
+  if (body === undefined) return '';
+  return JSON.stringify(body);
 };
