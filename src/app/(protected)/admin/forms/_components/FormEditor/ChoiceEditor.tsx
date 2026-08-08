@@ -276,9 +276,6 @@ const ChoiceEditor = (props: ChoiceEditorProps) => {
       />
       {questionType !== 'Text' && (
         <>
-          <Button variant="outlined" startIcon={<Add />} onClick={appendChoice}>
-            選択肢の追加
-          </Button>
           <SortableChoiceList
             choiceFields={choiceFields}
             questionIndex={props.questionIndex}
@@ -288,6 +285,9 @@ const ChoiceEditor = (props: ChoiceEditorProps) => {
             removeChoice={removeChoice}
             appendChoice={appendChoice}
           />
+          <Button variant="outlined" startIcon={<Add />} onClick={appendChoice}>
+            選択肢の追加
+          </Button>
         </>
       )}
     </>
