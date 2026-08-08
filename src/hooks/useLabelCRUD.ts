@@ -1,5 +1,6 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
 import { useSWRConfig } from 'swr';
 
 import { useSingleFlightAction } from '@/hooks/useSingleFlightAction';
@@ -7,6 +8,7 @@ import { proxyClient } from '@/lib/proxyClient';
 
 export const useLabelCRUD = (labelType: 'answers' | 'forms') => {
   const { mutate } = useSWRConfig();
+  const router = useRouter();
   const key =
     labelType === 'answers'
       ? ['/api/v1/labels/answers']
@@ -17,13 +19,19 @@ export const useLabelCRUD = (labelType: 'answers' | 'forms') => {
       const { response } = await proxyClient.POST('/api/v1/labels/answers', {
         body: { name },
       });
-      if (response.ok) await mutate(key);
+      if (response.ok) {
+        await mutate(key);
+        router.refresh();
+      }
       return { ok: response.ok };
     } else {
       const { response } = await proxyClient.POST('/api/v1/labels/forms', {
         body: { name },
       });
-      if (response.ok) await mutate(key);
+      if (response.ok) {
+        await mutate(key);
+        router.refresh();
+      }
       return { ok: response.ok };
     }
   };
@@ -34,7 +42,10 @@ export const useLabelCRUD = (labelType: 'answers' | 'forms') => {
         '/api/v1/labels/answers/{label_id}',
         { params: { path: { label_id: String(id) } } }
       );
-      if (response.ok) await mutate(key);
+      if (response.ok) {
+        await mutate(key);
+        router.refresh();
+      }
       return { ok: response.ok };
     } else {
       const { response } = await proxyClient.DELETE(
@@ -43,7 +54,10 @@ export const useLabelCRUD = (labelType: 'answers' | 'forms') => {
           params: { path: { label_id: String(id) } },
         }
       );
-      if (response.ok) await mutate(key);
+      if (response.ok) {
+        await mutate(key);
+        router.refresh();
+      }
       return { ok: response.ok };
     }
   };
@@ -60,7 +74,10 @@ export const useLabelCRUD = (labelType: 'answers' | 'forms') => {
           body: { name },
         }
       );
-      if (response.ok) await mutate(key);
+      if (response.ok) {
+        await mutate(key);
+        router.refresh();
+      }
       return { ok: response.ok };
     } else {
       const { response } = await proxyClient.PATCH(
@@ -70,7 +87,10 @@ export const useLabelCRUD = (labelType: 'answers' | 'forms') => {
           body: { name },
         }
       );
-      if (response.ok) await mutate(key);
+      if (response.ok) {
+        await mutate(key);
+        router.refresh();
+      }
       return { ok: response.ok };
     }
   };
