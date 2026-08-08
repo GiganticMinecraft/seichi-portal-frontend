@@ -1,12 +1,11 @@
 'use client';
 
+import { Box } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { useState, type ReactNode } from 'react';
 
 import NavBar from '@/app/_components/NavBar';
-
-import styles from '../../../page.module.css';
 
 import DashboardMenu from './DashboardMenu';
 
@@ -32,7 +31,16 @@ const AdminShell = ({ searchSlot, children }: AdminShellProps) => {
           },
         })}
       />
-      <main className={styles['main']}>
+      <Box
+        component="main"
+        sx={{
+          display: 'flex',
+          flexDirection: 'row',
+          minHeight: '100vh',
+          pt: { xs: 'calc(56px + 1rem)', md: 'calc(64px + 2rem)' },
+          pb: { xs: '1rem', md: '2rem' },
+        }}
+      >
         <DashboardMenu
           variant={isMobile ? 'temporary' : 'permanent'}
           open={isMobile ? mobileOpen : true}
@@ -42,8 +50,17 @@ const AdminShell = ({ searchSlot, children }: AdminShellProps) => {
             },
           })}
         />
-        {children}
-      </main>
+        <Box
+          component="div"
+          sx={{
+            flexGrow: 1,
+            minWidth: 0,
+            px: { xs: '1rem', md: '2rem' },
+          }}
+        >
+          {children}
+        </Box>
+      </Box>
     </>
   );
 };
