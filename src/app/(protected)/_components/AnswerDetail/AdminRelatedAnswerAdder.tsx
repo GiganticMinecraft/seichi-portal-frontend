@@ -44,6 +44,7 @@ const AdminRelatedAnswerAdder = ({
         handleSearchChange(value);
       }}
       getOptionLabel={(option) => resolveAnswerTitle(option.title)}
+      getOptionKey={(option) => option.id}
       isOptionEqualToValue={(a, b) => a.id === b.id}
       value={null}
       onChange={(_event, option) => {
