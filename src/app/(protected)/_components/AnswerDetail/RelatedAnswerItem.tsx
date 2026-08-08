@@ -16,6 +16,13 @@ const RelatedAnswerItem = ({
   isAdmin: boolean;
   onRemove?: (() => void) | undefined;
 }) => {
+  const handleDelete = onRemove
+    ? (event: React.SyntheticEvent) => {
+        event.preventDefault();
+        onRemove();
+      }
+    : undefined;
+
   const answerQuery = useApiQuery(
     '/api/v1/forms/{form_id}/answers/{answer_id}',
     {
@@ -35,7 +42,7 @@ const RelatedAnswerItem = ({
       label={label}
       clickable
       variant="outlined"
-      onDelete={onRemove}
+      onDelete={handleDelete}
     />
   );
 };
