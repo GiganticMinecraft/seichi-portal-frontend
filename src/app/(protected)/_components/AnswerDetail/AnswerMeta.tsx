@@ -51,7 +51,7 @@ const AuthorName = ({ author }: { author: Author }) => {
   return <Typography>{author.user.name}</Typography>;
 };
 
-const AnswerPublicationChip = ({
+export const AnswerPublicationChip = ({
   publication,
 }: {
   publication: GetAnswerResponse['publication'];
