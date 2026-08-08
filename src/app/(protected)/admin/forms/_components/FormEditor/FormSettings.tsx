@@ -169,7 +169,7 @@ const AcceptancePeriodSettings = ({
         }
       />
       {hasAcceptancePeriod && (
-        <Stack direction="row" spacing={2}>
+        <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
           <Stack spacing={0.5} sx={{ flex: 1 }}>
             <FieldLabel label="回答開始日" required />
             <TextField
