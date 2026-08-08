@@ -1,14 +1,20 @@
+import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
 
+import { getSeichiProxyHeaders } from '@/env.server';
 import type { GetFormsResponse } from '@/lib/api-types';
 import { serverApiClient } from '@/lib/server/backend';
 import { getSession } from '@/lib/server/session';
 
 import { LandingContent } from './_components/LandingContent';
 
-const fetchPublicForms = async (): Promise<GetFormsResponse> => {
+const fetchPublicForms = async (
+  requestHeaders: Pick<Headers, 'get'>
+): Promise<GetFormsResponse> => {
   try {
-    const { data, error } = await serverApiClient.GET('/api/v1/forms');
+    const { data, error } = await serverApiClient.GET('/api/v1/forms', {
+      headers: getSeichiProxyHeaders(requestHeaders),
+    });
     if (error) {
       console.error('Failed to fetch public forms:', error);
       return [];
@@ -26,7 +32,7 @@ const LandingPage = async () => {
     redirect('/home');
   }
 
-  const publicForms = await fetchPublicForms();
+  const publicForms = await fetchPublicForms(await headers());
 
   return <LandingContent publicForms={publicForms} />;
 };

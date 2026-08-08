@@ -10,6 +10,7 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 import { useRedirectLogin } from '@/app/_components/useRedirectLogin';
+import { getRetryAfterSeconds } from '@/lib/httpError';
 import { normalizeRedirectTarget } from '@/lib/redirect';
 
 const LOGIN_ERROR_MESSAGE =
@@ -18,6 +19,10 @@ const BACKEND_UNREACHABLE_ERROR_MESSAGE =
   'サーバーとの通信に失敗しました。しばらく時間を置いて再試行してください。';
 const RETRY_ERROR_MESSAGE =
   'サインインに失敗しました。時間を置いて再試行してください。';
+const RATE_LIMIT_ERROR_MESSAGE = (retryAfter?: number) =>
+  retryAfter === undefined
+    ? 'サインイン試行が集中しています。時間を置いて再試行してください。'
+    : `サインイン試行が集中しています。${retryAfter}秒後に再試行してください。`;
 const LOGIN_PROCESSING_ERROR_MESSAGE = 'サインイン処理に失敗しました。';
 const LOGIN_REDIRECT_ERROR_MESSAGE = 'サインイン画面への遷移に失敗しました。';
 const loginRequest = {
@@ -47,11 +52,14 @@ const fetchPostLoginRedirect = async (): Promise<string> => {
   return '/';
 };
 
-type LoginFailureReason = 'invalid_account' | 'backend_unreachable';
+type LoginFailureReason =
+  'invalid_account' | 'backend_unreachable' | 'rate_limited';
 
 const exchangeMinecraftAccessToken = async (
   accessToken: string
-): Promise<{ ok: true } | { ok: false; reason: LoginFailureReason }> => {
+): Promise<
+  { ok: true } | { ok: false; reason: LoginFailureReason; retryAfter?: number }
+> => {
   const response = await fetch('/api/minecraft-access-token', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -61,15 +69,29 @@ const exchangeMinecraftAccessToken = async (
   if (response.ok) return { ok: true };
 
   const body: unknown = await response.json().catch(() => null);
-  const reason: LoginFailureReason =
-    typeof body === 'object' &&
-    body !== null &&
-    'code' in body &&
-    body.code === 'backend_unreachable'
+  const reason = getLoginFailureReason(response.status, body);
+
+  const retryAfter = getRetryAfterSeconds(response.headers);
+  const retryMetadata =
+    reason === 'rate_limited' && retryAfter !== undefined ? { retryAfter } : {};
+  return {
+    ok: false,
+    reason,
+    ...retryMetadata,
+  };
+};
+
+const getLoginFailureReason = (
+  status: number,
+  body: unknown
+): LoginFailureReason => {
+  if (status === 429) return 'rate_limited';
+  if (typeof body === 'object' && body !== null && 'code' in body) {
+    return Reflect.get(body, 'code') === 'backend_unreachable'
       ? 'backend_unreachable'
       : 'invalid_account';
-
-  return { ok: false, reason };
+  }
+  return 'invalid_account';
 };
 
 type CompleteLoginParams = {
@@ -79,7 +101,8 @@ type CompleteLoginParams = {
 };
 
 type CompleteLoginResult =
-  { success: true } | { success: false; reason: LoginFailureReason };
+  | { success: true }
+  | { success: false; reason: LoginFailureReason; retryAfter?: number };
 
 const completeLogin = async ({
   account,
@@ -97,7 +120,13 @@ const completeLogin = async ({
   );
 
   if (!exchangeResult.ok) {
-    return { success: false, reason: exchangeResult.reason };
+    return {
+      success: false,
+      reason: exchangeResult.reason,
+      ...(exchangeResult.retryAfter !== undefined
+        ? { retryAfter: exchangeResult.retryAfter }
+        : {}),
+    };
   }
 
   router.push(await fetchPostLoginRedirect());
@@ -138,11 +167,17 @@ export const useLandingLogin = () => {
       try {
         const result = await completeLogin({ account, instance, router });
         if (!result.success) {
-          setProcessingErrorMessage(
-            result.reason === 'backend_unreachable'
-              ? BACKEND_UNREACHABLE_ERROR_MESSAGE
-              : LOGIN_ERROR_MESSAGE
-          );
+          const failureMessage = (() => {
+            switch (result.reason) {
+              case 'backend_unreachable':
+                return BACKEND_UNREACHABLE_ERROR_MESSAGE;
+              case 'rate_limited':
+                return RATE_LIMIT_ERROR_MESSAGE(result.retryAfter);
+              case 'invalid_account':
+                return LOGIN_ERROR_MESSAGE;
+            }
+          })();
+          setProcessingErrorMessage(failureMessage);
           setIsProcessing(false);
         }
       } catch (error) {

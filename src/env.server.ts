@@ -1,6 +1,16 @@
 import { z } from 'zod';
 
 const backendServerUrlSchema = z.url();
+const proxySecretSchema = z.string().trim().min(1).optional();
+const headerNameSchema = z
+  .string()
+  .regex(/^[!#$%&'*+\-.^_`|~0-9A-Za-z]+$/)
+  .refine((value) =>
+    ['x-forwarded-for', 'x-real-ip', 'cf-connecting-ip'].includes(
+      value.toLowerCase()
+    )
+  )
+  .optional();
 const discordConfigSchema = z.object({
   clientId: z.string().min(1),
   clientSecret: z.string().min(1),
@@ -10,6 +20,56 @@ const debugModeSchema = z.enum(['true', 'false']).default('false');
 
 export const getBackendServerUrl = () =>
   backendServerUrlSchema.parse(process.env['BACKEND_SERVER_URL']);
+
+export const getSeichiProxySecret = () => {
+  const result = proxySecretSchema.safeParse(
+    process.env['SEICHI_PROXY_SECRET'] || undefined
+  );
+  return result.success ? result.data : undefined;
+};
+
+export const getSeichiClientIpHeader = () => {
+  const result = headerNameSchema.safeParse(
+    process.env['SEICHI_CLIENT_IP_HEADER'] || undefined
+  );
+  return result.success ? result.data : undefined;
+};
+
+const ipv4Schema = z.ipv4();
+const ipv6Schema = z.ipv6();
+
+/**
+ * Build the backend metadata headers from a server-owned request.
+ *
+ * The two x-seichi headers are always removed first so a browser cannot bring
+ * its own secret or client address through the proxy. The configured ingress
+ * header is trusted only as an input to the server-side mapping, and only a
+ * single canonical IPv4/IPv6 value is accepted.
+ */
+export const getSeichiProxyHeaders = (
+  requestHeaders: Pick<Headers, 'get'>
+): Record<string, string> => {
+  const secret = getSeichiProxySecret();
+  const ingressHeader = getSeichiClientIpHeader();
+  if (!secret) return {};
+
+  const result: Record<string, string> = {
+    'x-seichi-proxy-secret': secret,
+  };
+
+  if (ingressHeader) {
+    const value = requestHeaders.get(ingressHeader)?.trim();
+    const isIp =
+      value !== undefined &&
+      (ipv4Schema.safeParse(value).success ||
+        ipv6Schema.safeParse(value).success);
+    if (isIp) {
+      result['x-seichi-client-ip'] = value;
+    }
+  }
+
+  return result;
+};
 
 export const getDiscordConfig = () =>
   discordConfigSchema.parse({

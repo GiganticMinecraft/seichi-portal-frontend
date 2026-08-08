@@ -103,7 +103,7 @@ const AnswerDetailsPageContent = ({
     (commentsForbidden ? undefined : commentsQuery.error);
 
   if (queryError !== undefined) {
-    return <ErrorDialog />;
+    return <ErrorDialog error={queryError} />;
   }
 
   const commentsReady =

@@ -55,11 +55,19 @@ const ErrorDialog = ({
       .with(P.when(isAccessError), (e) => e.status)
       .otherwise(() => null);
 
+  const retryAfter =
+    status === 429
+      ? match(error)
+          .with(P.when(isHttpError), (e) => e.retryAfter)
+          .otherwise(() => undefined)
+      : undefined;
+
   const resolvedTitle =
     title ??
     match(status)
       .with(401, () => 'セッションの有効期限が切れました')
       .with(403, () => 'このページを表示する権限がありません')
+      .with(429, () => 'アクセスが集中しています')
       .with(503, () => '現在このページを表示できません')
       .otherwise(() => 'データ取得中にエラーが発生しました');
 
@@ -68,6 +76,11 @@ const ErrorDialog = ({
     match(status)
       .with(401, () => '再度サインインしてから操作をやり直してください。')
       .with(403, () => '権限のあるアカウントでサインインしてください。')
+      .with(429, () =>
+        retryAfter === undefined
+          ? 'アクセスが集中しています。しばらく待ってから再度お試しください。'
+          : `アクセスが集中しています。${retryAfter}秒後に再度お試しください。`
+      )
       .with(
         503,
         () => 'バックエンドに接続できないため、保護された画面を表示できません。'

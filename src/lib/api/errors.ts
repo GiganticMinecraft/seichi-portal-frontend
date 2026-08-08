@@ -1,5 +1,7 @@
 import { z } from 'zod';
 
+import { isHttpError } from '@/lib/httpError';
+
 export const errorRestrictionSchema = z.object({
   reason: z.string(),
   expires_at: z.string().nullable().optional(),
@@ -18,4 +20,4 @@ export type ErrorResponse = z.infer<typeof errorResponseSchema>;
 export type ErrorRestriction = z.infer<typeof errorRestrictionSchema>;
 
 export const parseErrorResponse = (error: unknown) =>
-  errorResponseSchema.safeParse(error);
+  errorResponseSchema.safeParse(isHttpError(error) ? error.body : error);

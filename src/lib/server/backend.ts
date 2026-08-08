@@ -3,24 +3,47 @@ import type { Client } from 'openapi-fetch';
 
 import { getBackendServerUrl } from '@/env.server';
 import type { ApiPaths } from '@/lib/api/types';
+import {
+  getProblemDetails,
+  getRateLimitResetSeconds,
+  getRetryAfterSeconds,
+} from '@/lib/httpError';
 
 export class BackendError extends Error {
   status: number;
   code: 'http_error' | 'network_error';
+  body: unknown;
+  headers: Headers;
+  errorCode: string | undefined;
+  detail: string | undefined;
+  retryAfter: number | undefined;
+  rateLimitReset: number | undefined;
 
   constructor({
     message,
     status,
     code,
+    body,
+    headers,
   }: {
     message: string;
     status: number;
     code: 'http_error' | 'network_error';
+    body?: unknown;
+    headers?: Headers;
   }) {
     super(message);
     this.name = 'BackendError';
     this.status = status;
     this.code = code;
+    this.body = body;
+    this.headers = headers ?? new Headers();
+    this.retryAfter = getRetryAfterSeconds(this.headers);
+    this.rateLimitReset = getRateLimitResetSeconds(this.headers);
+
+    const problemDetails = getProblemDetails(body);
+    this.errorCode = problemDetails.errorCode;
+    this.detail = problemDetails.detail;
   }
 }
 
@@ -112,6 +135,8 @@ export const requireBackendResponse = async <T>(
         message: `Backend request failed with status ${result.response.status}`,
         status: result.response.status,
         code: 'http_error',
+        body: result.error,
+        headers: result.response.headers,
       });
     }
 

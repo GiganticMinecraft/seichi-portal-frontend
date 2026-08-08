@@ -43,7 +43,7 @@ const SearchPageContent = () => {
   );
 
   if (error) {
-    return <ErrorDialog />;
+    return <ErrorDialog error={error} />;
   }
 
   const rows = data ? toSearchResultRows(data) : [];

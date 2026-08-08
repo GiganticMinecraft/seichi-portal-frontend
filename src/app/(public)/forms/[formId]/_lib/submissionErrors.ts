@@ -1,10 +1,12 @@
-import { errorResponseSchema } from '@/lib/api/errors';
+import { parseErrorResponse } from '@/lib/api/errors';
 import type { ErrorRestriction } from '@/lib/api/errors';
 import type { GetFormSubmissionRestrictionResponse } from '@/lib/api/types';
+import { getRetryAfterSeconds } from '@/lib/httpError';
 import { toRestrictionExpiration } from '@/lib/restrictions/expiration';
 import type { RestrictionExpiration } from '@/lib/restrictions/expiration';
 
-export type SubmissionErrorCode = 'OUT_OF_PERIOD' | 'RESTRICTED' | 'UNKNOWN';
+export type SubmissionErrorCode =
+  'OUT_OF_PERIOD' | 'RESTRICTED' | 'RATE_LIMIT_EXCEEDED' | 'UNKNOWN';
 
 export type SubmissionRestriction = {
   reason: string;
@@ -14,11 +16,13 @@ export type SubmissionRestriction = {
 export type SubmissionError =
   | { kind: 'outOfPeriod' }
   | { kind: 'restricted'; restriction?: SubmissionRestriction }
+  | { kind: 'rateLimited'; retryAfter?: number }
   | { kind: 'unknown' };
 
 type ParsedSubmissionError = {
   code: SubmissionErrorCode;
   restriction?: SubmissionRestriction;
+  retryAfter?: number;
 };
 
 const toSubmissionRestriction = (
@@ -35,9 +39,18 @@ export const toActiveSubmissionRestriction = (
   restriction ? toSubmissionRestriction(restriction) : null;
 
 export const parseSubmissionError = (
-  error: unknown
+  error: unknown,
+  response?: Pick<Response, 'headers' | 'status'>
 ): ParsedSubmissionError | null => {
-  const parsed = errorResponseSchema.safeParse(error);
+  if (response?.status === 429) {
+    const retryAfter = getRetryAfterSeconds(response.headers);
+    return {
+      code: 'RATE_LIMIT_EXCEEDED',
+      ...(retryAfter !== undefined ? { retryAfter } : {}),
+    };
+  }
+
+  const parsed = parseErrorResponse(error);
 
   if (!parsed.success) {
     return null;
@@ -54,6 +67,16 @@ export const parseSubmissionError = (
 
   if (parsed.data.errorCode === 'OUT_OF_PERIOD') {
     return { code: 'OUT_OF_PERIOD' };
+  }
+
+  if (parsed.data.errorCode === 'RATE_LIMIT_EXCEEDED') {
+    const retryAfter = response
+      ? getRetryAfterSeconds(response.headers)
+      : undefined;
+    return {
+      code: 'RATE_LIMIT_EXCEEDED',
+      ...(retryAfter !== undefined ? { retryAfter } : {}),
+    };
   }
 
   return null;
