@@ -88,6 +88,7 @@ const FormEditForm = (props: {
   return (
     <Container
       component="form"
+      disableGutters
       onSubmit={(e) => {
         void handleSubmit(onSubmit)(e);
       }}

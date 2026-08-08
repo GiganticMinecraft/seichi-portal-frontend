@@ -79,6 +79,7 @@ const FormCreateForm = (props: {
   return (
     <Container
       component="form"
+      disableGutters
       onSubmit={(e) => {
         void handleSubmit(createForm)(e);
       }}
