@@ -29,7 +29,7 @@ const UsersView = ({
   autoOpenUserId?: string | null;
 }) => {
   return (
-    <Box sx={{ p: 3 }}>
+    <Box sx={{ p: 3, minWidth: 0 }}>
       <UserListHeader
         count={rows.length}
         search={search}
@@ -45,7 +45,7 @@ const UsersView = ({
             sx={{ position: 'absolute', top: 0, left: 0, right: 0, zIndex: 1 }}
           />
         )}
-        <Table sx={{ tableLayout: 'fixed' }}>
+        <Table sx={{ tableLayout: 'fixed', minWidth: 560 }}>
           <TableHead>
             <TableRow sx={{ '& th': { fontWeight: 'bold' } }}>
               <TableCell sx={{ width: '32%' }}>ユーザー</TableCell>

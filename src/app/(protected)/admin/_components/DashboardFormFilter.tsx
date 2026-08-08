@@ -14,7 +14,11 @@ const DashboardFormFilter = (props: {
       id="dashboard-form-filter"
       options={props.formOptions.map((form) => form.title)}
       getOptionLabel={(option) => option}
-      sx={{ minWidth: 240, flexGrow: 1 }}
+      sx={{
+        minWidth: { xs: 0, sm: 240 },
+        width: { xs: '100%', sm: 'auto' },
+        flexGrow: 1,
+      }}
       slotProps={{
         listbox: {
           sx: {

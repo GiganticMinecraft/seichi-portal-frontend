@@ -3,6 +3,7 @@
 import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
 import HomeIcon from '@mui/icons-material/Home';
 import LogoutIcon from '@mui/icons-material/Logout';
+import MenuIcon from '@mui/icons-material/Menu';
 import PersonIcon from '@mui/icons-material/Person';
 import {
   Box,
@@ -167,12 +168,14 @@ type NavBarProps = {
   homeHref?: string;
   searchSlot?: ReactNode;
   withDrawerZIndex?: boolean;
+  onMenuButtonClick?: () => void;
 };
 
 const NavBar = ({
   homeHref = '/',
   searchSlot,
   withDrawerZIndex = false,
+  onMenuButtonClick,
 }: NavBarProps) => {
   const user = useOptionalCurrentUser();
 
@@ -187,13 +190,28 @@ const NavBar = ({
         }
       >
         <Toolbar>
+          {onMenuButtonClick && (
+            <IconButton
+              color="inherit"
+              aria-label="サイドメニューを開く"
+              onClick={onMenuButtonClick}
+              sx={{ mr: 1 }}
+            >
+              <MenuIcon />
+            </IconButton>
+          )}
           <Image
             src="/favicon.ico"
             width={48}
             height={48}
             alt="seichi-portal logo"
           />
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+          <Typography
+            variant="h6"
+            component="div"
+            noWrap
+            sx={{ flexGrow: 1, minWidth: 0 }}
+          >
             <Link
               component={NextLink}
               href={homeHref}

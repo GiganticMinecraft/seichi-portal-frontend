@@ -14,7 +14,11 @@ const FormLabelFilter = (props: {
       id="label"
       options={props.labelOptions.map((label) => label.name)}
       getOptionLabel={(option) => option}
-      sx={{ minWidth: 280, flexGrow: 1 }}
+      sx={{
+        minWidth: { xs: 0, sm: 280 },
+        width: { xs: '100%', sm: 'auto' },
+        flexGrow: 1,
+      }}
       slotProps={{
         listbox: {
           sx: {

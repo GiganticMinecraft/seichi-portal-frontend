@@ -57,7 +57,8 @@ const SearchField = () => {
         p: '2px 4px',
         display: 'flex',
         alignItems: 'center',
-        width: 400,
+        width: { xs: 140, sm: 260, md: 400 },
+        minWidth: 0,
         backgroundColor: alpha(theme.palette.common.white, 0.85),
         border: `1px solid ${alpha(theme.palette.text.primary, 0.2)}`,
         ...theme.applyStyles('dark', {

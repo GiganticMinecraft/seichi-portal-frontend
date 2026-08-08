@@ -42,7 +42,11 @@ const UserListHeader = ({
       onChange={(e) => {
         onSearchChange(e.target.value);
       }}
-      sx={{ minWidth: 240, ml: 'auto' }}
+      sx={{
+        minWidth: { xs: 0, sm: 240 },
+        width: { xs: '100%', sm: 'auto' },
+        ml: { xs: 0, sm: 'auto' },
+      }}
       slotProps={{
         input: {
           startAdornment: (
