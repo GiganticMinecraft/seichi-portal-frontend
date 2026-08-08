@@ -10,6 +10,8 @@ import type {
 } from '@mui/x-data-grid';
 import * as React from 'react';
 
+import AnswerStatusChip from '@/app/(protected)/_components/AnswerDetail/AnswerStatusChip';
+
 import type { DashboardAnswerRow } from '../_lib/dashboardAnswerRows';
 
 const SCROLL_END_THRESHOLD_PX = 200;
@@ -17,6 +19,19 @@ const SCROLL_END_THRESHOLD_PX = 200;
 const columns: GridColDef<DashboardAnswerRow>[] = [
   { field: 'category', headerName: '種別', minWidth: 160, flex: 0.8 },
   { field: 'title', headerName: 'タイトル', minWidth: 240, flex: 1.5 },
+  {
+    field: 'status',
+    headerName: '対応状況',
+    minWidth: 120,
+    flex: 0.6,
+    sortable: false,
+    renderCell: (
+      params: GridRenderCellParams<
+        DashboardAnswerRow,
+        DashboardAnswerRow['status']
+      >
+    ) => (params.value ? <AnswerStatusChip status={params.value} /> : null),
+  },
   {
     field: 'labels',
     headerName: 'ラベル',

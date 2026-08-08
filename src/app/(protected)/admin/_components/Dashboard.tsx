@@ -15,6 +15,7 @@ import * as React from 'react';
 
 import AnswerLabelFilter from '@/app/(protected)/_components/AnswersList/AnswerLabelFilter';
 import { filterAnswers } from '@/app/(protected)/_components/AnswersList/answerListFilters';
+import AnswerOpenStateTabs from '@/app/(protected)/_components/AnswersList/AnswerOpenStateTabs';
 import { useApiQuery } from '@/app/_swr/useApiQuery';
 import { useInfiniteApiQuery } from '@/app/_swr/useInfiniteApiQuery';
 import { useDebouncedSearch } from '@/hooks/useDebouncedSearch';
@@ -23,6 +24,7 @@ import type {
   GetAnswersPageResponse,
   GetFormsResponse,
 } from '@/lib/api-types';
+import type { AnswerOpenState } from '@/lib/forms/answerStatus';
 
 import { filterAnswersByFormAndDate } from '../_lib/dashboardAnswerFilters';
 import { toDashboardAnswerRows } from '../_lib/dashboardAnswerRows';
@@ -44,6 +46,7 @@ const DataTable = (props: {
   const [labelFilter, setLabelFilter] = React.useState<GetAnswerLabelsResponse>(
     []
   );
+  const [openState, setOpenState] = React.useState<AnswerOpenState>('open');
   const [startDate, setStartDate] = React.useState<Dayjs | null>(null);
   const [endDate, setEndDate] = React.useState<Dayjs | null>(null);
 
@@ -83,31 +86,25 @@ const DataTable = (props: {
     [startDate, endDate]
   );
 
-  const isNonSearchFilterActive =
-    formIds.length > 0 ||
-    labelFilter.length > 0 ||
-    dateRange.startIso !== null ||
-    dateRange.endIso !== null;
-
-  // 種別・ラベル・日付範囲での絞り込みはクライアントサイドで行うため、絞り込みが有効な間は
-  // hasMore が false になるまで残りページを読み込みきる。テキスト検索中は
-  // /api/v1/search/answers が最初から全件を返すため不要。
+  // 種別・ラベル・日付範囲・未完了/完了での絞り込みはクライアントサイドで行う。openState は
+  // 常に 'open' か 'closed' のいずれかで絞り込みが有効な状態にあるため、hasMore が false に
+  // なるまで残りページを読み込みきる。テキスト検索中は /api/v1/search/answers が最初から
+  // 全件を返すため不要。
   React.useEffect(() => {
-    if (!isSearching && isNonSearchFilterActive && hasMore && !isLoadingMore) {
+    if (!isSearching && hasMore && !isLoadingMore) {
       loadMore();
     }
-  }, [isSearching, isNonSearchFilterActive, hasMore, isLoadingMore, loadMore]);
+  }, [isSearching, hasMore, isLoadingMore, loadMore]);
 
-  const isPrefetchingForFilter =
-    !isSearching && isNonSearchFilterActive && hasMore;
+  const isPrefetchingForFilter = !isSearching && hasMore;
 
   const filteredAnswers = React.useMemo(
     () =>
       filterAnswers(
         filterAnswersByFormAndDate(sourceAnswers, { formIds, dateRange }),
-        { labels: labelFilter }
+        { labels: labelFilter, openState }
       ),
-    [sourceAnswers, formIds, dateRange, labelFilter]
+    [sourceAnswers, formIds, dateRange, labelFilter, openState]
   );
 
   const formTitleById = React.useMemo(
@@ -179,6 +176,7 @@ const DataTable = (props: {
             onEndDateChange={setEndDate}
           />
         </Stack>
+        <AnswerOpenStateTabs value={openState} onChange={setOpenState} />
       </Stack>
       <Box sx={{ position: 'relative' }}>
         {(isSearching && isSearchLoading) || isPrefetchingForFilter ? (

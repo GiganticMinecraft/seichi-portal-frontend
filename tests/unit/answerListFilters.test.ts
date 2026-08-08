@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 
 import { filterAnswers } from '@/app/(protected)/_components/AnswersList/answerListFilters';
 import type {
+  AnswerStatus,
   GetAnswerLabelsResponse,
   GetFormAnswersResponse,
 } from '@/lib/api-types';
@@ -14,7 +15,8 @@ const labels = {
 
 const answer = (
   id: string,
-  answerLabels: GetAnswerLabelsResponse
+  answerLabels: GetAnswerLabelsResponse,
+  status: AnswerStatus = 'UNADDRESSED'
 ): GetFormAnswersResponse[number] => ({
   id,
   form_id: 'form-id',
@@ -29,6 +31,7 @@ const answer = (
   },
   labels: answerLabels,
   publication: 'PUBLIC',
+  status,
   timestamp: '2026-06-01T10:00:00+09:00',
 });
 
@@ -40,7 +43,7 @@ const answers = [
 
 describe('filterAnswers', () => {
   it('ラベル未選択のときは全件を返す', () => {
-    const filtered = filterAnswers(answers, { labels: [] });
+    const filtered = filterAnswers(answers, { labels: [], openState: 'all' });
 
     expect(filtered.map((answer) => answer.id)).toEqual([
       'answer-1',
@@ -52,6 +55,7 @@ describe('filterAnswers', () => {
   it('選択したラベルをすべて持つ回答だけを残す', () => {
     const filtered = filterAnswers(answers, {
       labels: [labels.urgent, labels.reviewed],
+      openState: 'all',
     });
 
     expect(filtered.map((answer) => answer.id)).toEqual(['answer-1']);
@@ -60,8 +64,33 @@ describe('filterAnswers', () => {
   it('どの回答も持たないラベルを選択した場合は空になる', () => {
     const filtered = filterAnswers(answers, {
       labels: [labels.urgent, labels.spam],
+      openState: 'all',
     });
 
     expect(filtered).toEqual([]);
+  });
+
+  it('openState が open のときは COMPLETED を除外する', () => {
+    const mixed = [
+      answer('open-1', [], 'UNADDRESSED'),
+      answer('open-2', [], 'IN_PROGRESS'),
+      answer('closed-1', [], 'COMPLETED'),
+    ] satisfies GetFormAnswersResponse;
+
+    const filtered = filterAnswers(mixed, { labels: [], openState: 'open' });
+
+    expect(filtered.map((answer) => answer.id)).toEqual(['open-1', 'open-2']);
+  });
+
+  it('openState が closed のときは COMPLETED のみを残す', () => {
+    const mixed = [
+      answer('open-1', [], 'UNADDRESSED'),
+      answer('open-2', [], 'IN_PROGRESS'),
+      answer('closed-1', [], 'COMPLETED'),
+    ] satisfies GetFormAnswersResponse;
+
+    const filtered = filterAnswers(mixed, { labels: [], openState: 'closed' });
+
+    expect(filtered.map((answer) => answer.id)).toEqual(['closed-1']);
   });
 });

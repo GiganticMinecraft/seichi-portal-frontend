@@ -21,6 +21,7 @@ const answer = (
   },
   labels: [],
   publication: 'PUBLIC',
+  status: 'UNADDRESSED',
   timestamp,
 });
 

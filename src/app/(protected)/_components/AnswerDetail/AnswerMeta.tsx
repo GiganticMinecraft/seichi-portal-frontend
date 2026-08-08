@@ -7,6 +7,7 @@ import { formatString } from '@/generic/DateFormatter';
 import type { GetAnswerResponse } from '@/lib/api-types';
 
 import AnswerLabels from './AnswerLabels';
+import AnswerStatusChip from './AnswerStatusChip';
 
 type Author = GetAnswerResponse['author'];
 
@@ -66,6 +67,8 @@ const AnswerMeta = (props: {
   messageAction: ReactNode;
   labelsSlot?: ReactNode;
   publicationSlot?: ReactNode;
+  statusSlot?: ReactNode;
+  statusHistoryAction?: ReactNode;
   extraActions?: ReactNode;
 }) => (
   <Paper variant="outlined" sx={{ p: 2 }}>
@@ -97,6 +100,23 @@ const AnswerMeta = (props: {
             <AnswerPublicationChip publication={props.answer.publication} />
           )}
         </Box>
+      </Grid>
+      <Grid size={{ xs: 12, sm: 6 }}>
+        <Typography variant="caption" color="textSecondary">
+          対応状況
+        </Typography>
+        <Stack
+          direction="row"
+          spacing={1}
+          sx={{ alignItems: 'center', flexWrap: 'wrap' }}
+        >
+          <Box>
+            {props.statusSlot ?? (
+              <AnswerStatusChip status={props.answer.status} />
+            )}
+          </Box>
+          {props.statusHistoryAction}
+        </Stack>
       </Grid>
       <Grid size={{ xs: 12, sm: 6 }}>
         <Stack

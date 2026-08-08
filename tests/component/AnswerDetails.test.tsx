@@ -37,6 +37,7 @@ const answer: GetAnswerResponse = {
   title: null,
   labels: [],
   publication: 'PUBLIC',
+  status: 'UNADDRESSED',
   author: {
     type: 'AUTHENTICATED_USER',
     user: { name: 'Alice', role: 'STANDARD_USER', uuid: 'user-1' },
