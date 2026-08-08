@@ -5,11 +5,11 @@ import {
   Box,
   Button,
   Card,
+  CardActionArea,
   CardActions,
   CardContent,
   Chip,
   Grid,
-  Link,
   Typography,
   Alert,
   AlertTitle,
@@ -37,38 +37,34 @@ const EachForm = ({ form }: { form: FormItem }) => {
       variant="outlined"
       sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}
     >
-      <CardContent sx={{ flexGrow: 1 }}>
-        <Link
-          component={NextLink}
-          href={`/forms/${form.id}`}
-          sx={{ textDecoration: 'none', color: 'inherit' }}
-        >
+      <CardActionArea component={NextLink} href={`/forms/${form.id}`}>
+        <CardContent sx={{ flexGrow: 1 }}>
           <Typography variant="h6" component="h2" gutterBottom>
             {form.title}
           </Typography>
-        </Link>
-        <Chip
-          icon={<AccessTimeIcon />}
-          label={formatResponsePeriod(responsePeriod)}
-          size="small"
-          variant="outlined"
-          sx={{ mb: 1.5 }}
-        />
-        {form.description && (
-          <MarkdownText
-            sx={{
-              typography: 'body2',
-              color: 'text.secondary',
-              display: '-webkit-box',
-              WebkitLineClamp: 3,
-              WebkitBoxOrient: 'vertical',
-              overflow: 'hidden',
-            }}
-          >
-            {form.description}
-          </MarkdownText>
-        )}
-      </CardContent>
+          <Chip
+            icon={<AccessTimeIcon />}
+            label={formatResponsePeriod(responsePeriod)}
+            size="small"
+            variant="outlined"
+            sx={{ mb: 1.5 }}
+          />
+          {form.description && (
+            <MarkdownText
+              sx={{
+                typography: 'body2',
+                color: 'text.secondary',
+                display: '-webkit-box',
+                WebkitLineClamp: 3,
+                WebkitBoxOrient: 'vertical',
+                overflow: 'hidden',
+              }}
+            >
+              {form.description}
+            </MarkdownText>
+          )}
+        </CardContent>
+      </CardActionArea>
       <CardActions>
         <Button
           component={NextLink}
