@@ -11,6 +11,7 @@ type TurnstileRenderOptions = {
   /* eslint-disable @typescript-eslint/naming-convention */
   'error-callback': () => void;
   'expired-callback': () => void;
+  'timeout-callback': () => void;
   /* eslint-enable @typescript-eslint/naming-convention */
 };
 

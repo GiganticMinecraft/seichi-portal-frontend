@@ -58,6 +58,12 @@ export const useTurnstileToken = (
           pendingRef.current?.reject(new Error('Turnstile token expired'));
           pendingRef.current = null;
         },
+        'timeout-callback': () => {
+          pendingRef.current?.reject(
+            new Error('Turnstile challenge timed out')
+          );
+          pendingRef.current = null;
+        },
         /* eslint-enable @typescript-eslint/naming-convention */
       });
       widgetIdRef.current = widgetId;
