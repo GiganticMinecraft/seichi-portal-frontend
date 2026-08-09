@@ -97,6 +97,8 @@ jobs:
           build-args: |
             NEXT_PUBLIC_DEBUG_MODE=false
             NEXT_PUBLIC_APP_VERSION=${{ needs.prepare.outputs.version }}
+          cache-from: type=registry,ref=${{ steps.image.outputs.name }}:buildcache
+          cache-to: type=registry,ref=${{ steps.image.outputs.name }}:buildcache,mode=max,ignore-error=true
           tags: |
             ${{ steps.image.outputs.name }}:${{ needs.prepare.outputs.version }}
             ${{ steps.image.outputs.name }}:${{ github.sha }}
