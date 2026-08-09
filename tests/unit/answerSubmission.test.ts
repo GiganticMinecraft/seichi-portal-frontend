@@ -36,6 +36,30 @@ describe('parseSubmissionError', () => {
     });
   });
 
+  it('Turnstile検証失敗をTURNSTILE_FAILEDとして扱う', () => {
+    expect(
+      parseSubmissionError({
+        detail: 'Turnstile verification failed.',
+        errorCode: 'TURNSTILE_VERIFICATION_FAILED',
+        status: 403,
+        title: 'Forbidden',
+        type: 'about:blank',
+      })
+    ).toEqual({ code: 'TURNSTILE_FAILED' });
+  });
+
+  it('Turnstile検証サービス不通をTURNSTILE_UNAVAILABLEとして扱う', () => {
+    expect(
+      parseSubmissionError({
+        detail: 'Turnstile verification service is unavailable.',
+        errorCode: 'TURNSTILE_UNAVAILABLE',
+        status: 503,
+        title: 'Service Unavailable',
+        type: 'about:blank',
+      })
+    ).toEqual({ code: 'TURNSTILE_UNAVAILABLE' });
+  });
+
   it('制限エラーの解除予定日時を区別する', () => {
     expect(
       parseSubmissionError({

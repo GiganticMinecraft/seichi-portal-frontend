@@ -3,6 +3,7 @@
 import { useState } from 'react';
 
 import { useSingleFlightAction } from '@/hooks/useSingleFlightAction';
+import { useTurnstileToken } from '@/hooks/useTurnstileToken';
 import type { ApiPaths } from '@/lib/api/types';
 import { proxyClient } from '@/lib/proxyClient';
 
@@ -78,18 +79,22 @@ const toTemporaryUser = (
  */
 export const useAnswerSubmission = (
   formId: string,
-  isTemporary: boolean = false
+  isTemporary: boolean = false,
+  turnstileSiteKey?: string
 ) => {
   const [submissionState, setSubmissionState] = useState<SubmissionState>({
     kind: 'editing',
   });
+  const { containerRef: turnstileContainerRef, getToken: getTurnstileToken } =
+    useTurnstileToken('temporary-answer', turnstileSiteKey);
 
-  const postAnswers = (data: AnswerFormInput) => {
-    const params = { path: { form_id: formId } };
-
+  const postAnswers = (data: AnswerFormInput, turnstileToken: string) => {
     if (isTemporary) {
       return proxyClient.POST('/api/v1/forms/{form_id}/temporary-answers', {
-        params,
+        params: {
+          path: { form_id: formId },
+          header: { 'X-Seichi-Turnstile-Token': turnstileToken },
+        },
         body: {
           contents: toAnswerContents(data),
           temporary_user: toTemporaryUser(data),
@@ -98,13 +103,29 @@ export const useAnswerSubmission = (
     }
 
     return proxyClient.POST('/api/v1/forms/{form_id}/answers', {
-      params,
+      params: { path: { form_id: formId } },
       body: { contents: toAnswerContents(data) },
     });
   };
 
   const submitAnswersOnce = async (data: AnswerFormInput) => {
-    const { response, error } = await postAnswers(data);
+    let turnstileToken = '';
+    if (isTemporary) {
+      try {
+        turnstileToken = await getTurnstileToken();
+      } catch {
+        setSubmissionState({
+          kind: 'failed',
+          error: { kind: 'turnstileUnavailable' },
+        });
+        return {
+          ok: false as const,
+          errorCode: 'TURNSTILE_UNAVAILABLE' as const,
+        };
+      }
+    }
+
+    const { response, error } = await postAnswers(data, turnstileToken);
 
     if (response.ok) {
       setSubmissionState({ kind: 'submitted' });
@@ -129,6 +150,10 @@ export const useAnswerSubmission = (
               ? { retryAfter: parsed.retryAfter }
               : {}),
           } satisfies SubmissionError;
+        case 'TURNSTILE_FAILED':
+          return { kind: 'turnstileFailed' } satisfies SubmissionError;
+        case 'TURNSTILE_UNAVAILABLE':
+          return { kind: 'turnstileUnavailable' } satisfies SubmissionError;
         case 'UNKNOWN':
           return { kind: 'unknown' } satisfies SubmissionError;
       }
@@ -146,5 +171,6 @@ export const useAnswerSubmission = (
     submissionState,
     submitAnswers: useSingleFlightAction(submitAnswersOnce),
     resetSubmissionState,
+    turnstileContainerRef,
   };
 };

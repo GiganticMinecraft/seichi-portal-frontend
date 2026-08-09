@@ -21,6 +21,7 @@ interface Props {
   isAuthenticated: boolean;
   allowTemporaryAnswers: boolean;
   restriction: SubmissionRestriction | null;
+  turnstileSiteKey: string | undefined;
 }
 
 /**
@@ -35,11 +36,16 @@ const AnswerForm = ({
   isAuthenticated,
   allowTemporaryAnswers,
   restriction,
+  turnstileSiteKey,
 }: Props) => {
   // 未ログインかつフォームが未ログイン回答を許可している場合のみ匿名回答モード。
   const isTemporary = !isAuthenticated && allowTemporaryAnswers;
-  const { submissionState, submitAnswers, resetSubmissionState } =
-    useAnswerSubmission(formId, isTemporary);
+  const {
+    submissionState,
+    submitAnswers,
+    resetSubmissionState,
+    turnstileContainerRef,
+  } = useAnswerSubmission(formId, isTemporary, turnstileSiteKey);
 
   if (submissionState.kind === 'submitted') {
     return <AnswerSubmissionSuccess onReset={resetSubmissionState} />;
@@ -74,6 +80,7 @@ const AnswerForm = ({
         </Alert>
       )}
       <SubmissionErrorAlert submissionState={submissionState} />
+      {isTemporary && <div ref={turnstileContainerRef} />}
       <AnswerSubmissionForm
         questions={questions}
         title={title}
@@ -123,6 +130,13 @@ const SubmissionErrorAlert = ({
           {submissionState.error.retryAfter !== undefined
             ? ` ${submissionState.error.retryAfter}秒後に再度お試しください。`
             : '時間をおいて再度お試しください。'}
+        </Alert>
+      );
+    case 'turnstileFailed':
+    case 'turnstileUnavailable':
+      return (
+        <Alert severity="error" sx={alertSx}>
+          認証チェックに失敗しました。時間をおいて再度お試しください。
         </Alert>
       );
     case 'unknown':

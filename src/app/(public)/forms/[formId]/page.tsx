@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { headers } from 'next/headers';
 
-import { getSeichiProxyHeaders } from '@/env.server';
+import { getSeichiProxyHeaders, getTurnstileSiteKey } from '@/env.server';
 import {
   authorizationHeader,
   BackendError,
@@ -75,6 +75,7 @@ const Home = async ({ params }: { params: Promise<{ formId: string }> }) => {
       isAuthenticated={isAuthenticated}
       allowTemporaryAnswers={form.settings.allow_temporary_answers}
       restriction={restriction}
+      turnstileSiteKey={getTurnstileSiteKey()}
     />
   );
 };

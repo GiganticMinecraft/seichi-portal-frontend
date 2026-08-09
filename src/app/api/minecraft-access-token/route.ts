@@ -16,6 +16,8 @@ import {
 
 const microsoftAccountTokenSchema = z.object({
   token: z.string().min(1),
+  // Turnstile 未設定環境 (backend の TURNSTILE_ENABLED=false) では空文字列が届く。
+  turnstileToken: z.string(),
 });
 
 class UpstreamServiceError extends Error {
@@ -51,6 +53,7 @@ export async function POST(req: NextRequest) {
 
     const sessionResponse = await createSession(
       minecraftAccessTokenResult,
+      microsoftAccountToken.data.turnstileToken,
       req.headers
     );
     const nextResponse = NextResponse.json({});
@@ -77,6 +80,16 @@ export async function POST(req: NextRequest) {
     if (error instanceof BackendError) {
       if (error.status === 429) {
         return backendRateLimitResponse(error);
+      }
+
+      if (error.status === 403) {
+        return NextResponse.json(
+          {
+            error: 'Turnstile verification failed',
+            code: 'turnstile_failed',
+          },
+          { status: 403 }
+        );
       }
 
       const isBackendSideFailure =
@@ -212,6 +225,7 @@ const acquireMinecraftAccessToken = async ({
 
 const createSession = async (
   { token, expires }: Awaited<ReturnType<typeof acquireMinecraftAccessToken>>,
+  turnstileToken: string,
   requestHeaders?: Pick<Headers, 'get'>
 ) => {
   const { response } = await requireBackendResponse(
@@ -219,6 +233,9 @@ const createSession = async (
       headers: {
         ...authorizationHeader(token),
         ...(requestHeaders ? getSeichiProxyHeaders(requestHeaders) : {}),
+      },
+      params: {
+        header: { 'X-Seichi-Turnstile-Token': turnstileToken },
       },
       body: {
         expires: expires,

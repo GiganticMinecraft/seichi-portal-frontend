@@ -10,6 +10,7 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 import { useRedirectLogin } from '@/app/_components/useRedirectLogin';
+import { useTurnstileToken } from '@/hooks/useTurnstileToken';
 import { getRetryAfterSeconds } from '@/lib/httpError';
 import { normalizeRedirectTarget } from '@/lib/redirect';
 
@@ -23,6 +24,8 @@ const RATE_LIMIT_ERROR_MESSAGE = (retryAfter?: number) =>
   retryAfter === undefined
     ? 'サインイン試行が集中しています。時間を置いて再試行してください。'
     : `サインイン試行が集中しています。${retryAfter}秒後に再試行してください。`;
+const TURNSTILE_ERROR_MESSAGE =
+  '認証チェックに失敗しました。時間を置いて再試行してください。';
 const LOGIN_PROCESSING_ERROR_MESSAGE = 'サインイン処理に失敗しました。';
 const LOGIN_REDIRECT_ERROR_MESSAGE = 'サインイン画面への遷移に失敗しました。';
 const loginRequest = {
@@ -53,17 +56,21 @@ const fetchPostLoginRedirect = async (): Promise<string> => {
 };
 
 type LoginFailureReason =
-  'invalid_account' | 'backend_unreachable' | 'rate_limited';
+  | 'invalid_account'
+  | 'backend_unreachable'
+  | 'rate_limited'
+  | 'turnstile_failed';
 
 const exchangeMinecraftAccessToken = async (
-  accessToken: string
+  accessToken: string,
+  turnstileToken: string
 ): Promise<
   { ok: true } | { ok: false; reason: LoginFailureReason; retryAfter?: number }
 > => {
   const response = await fetch('/api/minecraft-access-token', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ token: accessToken }),
+    body: JSON.stringify({ token: accessToken, turnstileToken }),
   });
 
   if (response.ok) return { ok: true };
@@ -86,11 +93,12 @@ const getLoginFailureReason = (
   body: unknown
 ): LoginFailureReason => {
   if (status === 429) return 'rate_limited';
-  if (typeof body === 'object' && body !== null && 'code' in body) {
-    return Reflect.get(body, 'code') === 'backend_unreachable'
-      ? 'backend_unreachable'
-      : 'invalid_account';
-  }
+  const code =
+    typeof body === 'object' && body !== null && 'code' in body
+      ? Reflect.get(body, 'code')
+      : undefined;
+  if (code === 'backend_unreachable') return 'backend_unreachable';
+  if (code === 'turnstile_failed') return 'turnstile_failed';
   return 'invalid_account';
 };
 
@@ -98,6 +106,7 @@ type CompleteLoginParams = {
   account: AccountInfo;
   instance: ReturnType<typeof useMsal>['instance'];
   router: ReturnType<typeof useRouter>;
+  getTurnstileToken: () => Promise<string>;
 };
 
 type CompleteLoginResult =
@@ -108,6 +117,7 @@ const completeLogin = async ({
   account,
   instance,
   router,
+  getTurnstileToken,
 }: CompleteLoginParams): Promise<CompleteLoginResult> => {
   const request: SilentRequest = {
     account,
@@ -115,8 +125,17 @@ const completeLogin = async ({
   };
 
   const tokenResponse = await instance.acquireTokenSilent(request);
+
+  let turnstileToken: string;
+  try {
+    turnstileToken = await getTurnstileToken();
+  } catch {
+    return { success: false, reason: 'turnstile_failed' };
+  }
+
   const exchangeResult = await exchangeMinecraftAccessToken(
-    tokenResponse.accessToken
+    tokenResponse.accessToken,
+    turnstileToken
   );
 
   if (!exchangeResult.ok) {
@@ -133,7 +152,7 @@ const completeLogin = async ({
   return { success: true };
 };
 
-export const useLandingLogin = () => {
+export const useLandingLogin = (turnstileSiteKey: string | undefined) => {
   const { instance, accounts } = useMsal();
   const [isProcessing, setIsProcessing] = useState(false);
   const {
@@ -149,6 +168,8 @@ export const useLandingLogin = () => {
   >(null);
   const router = useRouter();
   const errorMessage = processingErrorMessage ?? redirectErrorMessage;
+  const { containerRef: turnstileContainerRef, getToken: getTurnstileToken } =
+    useTurnstileToken('session-create', turnstileSiteKey);
 
   const handleFailure = (message: string, error: unknown) => {
     console.error(message, error);
@@ -165,7 +186,12 @@ export const useLandingLogin = () => {
       setIsProcessing(true);
 
       try {
-        const result = await completeLogin({ account, instance, router });
+        const result = await completeLogin({
+          account,
+          instance,
+          router,
+          getTurnstileToken,
+        });
         if (!result.success) {
           const failureMessage = (() => {
             switch (result.reason) {
@@ -175,6 +201,8 @@ export const useLandingLogin = () => {
                 return RATE_LIMIT_ERROR_MESSAGE(result.retryAfter);
               case 'invalid_account':
                 return LOGIN_ERROR_MESSAGE;
+              case 'turnstile_failed':
+                return TURNSTILE_ERROR_MESSAGE;
             }
           })();
           setProcessingErrorMessage(failureMessage);
@@ -191,12 +219,20 @@ export const useLandingLogin = () => {
     })().catch((error: unknown) => {
       handleFailure(LOGIN_PROCESSING_ERROR_MESSAGE, error);
     });
-  }, [accounts, errorMessage, isLoggingIn, instance, router]);
+  }, [
+    accounts,
+    errorMessage,
+    isLoggingIn,
+    instance,
+    router,
+    getTurnstileToken,
+  ]);
 
   return {
     errorMessage,
     isProcessing,
     isLoggingIn,
+    turnstileContainerRef,
     handleLogin: () => {
       resetError();
       setProcessingErrorMessage(null);

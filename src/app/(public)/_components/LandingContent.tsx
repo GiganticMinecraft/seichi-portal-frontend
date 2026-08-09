@@ -111,25 +111,39 @@ const LandingView = ({
 
 type LandingContentProps = {
   publicForms: GetFormsResponse;
+  turnstileSiteKey: string | undefined;
 };
 
-export const LandingContent = ({ publicForms }: LandingContentProps) => {
-  const { errorMessage, isProcessing, isLoggingIn, handleLogin } =
-    useLandingLogin();
+export const LandingContent = ({
+  publicForms,
+  turnstileSiteKey,
+}: LandingContentProps) => {
+  const {
+    errorMessage,
+    isProcessing,
+    isLoggingIn,
+    handleLogin,
+    turnstileContainerRef,
+  } = useLandingLogin(turnstileSiteKey);
 
-  if (errorMessage) {
-    return <ErrorState errorMessage={errorMessage} />;
-  }
-
-  if (isProcessing) {
-    return <ProcessingState />;
-  }
+  const content = (() => {
+    if (errorMessage) return <ErrorState errorMessage={errorMessage} />;
+    if (isProcessing) return <ProcessingState />;
+    return (
+      <LandingView
+        onLogin={handleLogin}
+        isLoggingIn={isLoggingIn}
+        publicForms={publicForms}
+      />
+    );
+  })();
 
   return (
-    <LandingView
-      onLogin={handleLogin}
-      isLoggingIn={isLoggingIn}
-      publicForms={publicForms}
-    />
+    <>
+      {/* Turnstile ウィジェット用のコンテナ。ログイン処理中に画面が切り替わっても
+          コンポーネントごとアンマウントされないよう、分岐の外に置く。 */}
+      <div ref={turnstileContainerRef} />
+      {content}
+    </>
   );
 };
