@@ -125,3 +125,11 @@ export const getMsalConfig = () =>
   });
 
 export const getMsalOrigin = () => getOrigin(getMsalRedirectUrl());
+
+const turnstileSiteKeySchema = z.string().min(1).optional();
+
+// NEXT_PUBLIC_ を使わず、実行時 (standalone サーバー起動時) に読む。
+// 未設定の環境は backend の TURNSTILE_ENABLED=false に対応し、
+// フロント側もウィジェットを描画しない。
+export const getTurnstileSiteKey = () =>
+  turnstileSiteKeySchema.parse(process.env['TURNSTILE_SITE_KEY'] || undefined);

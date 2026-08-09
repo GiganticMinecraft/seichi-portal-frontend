@@ -3343,7 +3343,10 @@ export interface operations {
     post_temporary_answer_handler: {
         parameters: {
             query?: never;
-            header?: never;
+            header: {
+                /** @description Cloudflare Turnstile token */
+                "X-Seichi-Turnstile-Token": string;
+            };
             path: {
                 /** @description Form ID */
                 form_id: string;
@@ -3401,6 +3404,15 @@ export interface operations {
             };
             /** @description Server error */
             500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description The server is temporarily unable to handle the request. */
+            503: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -4511,7 +4523,10 @@ export interface operations {
     start_session: {
         parameters: {
             query?: never;
-            header?: never;
+            header: {
+                /** @description Cloudflare Turnstile token */
+                "X-Seichi-Turnstile-Token": string;
+            };
             path?: never;
             cookie?: never;
         };
@@ -4546,6 +4561,15 @@ export interface operations {
                     "application/problem+json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description Access is forbidden. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorResponse"];
+                };
+            };
             /** @description The server cannot find the requested resource. */
             404: {
                 headers: {
@@ -4566,6 +4590,15 @@ export interface operations {
             };
             /** @description Server error */
             500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description The server is temporarily unable to handle the request. */
+            503: {
                 headers: {
                     [name: string]: unknown;
                 };

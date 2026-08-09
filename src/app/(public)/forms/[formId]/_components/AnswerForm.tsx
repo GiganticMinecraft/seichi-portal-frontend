@@ -21,6 +21,7 @@ interface Props {
   isAuthenticated: boolean;
   allowTemporaryAnswers: boolean;
   restriction: SubmissionRestriction | null;
+  turnstileSiteKey: string | undefined;
 }
 
 /**
@@ -35,54 +36,68 @@ const AnswerForm = ({
   isAuthenticated,
   allowTemporaryAnswers,
   restriction,
+  turnstileSiteKey,
 }: Props) => {
   // 未ログインかつフォームが未ログイン回答を許可している場合のみ匿名回答モード。
   const isTemporary = !isAuthenticated && allowTemporaryAnswers;
-  const { submissionState, submitAnswers, resetSubmissionState } =
-    useAnswerSubmission(formId, isTemporary);
+  const {
+    submissionState,
+    submitAnswers,
+    resetSubmissionState,
+    turnstileContainerRef,
+  } = useAnswerSubmission(formId, isTemporary, turnstileSiteKey);
 
-  if (submissionState.kind === 'submitted') {
-    return <AnswerSubmissionSuccess onReset={resetSubmissionState} />;
-  }
+  const content = (() => {
+    if (submissionState.kind === 'submitted') {
+      return <AnswerSubmissionSuccess onReset={resetSubmissionState} />;
+    }
 
-  // 未ログインで、かつ未ログイン回答も許可されていない場合は回答できない。
-  if (!isAuthenticated && !allowTemporaryAnswers) {
+    // 未ログインで、かつ未ログイン回答も許可されていない場合は回答できない。
+    if (!isAuthenticated && !allowTemporaryAnswers) {
+      return (
+        <Box sx={{ width: '100%', maxWidth: 800, mx: 'auto' }}>
+          <Typography variant="h4" component="h1" gutterBottom>
+            {title}
+          </Typography>
+          <Alert
+            severity="info"
+            action={<SigninButton />}
+            sx={{ alignItems: 'center' }}
+          >
+            このフォームに回答するにはサインインが必要です。
+          </Alert>
+        </Box>
+      );
+    }
+
     return (
-      <Box sx={{ width: '100%', maxWidth: 800, mx: 'auto' }}>
-        <Typography variant="h4" component="h1" gutterBottom>
-          {title}
-        </Typography>
-        <Alert
-          severity="info"
-          action={<SigninButton />}
-          sx={{ alignItems: 'center' }}
-        >
-          このフォームに回答するにはサインインが必要です。
-        </Alert>
-      </Box>
+      <Stack spacing={0} sx={{ width: '100%' }}>
+        {restriction && (
+          <Alert
+            severity="error"
+            sx={{ width: '100%', maxWidth: 800, mx: 'auto', mb: 2 }}
+          >
+            <RestrictionMessage restriction={restriction} />
+          </Alert>
+        )}
+        <SubmissionErrorAlert submissionState={submissionState} />
+        <AnswerSubmissionForm
+          questions={questions}
+          title={title}
+          description={description}
+          isTemporary={isTemporary}
+          onSubmitAnswers={submitAnswers}
+          disabled={Boolean(restriction)}
+        />
+      </Stack>
     );
-  }
+  })();
 
   return (
-    <Stack spacing={0} sx={{ width: '100%' }}>
-      {restriction && (
-        <Alert
-          severity="error"
-          sx={{ width: '100%', maxWidth: 800, mx: 'auto', mb: 2 }}
-        >
-          <RestrictionMessage restriction={restriction} />
-        </Alert>
-      )}
-      <SubmissionErrorAlert submissionState={submissionState} />
-      <AnswerSubmissionForm
-        questions={questions}
-        title={title}
-        description={description}
-        isTemporary={isTemporary}
-        onSubmitAnswers={submitAnswers}
-        disabled={Boolean(restriction)}
-      />
-    </Stack>
+    <>
+      {isTemporary && <div ref={turnstileContainerRef} />}
+      {content}
+    </>
   );
 };
 
@@ -123,6 +138,13 @@ const SubmissionErrorAlert = ({
           {submissionState.error.retryAfter !== undefined
             ? ` ${submissionState.error.retryAfter}秒後に再度お試しください。`
             : '時間をおいて再度お試しください。'}
+        </Alert>
+      );
+    case 'turnstileFailed':
+    case 'turnstileUnavailable':
+      return (
+        <Alert severity="error" sx={alertSx}>
+          認証チェックに失敗しました。時間をおいて再度お試しください。
         </Alert>
       );
     case 'unknown':

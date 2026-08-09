@@ -1,7 +1,7 @@
 import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
 
-import { getSeichiProxyHeaders } from '@/env.server';
+import { getSeichiProxyHeaders, getTurnstileSiteKey } from '@/env.server';
 import type { GetFormsResponse } from '@/lib/api-types';
 import { serverApiClient } from '@/lib/server/backend';
 import { getSession } from '@/lib/server/session';
@@ -34,7 +34,12 @@ const LandingPage = async () => {
 
   const publicForms = await fetchPublicForms(await headers());
 
-  return <LandingContent publicForms={publicForms} />;
+  return (
+    <LandingContent
+      publicForms={publicForms}
+      turnstileSiteKey={getTurnstileSiteKey()}
+    />
+  );
 };
 
 export default LandingPage;

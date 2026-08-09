@@ -6,7 +6,12 @@ import { toRestrictionExpiration } from '@/lib/restrictions/expiration';
 import type { RestrictionExpiration } from '@/lib/restrictions/expiration';
 
 export type SubmissionErrorCode =
-  'OUT_OF_PERIOD' | 'RESTRICTED' | 'RATE_LIMIT_EXCEEDED' | 'UNKNOWN';
+  | 'OUT_OF_PERIOD'
+  | 'RESTRICTED'
+  | 'RATE_LIMIT_EXCEEDED'
+  | 'TURNSTILE_FAILED'
+  | 'TURNSTILE_UNAVAILABLE'
+  | 'UNKNOWN';
 
 export type SubmissionRestriction = {
   reason: string;
@@ -17,6 +22,8 @@ export type SubmissionError =
   | { kind: 'outOfPeriod' }
   | { kind: 'restricted'; restriction?: SubmissionRestriction }
   | { kind: 'rateLimited'; retryAfter?: number }
+  | { kind: 'turnstileFailed' }
+  | { kind: 'turnstileUnavailable' }
   | { kind: 'unknown' };
 
 type ParsedSubmissionError = {
@@ -77,6 +84,14 @@ export const parseSubmissionError = (
       code: 'RATE_LIMIT_EXCEEDED',
       ...(retryAfter !== undefined ? { retryAfter } : {}),
     };
+  }
+
+  if (parsed.data.errorCode === 'TURNSTILE_VERIFICATION_FAILED') {
+    return { code: 'TURNSTILE_FAILED' };
+  }
+
+  if (parsed.data.errorCode === 'TURNSTILE_UNAVAILABLE') {
+    return { code: 'TURNSTILE_UNAVAILABLE' };
   }
 
   return null;
