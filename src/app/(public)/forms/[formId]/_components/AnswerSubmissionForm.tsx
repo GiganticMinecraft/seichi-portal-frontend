@@ -16,7 +16,7 @@ import MarkdownText from '@/app/_components/MarkdownText';
 import RequiredChip from '@/app/_components/RequiredChip';
 import type { GetQuestionsResponse } from '@/lib/api-types';
 
-import { TEMPORARY_USER_FIELDS } from './answerFormTypes';
+import { resolveChoiceLabels, TEMPORARY_USER_FIELDS } from './answerFormTypes';
 import type { AnswerFormInput } from './answerFormTypes';
 import QuestionFieldRenderer from './QuestionFieldRenderer';
 
@@ -50,7 +50,7 @@ const AnswerSubmissionForm = ({
   } = useForm<AnswerFormInput>();
 
   const handleAnswerSubmit = async (data: AnswerFormInput) => {
-    const result = await onSubmitAnswers(data);
+    const result = await onSubmitAnswers(resolveChoiceLabels(data, questions));
     if (!result.ok) {
       return;
     }

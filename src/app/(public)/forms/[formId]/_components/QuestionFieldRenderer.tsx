@@ -15,6 +15,7 @@ import { Controller } from 'react-hook-form';
 import type { Control, FieldErrors, UseFormRegister } from 'react-hook-form';
 import { match, P } from 'ts-pattern';
 
+import { getChoiceKey } from './answerFormTypes';
 import type { AnswerFormInput, AnswerQuestion } from './answerFormTypes';
 
 type Props = {
@@ -101,7 +102,7 @@ const QuestionFieldRenderer = ({
                   {question.choices.map((choice, index) => (
                     <MenuItem
                       key={`q-${questionId}.a-${index}`}
-                      value={choice.label}
+                      value={getChoiceKey(choice, index)}
                     >
                       {choice.label}
                     </MenuItem>
@@ -143,64 +144,67 @@ const QuestionFieldRenderer = ({
                 .otherwise(() => []);
               const choiceOrder = new Map(
                 question.choices.map((item, itemIndex) => [
-                  item.label,
+                  getChoiceKey(item, itemIndex),
                   itemIndex,
                 ])
               );
 
               return (
                 <Grid container spacing={2} sx={{ mt: 1 }}>
-                  {question.choices.map((choice, index) => (
-                    <Grid
-                      size={{ xs: 12, sm: 6, md: 4 }}
-                      key={`q-${questionId}.a-${index}`}
-                    >
-                      <FormControlLabel
-                        control={
-                          <Checkbox
-                            checked={selectedValues.includes(choice.label)}
-                            onChange={(_, checked) => {
-                              if (question.choices.length === 1) {
-                                field.onChange(checked ? choice.label : false);
-                                return;
-                              }
+                  {question.choices.map((choice, index) => {
+                    const choiceKey = getChoiceKey(choice, index);
 
-                              const nextValues = match({
-                                checked,
-                                alreadySelected: selectedValues.includes(
-                                  choice.label
-                                ),
-                              })
-                                .with(
-                                  { checked: true, alreadySelected: true },
-                                  () => selectedValues
-                                )
-                                .with({ checked: true }, () => [
-                                  ...selectedValues,
-                                  choice.label,
-                                ])
-                                .otherwise(() =>
-                                  selectedValues.filter(
-                                    (value) => value !== choice.label
+                    return (
+                      <Grid
+                        size={{ xs: 12, sm: 6, md: 4 }}
+                        key={`q-${questionId}.a-${index}`}
+                      >
+                        <FormControlLabel
+                          control={
+                            <Checkbox
+                              checked={selectedValues.includes(choiceKey)}
+                              onChange={(_, checked) => {
+                                if (question.choices.length === 1) {
+                                  field.onChange(checked ? choiceKey : false);
+                                  return;
+                                }
+
+                                const nextValues = match({
+                                  checked,
+                                  alreadySelected:
+                                    selectedValues.includes(choiceKey),
+                                })
+                                  .with(
+                                    { checked: true, alreadySelected: true },
+                                    () => selectedValues
                                   )
+                                  .with({ checked: true }, () => [
+                                    ...selectedValues,
+                                    choiceKey,
+                                  ])
+                                  .otherwise(() =>
+                                    selectedValues.filter(
+                                      (value) => value !== choiceKey
+                                    )
+                                  );
+                                const orderedValues = [...nextValues].sort(
+                                  (left, right) =>
+                                    (choiceOrder.get(left) ?? -1) -
+                                    (choiceOrder.get(right) ?? -1)
                                 );
-                              const orderedValues = [...nextValues].sort(
-                                (left, right) =>
-                                  (choiceOrder.get(left) ?? -1) -
-                                  (choiceOrder.get(right) ?? -1)
-                              );
 
-                              field.onChange(orderedValues);
-                            }}
-                            onBlur={field.onBlur}
-                            ref={index === 0 ? field.ref : undefined}
-                            disabled={disabled}
-                          />
-                        }
-                        label={choice.label}
-                      />
-                    </Grid>
-                  ))}
+                                field.onChange(orderedValues);
+                              }}
+                              onBlur={field.onBlur}
+                              ref={index === 0 ? field.ref : undefined}
+                              disabled={disabled}
+                            />
+                          }
+                          label={choice.label}
+                        />
+                      </Grid>
+                    );
+                  })}
                 </Grid>
               );
             }}
