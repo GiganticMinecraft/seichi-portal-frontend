@@ -154,6 +154,60 @@ describe('AnswerSubmissionForm', () => {
     });
   });
 
+  it('同じラベルの選択肢が複数ある複数選択で、片方だけを選択できる', async () => {
+    const user = userEvent.setup();
+    const onSubmitAnswers = vi
+      .fn<(data: AnswerFormInput) => Promise<{ ok: boolean }>>()
+      .mockResolvedValue({ ok: true });
+
+    const duplicateLabelQuestions: GetQuestionsResponse = [
+      {
+        id: '8f98a37f-9070-4624-b161-f288769160d5',
+        template_key: 'consultation_topics',
+        title: '相談したい内容',
+        description: '',
+        is_required: false,
+        position: 1,
+        question_type: 'MultipleChoice',
+        choices: [
+          { id: 1, label: 'その他', position: 1 },
+          { id: 2, label: 'その他', position: 2 },
+        ],
+      },
+    ];
+
+    renderWithProviders(
+      <AnswerSubmissionForm
+        questions={duplicateLabelQuestions}
+        title="お問い合わせ"
+        description=""
+        isTemporary={false}
+        onSubmitAnswers={onSubmitAnswers}
+      />
+    );
+
+    const [firstChoice, secondChoice] = screen.getAllByRole('checkbox', {
+      name: 'その他',
+    });
+    if (!firstChoice || !secondChoice) {
+      throw new Error(
+        '「その他」のチェックボックスが2つ見つかりませんでした。'
+      );
+    }
+    await user.click(firstChoice);
+
+    expect(firstChoice).toBeChecked();
+    expect(secondChoice).not.toBeChecked();
+
+    await user.click(screen.getByRole('button', { name: '送信' }));
+
+    await waitFor(() => {
+      expect(onSubmitAnswers).toHaveBeenCalledWith({
+        '8f98a37f-9070-4624-b161-f288769160d5': ['その他'],
+      });
+    });
+  });
+
   it('単一選択の回答を未選択へ戻せる', async () => {
     const user = userEvent.setup();
     const onSubmitAnswers = vi
