@@ -88,17 +88,13 @@ const AnswerForm = ({
           isTemporary={isTemporary}
           onSubmitAnswers={submitAnswers}
           disabled={Boolean(restriction)}
+          turnstileContainerRef={turnstileContainerRef}
         />
       </Stack>
     );
   })();
 
-  return (
-    <>
-      {isTemporary && <div ref={turnstileContainerRef} />}
-      {content}
-    </>
-  );
+  return content;
 };
 
 const SubmissionErrorAlert = ({

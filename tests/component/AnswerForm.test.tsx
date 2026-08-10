@@ -1,4 +1,5 @@
 import userEvent from '@testing-library/user-event';
+import type { RefCallback } from 'react';
 import { useState } from 'react';
 import { describe, expect, it, vi } from 'vitest';
 
@@ -9,7 +10,7 @@ import { renderWithProviders, screen } from './render';
 const answerSubmissionMocks = vi.hoisted(() => ({
   useAnswerSubmission: vi.fn(),
   submitAnswers: vi.fn(),
-  turnstileContainerRef: { current: null },
+  turnstileContainerRef: vi.fn<RefCallback<HTMLDivElement>>(),
 }));
 
 vi.mock(
@@ -19,7 +20,17 @@ vi.mock(
 
 vi.mock(
   '@/app/(public)/forms/[formId]/_components/AnswerSubmissionForm',
-  () => ({ default: () => <div data-testid="answer-submission-form" /> })
+  () => ({
+    default: ({
+      turnstileContainerRef,
+    }: {
+      turnstileContainerRef?: RefCallback<HTMLDivElement>;
+    }) => (
+      <div data-testid="answer-submission-form">
+        <div ref={turnstileContainerRef} data-testid="turnstile-container" />
+      </div>
+    ),
+  })
 );
 
 const props = {
@@ -34,7 +45,7 @@ const props = {
 };
 
 describe('AnswerForm', () => {
-  it('別の回答へ戻っても匿名回答のTurnstileコンテナを維持する', async () => {
+  it('送信成功後はTurnstileコンテナが消え、別の回答をする操作で再度渡される', async () => {
     answerSubmissionMocks.useAnswerSubmission.mockImplementation(() => {
       // 成功画面から利用者が「別の回答をする」を押す経路を確認する。
       const [submissionState, setSubmissionState] = useState<
@@ -53,19 +64,17 @@ describe('AnswerForm', () => {
 
     const user = userEvent.setup();
     renderWithProviders(<AnswerForm {...props} />);
-    const container = answerSubmissionMocks.turnstileContainerRef.current;
 
+    // 送信成功直後は AnswerSubmissionForm ごと Turnstile コンテナも消えている。
     expect(
       screen.getByRole('button', { name: '別の回答をする' })
     ).toBeVisible();
-    expect(container).toBeInstanceOf(HTMLDivElement);
+    expect(screen.queryByTestId('turnstile-container')).not.toBeInTheDocument();
 
     await user.click(screen.getByRole('button', { name: '別の回答をする' }));
 
+    // 再度入力画面に戻ると、同じ containerRef が渡され Turnstile コンテナが復活する。
     expect(screen.getByTestId('answer-submission-form')).toBeInTheDocument();
-    expect(answerSubmissionMocks.turnstileContainerRef.current).toBe(container);
-    expect(answerSubmissionMocks.turnstileContainerRef.current).toBeInstanceOf(
-      HTMLDivElement
-    );
+    expect(screen.getByTestId('turnstile-container')).toBeInTheDocument();
   });
 });
