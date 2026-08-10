@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { loadTurnstile } from '@/lib/turnstile';
 
@@ -11,8 +11,10 @@ type PendingToken = {
 
 /**
  * Cloudflare Turnstile のウィジェットを送信操作の直前に実行し、token を取得する。
- * `containerRef` を送信対象の UI がマウントされ続ける位置に描画しておく必要がある
- * (画面遷移でアンマウントされると widget も失われる)。
+ * `containerRef` は callback ref。呼び出し側の都合でコンテナがアンマウント/
+ * 再マウントされても(送信完了で消え、再入力でまた現れる、など)そのたびに
+ * widget を作り直すため、コンテナの生存期間を呼び出し側のレイアウトに合わせて
+ * 自由に決められる。
  * `siteKey` は Server Component が実行時に読んだ `TURNSTILE_SITE_KEY` を props
  * 経由で渡す想定(NEXT_PUBLIC_ 化してビルド時に固定しないため)。未設定の環境
  * (backend の TURNSTILE_ENABLED=false に対応) では getToken は空文字列を返し、
@@ -22,13 +24,15 @@ export const useTurnstileToken = (
   action: string,
   siteKey: string | undefined
 ) => {
-  const containerRef = useRef<HTMLDivElement | null>(null);
+  const [container, setContainer] = useState<HTMLDivElement | null>(null);
+  const containerRef = useCallback((node: HTMLDivElement | null) => {
+    setContainer(node);
+  }, []);
   const widgetIdRef = useRef<string | null>(null);
   const readyRef = useRef<Promise<void> | null>(null);
   const pendingRef = useRef<PendingToken | null>(null);
 
   useEffect(() => {
-    const container = containerRef.current;
     if (!siteKey || !container) return;
 
     let widgetId: string | null = null;
@@ -77,14 +81,13 @@ export const useTurnstileToken = (
       widgetIdRef.current = null;
       readyRef.current = null;
     };
-  }, [action, siteKey]);
+  }, [action, siteKey, container]);
 
   const getToken = useCallback(async (): Promise<string> => {
     if (!siteKey) return '';
 
     await readyRef.current;
 
-    const container = containerRef.current;
     const widgetId = widgetIdRef.current;
     if (!container || !widgetId) {
       throw new Error('Turnstile widget is not ready');
@@ -101,7 +104,7 @@ export const useTurnstileToken = (
       turnstile.reset(widgetId);
       turnstile.execute(container);
     });
-  }, [siteKey]);
+  }, [siteKey, container]);
 
   return { containerRef, getToken };
 };

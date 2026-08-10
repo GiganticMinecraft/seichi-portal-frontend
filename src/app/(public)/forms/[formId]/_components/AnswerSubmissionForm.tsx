@@ -9,11 +9,13 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
+import type { RefCallback } from 'react';
 import { useForm } from 'react-hook-form';
 
 import FieldLabel from '@/app/_components/FieldLabel';
 import MarkdownText from '@/app/_components/MarkdownText';
 import RequiredChip from '@/app/_components/RequiredChip';
+import { TurnstileWidget } from '@/app/_components/TurnstileWidget';
 import type { GetQuestionsResponse } from '@/lib/api-types';
 
 import { resolveChoiceLabels, TEMPORARY_USER_FIELDS } from './answerFormTypes';
@@ -27,6 +29,7 @@ type Props = {
   isTemporary: boolean;
   onSubmitAnswers: (data: AnswerFormInput) => Promise<{ ok: boolean }>;
   disabled?: boolean;
+  turnstileContainerRef?: RefCallback<HTMLDivElement>;
 };
 
 /**
@@ -40,6 +43,7 @@ const AnswerSubmissionForm = ({
   isTemporary,
   onSubmitAnswers,
   disabled = false,
+  turnstileContainerRef,
 }: Props) => {
   const {
     control,
@@ -138,9 +142,14 @@ const AnswerSubmissionForm = ({
               width: '100%',
               display: 'flex',
               justifyContent: 'flex-end',
+              alignItems: 'center',
+              gap: 2,
               mt: 2,
             }}
           >
+            {isTemporary && turnstileContainerRef && (
+              <TurnstileWidget containerRef={turnstileContainerRef} />
+            )}
             <Button
               type="submit"
               variant="contained"

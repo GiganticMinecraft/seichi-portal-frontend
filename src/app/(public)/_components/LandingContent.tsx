@@ -11,6 +11,7 @@ import {
   Typography,
 } from '@mui/material';
 
+import { TurnstileWidget } from '@/app/_components/TurnstileWidget';
 import type { GetFormsResponse } from '@/lib/api-types';
 
 import { PublicFormList } from './PublicFormList';
@@ -140,9 +141,18 @@ export const LandingContent = ({
 
   return (
     <>
-      {/* Turnstile ウィジェット用のコンテナ。ログイン処理中に画面が切り替わっても
-          コンポーネントごとアンマウントされないよう、分岐の外に置く。 */}
-      <div ref={turnstileContainerRef} />
+      {/* ログイン処理中に画面が切り替わってもコンポーネントごとアンマウント
+          されないよう、分岐の外に置く。 */}
+      <TurnstileWidget
+        containerRef={turnstileContainerRef}
+        sx={{
+          position: 'fixed',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          zIndex: (theme) => theme.zIndex.tooltip,
+        }}
+      />
       {content}
     </>
   );
