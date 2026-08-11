@@ -84,7 +84,6 @@ const Comments = (props: {
         ...(author.authorId !== undefined ? { authorId: author.authorId } : {}),
         authorRole: author.authorRole,
         timestamp: comment.timestamp,
-        surface: 'bubble',
         canDelete: (props.showDeleteButton ?? false) || isOwnComment,
         canEdit: isOwnComment,
         ...(editHistory !== undefined ? { editHistory } : {}),

@@ -64,7 +64,6 @@ const Messages = (props: {
         authorId: message.sender.uuid,
         authorRole: message.sender.role,
         timestamp: message.timestamp,
-        surface: 'flat',
         canDelete: true,
         canEdit: true,
         ...(editHistory !== undefined ? { editHistory } : {}),

@@ -16,11 +16,6 @@ export type ConversationEntryViewModel = {
   authorId?: string;
   authorRole: string;
   timestamp: string;
-  /**
-   * Paper の視覚スタイル。本文 (body) は常に Markdown として解釈する設計判断であり、
-   * plain 解釈が必要になった場合は再検討すること。
-   */
-  surface: 'bubble' | 'flat';
   canDelete: boolean;
   canEdit: boolean;
   /**
