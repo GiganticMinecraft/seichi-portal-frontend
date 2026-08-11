@@ -9,9 +9,9 @@ type TurnstileRenderOptions = {
   callback: (token: string) => void;
   // Cloudflare Turnstile API が要求するキー名そのまま。
   /* eslint-disable @typescript-eslint/naming-convention */
-  'error-callback': () => void;
-  'expired-callback': () => void;
-  'timeout-callback': () => void;
+  'error-callback': (errorCode: unknown) => boolean;
+  'expired-callback': () => boolean;
+  'timeout-callback': () => boolean;
   /* eslint-enable @typescript-eslint/naming-convention */
 };
 
@@ -21,6 +21,26 @@ export type TurnstileApi = {
   reset: (widgetId: string) => void;
   remove: (widgetId: string) => void;
 };
+
+const normalizeErrorCode = (value: unknown): string | undefined => {
+  if (typeof value === 'string' || typeof value === 'number') {
+    return String(value);
+  }
+  return undefined;
+};
+
+export class TurnstileError extends Error {
+  readonly code: string | undefined;
+
+  constructor(message: string, code?: unknown) {
+    const normalizedCode = normalizeErrorCode(code);
+    super(
+      normalizedCode ? `${message} (error code: ${normalizedCode})` : message
+    );
+    this.name = 'TurnstileError';
+    this.code = normalizedCode;
+  }
+}
 
 declare global {
   interface Window {
@@ -35,11 +55,18 @@ let loadPromise: Promise<TurnstileApi> | null = null;
 
 // script タグの挿入と onload 待ちを一度だけ行う（呼び出し元が複数あっても共有する）。
 export const loadTurnstile = (): Promise<TurnstileApi> => {
-  loadPromise ??= new Promise<TurnstileApi>((resolve, reject) => {
+  if (loadPromise) return loadPromise;
+
+  const promise = new Promise<TurnstileApi>((resolve, reject) => {
     Object.assign(window, {
       [ONLOAD_CALLBACK_NAME]: () => {
         if (!window.turnstile) {
-          reject(new Error('Turnstile script loaded without window.turnstile'));
+          reject(
+            new TurnstileError(
+              'Turnstile script loaded without window.turnstile',
+              'api-missing'
+            )
+          );
           return;
         }
         resolve(window.turnstile);
@@ -51,10 +78,23 @@ export const loadTurnstile = (): Promise<TurnstileApi> => {
     script.async = true;
     script.defer = true;
     script.onerror = () => {
-      reject(new Error('Failed to load Turnstile script'));
+      script.remove();
+      reject(
+        new TurnstileError('Failed to load Turnstile script', 'script-load')
+      );
     };
     document.head.appendChild(script);
   });
 
-  return loadPromise;
+  loadPromise = promise;
+
+  // 呼び出し側が await する前に script.onerror が発生しても unhandled rejection
+  // にせず、次回の呼び出しでは再試行できるようにする。
+  void promise.catch(() => {
+    if (loadPromise === promise) {
+      loadPromise = null;
+    }
+  });
+
+  return promise;
 };
