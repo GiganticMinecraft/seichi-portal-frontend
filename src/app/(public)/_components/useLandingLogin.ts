@@ -129,7 +129,8 @@ const completeLogin = async ({
   let turnstileToken: string;
   try {
     turnstileToken = await getTurnstileToken();
-  } catch {
+  } catch (error: unknown) {
+    console.error('[Login] Turnstile token acquisition failed', error);
     return { success: false, reason: 'turnstile_failed' };
   }
 

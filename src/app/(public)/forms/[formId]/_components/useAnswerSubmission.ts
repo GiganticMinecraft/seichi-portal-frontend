@@ -113,7 +113,11 @@ export const useAnswerSubmission = (
     if (isTemporary) {
       try {
         turnstileToken = await getTurnstileToken();
-      } catch {
+      } catch (error: unknown) {
+        console.error(
+          '[Form submission] Turnstile token acquisition failed',
+          error
+        );
         setSubmissionState({
           kind: 'failed',
           error: { kind: 'turnstileUnavailable' },
