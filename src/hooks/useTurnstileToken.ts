@@ -2,11 +2,40 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 
-import { loadTurnstile, TurnstileError } from '@/lib/turnstile';
+import {
+  loadTurnstile,
+  type TurnstileApi,
+  TurnstileError,
+} from '@/lib/turnstile';
 
 type PendingToken = {
   resolve: (token: string) => void;
   reject: (error: Error) => void;
+};
+
+type ReadyWidget = {
+  container: HTMLDivElement;
+  turnstile: TurnstileApi;
+  widgetId: string;
+};
+
+type WidgetReadiness = {
+  promise: Promise<ReadyWidget>;
+  reject: (error: Error) => void;
+  resolve: (widget: ReadyWidget) => void;
+};
+
+const createWidgetReadiness = (): WidgetReadiness => {
+  let resolve: (widget: ReadyWidget) => void = () => {};
+  let reject: (error: Error) => void = () => {};
+  const promise = new Promise<ReadyWidget>((promiseResolve, promiseReject) => {
+    resolve = promiseResolve;
+    reject = promiseReject;
+  });
+  // effect の cleanup が、まだ呼び出し元のない readiness を reject しても
+  // unhandled rejection にしない。await した側には reject がそのまま伝わる。
+  void promise.catch(() => {});
+  return { promise, reject, resolve };
 };
 
 /**
@@ -25,13 +54,19 @@ export const useTurnstileToken = (
   siteKey: string | undefined
 ) => {
   const [container, setContainer] = useState<HTMLDivElement | null>(null);
+  const containerNodeRef = useRef<HTMLDivElement | null>(null);
   const containerRef = useCallback((node: HTMLDivElement | null) => {
+    containerNodeRef.current = node;
     setContainer(node);
   }, []);
   const widgetIdRef = useRef<string | null>(null);
-  const readyRef = useRef<Promise<void> | null>(null);
+  const readinessRef = useRef<WidgetReadiness | null>(null);
   const pendingRef = useRef<PendingToken | null>(null);
   const pendingPromiseRef = useRef<Promise<string> | null>(null);
+  const getReadiness = useCallback(() => {
+    readinessRef.current ??= createWidgetReadiness();
+    return readinessRef.current;
+  }, []);
 
   useEffect(() => {
     if (!siteKey || !container) return;
@@ -39,59 +74,70 @@ export const useTurnstileToken = (
     let widgetId: string | null = null;
     let cancelled = false;
 
-    const ready = loadTurnstile().then((turnstile) => {
-      if (cancelled) return;
+    const readiness = getReadiness();
+    void loadTurnstile()
+      .then((turnstile) => {
+        if (cancelled) return;
 
-      widgetId = turnstile.render(container, {
-        sitekey: siteKey,
-        action,
-        execution: 'execute',
-        appearance: 'interaction-only',
-        callback: (token) => {
-          if (widgetIdRef.current !== widgetId) return;
-          const pending = pendingRef.current;
-          if (!pending) return;
-          pendingRef.current = null;
-          pendingPromiseRef.current = null;
-          pending.resolve(token);
-        },
-        // Cloudflare Turnstile API が要求するキー名そのまま。
-        /* eslint-disable @typescript-eslint/naming-convention */
-        'error-callback': (errorCode) => {
-          if (widgetIdRef.current !== widgetId) return true;
-          const error = new TurnstileError(
-            'Turnstile verification failed',
-            errorCode
-          );
-          console.error('[Turnstile] widget error', error);
-          const pending = pendingRef.current;
-          pendingRef.current = null;
-          pendingPromiseRef.current = null;
-          pending?.reject(error);
-          return true;
-        },
-        'expired-callback': () => {
-          if (widgetIdRef.current !== widgetId) return true;
-          const pending = pendingRef.current;
-          pendingRef.current = null;
-          pendingPromiseRef.current = null;
-          pending?.reject(new TurnstileError('Turnstile token expired'));
-          return true;
-        },
-        'timeout-callback': () => {
-          if (widgetIdRef.current !== widgetId) return true;
-          const pending = pendingRef.current;
-          pendingRef.current = null;
-          pendingPromiseRef.current = null;
-          pending?.reject(new TurnstileError('Turnstile challenge timed out'));
-          return true;
-        },
-        /* eslint-enable @typescript-eslint/naming-convention */
+        widgetId = turnstile.render(container, {
+          sitekey: siteKey,
+          action,
+          execution: 'execute',
+          appearance: 'interaction-only',
+          callback: (token) => {
+            if (widgetIdRef.current !== widgetId) return;
+            const pending = pendingRef.current;
+            if (!pending) return;
+            pendingRef.current = null;
+            pendingPromiseRef.current = null;
+            pending.resolve(token);
+          },
+          // Cloudflare Turnstile API が要求するキー名そのまま。
+          /* eslint-disable @typescript-eslint/naming-convention */
+          'error-callback': (errorCode) => {
+            if (widgetIdRef.current !== widgetId) return true;
+            const error = new TurnstileError(
+              'Turnstile verification failed',
+              errorCode
+            );
+            console.error('[Turnstile] widget error', error);
+            const pending = pendingRef.current;
+            pendingRef.current = null;
+            pendingPromiseRef.current = null;
+            pending?.reject(error);
+            return true;
+          },
+          'expired-callback': () => {
+            if (widgetIdRef.current !== widgetId) return true;
+            const pending = pendingRef.current;
+            pendingRef.current = null;
+            pendingPromiseRef.current = null;
+            pending?.reject(new TurnstileError('Turnstile token expired'));
+            return true;
+          },
+          'timeout-callback': () => {
+            if (widgetIdRef.current !== widgetId) return true;
+            const pending = pendingRef.current;
+            pendingRef.current = null;
+            pendingPromiseRef.current = null;
+            pending?.reject(
+              new TurnstileError('Turnstile challenge timed out')
+            );
+            return true;
+          },
+          /* eslint-enable @typescript-eslint/naming-convention */
+        });
+        widgetIdRef.current = widgetId;
+        readiness.resolve({ container, turnstile, widgetId });
+      })
+      .catch((error: unknown) => {
+        const normalizedError =
+          error instanceof Error
+            ? error
+            : new TurnstileError('Turnstile initialization failed');
+        readiness.reject(normalizedError);
       });
-      widgetIdRef.current = widgetId;
-    });
-    readyRef.current = ready;
-    void ready.catch((error: unknown) => {
+    void readiness.promise.catch((error: unknown) => {
       if (!cancelled) {
         console.error('[Turnstile] widget initialization failed', error);
       }
@@ -99,6 +145,7 @@ export const useTurnstileToken = (
 
     return () => {
       cancelled = true;
+      readiness.reject(new TurnstileError('Turnstile widget was unmounted'));
       if (widgetId) {
         window.turnstile?.remove(widgetId);
       }
@@ -108,24 +155,40 @@ export const useTurnstileToken = (
         pendingPromiseRef.current = null;
         pending?.reject(new TurnstileError('Turnstile widget was unmounted'));
         widgetIdRef.current = null;
-        readyRef.current = null;
       }
+      if (readinessRef.current === readiness) readinessRef.current = null;
     };
-  }, [action, siteKey, container]);
+  }, [action, siteKey, container, getReadiness]);
 
   const getToken = useCallback(async (): Promise<string> => {
     if (!siteKey) return '';
 
-    const ready = readyRef.current;
-    if (!ready) {
-      throw new TurnstileError('Turnstile widget is not ready');
-    }
-    await ready;
+    let readyWidget: ReadyWidget;
+    for (;;) {
+      const readiness = getReadiness();
+      try {
+        readyWidget = await readiness.promise;
+      } catch (error: unknown) {
+        // React の effect 再実行で widget 世代が切り替わった場合だけ、次の
+        // readiness を待つ。初期化失敗や実際のアンマウントは呼び出し元へ返す。
+        if (readinessRef.current === readiness || !containerNodeRef.current) {
+          throw error;
+        }
+        continue;
+      }
 
-    const widgetId = widgetIdRef.current;
-    if (!container || !widgetId) {
-      throw new TurnstileError('Turnstile widget is not ready');
+      if (
+        widgetIdRef.current === readyWidget.widgetId &&
+        containerNodeRef.current === readyWidget.container
+      ) {
+        break;
+      }
+      if (!containerNodeRef.current) {
+        throw new TurnstileError('Turnstile widget was unmounted');
+      }
     }
+
+    const { container: readyContainer, turnstile, widgetId } = readyWidget;
 
     const existingPromise = pendingPromiseRef.current;
     if (existingPromise) return existingPromise;
@@ -149,24 +212,15 @@ export const useTurnstileToken = (
       pending?.reject(normalizedError);
     };
 
-    const turnstile = window.turnstile;
-    if (!turnstile) {
-      rejectToken(
-        new TurnstileError('Turnstile is unavailable', 'api-missing'),
-        'Turnstile is unavailable'
-      );
-      return tokenPromise;
-    }
-
     try {
       turnstile.reset(widgetId);
-      turnstile.execute(container);
+      turnstile.execute(readyContainer);
     } catch (error: unknown) {
       rejectToken(error, 'Turnstile execution failed');
     }
 
     return tokenPromise;
-  }, [siteKey, container]);
+  }, [siteKey, getReadiness]);
 
   return { containerRef, getToken };
 };

@@ -1,5 +1,5 @@
 import userEvent from '@testing-library/user-event';
-import { useEffect, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { useTurnstileToken } from '@/hooks/useTurnstileToken';
@@ -59,6 +59,30 @@ const TestHarness = ({
   return <div ref={containerRef} data-testid="turnstile-container" />;
 };
 
+// 認証リダイレクトから戻った直後、passive effect より先にログイン処理が
+// 再開する状況を再現する。
+const ImmediateTokenHarness = ({
+  onToken,
+}: {
+  onToken: (token: Promise<string>) => void;
+}) => {
+  const startedRef = useRef(false);
+  const { containerRef, getToken } = useTurnstileToken(
+    'session-create',
+    'site-key'
+  );
+
+  useLayoutEffect(() => {
+    if (startedRef.current) return;
+    startedRef.current = true;
+    const token = getToken();
+    void token.catch(() => {});
+    onToken(token);
+  }, [getToken, onToken]);
+
+  return <div ref={containerRef} data-testid="turnstile-container" />;
+};
+
 // 送信成功でコンテナが消え、「別の回答をする」で再度マウントされる状況を再現する。
 const RemountHarness = ({
   onReady,
@@ -93,6 +117,45 @@ describe('useTurnstileToken', () => {
   afterEach(() => {
     delete window.turnstile;
     vi.clearAllMocks();
+  });
+
+  it('widget の effect より先に getToken が呼ばれても初期化完了を待つ', async () => {
+    let tokenCallback: ((token: string) => void) | undefined;
+    const turnstile = {
+      render: turnstileMocks.render.mockImplementation(
+        (_container: HTMLElement, options: TurnstileRenderOptions) => {
+          const callback = Reflect.get(options, 'callback');
+          tokenCallback = isTokenCallback(callback) ? callback : undefined;
+          return 'widget-id';
+        }
+      ),
+      reset: turnstileMocks.reset,
+      execute: turnstileMocks.execute,
+      remove: turnstileMocks.remove,
+    };
+    window.turnstile = turnstile;
+    turnstileMocks.loadTurnstile.mockResolvedValue(turnstile);
+    const onToken = vi.fn<(token: Promise<string>) => void>();
+
+    render(<ImmediateTokenHarness onToken={onToken} />);
+
+    await waitFor(() => {
+      expect(turnstileMocks.render).toHaveBeenCalledOnce();
+      expect(turnstileMocks.execute).toHaveBeenCalledWith(
+        screen.getByTestId('turnstile-container')
+      );
+    });
+
+    if (!tokenCallback) {
+      throw new Error('callback が登録されていません');
+    }
+    tokenCallback('test-token');
+
+    const tokenPromise = onToken.mock.calls[0]?.[0];
+    if (!tokenPromise) {
+      throw new Error('getToken が呼ばれていません');
+    }
+    await expect(tokenPromise).resolves.toBe('test-token');
   });
 
   it('対話チャレンジがタイムアウトした場合、トークン取得を終了できる', async () => {
