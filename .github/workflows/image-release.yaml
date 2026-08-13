@@ -130,7 +130,7 @@ jobs:
     needs: [prepare, build]
     runs-on: ubuntu-latest
     permissions:
-      contents: read
+      contents: write
       packages: write
       id-token: write
     steps:
@@ -181,3 +181,10 @@ jobs:
             --new-bundle-format=false \
             --use-signing-config=false \
             "${IMAGE}@${DIGEST}"
+
+      - name: Create GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ needs.prepare.outputs.version }}
+          TARGET: ${{ github.sha }}
+        run: gh release create "v$VERSION" --target "$TARGET" --title "v$VERSION" --generate-notes
