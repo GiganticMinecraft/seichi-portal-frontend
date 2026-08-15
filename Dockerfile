@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1
 
-FROM node:24.18.1-alpine AS base
+FROM node:24.19.0-alpine AS base
 WORKDIR /app
 RUN corepack enable
 
