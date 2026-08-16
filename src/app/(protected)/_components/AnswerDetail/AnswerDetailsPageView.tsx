@@ -1,4 +1,4 @@
-import { Stack, Typography } from '@mui/material';
+import { Box, Stack, Typography } from '@mui/material';
 
 import Comments from '@/app/(protected)/_components/Conversation/Comments';
 import Messages from '@/app/(protected)/_components/Conversation/Messages';
@@ -23,6 +23,7 @@ import {
 import AnswerDetails from './AnswerDetails';
 import AnswerMeta from './AnswerMeta';
 import AnswerStatusHistoryButton from './AnswerStatusHistoryButton';
+import AnswerTitleHistoryButton from './AnswerTitleHistoryButton';
 import RelatedAnswers from './RelatedAnswers';
 
 export type AnswerDetailsPageData = {
@@ -71,19 +72,30 @@ const AnswerDetailsPageView = ({
         alignItems: 'stretch',
       }}
     >
-      {data.isAdmin ? (
-        <AdminAnswerTitle answer={data.answer} />
-      ) : (
-        <Typography
-          variant="h4"
-          component="h1"
-          sx={
-            !data.answer.title?.trim() ? { color: 'text.secondary' } : undefined
-          }
-        >
-          {resolveAnswerTitle(data.answer.title)}
-        </Typography>
-      )}
+      <Stack
+        direction="row"
+        spacing={2}
+        sx={{ alignItems: 'flex-start', flexWrap: 'wrap' }}
+      >
+        <Box sx={{ flexGrow: 1, minWidth: 0 }}>
+          {data.isAdmin ? (
+            <AdminAnswerTitle answer={data.answer} />
+          ) : (
+            <Typography
+              variant="h4"
+              component="h1"
+              sx={
+                !data.answer.title?.trim()
+                  ? { color: 'text.secondary' }
+                  : undefined
+              }
+            >
+              {resolveAnswerTitle(data.answer.title)}
+            </Typography>
+          )}
+        </Box>
+        <AnswerTitleHistoryButton formId={formId} answerId={answerId} />
+      </Stack>
       <AnswerMeta
         answer={data.answer}
         labelsSlot={
