@@ -321,6 +321,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/forms/{form_id}/answers/{answer_id}/title/history": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** 回答タイトルの変更履歴を取得 */
+        get: operations["get_answer_title_history_handler"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/forms/{form_id}/archive": {
         parameters: {
             query?: never;
@@ -845,6 +862,19 @@ export interface components {
             /** Format: uuid */
             id: string;
             to: components["schemas"]["AnswerStatus"];
+        };
+        AnswerTitleHistoryPageResponse: {
+            items: components["schemas"]["AnswerTitleHistoryResponseEntry"][];
+            next_cursor?: string | null;
+        };
+        AnswerTitleHistoryResponseEntry: {
+            /** Format: date-time */
+            changed_at: string;
+            changed_by: components["schemas"]["HistoryUser"];
+            from?: string | null;
+            /** Format: uuid */
+            id: string;
+            to?: string | null;
         };
         AnswerUpdateSchema: {
             publication?: string | null;
@@ -3225,6 +3255,78 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["AnswerStatusHistoryPageResponse"];
+                };
+            };
+            /** @description The server could not understand the request due to invalid syntax. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Access is unauthorized. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Access is forbidden. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description The server cannot find the requested resource. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    get_answer_title_history_handler: {
+        parameters: {
+            query?: {
+                /** @description Maximum number of history entries to return */
+                limit?: number;
+                /** @description Cursor returned by the previous page */
+                cursor?: string;
+            };
+            header?: never;
+            path: {
+                form_id: string;
+                answer_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AnswerTitleHistoryPageResponse"];
                 };
             };
             /** @description The server could not understand the request due to invalid syntax. */

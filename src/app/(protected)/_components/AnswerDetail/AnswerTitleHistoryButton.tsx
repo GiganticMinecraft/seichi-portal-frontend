@@ -1,0 +1,133 @@
+'use client';
+
+import Close from '@mui/icons-material/Close';
+import History from '@mui/icons-material/History';
+import {
+  Button,
+  CircularProgress,
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  Divider,
+  IconButton,
+  Stack,
+  Typography,
+} from '@mui/material';
+import { useState } from 'react';
+
+import { formatString } from '@/generic/DateFormatter';
+import type { AnswerTitleHistoryResponseEntry } from '@/lib/api-types';
+import { resolveAnswerTitle } from '@/lib/forms/answerTitle';
+
+import { useAnswerTitleHistory } from './useAnswerTitleHistory';
+
+const AnswerTitleHistoryContent = ({
+  entries,
+  isLoading,
+}: {
+  entries: AnswerTitleHistoryResponseEntry[];
+  isLoading: boolean;
+}) => {
+  if (entries.length > 0) {
+    return (
+      <Stack divider={<Divider />} spacing={1.5}>
+        {[...entries].reverse().map((entry) => (
+          <Stack key={entry.id} spacing={0.5}>
+            <Stack
+              direction="row"
+              spacing={1}
+              sx={{ alignItems: 'center', flexWrap: 'wrap' }}
+            >
+              <Typography sx={{ wordBreak: 'break-word' }}>
+                {resolveAnswerTitle(entry.from)}
+              </Typography>
+              <Typography component="span">→</Typography>
+              <Typography sx={{ wordBreak: 'break-word' }}>
+                {resolveAnswerTitle(entry.to)}
+              </Typography>
+            </Stack>
+            <Typography variant="caption" component="p" color="textSecondary">
+              {entry.changed_by.name} が変更 ({formatString(entry.changed_at)})
+            </Typography>
+          </Stack>
+        ))}
+      </Stack>
+    );
+  }
+
+  if (isLoading) {
+    return (
+      <Stack sx={{ alignItems: 'center', py: 2 }}>
+        <CircularProgress size={24} />
+      </Stack>
+    );
+  }
+
+  return (
+    <Typography
+      component="p"
+      color="textSecondary"
+      align="center"
+      sx={{ py: 2 }}
+    >
+      変更履歴がありません
+    </Typography>
+  );
+};
+
+const AnswerTitleHistoryButton = ({
+  formId,
+  answerId,
+}: {
+  formId: string;
+  answerId: string;
+}) => {
+  const [open, setOpen] = useState(false);
+  const { entries, isLoading } = useAnswerTitleHistory(formId, answerId, open);
+
+  return (
+    <>
+      <Button
+        size="small"
+        startIcon={<History fontSize="small" />}
+        onClick={() => {
+          setOpen(true);
+        }}
+      >
+        変更履歴
+      </Button>
+      <Dialog
+        open={open}
+        onClose={() => {
+          setOpen(false);
+        }}
+        fullWidth
+        maxWidth="sm"
+      >
+        <DialogTitle
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+          }}
+        >
+          タイトルの変更履歴
+          <IconButton
+            aria-label="閉じる"
+            onClick={() => {
+              setOpen(false);
+            }}
+            size="small"
+          >
+            <Close />
+          </IconButton>
+        </DialogTitle>
+        <DialogContent dividers sx={{ maxHeight: '70vh' }}>
+          <AnswerTitleHistoryContent entries={entries} isLoading={isLoading} />
+        </DialogContent>
+      </Dialog>
+    </>
+  );
+};
+
+export default AnswerTitleHistoryButton;
