@@ -52,7 +52,7 @@ export const useInfiniteApiQuery = <P extends KeysetPath>(
     return [path, buildParams(cursor)] as const;
   };
 
-  const { data, size, setSize, isValidating } = useSWRInfinite<
+  const { data, size, setSize, isValidating, mutate } = useSWRInfinite<
     GetResponse<P>,
     Error
   >(
@@ -116,5 +116,7 @@ export const useInfiniteApiQuery = <P extends KeysetPath>(
     isLoadingMore: isValidating,
     sentinelRef,
     loadMore,
+    /** 取得済み全ページのキャッシュを直接書き換える。楽観的更新に使う。 */
+    mutatePages: mutate,
   };
 };
