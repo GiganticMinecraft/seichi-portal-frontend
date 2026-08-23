@@ -34,7 +34,7 @@ const UserView = ({
           />
         </Card>
       ) : (
-        <LinkDiscordButton />
+        <LinkDiscordButton userId={userId} />
       )}
     </Stack>
   </Box>

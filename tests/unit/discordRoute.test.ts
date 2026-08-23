@@ -29,6 +29,7 @@ vi.mock('@/lib/server/backend', () => ({
 import { GET } from '@/app/api/discord/route';
 
 const DISCORD_OAUTH_STATE_COOKIE = 'SEICHI_PORTAL__DISCORD_OAUTH_STATE';
+const DISCORD_RETURN_TO_COOKIE = 'SEICHI_PORTAL__DISCORD_RETURN_TO';
 const discordRedirectUri = 'https://portal.seichi.click/api/discord';
 const originalRedirectUrl = process.env['MS_APP_REDIRECT_URL'];
 
@@ -85,6 +86,21 @@ describe('Discord OAuth route', () => {
     expect(location.searchParams.get('client_id')).toBe('discord-client-id');
     expect(response.headers.get('set-cookie')).toContain(
       `${DISCORD_OAUTH_STATE_COOKIE}=`
+    );
+    expect(response.headers.get('set-cookie')).toContain(
+      `${DISCORD_RETURN_TO_COOKIE}=%2F;`
+    );
+  });
+
+  it('returnTo クエリを渡した場合はその値を復帰先 cookie に保存する', async () => {
+    getCachedTokenMock.mockResolvedValue('seichi-token');
+
+    const response = await GET(
+      request('http://0.0.0.0:3000/api/discord?returnTo=/users/user-id')
+    );
+
+    expect(response.headers.get('set-cookie')).toContain(
+      `${DISCORD_RETURN_TO_COOKIE}=%2Fusers%2Fuser-id;`
     );
   });
 
@@ -166,4 +182,37 @@ describe('Discord OAuth route', () => {
       });
     }
   );
+
+  it('復帰先 cookie がある場合は連携成功後にその画面へ遷移し、cookie を削除する', async () => {
+    getCachedTokenMock.mockResolvedValue('seichi-token');
+    linkDiscordMock.mockResolvedValue({
+      response: new Response(null, { status: 204 }),
+    });
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockResolvedValue(
+        new Response(JSON.stringify({ access_token: 'discord-access-token' }), {
+          status: 200,
+          headers: { 'Content-Type': 'application/json' },
+        })
+      )
+    );
+
+    const response = await GET(
+      request(
+        'http://0.0.0.0:3000/api/discord?code=code&state=stored-state',
+        [
+          `${DISCORD_OAUTH_STATE_COOKIE}=stored-state`,
+          `${DISCORD_RETURN_TO_COOKIE}=%2Fusers%2Fuser-id`,
+        ].join('; ')
+      )
+    );
+
+    expect(response.headers.get('location')).toBe(
+      'https://portal.seichi.click/users/user-id'
+    );
+    expect(response.headers.get('set-cookie')).toContain(
+      `${DISCORD_RETURN_TO_COOKIE}=;`
+    );
+  });
 });

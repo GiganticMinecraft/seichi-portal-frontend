@@ -8,7 +8,9 @@ import {
   Typography,
 } from '@mui/material';
 
-const LinkDiscordButton = () => {
+const LinkDiscordButton = ({ userId }: { userId: string }) => {
+  const returnTo = encodeURIComponent(`/users/${userId}`);
+
   return (
     <Card variant="outlined">
       <CardContent>
@@ -23,7 +25,7 @@ const LinkDiscordButton = () => {
           <Button
             variant="contained"
             startIcon={<LinkIcon />}
-            href="/api/discord"
+            href={`/api/discord?returnTo=${returnTo}`}
             sx={{ alignSelf: 'flex-start' }}
           >
             Discord と連携する
