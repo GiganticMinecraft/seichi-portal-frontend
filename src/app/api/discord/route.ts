@@ -6,6 +6,7 @@ import {
   getPostLoginRedirectFromRequest,
   setPostLoginRedirectCookie,
 } from '@/lib/postLoginRedirect';
+import { normalizeRedirectTarget } from '@/lib/redirect';
 import { authorizationHeader, serverApiClient } from '@/lib/server/backend';
 import { getCachedToken } from '@/user-token/mcToken';
 
@@ -13,6 +14,7 @@ import { discordTokenSchema } from '../_schemas/External';
 
 const DISCORD_TOKEN_URL = 'https://discord.com/api/oauth2/token';
 const DISCORD_OAUTH_STATE_COOKIE = 'SEICHI_PORTAL__DISCORD_OAUTH_STATE';
+const DISCORD_RETURN_TO_COOKIE = 'SEICHI_PORTAL__DISCORD_RETURN_TO';
 
 const setDiscordOauthStateCookie = (response: NextResponse, state: string) => {
   response.cookies.set(DISCORD_OAUTH_STATE_COOKIE, state, {
@@ -26,6 +28,30 @@ const setDiscordOauthStateCookie = (response: NextResponse, state: string) => {
 
 const clearDiscordOauthStateCookie = (response: NextResponse) => {
   response.cookies.set(DISCORD_OAUTH_STATE_COOKIE, '', {
+    httpOnly: true,
+    sameSite: 'lax',
+    secure: process.env.NODE_ENV === 'production',
+    path: '/',
+    maxAge: 0,
+  });
+};
+
+const setDiscordReturnToCookie = (response: NextResponse, returnTo: string) => {
+  response.cookies.set(
+    DISCORD_RETURN_TO_COOKIE,
+    normalizeRedirectTarget(returnTo),
+    {
+      httpOnly: true,
+      sameSite: 'lax',
+      secure: process.env.NODE_ENV === 'production',
+      path: '/',
+      maxAge: 60 * 10,
+    }
+  );
+};
+
+const clearDiscordReturnToCookie = (response: NextResponse) => {
+  response.cookies.set(DISCORD_RETURN_TO_COOKIE, '', {
     httpOnly: true,
     sameSite: 'lax',
     secure: process.env.NODE_ENV === 'production',
@@ -62,6 +88,7 @@ export async function GET(req: NextRequest) {
       `https://discord.com/oauth2/authorize?${oauthQuery}`
     );
     setDiscordOauthStateCookie(response, oauthState);
+    setDiscordReturnToCookie(response, searchParams.get('returnTo') ?? '/');
     return response;
   }
 
@@ -69,6 +96,7 @@ export async function GET(req: NextRequest) {
   if (!state || !storedState || state !== storedState) {
     const response = NextResponse.redirect(`${msalOrigin}/badrequest`);
     clearDiscordOauthStateCookie(response);
+    clearDiscordReturnToCookie(response);
     return response;
   }
 
@@ -96,6 +124,7 @@ export async function GET(req: NextRequest) {
         { status: 502 }
       );
       clearDiscordOauthStateCookie(response);
+      clearDiscordReturnToCookie(response);
       return response;
     }
 
@@ -108,6 +137,7 @@ export async function GET(req: NextRequest) {
         { status: 502 }
       );
       clearDiscordOauthStateCookie(response);
+      clearDiscordReturnToCookie(response);
       return response;
     }
 
@@ -129,11 +159,16 @@ export async function GET(req: NextRequest) {
         { status: 502 }
       );
       clearDiscordOauthStateCookie(response);
+      clearDiscordReturnToCookie(response);
       return response;
     }
 
-    const response = NextResponse.redirect(`${msalOrigin}/`);
+    const returnTo = normalizeRedirectTarget(
+      req.cookies.get(DISCORD_RETURN_TO_COOKIE)?.value
+    );
+    const response = NextResponse.redirect(`${msalOrigin}${returnTo}`);
     clearDiscordOauthStateCookie(response);
+    clearDiscordReturnToCookie(response);
     return response;
   } catch (error) {
     console.error('Discord link flow failed:', error);
@@ -142,6 +177,7 @@ export async function GET(req: NextRequest) {
       { status: 500 }
     );
     clearDiscordOauthStateCookie(response);
+    clearDiscordReturnToCookie(response);
     return response;
   }
 }
