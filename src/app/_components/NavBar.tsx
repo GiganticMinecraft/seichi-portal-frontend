@@ -27,6 +27,7 @@ import NextLink from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState, type ReactNode } from 'react';
 
+import NotificationBell from '@/app/_components/NotificationBell';
 import ThemeModeToggle from '@/app/_components/ThemeModeToggle';
 import { useOptionalCurrentUser } from '@/app/_providers/currentUser';
 import { usePendingAction } from '@/hooks/usePendingAction';
@@ -233,7 +234,10 @@ const NavBar = ({
             {!user ? (
               <SigninButton />
             ) : (
-              <UserMenu user={user} isAdminPage={homeHref === '/admin'} />
+              <>
+                <NotificationBell />
+                <UserMenu user={user} isAdminPage={homeHref === '/admin'} />
+              </>
             )}
           </Box>
         </Toolbar>
