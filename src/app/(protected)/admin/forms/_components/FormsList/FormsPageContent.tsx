@@ -30,6 +30,7 @@ const FormsPageContent = ({
   createdFormId?: string | undefined;
 }) => {
   const router = useRouter();
+  const [initialCreatedFormId] = useState(createdFormId);
   const [createdSnackbarOpen, setCreatedSnackbarOpen] = useState(
     createdFormId != null
   );
@@ -112,7 +113,7 @@ const FormsPageContent = ({
           action={
             <Button
               component={Link}
-              href={`/admin/forms/edit/${createdFormId ?? ''}`}
+              href={`/admin/forms/edit/${initialCreatedFormId ?? ''}`}
               color="inherit"
               size="small"
             >
