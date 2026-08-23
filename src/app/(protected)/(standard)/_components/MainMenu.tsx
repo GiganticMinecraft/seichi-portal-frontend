@@ -9,6 +9,7 @@ import {
   CardActionArea,
   CardContent,
   Container,
+  Grid,
   Typography,
   useTheme,
 } from '@mui/material';
@@ -68,104 +69,95 @@ const MainMenu = ({ accessDenied }: { accessDenied?: string | undefined }) => {
           </Typography>
         </Box>
 
-        <Box
-          sx={{
-            display: 'grid',
-            gridTemplateColumns: {
-              xs: '1fr',
-              sm: 'repeat(2, 1fr)',
-            },
-            gap: 3,
-            alignItems: 'stretch',
-          }}
-        >
+        <Grid container spacing={3} sx={{ alignItems: 'stretch' }}>
           {menuItems.map((item) => {
             const Icon = item.icon;
             const itemColor = theme.palette[item.paletteKey].main;
             return (
-              <Card
-                key={item.href}
-                elevation={2}
-                sx={{
-                  height: '100%',
-                  borderRadius: 3,
-                  transition: 'transform 0.2s ease, box-shadow 0.2s ease',
-                  '&:hover': {
-                    transform: 'translateY(-4px)',
-                    boxShadow: theme.shadows[6],
-                  },
-                }}
-              >
-                <CardActionArea
-                  component={NextLink}
-                  href={item.href}
-                  sx={{ height: '100%' }}
+              <Grid key={item.href} size={{ xs: 12, sm: 6 }}>
+                <Card
+                  elevation={2}
+                  sx={{
+                    height: '100%',
+                    borderRadius: 3,
+                    transition: 'transform 0.2s ease, box-shadow 0.2s ease',
+                    '&:hover': {
+                      transform: 'translateY(-4px)',
+                      boxShadow: theme.shadows[6],
+                    },
+                  }}
                 >
-                  <CardContent
-                    sx={{
-                      display: 'flex',
-                      flexDirection: 'column',
-                      alignItems: 'center',
-                      textAlign: 'center',
-                      height: '100%',
-                      py: 4,
-                      px: 3,
-                      gap: 1.5,
-                    }}
+                  <CardActionArea
+                    component={NextLink}
+                    href={item.href}
+                    sx={{ height: '100%' }}
                   >
-                    <Box
-                      sx={{
-                        width: 56,
-                        height: 56,
-                        borderRadius: '50%',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        backgroundColor: alpha(itemColor, 0.08),
-                        color: itemColor,
-                        mb: 1,
-                      }}
-                    >
-                      <Icon sx={{ fontSize: 28 }} />
-                    </Box>
-
-                    <Box sx={{ flexGrow: 1 }}>
-                      <Typography
-                        variant="h6"
-                        component="h2"
-                        sx={{ fontWeight: 700 }}
-                        gutterBottom
-                      >
-                        {item.title}
-                      </Typography>
-                      <Typography
-                        variant="body2"
-                        color="textSecondary"
-                        sx={{ lineHeight: 1.6 }}
-                      >
-                        {item.description}
-                      </Typography>
-                    </Box>
-
-                    <Box
+                    <CardContent
                       sx={{
                         display: 'flex',
+                        flexDirection: 'column',
                         alignItems: 'center',
-                        color: itemColor,
-                        fontWeight: 600,
-                        fontSize: theme.typography.body2.fontSize,
-                        gap: 0.5,
+                        textAlign: 'center',
+                        height: '100%',
+                        py: 4,
+                        px: 3,
+                        gap: 1.5,
                       }}
                     >
-                      詳細を見る
-                      <ArrowForwardIcon sx={{ fontSize: 18 }} />
-                    </Box>
-                  </CardContent>
-                </CardActionArea>
-              </Card>
+                      <Box
+                        sx={{
+                          width: 56,
+                          height: 56,
+                          borderRadius: '50%',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          backgroundColor: alpha(itemColor, 0.08),
+                          color: itemColor,
+                          mb: 1,
+                        }}
+                      >
+                        <Icon sx={{ fontSize: 28 }} />
+                      </Box>
+
+                      <Box sx={{ flexGrow: 1 }}>
+                        <Typography
+                          variant="h6"
+                          component="h2"
+                          sx={{ fontWeight: 700 }}
+                          gutterBottom
+                        >
+                          {item.title}
+                        </Typography>
+                        <Typography
+                          variant="body2"
+                          color="textSecondary"
+                          sx={{ lineHeight: 1.6 }}
+                        >
+                          {item.description}
+                        </Typography>
+                      </Box>
+
+                      <Box
+                        sx={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          color: itemColor,
+                          fontWeight: 600,
+                          fontSize: theme.typography.body2.fontSize,
+                          gap: 0.5,
+                        }}
+                      >
+                        詳細を見る
+                        <ArrowForwardIcon sx={{ fontSize: 18 }} />
+                      </Box>
+                    </CardContent>
+                  </CardActionArea>
+                </Card>
+              </Grid>
             );
           })}
-        </Box>
+        </Grid>
       </Container>
       <SnackbarAlert
         open={snackbar.open}
