@@ -48,7 +48,6 @@ const QuestionFieldRenderer = ({
         <FormControl fullWidth>
           <Input
             {...register(questionId)}
-            className="materialUIInput"
             required={question.is_required}
             multiline
             fullWidth
