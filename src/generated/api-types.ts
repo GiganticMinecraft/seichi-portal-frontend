@@ -1683,6 +1683,8 @@ export interface operations {
                 cursor?: string;
                 /** @description Limit results to the specified answer status */
                 status?: string;
+                /** @description Limit results to answers submitted by the specified user */
+                user?: string;
             };
             header?: never;
             path?: never;
@@ -1965,6 +1967,8 @@ export interface operations {
                 cursor?: string;
                 /** @description Limit results to the specified answer status */
                 status?: string;
+                /** @description Limit results to answers submitted by the specified user */
+                user?: string;
             };
             header?: never;
             path: {

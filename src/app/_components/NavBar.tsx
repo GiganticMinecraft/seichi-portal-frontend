@@ -1,6 +1,7 @@
 'use client';
 
 import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
+import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn';
 import HomeIcon from '@mui/icons-material/Home';
 import LogoutIcon from '@mui/icons-material/Logout';
 import MenuIcon from '@mui/icons-material/Menu';
@@ -128,6 +129,18 @@ const UserMenu = ({ user, isAdminPage }: UserMenuProps) => {
             <PersonIcon fontSize="small" />
           </ListItemIcon>
           <ListItemText>ユーザー情報・設定変更</ListItemText>
+        </MenuItem>
+        <MenuItem
+          component={NextLink}
+          href="/answers"
+          onClick={() => {
+            setAnchorEl(null);
+          }}
+        >
+          <ListItemIcon>
+            <AssignmentTurnedInIcon fontSize="small" />
+          </ListItemIcon>
+          <ListItemText>自分の回答</ListItemText>
         </MenuItem>
         {user.role === 'ADMINISTRATOR' && (
           <MenuItem
