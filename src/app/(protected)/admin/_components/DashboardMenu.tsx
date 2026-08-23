@@ -95,15 +95,14 @@ const DashboardMenu = ({ variant, open, onClose }: DashboardMenuProps) => {
       open={open}
       onClose={onClose}
       ModalProps={variant === 'temporary' ? { keepMounted: true } : undefined}
-      sx={{
+      sx={(theme) => ({
         ...(variant === 'permanent' && { width: AUTCHED_DRAWER_WIDTH_PX }),
         [`& .MuiDrawer-paper`]: {
           width: AUTCHED_DRAWER_WIDTH_PX,
           boxSizing: 'border-box',
-          boxShadow:
-            '0px 8px 10px -5px rgba(0, 0, 0, 0.2), 0px 16px 24px 2px rgba(0, 0, 0, 0.14), 0px 6px 30px 5px rgba(0, 0, 0, 0.12)',
+          boxShadow: theme.shadows[16],
         },
-      }}
+      })}
     >
       <Typography sx={{ mt: 4, mb: 2, px: 2 }} variant="h6" component="div">
         Menu
@@ -135,7 +134,7 @@ const DashboardMenu = ({ variant, open, onClose }: DashboardMenuProps) => {
                   <ListItemIcon
                     sx={{
                       color: 'text.secondary',
-                      paddingRight: '32px',
+                      pr: 4,
                     }}
                   >
                     {item.icon}
@@ -178,7 +177,7 @@ const DashboardMenu = ({ variant, open, onClose }: DashboardMenuProps) => {
                         <ListItemIcon
                           sx={{
                             color: 'text.secondary',
-                            paddingRight: '32px',
+                            pr: 4,
                           }}
                         >
                           {child.icon}

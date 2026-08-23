@@ -12,6 +12,7 @@ import {
   Typography,
   useTheme,
 } from '@mui/material';
+import { alpha } from '@mui/material/styles';
 import NextLink from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
@@ -25,14 +26,14 @@ const menuItems = [
     title: 'フォーム一覧',
     description: '回答可能なフォームを確認・回答できます',
     icon: AssignmentIcon,
-    color: '#1976d2',
+    paletteKey: 'primary' as const,
   },
   {
     href: '/punishments',
     title: '処罰履歴',
     description: '自分の処罰履歴を確認できます',
     icon: GavelIcon,
-    color: '#d32f2f',
+    paletteKey: 'error' as const,
   },
 ];
 
@@ -80,6 +81,7 @@ const MainMenu = ({ accessDenied }: { accessDenied?: string | undefined }) => {
         >
           {menuItems.map((item) => {
             const Icon = item.icon;
+            const itemColor = theme.palette[item.paletteKey].main;
             return (
               <Card
                 key={item.href}
@@ -119,8 +121,8 @@ const MainMenu = ({ accessDenied }: { accessDenied?: string | undefined }) => {
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        backgroundColor: `${item.color}14`,
-                        color: item.color,
+                        backgroundColor: alpha(itemColor, 0.08),
+                        color: itemColor,
                         mb: 1,
                       }}
                     >
@@ -149,9 +151,9 @@ const MainMenu = ({ accessDenied }: { accessDenied?: string | undefined }) => {
                       sx={{
                         display: 'flex',
                         alignItems: 'center',
-                        color: item.color,
+                        color: itemColor,
                         fontWeight: 600,
-                        fontSize: '0.875rem',
+                        fontSize: theme.typography.body2.fontSize,
                         gap: 0.5,
                       }}
                     >
