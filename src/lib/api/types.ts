@@ -71,6 +71,10 @@ export type GetUserSearchPageResponse =
 export type GetUserSearchResponse = GetUserSearchPageResponse['users'];
 export type AnswerSearchResponse =
   ApiPaths['/api/v1/search/answers']['get']['responses'][200]['content']['application/json'];
+export type GetNotificationsPageResponse =
+  ApiPaths['/api/v1/notifications']['get']['responses'][200]['content']['application/json'];
+export type GetNotificationsResponse = GetNotificationsPageResponse['items'];
+export type NotificationResponse = GetNotificationsResponse[number];
 export type GetNotificationSettingsResponse =
   ApiPaths['/api/v1/notifications/settings/me']['get']['responses'][200]['content']['application/json'];
 export type GetUserNotificationSettingsResponse =
