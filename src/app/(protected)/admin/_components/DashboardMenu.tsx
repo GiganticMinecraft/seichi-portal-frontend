@@ -38,9 +38,9 @@ type MenuNode = {
 };
 
 const MENU_ITEMS: MenuNode[] = [
-  { label: 'Dashboard', url: '/admin', icon: <Star /> },
+  { label: 'ダッシュボード', url: '/admin', icon: <Star /> },
   {
-    label: 'Forms',
+    label: 'フォーム',
     url: '/admin/forms',
     icon: <Star />,
     children: [
@@ -52,7 +52,7 @@ const MENU_ITEMS: MenuNode[] = [
     ],
   },
   {
-    label: 'Users',
+    label: 'ユーザー',
     url: '/admin/users',
     icon: <Star />,
     children: [
@@ -105,7 +105,7 @@ const DashboardMenu = ({ variant, open, onClose }: DashboardMenuProps) => {
       })}
     >
       <Typography sx={{ mt: 4, mb: 2, px: 2 }} variant="h6" component="div">
-        Menu
+        メニュー
       </Typography>
       <MenuList>
         {MENU_ITEMS.map((item) => {

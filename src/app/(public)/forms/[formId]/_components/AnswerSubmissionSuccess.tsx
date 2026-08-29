@@ -17,7 +17,7 @@ const AnswerSubmissionSuccess = ({ onReset }: Props) => (
     sx={{ width: '100%', justifyContent: 'center', alignItems: 'center' }}
   >
     <Alert severity="success" sx={{ width: '100%', maxWidth: 600 }}>
-      <AlertTitle>Success</AlertTitle>
+      <AlertTitle>送信完了</AlertTitle>
       回答を送信しました
     </Alert>
     <Stack

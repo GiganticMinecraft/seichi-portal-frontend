@@ -35,7 +35,7 @@ const FormLabelFilter = (props: {
         <TextField
           {...params}
           variant="standard"
-          label="Filter"
+          label="絞り込み"
           sx={{ borderBottom: (theme) => `1px solid ${theme.palette.divider}` }}
         />
       )}
