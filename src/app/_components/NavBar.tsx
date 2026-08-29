@@ -214,33 +214,40 @@ const NavBar = ({
               <MenuIcon />
             </IconButton>
           )}
-          <Image
-            src="/favicon.ico"
-            width={48}
-            height={48}
-            alt="seichi-portal logo"
-          />
-          <Typography
-            variant="h6"
-            component="div"
-            noWrap
-            sx={{ flexGrow: 1, minWidth: 0 }}
+          <Link
+            component={NextLink}
+            href={homeHref}
+            color="inherit"
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              flexGrow: { xs: 0, sm: 1 },
+              minWidth: 0,
+              textDecoration: 'none',
+            }}
           >
-            <Link
-              component={NextLink}
-              href={homeHref}
-              color="inherit"
-              sx={{ textDecoration: 'none', pl: '10px' }}
+            <Image
+              src="/favicon.ico"
+              width={48}
+              height={48}
+              alt="seichi-portal logo"
+            />
+            <Typography
+              variant="h6"
+              component="div"
+              noWrap
+              sx={{ display: { xs: 'none', sm: 'block' }, pl: '10px' }}
             >
               Seichi Portal
-            </Link>
-          </Typography>
+            </Typography>
+          </Link>
+          <Box sx={{ flexGrow: { xs: 1, sm: 0 } }} />
           {searchSlot}
           <Box
             sx={{
               display: 'flex',
               alignItems: 'center',
-              ml: searchSlot ? 3 : 0,
+              ml: { xs: 0, sm: searchSlot ? 3 : 0 },
             }}
           >
             <ThemeModeToggle />
