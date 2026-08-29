@@ -111,7 +111,7 @@ const SearchField = () => {
               },
             }),
           })}
-          aria-label="search"
+          aria-label="検索"
           onClick={() => {
             goToSearchPage(searchValue);
           }}
@@ -179,13 +179,13 @@ const SearchField = () => {
             <TextField
               {...params}
               variant="standard"
-              placeholder="Search..."
+              placeholder="検索内容を入力"
               slotProps={{
                 ...params.slotProps,
                 input: { ...params.slotProps.input, disableUnderline: true },
                 htmlInput: {
                   ...params.slotProps.htmlInput,
-                  'aria-label': 'search...',
+                  'aria-label': '検索内容を入力',
                   suppressHydrationWarning: true,
                 },
               }}
