@@ -24,6 +24,10 @@ const ConversationEntryBody = ({ entry }: Props) => {
           : theme.palette.grey[50],
         borderRadius: 2,
         boxShadow: 'none',
+        ...(!isAdmin &&
+          theme.applyStyles('dark', {
+            backgroundColor: '#122131',
+          })),
       })}
     >
       <MarkdownText>{entry.body}</MarkdownText>
