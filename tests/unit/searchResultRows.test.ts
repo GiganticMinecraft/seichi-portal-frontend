@@ -134,7 +134,7 @@ describe('toSearchResultRows', () => {
         id: 5,
         category: 'コメント',
         title: 'コメント本文',
-        url: '/admin/forms/comment-form-id/answers/comment-answer-id',
+        url: '/admin/forms/comment-form-id/answers/comment-answer-id?commentId=comment-id',
       },
     ]);
   });
