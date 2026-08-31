@@ -30,5 +30,6 @@ export const createEmptyFormEditorValues = (): FormEditorValues => ({
     answer_group_ids: [],
     allow_temporary_answers: false,
     hide_author: false,
+    answer_response_visibility: 'FULL',
   },
 });

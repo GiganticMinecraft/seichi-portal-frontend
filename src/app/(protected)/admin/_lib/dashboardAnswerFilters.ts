@@ -28,6 +28,16 @@ export const filterAnswersByFormAndDate = (
       return false;
     }
 
+    if (startMs === null && endMs === null) {
+      return true;
+    }
+
+    // timestamp は回答者本人が RESTRICTED 設定のフォームで自分の回答を見ている
+    // ときは undefined になる(非公開)。期間内かどうか判定できないため除外する。
+    if (answer.timestamp === undefined) {
+      return false;
+    }
+
     const answerMs = Date.parse(answer.timestamp);
     if (startMs !== null && answerMs < startMs) {
       return false;

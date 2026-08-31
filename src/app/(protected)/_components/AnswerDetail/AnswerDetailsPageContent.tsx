@@ -12,6 +12,7 @@ import {
   isQueryGroupReady,
 } from '@/app/_swr/queryState';
 import { useApiQuery } from '@/app/_swr/useApiQuery';
+import { isAnswerAuthoredByCurrentUser } from '@/lib/forms/answerAuthor';
 import { isHttpError } from '@/lib/httpError';
 
 import AnswerDetailsPageView from './AnswerDetailsPageView';
@@ -49,8 +50,7 @@ const AnswerDetailsPageContent = ({
 
   const isAuthor =
     answer !== undefined &&
-    answer.author.type === 'AUTHENTICATED_USER' &&
-    answer.author.user.uuid === currentUser.id;
+    isAnswerAuthoredByCurrentUser(answer.author, currentUser.id, isAdmin);
 
   // メッセージは管理者・投稿者本人にのみ閲覧権限があるため、権限がないと
   // わかっている場合はバックエンドへリクエストしない。

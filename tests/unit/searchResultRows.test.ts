@@ -23,6 +23,7 @@ const createForm = (
       answer_group_ids: [],
       visibility: 'PUBLIC',
       hide_author: false,
+      answer_response_visibility: 'FULL',
     },
     discord_webhook_enabled: false,
     visibility: 'PUBLIC',

@@ -3,6 +3,7 @@
 import { Box, Chip, Grid, Paper, Stack, Typography } from '@mui/material';
 import type { ReactNode } from 'react';
 
+import RedactedNotice from '@/app/_components/RedactedNotice';
 import { formatString } from '@/generic/DateFormatter';
 import type { GetAnswerResponse } from '@/lib/api-types';
 
@@ -12,6 +13,10 @@ import AnswerStatusChip from './AnswerStatusChip';
 type Author = GetAnswerResponse['author'];
 
 const AuthorName = ({ author }: { author: Author }) => {
+  if (author === undefined) {
+    return <RedactedNotice />;
+  }
+
   if (author.type === 'TEMPORARY_USER') {
     return (
       <Stack
@@ -55,12 +60,17 @@ export const AnswerPublicationChip = ({
   publication,
 }: {
   publication: GetAnswerResponse['publication'];
-}) =>
-  publication === 'PRIVATE' ? (
+}) => {
+  if (publication === undefined) {
+    return <RedactedNotice />;
+  }
+
+  return publication === 'PRIVATE' ? (
     <Chip label="非公開" size="small" color="warning" />
   ) : (
     <Chip label="公開" size="small" color="default" />
   );
+};
 
 const AnswerMeta = (props: {
   answer: GetAnswerResponse;
@@ -83,7 +93,11 @@ const AnswerMeta = (props: {
         <Typography variant="caption" color="textSecondary">
           回答日時
         </Typography>
-        <Typography>{formatString(props.answer.timestamp)}</Typography>
+        {props.answer.timestamp !== undefined ? (
+          <Typography>{formatString(props.answer.timestamp)}</Typography>
+        ) : (
+          <RedactedNotice />
+        )}
       </Grid>
       <Grid size={{ xs: 12, sm: 6 }}>
         <Typography variant="caption" color="textSecondary">

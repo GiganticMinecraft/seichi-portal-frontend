@@ -57,6 +57,7 @@ const form: GetFormResponse = {
       visibility: 'PUBLIC',
       answer_group_ids: [],
       hide_author: false,
+      answer_response_visibility: 'FULL',
     },
   },
   questions: [],
@@ -214,5 +215,34 @@ describe('AnswerDetailsPageView のメッセージボタンの権限制御', () 
     expect(
       screen.getByRole('button', { name: /^回答者にメッセージを送信 \(0\)$/ })
     ).not.toBeDisabled();
+  });
+
+  it('回答詳細公開設定がRESTRICTEDで author が非公開の場合でも、投稿者本人はメッセージボタンが disabled にならない', () => {
+    // バックエンドは redacted なとき id/form_id/answers 以外のフィールドを
+    // 一切含めない(title すら含めない)ため、それを模した最小限のフィクスチャ
+    const restrictedOwnAnswerData: AnswerDetailsPageData = {
+      ...baseData,
+      answer: {
+        id: baseData.answer.id,
+        form_id: baseData.answer.form_id,
+        answers: baseData.answer.answers,
+      },
+      isAdmin: false,
+    };
+
+    renderWithProviders(
+      <AnswerDetailsPageView
+        formId="form-id"
+        answerId="answer-id"
+        data={restrictedOwnAnswerData}
+        messageDeepLink={deepLink}
+        commentDeepLink={deepLink}
+      />
+    );
+
+    expect(
+      screen.getByRole('button', { name: /^メッセージ \(0\)$/ })
+    ).not.toBeDisabled();
+    expect(screen.getAllByText('非公開').length).toBeGreaterThan(0);
   });
 });

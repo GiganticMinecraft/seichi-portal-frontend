@@ -9,9 +9,10 @@ import { resolveAnswerTitle } from '@/lib/forms/answerTitle';
 export type AnswerListRow = {
   id: string;
   title: string;
-  date: string;
-  labels: GetAnswerLabelsResponse;
-  status: AnswerStatus;
+  /** 回答者本人が閲覧しておりフォームの設定で非表示にされている場合は undefined */
+  date: string | undefined;
+  labels: GetAnswerLabelsResponse | undefined;
+  status: AnswerStatus | undefined;
 };
 
 export const toAnswerListRows = (
@@ -20,7 +21,10 @@ export const toAnswerListRows = (
   answers.map((answer) => ({
     id: answer.id,
     title: resolveAnswerTitle(answer.title),
-    date: formatString(answer.timestamp),
+    date:
+      answer.timestamp !== undefined
+        ? formatString(answer.timestamp)
+        : undefined,
     labels: answer.labels,
     status: answer.status,
   }));

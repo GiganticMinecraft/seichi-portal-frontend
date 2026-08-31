@@ -895,6 +895,7 @@ export interface components {
         AnswerSettingsSchema: {
             acceptance_period: components["schemas"]["AnswerAcceptancePeriodSchema"];
             answer_group_ids: string[];
+            answer_response_visibility: string;
             default_answer_title?: string | null;
             hide_author: boolean;
             visibility: components["schemas"]["AnswerVisibility"];
@@ -1016,18 +1017,18 @@ export interface components {
         };
         FormAnswer: {
             answers: components["schemas"]["AnswerContent"][];
-            author: components["schemas"]["AnswerAuthor"];
+            author?: components["schemas"]["AnswerAuthor"];
             /** Format: uuid */
             form_id: string;
             /** Format: uuid */
             id: string;
-            labels: components["schemas"]["AnswerLabels"][];
-            publication: components["schemas"]["AnswerPublication"];
+            labels?: components["schemas"]["AnswerLabels"][];
+            publication?: components["schemas"]["AnswerPublication"];
             /** Format: int64 */
             redmine_issue_id?: number | null;
-            status: components["schemas"]["AnswerStatus"];
+            status?: components["schemas"]["AnswerStatus"];
             /** Format: date-time */
-            timestamp: string;
+            timestamp?: string;
             title?: string | null;
         };
         FormCreateSchema: {
@@ -1681,10 +1682,18 @@ export interface operations {
                 limit?: number;
                 /** @description Cursor returned by the previous page */
                 cursor?: string;
-                /** @description Limit results to the specified answer status */
-                status?: string;
+                /** @description Limit results to the specified answer statuses. Repeating this parameter combines them with OR. */
+                status?: string[];
                 /** @description Limit results to answers submitted by the specified user */
                 user?: string;
+                /** @description Limit results to answers that have all of the specified labels. Repeating this parameter combines them with AND. */
+                label_id?: string[];
+                /** @description Limit results to answers submitted at or after this timestamp */
+                created_after?: string;
+                /** @description Limit results to answers submitted at or before this timestamp */
+                created_before?: string;
+                /** @description Limit results to the specified forms. Repeating this parameter combines them with OR. */
+                form_id?: string[];
             };
             header?: never;
             path?: never;
@@ -1965,10 +1974,16 @@ export interface operations {
                 limit?: number;
                 /** @description Cursor returned by the previous page */
                 cursor?: string;
-                /** @description Limit results to the specified answer status */
-                status?: string;
+                /** @description Limit results to the specified answer statuses. Repeating this parameter combines them with OR. */
+                status?: string[];
                 /** @description Limit results to answers submitted by the specified user */
                 user?: string;
+                /** @description Limit results to answers that have all of the specified labels. Repeating this parameter combines them with AND. */
+                label_id?: string[];
+                /** @description Limit results to answers submitted at or after this timestamp */
+                created_after?: string;
+                /** @description Limit results to answers submitted at or before this timestamp */
+                created_before?: string;
             };
             header?: never;
             path: {

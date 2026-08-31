@@ -10,6 +10,7 @@ import {
 } from '@mui/material';
 import Link from 'next/link';
 
+import RedactedNotice from '@/app/_components/RedactedNotice';
 import { useApiQuery } from '@/app/_swr/useApiQuery';
 import { formatString } from '@/generic/DateFormatter';
 import type { RelatedAnswerResponse } from '@/lib/api-types';
@@ -69,9 +70,13 @@ const RelatedAnswerItem = ({
             <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
               <AnswerStatusChip status={data.status} />
               <AnswerPublicationChip publication={data.publication} />
-              <Typography variant="caption" color="textSecondary">
-                {formatString(data.timestamp)}
-              </Typography>
+              {data.timestamp !== undefined ? (
+                <Typography variant="caption" color="textSecondary">
+                  {formatString(data.timestamp)}
+                </Typography>
+              ) : (
+                <RedactedNotice variant="caption" />
+              )}
             </Stack>
           )}
         </Stack>
