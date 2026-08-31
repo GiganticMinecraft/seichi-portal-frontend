@@ -1,6 +1,6 @@
 'use client';
 
-import { Box, Chip, CircularProgress, Stack } from '@mui/material';
+import { Box, Chip, CircularProgress, Stack, Typography } from '@mui/material';
 import { DataGrid, gridClasses, useGridApiRef } from '@mui/x-data-grid';
 import type {
   GridColDef,
@@ -11,6 +11,8 @@ import type {
 import * as React from 'react';
 
 import AnswerStatusChip from '@/app/(protected)/_components/AnswerDetail/AnswerStatusChip';
+import { getAnswerListEmptyMessage } from '@/app/(protected)/_components/AnswersList/answerListFilters';
+import type { AnswerOpenState } from '@/lib/forms/answerStatus';
 
 import type { DashboardAnswerRow } from '../_lib/dashboardAnswerRows';
 
@@ -65,12 +67,16 @@ const DashboardAnswersGrid = ({
   isLoadingMore,
   onLoadMore,
   onRowClick,
+  search,
+  openState,
 }: {
   rows: DashboardAnswerRow[];
   hasMore: boolean;
   isLoadingMore: boolean;
   onLoadMore: () => void;
   onRowClick: (row: DashboardAnswerRow) => void;
+  search: string;
+  openState: AnswerOpenState;
 }) => {
   const apiRef = useGridApiRef();
 
@@ -102,6 +108,8 @@ const DashboardAnswersGrid = ({
     onRowClick(params.row);
   };
 
+  const noRowsMessage = getAnswerListEmptyMessage({ search, openState });
+
   const slots = React.useMemo(
     () => ({
       footer: () =>
@@ -110,8 +118,20 @@ const DashboardAnswersGrid = ({
             <CircularProgress size={20} />
           </Box>
         ) : null,
+      noRowsOverlay: () => (
+        <Box
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            height: '100%',
+          }}
+        >
+          <Typography color="textSecondary">{noRowsMessage}</Typography>
+        </Box>
+      ),
     }),
-    [isLoadingMore]
+    [isLoadingMore, noRowsMessage]
   );
 
   return (

@@ -26,3 +26,19 @@ export const filterAnswers = (
         answer.labels.some((answerLabel) => answerLabel.id === label.id)
       )
     );
+
+/** DataGrid の noRows 表示に使う、現在の絞り込み状態に応じた案内文。 */
+export const getAnswerListEmptyMessage = ({
+  search,
+  openState,
+}: {
+  search: string;
+  openState: AnswerOpenState;
+}): string => {
+  if (search.trim() !== '') {
+    return `「${search}」に一致する回答が見つかりませんでした`;
+  }
+  return openState === 'open'
+    ? '未完了の回答はありません'
+    : '完了した回答はありません';
+};
