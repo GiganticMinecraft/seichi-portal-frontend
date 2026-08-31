@@ -3,6 +3,7 @@
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
 
+import type { GetParams } from '@/app/_swr/fetcher';
 import { useApiQuery } from '@/app/_swr/useApiQuery';
 import { useInfiniteApiQuery } from '@/app/_swr/useInfiniteApiQuery';
 import { useDebouncedSearch } from '@/hooks/useDebouncedSearch';
@@ -13,14 +14,15 @@ import type {
 } from '@/lib/api-types';
 import type { AnswerOpenState } from '@/lib/forms/answerStatus';
 
-import { filterAnswers } from './answerListFilters';
+import {
+  filterAnswers,
+  OPEN_STATE_TO_ANSWER_STATUSES,
+  resolveAnswerOpenState,
+} from './answerListFilters';
 import { toAnswerListRows } from './answerListRows';
 import AnswersView from './AnswersView';
 
 const OPEN_STATE_QUERY_KEY = 'status';
-
-const isAnswerOpenState = (value: string | null): value is AnswerOpenState =>
-  value === 'open' || value === 'closed';
 
 const AnswersPageContent = ({
   form,
@@ -38,10 +40,10 @@ const AnswersPageContent = ({
     useDebouncedSearch();
   const [labelFilter, setLabelFilter] = useState<GetAnswerLabelsResponse>([]);
 
-  const openState: AnswerOpenState = useMemo(() => {
-    const value = searchParams.get(OPEN_STATE_QUERY_KEY);
-    return isAnswerOpenState(value) ? value : 'open';
-  }, [searchParams]);
+  const openState: AnswerOpenState = useMemo(
+    () => resolveAnswerOpenState(searchParams.get(OPEN_STATE_QUERY_KEY)),
+    [searchParams]
+  );
 
   const handleOpenStateChange = (newOpenState: AnswerOpenState) => {
     const params = new URLSearchParams(searchParams.toString());
@@ -49,19 +51,38 @@ const AnswersPageContent = ({
     router.replace(`${pathname}?${params.toString()}`, { scroll: false });
   };
 
+  const labelIds = useMemo(
+    () => labelFilter.map((label) => label.id),
+    [labelFilter]
+  );
+
+  // 未完了/完了・ラベルでの絞り込みはバックエンドの status/label_id パラメータで
+  // 行う。全件を読み込んでからクライアント側で絞り込む従来方式は、回答数が多い
+  // フォームで初回表示が重くなるため廃止した。
   const {
     items: answers,
     hasMore,
     isLoadingMore,
     loadMore,
+    resetToFirstPage,
   } = useInfiniteApiQuery(
     '/api/v1/forms/{form_id}/answers',
-    (cursor) => ({
-      path: { form_id: form.id },
-      query: cursor === undefined ? {} : { cursor },
-    }),
+    (cursor) =>
+      // eslint-disable-next-line @typescript-eslint/consistent-type-assertions, @typescript-eslint/no-unsafe-type-assertion -- 生成型 (src/generated/api-types.ts) は status[]/label_id によるサーバーサイド絞り込みにまだ追随できていない。バックエンド自体は既に対応済みのため、境界でパラメータ形状を合わせる。
+      ({
+        path: { form_id: form.id },
+        query: {
+          ...(cursor === undefined ? {} : { cursor }),
+          status: OPEN_STATE_TO_ANSWER_STATUSES[openState],
+          ...(labelIds.length > 0 ? { label_id: labelIds } : {}),
+        },
+      }) as unknown as GetParams<'/api/v1/forms/{form_id}/answers'>,
     initialAnswers
   );
+
+  useEffect(() => {
+    resetToFirstPage();
+  }, [openState, labelIds, resetToFirstPage]);
 
   const { data: searchData, isLoading: isSearchLoading } = useApiQuery(
     '/api/v1/search/answers',
@@ -71,36 +92,21 @@ const AnswersPageContent = ({
     { keepPreviousData: true }
   );
 
-  const sourceAnswers = useMemo(
-    () => (isSearching ? (searchData?.answers ?? []) : answers),
-    [isSearching, searchData, answers]
+  // 検索 API は status/label_id による絞り込みに未対応のため、検索結果に対して
+  // だけクライアント側でも絞り込む。検索結果自体は既に絞られた小さな集合であり、
+  // 全件ロードの問題は発生しない。
+  const rows = toAnswerListRows(
+    isSearching
+      ? filterAnswers(searchData?.answers ?? [], {
+          labels: labelFilter,
+          openState,
+        })
+      : answers
   );
 
-  const labelOptions = useMemo(() => {
-    const byId = new Map<string, GetAnswerLabelsResponse[number]>();
-    for (const answer of sourceAnswers) {
-      for (const label of answer.labels) {
-        byId.set(label.id, label);
-      }
-    }
-    return Array.from(byId.values());
-  }, [sourceAnswers]);
-
-  // 未完了/完了・ラベルでの絞り込みはクライアントサイドで行う。openState は常に
-  // 'open' か 'closed' のいずれかで絞り込みが有効な状態にあるため、hasMore が false
-  // になるまで残りページを読み込みきる。DataGrid の仮想スクロールは絞り込み後の
-  // 表示件数がコンテナ高さに満たないとスクロールイベントが発生せず、残りページの
-  // 自動読み込みが起きないため。
-  useEffect(() => {
-    if (!isSearching && hasMore && !isLoadingMore) {
-      loadMore();
-    }
-  }, [isSearching, hasMore, isLoadingMore, loadMore]);
-
-  const isPrefetchingForFilter = !isSearching && hasMore;
-
-  const rows = toAnswerListRows(
-    filterAnswers(sourceAnswers, { labels: labelFilter, openState })
+  const { data: labelOptions = [] } = useApiQuery(
+    '/api/v1/labels/answers',
+    undefined
   );
 
   return (
@@ -110,7 +116,6 @@ const AnswersPageContent = ({
       search={search}
       onSearchChange={handleSearchChange}
       isSearchLoading={isSearching && isSearchLoading}
-      isPrefetchingForFilter={isPrefetchingForFilter}
       labelOptions={labelOptions}
       onLabelFilterChange={setLabelFilter}
       openState={openState}

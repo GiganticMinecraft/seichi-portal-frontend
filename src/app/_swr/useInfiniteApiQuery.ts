@@ -89,6 +89,13 @@ export const useInfiniteApiQuery = <P extends KeysetPath>(
     }
   }, [hasMore, isValidating, setSize, size]);
 
+  /** buildParams が参照するサーバーサイド絞り込み条件が変わったときに、読み込み
+   * 済みページ数を 1 に戻す。呼ばないと、絞り込み変更前に読み進めていたページ数
+   * ぶんだけ新条件のページを連続取得してしまう。 */
+  const resetToFirstPage = React.useCallback(() => {
+    void setSize(1);
+  }, [setSize]);
+
   const sentinelRef = React.useRef<HTMLDivElement | null>(null);
 
   React.useEffect(() => {
@@ -116,6 +123,7 @@ export const useInfiniteApiQuery = <P extends KeysetPath>(
     isLoadingMore: isValidating,
     sentinelRef,
     loadMore,
+    resetToFirstPage,
     /** 取得済み全ページのキャッシュを直接書き換える。楽観的更新に使う。 */
     mutatePages: mutate,
   };

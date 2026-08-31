@@ -78,7 +78,6 @@ const AnswersView = ({
   search,
   onSearchChange,
   isSearchLoading = false,
-  isPrefetchingForFilter = false,
   labelOptions,
   onLabelFilterChange,
   openState,
@@ -94,7 +93,6 @@ const AnswersView = ({
   search: string;
   onSearchChange: (value: string) => void;
   isSearchLoading?: boolean;
-  isPrefetchingForFilter?: boolean;
   labelOptions: GetAnswerLabelsResponse;
   onLabelFilterChange: Dispatch<SetStateAction<GetAnswerLabelsResponse>>;
   openState: AnswerOpenState;
@@ -198,20 +196,23 @@ const AnswersView = ({
             <CircularProgress size={20} />
           </Box>
         ) : null,
-      noRowsOverlay: () => (
-        <Box
-          sx={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            height: '100%',
-          }}
-        >
-          <Typography color="textSecondary">{noRowsMessage}</Typography>
-        </Box>
-      ),
+      // 検索リクエストが確定するまでは rows が一時的に空になるため、確定前に
+      // 「見つかりませんでした」を出さないよう空欄にする
+      noRowsOverlay: () =>
+        isSearchLoading ? null : (
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              height: '100%',
+            }}
+          >
+            <Typography color="textSecondary">{noRowsMessage}</Typography>
+          </Box>
+        ),
     }),
-    [isLoadingMore, noRowsMessage]
+    [isLoadingMore, isSearchLoading, noRowsMessage]
   );
 
   return (
@@ -266,17 +267,8 @@ const AnswersView = ({
         </Stack>
       </Box>
       <AnswerOpenStateTabs value={openState} onChange={onOpenStateChange} />
-      {isPrefetchingForFilter && (
-        <Typography
-          variant="caption"
-          color="textSecondary"
-          sx={{ display: 'block', mb: 0.5 }}
-        >
-          絞り込みのため全件を読み込み中です。結果が確定するまでお待ちください。
-        </Typography>
-      )}
       <Box sx={{ position: 'relative' }}>
-        {(isSearchLoading || isPrefetchingForFilter) && (
+        {isSearchLoading && (
           <LinearProgress
             sx={{ position: 'absolute', top: 0, left: 0, right: 0, zIndex: 1 }}
           />

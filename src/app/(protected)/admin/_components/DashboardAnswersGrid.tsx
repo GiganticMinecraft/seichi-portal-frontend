@@ -65,6 +65,7 @@ const DashboardAnswersGrid = ({
   rows,
   hasMore,
   isLoadingMore,
+  isSearchLoading = false,
   onLoadMore,
   onRowClick,
   search,
@@ -73,6 +74,7 @@ const DashboardAnswersGrid = ({
   rows: DashboardAnswerRow[];
   hasMore: boolean;
   isLoadingMore: boolean;
+  isSearchLoading?: boolean;
   onLoadMore: () => void;
   onRowClick: (row: DashboardAnswerRow) => void;
   search: string;
@@ -118,20 +120,23 @@ const DashboardAnswersGrid = ({
             <CircularProgress size={20} />
           </Box>
         ) : null,
-      noRowsOverlay: () => (
-        <Box
-          sx={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            height: '100%',
-          }}
-        >
-          <Typography color="textSecondary">{noRowsMessage}</Typography>
-        </Box>
-      ),
+      // 検索リクエストが確定するまでは rows が一時的に空になるため、確定前に
+      // 「見つかりませんでした」を出さないよう空欄にする
+      noRowsOverlay: () =>
+        isSearchLoading ? null : (
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              height: '100%',
+            }}
+          >
+            <Typography color="textSecondary">{noRowsMessage}</Typography>
+          </Box>
+        ),
     }),
-    [isLoadingMore, noRowsMessage]
+    [isLoadingMore, isSearchLoading, noRowsMessage]
   );
 
   return (
