@@ -14,8 +14,12 @@ import { useRouter } from 'next/navigation';
 import * as React from 'react';
 
 import AnswerLabelFilter from '@/app/(protected)/_components/AnswersList/AnswerLabelFilter';
-import { filterAnswers } from '@/app/(protected)/_components/AnswersList/answerListFilters';
+import {
+  filterAnswers,
+  OPEN_STATE_TO_ANSWER_STATUSES,
+} from '@/app/(protected)/_components/AnswersList/answerListFilters';
 import AnswerOpenStateTabs from '@/app/(protected)/_components/AnswersList/AnswerOpenStateTabs';
+import type { GetParams } from '@/app/_swr/fetcher';
 import { useApiQuery } from '@/app/_swr/useApiQuery';
 import { useInfiniteApiQuery } from '@/app/_swr/useInfiniteApiQuery';
 import { useDebouncedSearch } from '@/hooks/useDebouncedSearch';
@@ -50,32 +54,14 @@ const DataTable = (props: {
   const [startDate, setStartDate] = React.useState<Dayjs | null>(null);
   const [endDate, setEndDate] = React.useState<Dayjs | null>(null);
 
-  const {
-    items: answers,
-    hasMore,
-    isLoadingMore,
-    loadMore,
-  } = useInfiniteApiQuery(
-    '/api/v1/forms/answers',
-    (cursor) => ({ query: cursor === undefined ? {} : { cursor } }),
-    props.initialAnswers
-  );
-
-  const { data: searchData, isLoading: isSearchLoading } = useApiQuery(
-    '/api/v1/search/answers',
-    // form_id を渡さないことで全フォーム横断検索になる
-    isSearching ? { query: { query: debouncedSearch } } : null,
-    { keepPreviousData: true }
-  );
-
-  const sourceAnswers = React.useMemo(
-    () => (isSearching ? (searchData?.answers ?? []) : answers),
-    [isSearching, searchData, answers]
-  );
-
   const formIds = React.useMemo(
     () => formFilter.map((form) => form.id),
     [formFilter]
+  );
+
+  const labelIds = React.useMemo(
+    () => labelFilter.map((label) => label.id),
+    [labelFilter]
   );
 
   const dateRange = React.useMemo(
@@ -86,25 +72,71 @@ const DataTable = (props: {
     [startDate, endDate]
   );
 
-  // 種別・ラベル・日付範囲・未完了/完了での絞り込みはクライアントサイドで行う。openState は
-  // 常に 'open' か 'closed' のいずれかで絞り込みが有効な状態にあるため、hasMore が false に
-  // なるまで残りページを読み込みきる。テキスト検索中は /api/v1/search/answers が最初から
-  // 全件を返すため不要。
+  // 種別・ラベル・日付範囲・未完了/完了での絞り込みはバックエンドの
+  // status/label_id/form_id/created_after/created_before パラメータで行う。
+  // 全件を読み込んでからクライアント側で絞り込む従来方式は、全フォーム横断の
+  // 回答一覧という性質上とりわけ重くなるため廃止した。
+  const {
+    items: answers,
+    hasMore,
+    isLoadingMore,
+    loadMore,
+    resetToFirstPage,
+  } = useInfiniteApiQuery(
+    '/api/v1/forms/answers',
+    (cursor) =>
+      // eslint-disable-next-line @typescript-eslint/consistent-type-assertions, @typescript-eslint/no-unsafe-type-assertion -- 生成型 (src/generated/api-types.ts) は status[]/label_id/form_id/created_after/created_before によるサーバーサイド絞り込みにまだ追随できていない。バックエンド自体は既に対応済みのため、境界でパラメータ形状を合わせる。
+      ({
+        query: {
+          ...(cursor === undefined ? {} : { cursor }),
+          status: OPEN_STATE_TO_ANSWER_STATUSES[openState],
+          ...(labelIds.length > 0 ? { label_id: labelIds } : {}),
+          ...(formIds.length > 0 ? { form_id: formIds } : {}),
+          ...(dateRange.startIso !== null
+            ? { created_after: dateRange.startIso }
+            : {}),
+          ...(dateRange.endIso !== null
+            ? { created_before: dateRange.endIso }
+            : {}),
+        },
+      }) as unknown as GetParams<'/api/v1/forms/answers'>,
+    props.initialAnswers
+  );
+
   React.useEffect(() => {
-    if (!isSearching && hasMore && !isLoadingMore) {
-      loadMore();
-    }
-  }, [isSearching, hasMore, isLoadingMore, loadMore]);
+    resetToFirstPage();
+  }, [openState, labelIds, formIds, dateRange, resetToFirstPage]);
 
-  const isPrefetchingForFilter = !isSearching && hasMore;
+  const { data: searchData, isLoading: isSearchLoading } = useApiQuery(
+    '/api/v1/search/answers',
+    // form_id を渡さないことで全フォーム横断検索になる
+    isSearching ? { query: { query: debouncedSearch } } : null,
+    { keepPreviousData: true }
+  );
 
+  // 検索 API は種別・ラベル・日付範囲による絞り込みに未対応のため、検索結果に
+  // 対してだけクライアント側でも絞り込む。検索結果自体は既に絞られた小さな
+  // 集合であり、全件ロードの問題は発生しない。
   const filteredAnswers = React.useMemo(
     () =>
-      filterAnswers(
-        filterAnswersByFormAndDate(sourceAnswers, { formIds, dateRange }),
-        { labels: labelFilter, openState }
-      ),
-    [sourceAnswers, formIds, dateRange, labelFilter, openState]
+      isSearching
+        ? filterAnswers(
+            filterAnswersByFormAndDate(searchData?.answers ?? [], {
+              formIds,
+              dateRange,
+            }),
+            { labels: labelFilter, openState }
+          )
+        : answers,
+    [
+      isSearching,
+      searchData,
+      answers,
+      formIds,
+      dateRange,
+      labelFilter,
+      openState,
+    ]
   );
 
   const formTitleById = React.useMemo(
@@ -117,15 +149,10 @@ const DataTable = (props: {
     [filteredAnswers, formTitleById]
   );
 
-  const labelOptions = React.useMemo(() => {
-    const byId = new Map<string, GetAnswerLabelsResponse[number]>();
-    for (const answer of sourceAnswers) {
-      for (const label of answer.labels) {
-        byId.set(label.id, label);
-      }
-    }
-    return Array.from(byId.values());
-  }, [sourceAnswers]);
+  const { data: labelOptions = [] } = useApiQuery(
+    '/api/v1/labels/answers',
+    undefined
+  );
 
   const handleRowClick = (row: DashboardAnswerRow) => {
     router.push(`/admin/forms/${row.formId}/answers/${row.id}`);
@@ -182,24 +209,16 @@ const DataTable = (props: {
         <AnswerOpenStateTabs value={openState} onChange={setOpenState} />
       </Stack>
       <Box sx={{ position: 'relative' }}>
-        {(isSearching && isSearchLoading) || isPrefetchingForFilter ? (
+        {isSearching && isSearchLoading ? (
           <LinearProgress
             sx={{ position: 'absolute', top: 0, left: 0, right: 0, zIndex: 1 }}
           />
         ) : null}
-        {isPrefetchingForFilter && (
-          <Typography
-            variant="caption"
-            color="textSecondary"
-            sx={{ display: 'block', mb: 0.5 }}
-          >
-            絞り込みのため全件を読み込み中です。結果が確定するまでお待ちください。
-          </Typography>
-        )}
         <DashboardAnswersGrid
           rows={rows}
           hasMore={!isSearching && hasMore}
           isLoadingMore={!isSearching && isLoadingMore}
+          isSearchLoading={isSearching && isSearchLoading}
           onLoadMore={loadMore}
           onRowClick={handleRowClick}
           search={search}

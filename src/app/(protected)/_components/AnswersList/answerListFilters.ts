@@ -1,4 +1,5 @@
 import type {
+  AnswerStatus,
   GetAnswerLabelsResponse,
   GetFormAnswersResponse,
 } from '@/lib/api-types';
@@ -10,6 +11,25 @@ export interface AnswerListFilter {
   /** 既定は 'open'。'all' を指定すると対応状況による絞り込みをしない。 */
   openState: AnswerOpenState | 'all';
 }
+
+/** open/closed の二分類をバックエンドの AnswerStatus 群へ展開する。open は
+ * UNADDRESSED/IN_PROGRESS の OR、closed は COMPLETED 単体。 */
+export const OPEN_STATE_TO_ANSWER_STATUSES: Record<
+  AnswerOpenState,
+  AnswerStatus[]
+> = {
+  open: ['UNADDRESSED', 'IN_PROGRESS'],
+  closed: ['COMPLETED'],
+};
+
+export const isAnswerOpenState = (
+  value: string | undefined | null
+): value is AnswerOpenState => value === 'open' || value === 'closed';
+
+/** URL の status クエリ文字列から openState を決定する。未指定・不正値は 'open'。 */
+export const resolveAnswerOpenState = (
+  value: string | undefined | null
+): AnswerOpenState => (isAnswerOpenState(value) ? value : 'open');
 
 export const filterAnswers = (
   answers: GetFormAnswersResponse,
