@@ -32,6 +32,9 @@ import AnswerOpenStateTabs from './AnswerOpenStateTabs';
 
 const SCROLL_END_THRESHOLD_PX = 200;
 
+const scrollStorageKey = (key: string) => `answers-list-scroll:${key}`;
+const lastViewedStorageKey = (key: string) => `answers-list-last-viewed:${key}`;
+
 const columns: GridColDef<AnswerListRow>[] = [
   { field: 'title', headerName: 'タイトル', minWidth: 240, flex: 1.5 },
   { field: 'date', headerName: '投稿日時', minWidth: 200, flex: 0.8 },
@@ -83,6 +86,7 @@ const AnswersView = ({
   isLoadingMore,
   onLoadMore,
   onAnswerClick,
+  scrollRestorationKey,
 }: {
   formTitle: string;
   rows: AnswerListRow[];
@@ -98,8 +102,57 @@ const AnswersView = ({
   isLoadingMore: boolean;
   onLoadMore: () => void;
   onAnswerClick: (answerId: string) => void;
+  /** 一覧から離脱・復帰したときにスクロール位置を復元するための識別キー */
+  scrollRestorationKey: string;
 }) => {
   const apiRef = useGridApiRef();
+  const hasRestoredScrollRef = React.useRef(false);
+
+  // 直前に詳細を開いた行を、一覧に戻ってきたときにハイライトする。SSR時点では
+  // sessionStorage を参照できないため、useHasHydrated と同様に
+  // useSyncExternalStore でハイドレーション後の値へ安全に切り替える
+  const highlightedRowId = React.useSyncExternalStore(
+    () => () => {},
+    () =>
+      window.sessionStorage.getItem(lastViewedStorageKey(scrollRestorationKey)),
+    () => null
+  );
+
+  // 詳細ページからブラウザバックで戻ったときに、離脱時のスクロール位置を復元する
+  React.useEffect(() => {
+    if (hasRestoredScrollRef.current || rows.length === 0) return;
+
+    const scroller = apiRef.current?.rootElementRef.current?.querySelector(
+      `.${gridClasses.virtualScroller}`
+    );
+    if (!scroller) return;
+
+    hasRestoredScrollRef.current = true;
+    const saved = window.sessionStorage.getItem(
+      scrollStorageKey(scrollRestorationKey)
+    );
+    if (saved !== null) {
+      scroller.scrollTop = Number(saved);
+    }
+  }, [apiRef, rows.length, scrollRestorationKey]);
+
+  React.useEffect(() => {
+    const scroller = apiRef.current?.rootElementRef.current?.querySelector(
+      `.${gridClasses.virtualScroller}`
+    );
+    if (!scroller) return;
+
+    const handleScroll = () => {
+      window.sessionStorage.setItem(
+        scrollStorageKey(scrollRestorationKey),
+        String(scroller.scrollTop)
+      );
+    };
+    scroller.addEventListener('scroll', handleScroll);
+    return () => {
+      scroller.removeEventListener('scroll', handleScroll);
+    };
+  }, [apiRef, scrollRestorationKey]);
 
   // Community 版 DataGrid には onRowsScrollEnd が無いため、内部の仮想スクロールコンテナを直接監視する
   React.useEffect(() => {
@@ -126,7 +179,12 @@ const AnswersView = ({
   const handleRowClick: GridEventListener<'rowClick'> = (
     params: GridRowParams
   ) => {
-    onAnswerClick(String(params.id));
+    const id = String(params.id);
+    window.sessionStorage.setItem(
+      lastViewedStorageKey(scrollRestorationKey),
+      id
+    );
+    onAnswerClick(id);
   };
 
   const slots = React.useMemo(
@@ -213,11 +271,19 @@ const AnswersView = ({
           rows={rows}
           columns={columns}
           onRowClick={handleRowClick}
+          getRowClassName={(params) =>
+            String(params.id) === highlightedRowId
+              ? 'answer-row-last-viewed'
+              : ''
+          }
           sx={{
             border: 0,
             height: 560,
             '& .MuiDataGrid-columnHeaders': {
               backgroundColor: 'action.hover',
+            },
+            '& .answer-row-last-viewed': {
+              backgroundColor: 'action.selected',
             },
           }}
           disableRowSelectionOnClick
