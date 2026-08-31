@@ -124,6 +124,7 @@ const ConversationSurface = ({
 }: Props) => {
   const [open, setOpen] = useState(false);
   const hasAutoOpenedRef = useRef(false);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
 
   // autoOpen は entries の再フェッチ後も true のまま残り得るため、
   // 「true になった直後の 1 回だけ開く」を hasAutoOpenedRef で保証する。
@@ -149,6 +150,22 @@ const ConversationSurface = ({
       document
         .getElementById(getConversationEntryDomId(highlightedEntryId))
         ?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }, AUTO_SCROLL_DELAY_MS);
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [open, highlightedEntryId]);
+
+  // 直リンクによるハイライト先が無いときは、開いた直後に最新(末尾)へスクロールする。
+  useEffect(() => {
+    if (!open || highlightedEntryId !== undefined) {
+      return;
+    }
+    const timer = setTimeout(() => {
+      const container = scrollContainerRef.current;
+      if (container) {
+        container.scrollTop = container.scrollHeight;
+      }
     }, AUTO_SCROLL_DELAY_MS);
     return () => {
       clearTimeout(timer);
@@ -227,6 +244,7 @@ const ConversationSurface = ({
         </Toolbar>
 
         <Box
+          ref={scrollContainerRef}
           sx={{
             flex: 1,
             overflowY: 'auto',
