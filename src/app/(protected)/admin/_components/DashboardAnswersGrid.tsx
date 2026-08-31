@@ -12,6 +12,7 @@ import * as React from 'react';
 
 import AnswerStatusChip from '@/app/(protected)/_components/AnswerDetail/AnswerStatusChip';
 import { getAnswerListEmptyMessage } from '@/app/(protected)/_components/AnswersList/answerListFilters';
+import RedactedNotice from '@/app/_components/RedactedNotice';
 import type { AnswerOpenState } from '@/lib/forms/answerStatus';
 
 import type { DashboardAnswerRow } from '../_lib/dashboardAnswerRows';
@@ -32,7 +33,7 @@ const columns: GridColDef<DashboardAnswerRow>[] = [
         DashboardAnswerRow,
         DashboardAnswerRow['status']
       >
-    ) => (params.value ? <AnswerStatusChip status={params.value} /> : null),
+    ) => <AnswerStatusChip status={params.value} />,
   },
   {
     field: 'labels',
@@ -45,20 +46,34 @@ const columns: GridColDef<DashboardAnswerRow>[] = [
         DashboardAnswerRow,
         DashboardAnswerRow['labels']
       >
-    ) => (
-      <Stack
-        direction="row"
-        spacing={0.5}
-        useFlexGap
-        sx={{ flexWrap: 'wrap', py: 0.75 }}
-      >
-        {params.value?.map((label) => (
-          <Chip key={label.id} label={label.name} size="small" />
-        ))}
-      </Stack>
-    ),
+    ) =>
+      params.value === undefined ? (
+        <RedactedNotice />
+      ) : (
+        <Stack
+          direction="row"
+          spacing={0.5}
+          useFlexGap
+          sx={{ flexWrap: 'wrap', py: 0.75 }}
+        >
+          {params.value.map((label) => (
+            <Chip key={label.id} label={label.name} size="small" />
+          ))}
+        </Stack>
+      ),
   },
-  { field: 'date', headerName: '日付', minWidth: 200, flex: 0.8 },
+  {
+    field: 'date',
+    headerName: '日付',
+    minWidth: 200,
+    flex: 0.8,
+    renderCell: (
+      params: GridRenderCellParams<
+        DashboardAnswerRow,
+        DashboardAnswerRow['date']
+      >
+    ) => params.value ?? <RedactedNotice />,
+  },
 ];
 
 const DashboardAnswersGrid = ({

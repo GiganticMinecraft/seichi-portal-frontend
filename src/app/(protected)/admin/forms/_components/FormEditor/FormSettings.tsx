@@ -286,6 +286,39 @@ const AnswerVisibilitySettings = ({
   );
 };
 
+const AnswerResponseVisibilitySettings = ({
+  control,
+  setValue,
+}: Pick<FormSettingsProps, 'control' | 'setValue'>) => {
+  const answerResponseVisibility = useWatch({
+    control,
+    name: 'settings.answer_response_visibility',
+  });
+  const isRestricted = answerResponseVisibility === 'RESTRICTED';
+
+  return (
+    <Stack spacing={0}>
+      <FormControlLabel
+        label="回答者本人には対応状況・ラベルなどの詳細を非公開にする"
+        control={
+          <Checkbox
+            checked={isRestricted}
+            onChange={(_, checked) => {
+              setValue(
+                'settings.answer_response_visibility',
+                checked ? 'RESTRICTED' : 'FULL'
+              );
+            }}
+          />
+        }
+      />
+      <Typography variant="caption" color="textSecondary">
+        回答者本人が自分の回答を閲覧する際、対応状況・ラベル・投稿者・回答日時を隠して回答内容のみ表示します。管理者には従来どおりすべて表示されます。
+      </Typography>
+    </Stack>
+  );
+};
+
 const NotificationSettings = ({
   control,
   discordWebhookEnabled,
@@ -345,6 +378,10 @@ const FormSettings = (props: FormSettingsProps) => {
         control={props.control}
         setValue={props.setValue}
         groupOptions={props.groupOptions}
+      />
+      <AnswerResponseVisibilitySettings
+        control={props.control}
+        setValue={props.setValue}
       />
 
       <SectionHeading label="通知設定" />

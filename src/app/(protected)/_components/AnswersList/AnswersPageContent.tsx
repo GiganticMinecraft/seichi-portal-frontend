@@ -3,7 +3,6 @@
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
 
-import type { GetParams } from '@/app/_swr/fetcher';
 import { useApiQuery } from '@/app/_swr/useApiQuery';
 import { useInfiniteApiQuery } from '@/app/_swr/useInfiniteApiQuery';
 import { useDebouncedSearch } from '@/hooks/useDebouncedSearch';
@@ -67,16 +66,14 @@ const AnswersPageContent = ({
     resetToFirstPage,
   } = useInfiniteApiQuery(
     '/api/v1/forms/{form_id}/answers',
-    (cursor) =>
-      // eslint-disable-next-line @typescript-eslint/consistent-type-assertions, @typescript-eslint/no-unsafe-type-assertion -- 生成型 (src/generated/api-types.ts) は status[]/label_id によるサーバーサイド絞り込みにまだ追随できていない。バックエンド自体は既に対応済みのため、境界でパラメータ形状を合わせる。
-      ({
-        path: { form_id: form.id },
-        query: {
-          ...(cursor === undefined ? {} : { cursor }),
-          status: OPEN_STATE_TO_ANSWER_STATUSES[openState],
-          ...(labelIds.length > 0 ? { label_id: labelIds } : {}),
-        },
-      }) as unknown as GetParams<'/api/v1/forms/{form_id}/answers'>,
+    (cursor) => ({
+      path: { form_id: form.id },
+      query: {
+        ...(cursor === undefined ? {} : { cursor }),
+        status: OPEN_STATE_TO_ANSWER_STATUSES[openState],
+        ...(labelIds.length > 0 ? { label_id: labelIds } : {}),
+      },
+    }),
     initialAnswers
   );
 

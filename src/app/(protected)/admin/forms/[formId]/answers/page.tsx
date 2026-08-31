@@ -5,7 +5,6 @@ import {
   resolveAnswerOpenState,
 } from '@/app/(protected)/_components/AnswersList/answerListFilters';
 import AnswersPageContent from '@/app/(protected)/_components/AnswersList/AnswersPageContent';
-import type { GetParams } from '@/app/_swr/fetcher';
 import {
   authorizationHeader,
   requireBackendData,
@@ -33,11 +32,10 @@ const Home = async ({
         headers: authorizationHeader(session.token),
         // クライアント側の初回表示は openState をこの URL と同じ値から始めるため、
         // 初回表示から一致するようサーバー側で絞り込んでおく。
-        // eslint-disable-next-line @typescript-eslint/consistent-type-assertions, @typescript-eslint/no-unsafe-type-assertion -- 生成型が status[] によるサーバーサイド絞り込みにまだ追随できていないための境界調整
         params: {
           path: { form_id: formId },
           query: { status: OPEN_STATE_TO_ANSWER_STATUSES[openState] },
-        } as unknown as GetParams<'/api/v1/forms/{form_id}/answers'>,
+        },
       })
     ),
     requireBackendData(

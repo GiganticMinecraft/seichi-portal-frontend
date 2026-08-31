@@ -16,6 +16,7 @@ import {
 import type { RefObject } from 'react';
 
 import AnswerStatusChip from '@/app/(protected)/_components/AnswerDetail/AnswerStatusChip';
+import RedactedNotice from '@/app/_components/RedactedNotice';
 
 import AnswerFormNameLabel from './AnswerFormNameLabel';
 import type { MyAnswerListRow } from './myAnswerListRows';
@@ -65,31 +66,42 @@ const MyAnswersView = ({
                             sx={{ alignItems: 'center', flexWrap: 'wrap' }}
                           >
                             <AnswerFormNameLabel formId={row.formId} />
-                            <Typography
-                              component="span"
-                              variant="caption"
-                              color="textSecondary"
-                            >
-                              {row.date}
-                            </Typography>
+                            {row.date !== undefined ? (
+                              <Typography
+                                component="span"
+                                variant="caption"
+                                color="textSecondary"
+                              >
+                                {row.date}
+                              </Typography>
+                            ) : (
+                              <RedactedNotice
+                                component="span"
+                                variant="caption"
+                              />
+                            )}
                             <AnswerStatusChip status={row.status} />
                           </Stack>
-                          {row.labels.length > 0 && (
-                            <Stack
-                              direction="row"
-                              spacing={0.5}
-                              useFlexGap
-                              sx={{ flexWrap: 'wrap' }}
-                            >
-                              {row.labels.map((label) => (
-                                <Chip
-                                  key={label.id}
-                                  label={label.name}
-                                  size="small"
-                                />
-                              ))}
-                            </Stack>
+                          {row.labels === undefined && (
+                            <RedactedNotice variant="caption" />
                           )}
+                          {row.labels !== undefined &&
+                            row.labels.length > 0 && (
+                              <Stack
+                                direction="row"
+                                spacing={0.5}
+                                useFlexGap
+                                sx={{ flexWrap: 'wrap' }}
+                              >
+                                {row.labels.map((label) => (
+                                  <Chip
+                                    key={label.id}
+                                    label={label.name}
+                                    size="small"
+                                  />
+                                ))}
+                              </Stack>
+                            )}
                         </Stack>
                       }
                       slotProps={{

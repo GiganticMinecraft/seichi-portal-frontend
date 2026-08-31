@@ -11,9 +11,10 @@ export type DashboardAnswerRow = {
   formId: string;
   category: string;
   title: string;
-  date: string;
-  labels: GetAnswerLabelsResponse;
-  status: AnswerStatus;
+  /** フォームの回答詳細公開設定 (RESTRICTED) により非表示にされている場合は undefined */
+  date: string | undefined;
+  labels: GetAnswerLabelsResponse | undefined;
+  status: AnswerStatus | undefined;
 };
 
 const UNKNOWN_FORM_TITLE = 'unknown form';
@@ -27,7 +28,10 @@ export const toDashboardAnswerRows = (
     formId: answer.form_id,
     category: formTitleById.get(answer.form_id) ?? UNKNOWN_FORM_TITLE,
     title: resolveAnswerTitle(answer.title),
-    date: formatString(answer.timestamp),
+    date:
+      answer.timestamp !== undefined
+        ? formatString(answer.timestamp)
+        : undefined,
     labels: answer.labels,
     status: answer.status,
   }));

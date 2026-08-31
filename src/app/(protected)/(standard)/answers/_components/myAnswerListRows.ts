@@ -10,9 +10,10 @@ export type MyAnswerListRow = {
   id: string;
   formId: string;
   title: string;
-  date: string;
-  labels: GetAnswerLabelsResponse;
-  status: AnswerStatus;
+  /** フォームの回答詳細公開設定 (RESTRICTED) により非表示にされている場合は undefined */
+  date: string | undefined;
+  labels: GetAnswerLabelsResponse | undefined;
+  status: AnswerStatus | undefined;
 };
 
 export const toMyAnswerListRows = (
@@ -22,7 +23,10 @@ export const toMyAnswerListRows = (
     id: answer.id,
     formId: answer.form_id,
     title: resolveAnswerTitle(answer.title),
-    date: formatString(answer.timestamp),
+    date:
+      answer.timestamp !== undefined
+        ? formatString(answer.timestamp)
+        : undefined,
     labels: answer.labels,
     status: answer.status,
   }));

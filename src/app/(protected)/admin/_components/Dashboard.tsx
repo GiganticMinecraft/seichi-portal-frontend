@@ -19,7 +19,6 @@ import {
   OPEN_STATE_TO_ANSWER_STATUSES,
 } from '@/app/(protected)/_components/AnswersList/answerListFilters';
 import AnswerOpenStateTabs from '@/app/(protected)/_components/AnswersList/AnswerOpenStateTabs';
-import type { GetParams } from '@/app/_swr/fetcher';
 import { useApiQuery } from '@/app/_swr/useApiQuery';
 import { useInfiniteApiQuery } from '@/app/_swr/useInfiniteApiQuery';
 import { useDebouncedSearch } from '@/hooks/useDebouncedSearch';
@@ -84,22 +83,20 @@ const DataTable = (props: {
     resetToFirstPage,
   } = useInfiniteApiQuery(
     '/api/v1/forms/answers',
-    (cursor) =>
-      // eslint-disable-next-line @typescript-eslint/consistent-type-assertions, @typescript-eslint/no-unsafe-type-assertion -- 生成型 (src/generated/api-types.ts) は status[]/label_id/form_id/created_after/created_before によるサーバーサイド絞り込みにまだ追随できていない。バックエンド自体は既に対応済みのため、境界でパラメータ形状を合わせる。
-      ({
-        query: {
-          ...(cursor === undefined ? {} : { cursor }),
-          status: OPEN_STATE_TO_ANSWER_STATUSES[openState],
-          ...(labelIds.length > 0 ? { label_id: labelIds } : {}),
-          ...(formIds.length > 0 ? { form_id: formIds } : {}),
-          ...(dateRange.startIso !== null
-            ? { created_after: dateRange.startIso }
-            : {}),
-          ...(dateRange.endIso !== null
-            ? { created_before: dateRange.endIso }
-            : {}),
-        },
-      }) as unknown as GetParams<'/api/v1/forms/answers'>,
+    (cursor) => ({
+      query: {
+        ...(cursor === undefined ? {} : { cursor }),
+        status: OPEN_STATE_TO_ANSWER_STATUSES[openState],
+        ...(labelIds.length > 0 ? { label_id: labelIds } : {}),
+        ...(formIds.length > 0 ? { form_id: formIds } : {}),
+        ...(dateRange.startIso !== null
+          ? { created_after: dateRange.startIso }
+          : {}),
+        ...(dateRange.endIso !== null
+          ? { created_before: dateRange.endIso }
+          : {}),
+      },
+    }),
     props.initialAnswers
   );
 

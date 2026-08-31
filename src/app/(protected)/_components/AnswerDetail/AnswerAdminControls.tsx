@@ -181,8 +181,8 @@ export const AdminAnswerLabels = (props: {
     props.answer.form_id,
     props.answer.id
   );
-  const [value, setValue] = useState(() =>
-    props.answer.labels.map((label) => label.name)
+  const [value, setValue] = useState(
+    () => props.answer.labels?.map((label) => label.name) ?? []
   );
 
   return (

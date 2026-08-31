@@ -5,6 +5,7 @@ import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 
+import RedactedNotice from '@/app/_components/RedactedNotice';
 import { useApiQuery } from '@/app/_swr/useApiQuery';
 import { formatString } from '@/generic/DateFormatter';
 import { useDebouncedSearch } from '@/hooks/useDebouncedSearch';
@@ -78,9 +79,13 @@ const AdminRelatedAnswerAdder = ({
               <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
                 <AnswerStatusChip status={option.status} />
                 <AnswerPublicationChip publication={option.publication} />
-                <Typography variant="caption" color="textSecondary">
-                  {formatString(option.timestamp)}
-                </Typography>
+                {option.timestamp !== undefined ? (
+                  <Typography variant="caption" color="textSecondary">
+                    {formatString(option.timestamp)}
+                  </Typography>
+                ) : (
+                  <RedactedNotice variant="caption" />
+                )}
               </Stack>
             </Stack>
           </li>

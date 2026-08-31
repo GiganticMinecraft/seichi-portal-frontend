@@ -12,7 +12,10 @@ import type {
   FormEditorQuestionIdentity,
   FormEditorValues,
 } from '../_schema/formEditorSchema';
-import { visibilitySchema } from '../_schema/formEditorSchema';
+import {
+  answerResponseVisibilitySchema,
+  visibilitySchema,
+} from '../_schema/formEditorSchema';
 
 type CreateFormBody =
   ApiPaths['/api/v1/forms']['post']['requestBody']['content']['application/json'];
@@ -23,6 +26,8 @@ type ApiAcceptancePeriod =
 type ApiVisibility = GetFormResponse['settings']['visibility'];
 
 const toVisibility = (value: ApiVisibility) => visibilitySchema.parse(value);
+const toAnswerResponseVisibility = (value: string) =>
+  answerResponseVisibilitySchema.parse(value);
 
 const toNullableNonEmptyString = (value: string): string | null => {
   const trimmed = value.trim();
@@ -137,6 +142,9 @@ export const fromFormResponseToEditorValues = (
       allowed_group_ids: form.settings.allowed_group_ids,
       allow_temporary_answers: form.settings.allow_temporary_answers,
       hide_author: form.settings.answer_settings.hide_author,
+      answer_response_visibility: toAnswerResponseVisibility(
+        form.settings.answer_settings.answer_response_visibility
+      ),
     },
   };
 };
@@ -200,6 +208,7 @@ export const toFormUpdateBody = (
         visibility: data.settings.answer_visibility,
         answer_group_ids: data.settings.answer_group_ids,
         hide_author: data.settings.hide_author,
+        answer_response_visibility: data.settings.answer_response_visibility,
       },
     },
   };

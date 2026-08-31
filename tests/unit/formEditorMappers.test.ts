@@ -39,6 +39,7 @@ const baseValues: FormEditorValues = {
     answer_group_ids: [],
     allow_temporary_answers: false,
     hide_author: false,
+    answer_response_visibility: 'FULL',
   },
 };
 
@@ -67,6 +68,7 @@ const createFormResponse = (
       visibility: 'PUBLIC',
       answer_group_ids: [],
       hide_author: false,
+      answer_response_visibility: 'FULL',
     },
   },
   questions: [

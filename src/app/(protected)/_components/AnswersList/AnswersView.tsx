@@ -21,6 +21,7 @@ import type {
 import * as React from 'react';
 import type { Dispatch, SetStateAction } from 'react';
 
+import RedactedNotice from '@/app/_components/RedactedNotice';
 import type { GetAnswerLabelsResponse } from '@/lib/api-types';
 import type { AnswerOpenState } from '@/lib/forms/answerStatus';
 
@@ -38,7 +39,15 @@ const lastViewedStorageKey = (key: string) => `answers-list-last-viewed:${key}`;
 
 const columns: GridColDef<AnswerListRow>[] = [
   { field: 'title', headerName: 'タイトル', minWidth: 240, flex: 1.5 },
-  { field: 'date', headerName: '投稿日時', minWidth: 200, flex: 0.8 },
+  {
+    field: 'date',
+    headerName: '投稿日時',
+    minWidth: 200,
+    flex: 0.8,
+    renderCell: (
+      params: GridRenderCellParams<AnswerListRow, AnswerListRow['date']>
+    ) => params.value ?? <RedactedNotice />,
+  },
   {
     field: 'status',
     headerName: '対応状況',
@@ -47,7 +56,7 @@ const columns: GridColDef<AnswerListRow>[] = [
     sortable: false,
     renderCell: (
       params: GridRenderCellParams<AnswerListRow, AnswerListRow['status']>
-    ) => (params.value ? <AnswerStatusChip status={params.value} /> : null),
+    ) => <AnswerStatusChip status={params.value} />,
   },
   {
     field: 'labels',
@@ -57,18 +66,21 @@ const columns: GridColDef<AnswerListRow>[] = [
     sortable: false,
     renderCell: (
       params: GridRenderCellParams<AnswerListRow, AnswerListRow['labels']>
-    ) => (
-      <Stack
-        direction="row"
-        spacing={0.5}
-        useFlexGap
-        sx={{ flexWrap: 'wrap', py: 0.75 }}
-      >
-        {params.value?.map((label) => (
-          <Chip key={label.id} label={label.name} size="small" />
-        ))}
-      </Stack>
-    ),
+    ) =>
+      params.value === undefined ? (
+        <RedactedNotice />
+      ) : (
+        <Stack
+          direction="row"
+          spacing={0.5}
+          useFlexGap
+          sx={{ flexWrap: 'wrap', py: 0.75 }}
+        >
+          {params.value.map((label) => (
+            <Chip key={label.id} label={label.name} size="small" />
+          ))}
+        </Stack>
+      ),
   },
 ];
 

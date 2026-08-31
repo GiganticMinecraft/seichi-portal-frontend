@@ -29,6 +29,8 @@ const choiceSchema = z.object({
 
 export const visibilitySchema = z.enum(['PUBLIC', 'PRIVATE']);
 
+export const answerResponseVisibilitySchema = z.enum(['FULL', 'RESTRICTED']);
+
 const formLabelSchema = z.object({
   id: z.string(),
   name: z.string(),
@@ -104,6 +106,7 @@ export const formEditorSchema = z.object({
     answer_group_ids: z.array(z.string()),
     allow_temporary_answers: z.boolean(),
     hide_author: z.boolean(),
+    answer_response_visibility: answerResponseVisibilitySchema,
   }),
 });
 
@@ -113,3 +116,6 @@ export type FormEditorQuestionIdentity = z.infer<
   typeof formEditorQuestionIdentitySchema
 >;
 export type FormVisibility = z.infer<typeof visibilitySchema>;
+export type AnswerResponseVisibility = z.infer<
+  typeof answerResponseVisibilitySchema
+>;

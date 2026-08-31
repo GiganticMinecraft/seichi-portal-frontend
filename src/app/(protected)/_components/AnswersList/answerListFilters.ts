@@ -31,6 +31,9 @@ export const resolveAnswerOpenState = (
   value: string | undefined | null
 ): AnswerOpenState => (isAnswerOpenState(value) ? value : 'open');
 
+// status/labels は、回答者本人が RESTRICTED 設定のフォームで自分の回答を
+// 見ているときは undefined になる(非公開)。絞り込み条件と比較できないため、
+// status は無条件でマッチさせ、labels はラベル絞り込みが有効なときのみ除外する。
 export const filterAnswers = (
   answers: GetFormAnswersResponse,
   filter: AnswerListFilter
@@ -39,12 +42,16 @@ export const filterAnswers = (
     .filter(
       (answer) =>
         filter.openState === 'all' ||
+        answer.status === undefined ||
         answerOpenState(answer.status) === filter.openState
     )
-    .filter((answer) =>
-      filter.labels.every((label) =>
-        answer.labels.some((answerLabel) => answerLabel.id === label.id)
-      )
+    .filter(
+      (answer) =>
+        filter.labels.length === 0 ||
+        (answer.labels !== undefined &&
+          filter.labels.every((label) =>
+            answer.labels?.some((answerLabel) => answerLabel.id === label.id)
+          ))
     );
 
 /** DataGrid の noRows 表示に使う、現在の絞り込み状態に応じた案内文。 */

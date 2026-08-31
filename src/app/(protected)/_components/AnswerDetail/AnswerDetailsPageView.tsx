@@ -11,6 +11,10 @@ import type {
   GetMessagesResponse,
   GetRelatedAnswersResponse,
 } from '@/lib/api-types';
+import {
+  isAnswerAuthoredByCurrentUser,
+  isAnswerFromAuthenticatedUser,
+} from '@/lib/forms/answerAuthor';
 import { resolveAnswerTitle } from '@/lib/forms/answerTitle';
 
 import {
@@ -52,10 +56,12 @@ const AnswerDetailsPageView = ({
   commentDeepLink: ConversationDeepLinkProps;
 }) => {
   const { author } = data.answer;
-  const isAuthenticatedAuthor = author.type === 'AUTHENTICATED_USER';
-  const isAuthor =
-    author.type === 'AUTHENTICATED_USER' &&
-    author.user.uuid === data.currentUserId;
+  const isAuthenticatedAuthor = isAnswerFromAuthenticatedUser(author);
+  const isAuthor = isAnswerAuthoredByCurrentUser(
+    author,
+    data.currentUserId,
+    data.isAdmin
+  );
   const canAccessMessages = data.isAdmin || isAuthor;
   const messagesDisabled = !isAuthenticatedAuthor || !canAccessMessages;
   const messagesDisabledReason = !isAuthenticatedAuthor

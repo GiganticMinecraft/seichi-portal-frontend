@@ -1,9 +1,14 @@
 'use client';
 import { Chip, Stack, Typography } from '@mui/material';
 
+import RedactedNotice from '@/app/_components/RedactedNotice';
 import type { GetAnswerResponse } from '@/lib/api-types';
 
 const AnswerLabels = (props: { answers: GetAnswerResponse }) => {
+  if (props.answers.labels === undefined) {
+    return <RedactedNotice />;
+  }
+
   if (props.answers.labels.length === 0) {
     return (
       <Typography color="textSecondary">ラベルが設定されていません</Typography>

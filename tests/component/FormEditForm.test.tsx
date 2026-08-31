@@ -54,6 +54,7 @@ const form: GetFormResponse = {
       visibility: 'PUBLIC',
       answer_group_ids: [],
       hide_author: true,
+      answer_response_visibility: 'FULL',
     },
   },
 };
@@ -156,6 +157,34 @@ describe('FormEditForm', () => {
     expect(updateFormBody?.questions?.[0]?.is_required).toBe(true);
     expect(updateFormBody?.settings?.allow_temporary_answers).toBe(true);
     expect(updateFormBody?.settings?.answer_settings?.hide_author).toBe(true);
+    expect(
+      updateFormBody?.settings?.answer_settings?.answer_response_visibility
+    ).toBe('FULL');
+  });
+
+  it('回答者本人への非公開設定にチェックを入れて保存すると RESTRICTED を送信する', async () => {
+    const user = userEvent.setup();
+
+    renderWithProviders(
+      <FormEditForm form={form} labelOptions={[]} groupOptions={[]} />
+    );
+
+    await user.click(
+      screen.getByRole('checkbox', {
+        name: '回答者本人には対応状況・ラベルなどの詳細を非公開にする',
+      })
+    );
+    await user.click(screen.getByRole('button', { name: '設定内容を保存' }));
+
+    await waitFor(() => {
+      expect(updateFormMock).toHaveBeenCalledTimes(1);
+    });
+
+    const updateFormBody = updateFormMock.mock.calls[0]?.[0];
+
+    expect(
+      updateFormBody?.settings?.answer_settings?.answer_response_visibility
+    ).toBe('RESTRICTED');
   });
 
   it('必須項目が未入力のまま保存すると該当項目がエラー表示になる', async () => {
