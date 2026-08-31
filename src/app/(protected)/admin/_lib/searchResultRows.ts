@@ -60,7 +60,7 @@ export const toSearchResultRows = (data: SearchResponse): SearchResultRow[] =>
     data.comments.map((comment): SearchResultRowWithoutId => ({
       category: 'コメント',
       title: comment.content,
-      url: `/admin/forms/${comment.form_id}/answers/${comment.answer_id}`,
+      url: `/admin/forms/${comment.form_id}/answers/${comment.answer_id}?commentId=${comment.id}`,
     })),
   ]
     .flat()
