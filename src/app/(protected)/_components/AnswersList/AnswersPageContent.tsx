@@ -1,6 +1,6 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
 
 import { useApiQuery } from '@/app/_swr/useApiQuery';
@@ -17,6 +17,11 @@ import { filterAnswers } from './answerListFilters';
 import { toAnswerListRows } from './answerListRows';
 import AnswersView from './AnswersView';
 
+const OPEN_STATE_QUERY_KEY = 'status';
+
+const isAnswerOpenState = (value: string | null): value is AnswerOpenState =>
+  value === 'open' || value === 'closed';
+
 const AnswersPageContent = ({
   form,
   initialAnswers,
@@ -27,10 +32,22 @@ const AnswersPageContent = ({
   answersBasePath: string;
 }) => {
   const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
   const { search, debouncedSearch, isSearching, handleSearchChange } =
     useDebouncedSearch();
   const [labelFilter, setLabelFilter] = useState<GetAnswerLabelsResponse>([]);
-  const [openState, setOpenState] = useState<AnswerOpenState>('open');
+
+  const openState: AnswerOpenState = useMemo(() => {
+    const value = searchParams.get(OPEN_STATE_QUERY_KEY);
+    return isAnswerOpenState(value) ? value : 'open';
+  }, [searchParams]);
+
+  const handleOpenStateChange = (newOpenState: AnswerOpenState) => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.set(OPEN_STATE_QUERY_KEY, newOpenState);
+    router.replace(`${pathname}?${params.toString()}`, { scroll: false });
+  };
 
   const {
     items: answers,
@@ -97,7 +114,8 @@ const AnswersPageContent = ({
       labelOptions={labelOptions}
       onLabelFilterChange={setLabelFilter}
       openState={openState}
-      onOpenStateChange={setOpenState}
+      onOpenStateChange={handleOpenStateChange}
+      scrollRestorationKey={`${pathname}?${searchParams.toString()}`}
       hasMore={!isSearching && hasMore}
       isLoadingMore={isLoadingMore}
       onLoadMore={loadMore}
