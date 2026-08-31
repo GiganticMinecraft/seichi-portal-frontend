@@ -2,9 +2,7 @@
 
 import {
   Box,
-  Button,
   Chip,
-  Grid,
   LinearProgress,
   Paper,
   Stack,
@@ -17,7 +15,6 @@ import {
   Typography,
 } from '@mui/material';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useState } from 'react';
 
 import {
   toSearchResultRows,
@@ -30,13 +27,6 @@ const SearchPageContent = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const query = searchParams.get('q') ?? '';
-  const [selectedRowId, setSelectedRowId] = useState<number | null>(null);
-
-  const [prevQuery, setPrevQuery] = useState(query);
-  if (query !== prevQuery) {
-    setPrevQuery(query);
-    setSelectedRowId(null);
-  }
 
   const { data, isLoading, error } = useApiQuery(
     '/api/v1/search',
@@ -48,7 +38,6 @@ const SearchPageContent = () => {
   }
 
   const rows = data ? toSearchResultRows(data) : [];
-  const selectedRow = rows.find((row) => row.id === selectedRowId) ?? undefined;
 
   return (
     <Box sx={{ p: 3 }}>
@@ -66,105 +55,64 @@ const SearchPageContent = () => {
           </Typography>
         </Paper>
       ) : (
-        <Grid container spacing={2} sx={{ alignItems: 'start' }}>
-          <Grid size={{ xs: 12, md: 8 }}>
-            <TableContainer
-              component={Paper}
-              variant="outlined"
-              sx={{ position: 'relative' }}
-            >
-              {isLoading && (
-                <LinearProgress
-                  sx={{
-                    position: 'absolute',
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    zIndex: 1,
+        <TableContainer
+          component={Paper}
+          variant="outlined"
+          sx={{ position: 'relative' }}
+        >
+          {isLoading && (
+            <LinearProgress
+              sx={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                right: 0,
+                zIndex: 1,
+              }}
+            />
+          )}
+          <Table sx={{ tableLayout: 'fixed' }}>
+            <TableHead>
+              <TableRow sx={{ '& th': { fontWeight: 'bold' } }}>
+                <TableCell sx={{ width: '30%' }}>種別</TableCell>
+                <TableCell>タイトル</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {rows.map((row) => (
+                <TableRow
+                  key={row.id}
+                  hover
+                  onClick={() => {
+                    router.push(row.url);
                   }}
-                />
-              )}
-              <Table sx={{ tableLayout: 'fixed' }}>
-                <TableHead>
-                  <TableRow sx={{ '& th': { fontWeight: 'bold' } }}>
-                    <TableCell sx={{ width: '30%' }}>種別</TableCell>
-                    <TableCell>タイトル</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {rows.map((row) => (
-                    <TableRow
-                      key={row.id}
-                      hover
-                      selected={row.id === selectedRowId}
-                      onClick={() => {
-                        setSelectedRowId(row.id);
-                      }}
-                      sx={{
-                        cursor: 'pointer',
-                        '&:last-child td': { border: 0 },
-                      }}
-                    >
-                      <TableCell>
-                        <Chip
-                          label={row.category}
-                          color={SEARCH_RESULT_CATEGORY_COLOR[row.category]}
-                          size="small"
-                          variant="outlined"
-                        />
-                      </TableCell>
-                      <TableCell
-                        sx={{
-                          overflow: 'hidden',
-                          textOverflow: 'ellipsis',
-                          whiteSpace: 'nowrap',
-                        }}
-                      >
-                        {row.title}
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
-          </Grid>
-
-          <Grid size={{ xs: 12, md: 4 }}>
-            <Paper variant="outlined" sx={{ p: 2 }}>
-              {selectedRow ? (
-                <Stack spacing={2}>
-                  <Stack spacing={0.5}>
+                  sx={{
+                    cursor: 'pointer',
+                    '&:last-child td': { border: 0 },
+                  }}
+                >
+                  <TableCell>
                     <Chip
-                      label={selectedRow.category}
-                      color={SEARCH_RESULT_CATEGORY_COLOR[selectedRow.category]}
+                      label={row.category}
+                      color={SEARCH_RESULT_CATEGORY_COLOR[row.category]}
                       size="small"
                       variant="outlined"
-                      sx={{ alignSelf: 'flex-start' }}
                     />
-                    <Typography
-                      variant="body1"
-                      sx={{ wordBreak: 'break-word' }}
-                    >
-                      {selectedRow.title}
-                    </Typography>
-                  </Stack>
-                  <Button
-                    variant="contained"
-                    onClick={() => {
-                      router.push(selectedRow.url);
+                  </TableCell>
+                  <TableCell
+                    sx={{
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                      whiteSpace: 'nowrap',
                     }}
                   >
-                    詳細を見る
-                  </Button>
-                </Stack>
-              ) : (
-                <Typography variant="body2" color="textSecondary">
-                  行を選択してください
-                </Typography>
-              )}
-            </Paper>
-          </Grid>
-        </Grid>
+                    {row.title}
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
       )}
     </Box>
   );
