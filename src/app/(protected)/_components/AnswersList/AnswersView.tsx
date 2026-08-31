@@ -27,6 +27,7 @@ import type { AnswerOpenState } from '@/lib/forms/answerStatus';
 import AnswerStatusChip from '../AnswerDetail/AnswerStatusChip';
 
 import AnswerLabelFilter from './AnswerLabelFilter';
+import { getAnswerListEmptyMessage } from './answerListFilters';
 import type { AnswerListRow } from './answerListRows';
 import AnswerOpenStateTabs from './AnswerOpenStateTabs';
 
@@ -187,6 +188,8 @@ const AnswersView = ({
     onAnswerClick(id);
   };
 
+  const noRowsMessage = getAnswerListEmptyMessage({ search, openState });
+
   const slots = React.useMemo(
     () => ({
       footer: () =>
@@ -195,8 +198,20 @@ const AnswersView = ({
             <CircularProgress size={20} />
           </Box>
         ) : null,
+      noRowsOverlay: () => (
+        <Box
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            height: '100%',
+          }}
+        >
+          <Typography color="textSecondary">{noRowsMessage}</Typography>
+        </Box>
+      ),
     }),
-    [isLoadingMore]
+    [isLoadingMore, noRowsMessage]
   );
 
   return (

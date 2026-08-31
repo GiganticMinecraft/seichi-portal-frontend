@@ -202,6 +202,8 @@ const DataTable = (props: {
           isLoadingMore={!isSearching && isLoadingMore}
           onLoadMore={loadMore}
           onRowClick={handleRowClick}
+          search={search}
+          openState={openState}
         />
       </Box>
     </Box>
