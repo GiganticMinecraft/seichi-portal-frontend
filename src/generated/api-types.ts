@@ -1283,8 +1283,8 @@ export interface components {
             uuid: string;
         };
         SessionCreateSchema: {
-            /** Format: int32 */
-            expires: number;
+            /** Format: date-time */
+            expires_at: string;
         };
         TemporaryAnswerAuthor: {
             contact_text: string;
