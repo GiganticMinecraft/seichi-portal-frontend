@@ -19,7 +19,7 @@ overrides:
   # GHSA-5p4m-2wfm-xmqj: @redocly/openapi-core が js-yaml を 4.3.0 に固定して
   # おり、Dependabot 側では解消できないため override で 4.3.1 以上に上げる。
   # 上流が追従したら削除する。
-  js-yaml@4: ^4.3.1
+  js-yaml@4: ^4.3.2
 
 allowBuilds:
   # @pyroscope/nodejs の native 依存。現行版の install script は `exit 0` で
