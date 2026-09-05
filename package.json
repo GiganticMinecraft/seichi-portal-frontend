@@ -1,6 +1,6 @@
 {
   "name": "seichi-portal-frontend",
-  "version": "0.3.13",
+  "version": "0.3.14",
   "private": true,
   "packageManager": "pnpm@11.23.0",
   "scripts": {
