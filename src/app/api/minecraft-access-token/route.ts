@@ -197,6 +197,7 @@ const acquireMinecraftAccessToken = async ({
   token,
   userHash,
 }: Awaited<ReturnType<typeof acquireXboxServiceSecurityTokenWithUserHash>>) => {
+  const requestedAt = Date.now();
   const URL =
     'https://api.minecraftservices.com/authentication/login_with_xbox';
 
@@ -220,11 +221,14 @@ const acquireMinecraftAccessToken = async ({
   const body: unknown = await response.json().catch(() => null);
   const result = minecraftAccessTokenResponseSchema.parse(body);
 
-  return { token: result.access_token, expires: result.expires_in };
+  return {
+    token: result.access_token,
+    expiresAt: new Date(requestedAt + result.expires_in * 1000).toISOString(),
+  };
 };
 
 const createSession = async (
-  { token, expires }: Awaited<ReturnType<typeof acquireMinecraftAccessToken>>,
+  { token, expiresAt }: Awaited<ReturnType<typeof acquireMinecraftAccessToken>>,
   turnstileToken: string,
   requestHeaders?: Pick<Headers, 'get'>
 ) => {
@@ -238,7 +242,7 @@ const createSession = async (
         header: { 'X-Seichi-Turnstile-Token': turnstileToken },
       },
       body: {
-        expires: expires,
+        expires_at: expiresAt,
       },
     })
   );
