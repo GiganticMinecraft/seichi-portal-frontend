@@ -9,24 +9,27 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import type { Dayjs } from 'dayjs';
+import dayjs from 'dayjs';
 import { useRouter } from 'next/navigation';
 import * as React from 'react';
 
 import AnswerLabelFilter from '@/app/(protected)/_components/AnswersList/AnswerLabelFilter';
 import {
   filterAnswers,
+  OPEN_STATE_QUERY_KEY,
   OPEN_STATE_TO_ANSWER_STATUSES,
+  resolveAnswerOpenState,
 } from '@/app/(protected)/_components/AnswersList/answerListFilters';
 import AnswerOpenStateTabs from '@/app/(protected)/_components/AnswersList/AnswerOpenStateTabs';
 import { useApiQuery } from '@/app/_swr/useApiQuery';
 import { useInfiniteApiQuery } from '@/app/_swr/useInfiniteApiQuery';
 import { useDebouncedSearch } from '@/hooks/useDebouncedSearch';
-import type {
-  GetAnswerLabelsResponse,
-  GetAnswersPageResponse,
-  GetFormsResponse,
-} from '@/lib/api-types';
+import {
+  useArrayQueryParam,
+  useStringQueryParam,
+  useUrlQuery,
+} from '@/hooks/useUrlQuery';
+import type { GetAnswersPageResponse, GetFormsResponse } from '@/lib/api-types';
 import type { AnswerOpenState } from '@/lib/forms/answerStatus';
 
 import { filterAnswersByFormAndDate } from '../_lib/dashboardAnswerFilters';
@@ -42,33 +45,40 @@ const DataTable = (props: {
   forms: GetFormsResponse;
 }) => {
   const router = useRouter();
+  const { pathname, searchParams, updateQuery } = useUrlQuery();
 
+  const [searchQuery, setSearchQuery] = useStringQueryParam('search');
   const { search, debouncedSearch, isSearching, handleSearchChange } =
-    useDebouncedSearch();
-  const [formFilter, setFormFilter] = React.useState<GetFormsResponse>([]);
-  const [labelFilter, setLabelFilter] = React.useState<GetAnswerLabelsResponse>(
-    []
-  );
-  const [openState, setOpenState] = React.useState<AnswerOpenState>('open');
-  const [startDate, setStartDate] = React.useState<Dayjs | null>(null);
-  const [endDate, setEndDate] = React.useState<Dayjs | null>(null);
+    useDebouncedSearch(searchQuery);
+  const [formIds, setFormIds] = useArrayQueryParam('form');
+  const [labelIds, setLabelIds] = useArrayQueryParam('label');
+  const [startDateStr, setStartDateStr] = useStringQueryParam('start');
+  const [endDateStr, setEndDateStr] = useStringQueryParam('end');
 
-  const formIds = React.useMemo(
-    () => formFilter.map((form) => form.id),
-    [formFilter]
+  React.useEffect(() => {
+    setSearchQuery(debouncedSearch);
+  }, [debouncedSearch, setSearchQuery]);
+
+  const openState: AnswerOpenState = React.useMemo(
+    () => resolveAnswerOpenState(searchParams.get(OPEN_STATE_QUERY_KEY)),
+    [searchParams]
   );
 
-  const labelIds = React.useMemo(
-    () => labelFilter.map((label) => label.id),
-    [labelFilter]
-  );
+  const handleOpenStateChange = (newOpenState: AnswerOpenState) => {
+    updateQuery({ [OPEN_STATE_QUERY_KEY]: newOpenState });
+  };
+
+  const startDate = startDateStr ? dayjs(startDateStr) : null;
+  const endDate = endDateStr ? dayjs(endDateStr) : null;
 
   const dateRange = React.useMemo(
     () => ({
-      startIso: startDate ? startDate.startOf('day').toISOString() : null,
-      endIso: endDate ? endDate.endOf('day').toISOString() : null,
+      startIso: startDateStr
+        ? dayjs(startDateStr).startOf('day').toISOString()
+        : null,
+      endIso: endDateStr ? dayjs(endDateStr).endOf('day').toISOString() : null,
     }),
-    [startDate, endDate]
+    [startDateStr, endDateStr]
   );
 
   // 種別・ラベル・日付範囲・未完了/完了での絞り込みはバックエンドの
@@ -122,18 +132,10 @@ const DataTable = (props: {
               formIds,
               dateRange,
             }),
-            { labels: labelFilter, openState }
+            { labelIds, openState }
           )
         : answers,
-    [
-      isSearching,
-      searchData,
-      answers,
-      formIds,
-      dateRange,
-      labelFilter,
-      openState,
-    ]
+    [isSearching, searchData, answers, formIds, dateRange, labelIds, openState]
   );
 
   const formTitleById = React.useMemo(
@@ -190,20 +192,29 @@ const DataTable = (props: {
           />
           <DashboardFormFilter
             formOptions={props.forms}
-            setFormFilter={setFormFilter}
+            selectedFormIds={formIds}
+            onChange={setFormIds}
           />
           <AnswerLabelFilter
             labelOptions={labelOptions}
-            setLabelFilter={setLabelFilter}
+            selectedLabelIds={labelIds}
+            onChange={setLabelIds}
           />
           <DashboardDateRangeFilter
             startDate={startDate}
             endDate={endDate}
-            onStartDateChange={setStartDate}
-            onEndDateChange={setEndDate}
+            onStartDateChange={(value) => {
+              setStartDateStr(value ? value.format('YYYY-MM-DD') : '');
+            }}
+            onEndDateChange={(value) => {
+              setEndDateStr(value ? value.format('YYYY-MM-DD') : '');
+            }}
           />
         </Stack>
-        <AnswerOpenStateTabs value={openState} onChange={setOpenState} />
+        <AnswerOpenStateTabs
+          value={openState}
+          onChange={handleOpenStateChange}
+        />
       </Stack>
       <Box sx={{ position: 'relative' }}>
         {isSearching && isSearchLoading ? (
@@ -220,6 +231,7 @@ const DataTable = (props: {
           onRowClick={handleRowClick}
           search={search}
           openState={openState}
+          scrollRestorationKey={`${pathname}?${searchParams.toString()}`}
         />
       </Box>
     </Box>

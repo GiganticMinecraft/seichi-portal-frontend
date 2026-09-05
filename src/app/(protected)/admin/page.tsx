@@ -1,6 +1,9 @@
 import type { Metadata } from 'next';
 
-import { OPEN_STATE_TO_ANSWER_STATUSES } from '@/app/(protected)/_components/AnswersList/answerListFilters';
+import {
+  OPEN_STATE_TO_ANSWER_STATUSES,
+  resolveAnswerOpenState,
+} from '@/app/(protected)/_components/AnswersList/answerListFilters';
 import {
   authorizationHeader,
   requireAllBackendPages,
@@ -15,17 +18,22 @@ export const metadata: Metadata = {
   title: '管理ダッシュボード | Seichi Portal',
 };
 
-const Home = async () => {
+const Home = async ({
+  searchParams,
+}: {
+  searchParams: Promise<{ status?: string }>;
+}) => {
   const { session } = await getAdminAccess();
+  const { status } = await searchParams;
+  const openState = resolveAnswerOpenState(status);
   const [initialAnswers, forms] = await Promise.all([
     requireBackendData(
       serverApiClient.GET('/api/v1/forms/answers', {
         headers: authorizationHeader(session.token),
-        // Dashboard の openState は常に 'open' から始まるため、初回表示から
-        // サーバー側で絞り込んでおく。未絞り込みで返すと、クライアント側の
-        // 再取得が終わるまで完了済みの回答も一瞬表示されてしまう。
+        // クライアント側の初回表示は openState をこの URL と同じ値から始めるため、
+        // 初回表示から一致するようサーバー側で絞り込んでおく。
         params: {
-          query: { status: OPEN_STATE_TO_ANSWER_STATUSES.open },
+          query: { status: OPEN_STATE_TO_ANSWER_STATUSES[openState] },
         },
       })
     ),

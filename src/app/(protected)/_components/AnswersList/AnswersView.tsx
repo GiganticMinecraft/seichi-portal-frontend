@@ -11,7 +11,7 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { DataGrid, gridClasses, useGridApiRef } from '@mui/x-data-grid';
+import { DataGrid, useGridApiRef } from '@mui/x-data-grid';
 import type {
   GridColDef,
   GridEventListener,
@@ -19,7 +19,6 @@ import type {
   GridRowParams,
 } from '@mui/x-data-grid';
 import * as React from 'react';
-import type { Dispatch, SetStateAction } from 'react';
 
 import RedactedNotice from '@/app/_components/RedactedNotice';
 import type { GetAnswerLabelsResponse } from '@/lib/api-types';
@@ -31,11 +30,10 @@ import AnswerLabelFilter from './AnswerLabelFilter';
 import { getAnswerListEmptyMessage } from './answerListFilters';
 import type { AnswerListRow } from './answerListRows';
 import AnswerOpenStateTabs from './AnswerOpenStateTabs';
-
-const SCROLL_END_THRESHOLD_PX = 200;
-
-const scrollStorageKey = (key: string) => `answers-list-scroll:${key}`;
-const lastViewedStorageKey = (key: string) => `answers-list-last-viewed:${key}`;
+import {
+  useAnswerRowHighlightAndScroll,
+  useInfiniteScrollTrigger,
+} from './useAnswerGridInteractions';
 
 const columns: GridColDef<AnswerListRow>[] = [
   { field: 'title', headerName: 'タイトル', minWidth: 240, flex: 1.5 },
@@ -91,7 +89,8 @@ const AnswersView = ({
   onSearchChange,
   isSearchLoading = false,
   labelOptions,
-  onLabelFilterChange,
+  labelIds,
+  onLabelIdsChange,
   openState,
   onOpenStateChange,
   hasMore,
@@ -106,7 +105,8 @@ const AnswersView = ({
   onSearchChange: (value: string) => void;
   isSearchLoading?: boolean;
   labelOptions: GetAnswerLabelsResponse;
-  onLabelFilterChange: Dispatch<SetStateAction<GetAnswerLabelsResponse>>;
+  labelIds: string[];
+  onLabelIdsChange: (labelIds: string[]) => void;
   openState: AnswerOpenState;
   onOpenStateChange: (value: AnswerOpenState) => void;
   hasMore: boolean;
@@ -117,84 +117,20 @@ const AnswersView = ({
   scrollRestorationKey: string;
 }) => {
   const apiRef = useGridApiRef();
-  const hasRestoredScrollRef = React.useRef(false);
 
-  // 直前に詳細を開いた行を、一覧に戻ってきたときにハイライトする。SSR時点では
-  // sessionStorage を参照できないため、useHasHydrated と同様に
-  // useSyncExternalStore でハイドレーション後の値へ安全に切り替える
-  const highlightedRowId = React.useSyncExternalStore(
-    () => () => {},
-    () =>
-      window.sessionStorage.getItem(lastViewedStorageKey(scrollRestorationKey)),
-    () => null
-  );
+  const { registerRowView, isRowHighlighted } = useAnswerRowHighlightAndScroll({
+    apiRef,
+    rowCount: rows.length,
+    scrollRestorationKey,
+  });
 
-  // 詳細ページからブラウザバックで戻ったときに、離脱時のスクロール位置を復元する
-  React.useEffect(() => {
-    if (hasRestoredScrollRef.current || rows.length === 0) return;
-
-    const scroller = apiRef.current?.rootElementRef.current?.querySelector(
-      `.${gridClasses.virtualScroller}`
-    );
-    if (!scroller) return;
-
-    hasRestoredScrollRef.current = true;
-    const saved = window.sessionStorage.getItem(
-      scrollStorageKey(scrollRestorationKey)
-    );
-    if (saved !== null) {
-      scroller.scrollTop = Number(saved);
-    }
-  }, [apiRef, rows.length, scrollRestorationKey]);
-
-  React.useEffect(() => {
-    const scroller = apiRef.current?.rootElementRef.current?.querySelector(
-      `.${gridClasses.virtualScroller}`
-    );
-    if (!scroller) return;
-
-    const handleScroll = () => {
-      window.sessionStorage.setItem(
-        scrollStorageKey(scrollRestorationKey),
-        String(scroller.scrollTop)
-      );
-    };
-    scroller.addEventListener('scroll', handleScroll);
-    return () => {
-      scroller.removeEventListener('scroll', handleScroll);
-    };
-  }, [apiRef, scrollRestorationKey]);
-
-  // Community 版 DataGrid には onRowsScrollEnd が無いため、内部の仮想スクロールコンテナを直接監視する
-  React.useEffect(() => {
-    if (!hasMore) return;
-
-    const scroller = apiRef.current?.rootElementRef.current?.querySelector(
-      `.${gridClasses.virtualScroller}`
-    );
-    if (!scroller) return;
-
-    const handleScroll = () => {
-      const { scrollTop, scrollHeight, clientHeight } = scroller;
-      if (scrollHeight - scrollTop - clientHeight < SCROLL_END_THRESHOLD_PX) {
-        onLoadMore();
-      }
-    };
-
-    scroller.addEventListener('scroll', handleScroll);
-    return () => {
-      scroller.removeEventListener('scroll', handleScroll);
-    };
-  }, [apiRef, hasMore, onLoadMore]);
+  useInfiniteScrollTrigger({ apiRef, hasMore, onLoadMore });
 
   const handleRowClick: GridEventListener<'rowClick'> = (
     params: GridRowParams
   ) => {
     const id = String(params.id);
-    window.sessionStorage.setItem(
-      lastViewedStorageKey(scrollRestorationKey),
-      id
-    );
+    registerRowView(id);
     onAnswerClick(id);
   };
 
@@ -274,7 +210,8 @@ const AnswersView = ({
           />
           <AnswerLabelFilter
             labelOptions={labelOptions}
-            setLabelFilter={onLabelFilterChange}
+            selectedLabelIds={labelIds}
+            onChange={onLabelIdsChange}
           />
         </Stack>
       </Box>
@@ -291,9 +228,7 @@ const AnswersView = ({
           columns={columns}
           onRowClick={handleRowClick}
           getRowClassName={(params) =>
-            String(params.id) === highlightedRowId
-              ? 'answer-row-last-viewed'
-              : ''
+            isRowHighlighted(params.id) ? 'answer-row-last-viewed' : ''
           }
           sx={{
             border: 0,

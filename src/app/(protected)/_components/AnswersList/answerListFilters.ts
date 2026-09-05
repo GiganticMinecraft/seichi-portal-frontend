@@ -1,13 +1,12 @@
-import type {
-  AnswerStatus,
-  GetAnswerLabelsResponse,
-  GetFormAnswersResponse,
-} from '@/lib/api-types';
+import type { AnswerStatus, GetFormAnswersResponse } from '@/lib/api-types';
 import { answerOpenState } from '@/lib/forms/answerStatus';
 import type { AnswerOpenState } from '@/lib/forms/answerStatus';
 
+/** 回答一覧・ダッシュボードの対応状況フィルタを URL クエリで表現するときのキー */
+export const OPEN_STATE_QUERY_KEY = 'status';
+
 export interface AnswerListFilter {
-  labels: GetAnswerLabelsResponse;
+  labelIds: string[];
   /** 既定は 'open'。'all' を指定すると対応状況による絞り込みをしない。 */
   openState: AnswerOpenState | 'all';
 }
@@ -47,10 +46,10 @@ export const filterAnswers = (
     )
     .filter(
       (answer) =>
-        filter.labels.length === 0 ||
+        filter.labelIds.length === 0 ||
         (answer.labels !== undefined &&
-          filter.labels.every((label) =>
-            answer.labels?.some((answerLabel) => answerLabel.id === label.id)
+          filter.labelIds.every((labelId) =>
+            answer.labels?.some((answerLabel) => answerLabel.id === labelId)
           ))
     );
 

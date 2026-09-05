@@ -1,19 +1,24 @@
 import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
-import type { Dispatch, SetStateAction } from 'react';
 
 import type { GetFormsResponse } from '@/lib/api-types';
 
 const DashboardFormFilter = (props: {
   formOptions: GetFormsResponse;
-  setFormFilter: Dispatch<SetStateAction<GetFormsResponse>>;
+  selectedFormIds: string[];
+  onChange: (formIds: string[]) => void;
 }) => {
+  const selectedTitles = props.formOptions
+    .filter((form) => props.selectedFormIds.includes(form.id))
+    .map((form) => form.title);
+
   return (
     <Autocomplete
       multiple
       id="dashboard-form-filter"
       options={props.formOptions.map((form) => form.title)}
       getOptionLabel={(option) => option}
+      value={selectedTitles}
       sx={{
         minWidth: { xs: 0, sm: 240 },
         width: { xs: '100%', sm: 'auto' },
@@ -40,8 +45,10 @@ const DashboardFormFilter = (props: {
         />
       )}
       onChange={(_event, value) => {
-        props.setFormFilter(
-          props.formOptions.filter((form) => value.includes(form.title))
+        props.onChange(
+          props.formOptions
+            .filter((form) => value.includes(form.title))
+            .map((form) => form.id)
         );
       }}
     />

@@ -1,7 +1,7 @@
 'use client';
 
 import { Box, Chip, CircularProgress, Stack, Typography } from '@mui/material';
-import { DataGrid, gridClasses, useGridApiRef } from '@mui/x-data-grid';
+import { DataGrid, useGridApiRef } from '@mui/x-data-grid';
 import type {
   GridColDef,
   GridEventListener,
@@ -12,12 +12,14 @@ import * as React from 'react';
 
 import AnswerStatusChip from '@/app/(protected)/_components/AnswerDetail/AnswerStatusChip';
 import { getAnswerListEmptyMessage } from '@/app/(protected)/_components/AnswersList/answerListFilters';
+import {
+  useAnswerRowHighlightAndScroll,
+  useInfiniteScrollTrigger,
+} from '@/app/(protected)/_components/AnswersList/useAnswerGridInteractions';
 import RedactedNotice from '@/app/_components/RedactedNotice';
 import type { AnswerOpenState } from '@/lib/forms/answerStatus';
 
 import type { DashboardAnswerRow } from '../_lib/dashboardAnswerRows';
-
-const SCROLL_END_THRESHOLD_PX = 200;
 
 const columns: GridColDef<DashboardAnswerRow>[] = [
   { field: 'category', headerName: '種別', minWidth: 160, flex: 0.8 },
@@ -85,6 +87,7 @@ const DashboardAnswersGrid = ({
   onRowClick,
   search,
   openState,
+  scrollRestorationKey,
 }: {
   rows: DashboardAnswerRow[];
   hasMore: boolean;
@@ -94,34 +97,23 @@ const DashboardAnswersGrid = ({
   onRowClick: (row: DashboardAnswerRow) => void;
   search: string;
   openState: AnswerOpenState;
+  /** 一覧から離脱・復帰したときにスクロール位置を復元するための識別キー */
+  scrollRestorationKey: string;
 }) => {
   const apiRef = useGridApiRef();
 
-  // Community 版 DataGrid には onRowsScrollEnd が無いため、内部の仮想スクロールコンテナを直接監視する
-  React.useEffect(() => {
-    if (!hasMore) return;
+  const { registerRowView, isRowHighlighted } = useAnswerRowHighlightAndScroll({
+    apiRef,
+    rowCount: rows.length,
+    scrollRestorationKey,
+  });
 
-    const scroller = apiRef.current?.rootElementRef.current?.querySelector(
-      `.${gridClasses.virtualScroller}`
-    );
-    if (!scroller) return;
-
-    const handleScroll = () => {
-      const { scrollTop, scrollHeight, clientHeight } = scroller;
-      if (scrollHeight - scrollTop - clientHeight < SCROLL_END_THRESHOLD_PX) {
-        onLoadMore();
-      }
-    };
-
-    scroller.addEventListener('scroll', handleScroll);
-    return () => {
-      scroller.removeEventListener('scroll', handleScroll);
-    };
-  }, [apiRef, hasMore, onLoadMore]);
+  useInfiniteScrollTrigger({ apiRef, hasMore, onLoadMore });
 
   const handleRowClick: GridEventListener<'rowClick'> = (
     params: GridRowParams<DashboardAnswerRow>
   ) => {
+    registerRowView(params.id);
     onRowClick(params.row);
   };
 
@@ -161,11 +153,17 @@ const DashboardAnswersGrid = ({
         rows={rows}
         columns={columns}
         onRowClick={handleRowClick}
+        getRowClassName={(params) =>
+          isRowHighlighted(params.id) ? 'answer-row-last-viewed' : ''
+        }
         sx={{
           border: 0,
           height: 560,
           '& .MuiDataGrid-columnHeaders': {
             backgroundColor: 'action.hover',
+          },
+          '& .answer-row-last-viewed': {
+            backgroundColor: 'action.selected',
           },
         }}
         disableRowSelectionOnClick

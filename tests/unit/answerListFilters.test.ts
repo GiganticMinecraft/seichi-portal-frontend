@@ -43,7 +43,10 @@ const answers = [
 
 describe('filterAnswers', () => {
   it('ラベル未選択のときは全件を返す', () => {
-    const filtered = filterAnswers(answers, { labels: [], openState: 'all' });
+    const filtered = filterAnswers(answers, {
+      labelIds: [],
+      openState: 'all',
+    });
 
     expect(filtered.map((answer) => answer.id)).toEqual([
       'answer-1',
@@ -54,7 +57,7 @@ describe('filterAnswers', () => {
 
   it('選択したラベルをすべて持つ回答だけを残す', () => {
     const filtered = filterAnswers(answers, {
-      labels: [labels.urgent, labels.reviewed],
+      labelIds: [labels.urgent.id, labels.reviewed.id],
       openState: 'all',
     });
 
@@ -63,7 +66,7 @@ describe('filterAnswers', () => {
 
   it('どの回答も持たないラベルを選択した場合は空になる', () => {
     const filtered = filterAnswers(answers, {
-      labels: [labels.urgent, labels.spam],
+      labelIds: [labels.urgent.id, labels.spam.id],
       openState: 'all',
     });
 
@@ -77,7 +80,10 @@ describe('filterAnswers', () => {
       answer('closed-1', [], 'COMPLETED'),
     ] satisfies GetFormAnswersResponse;
 
-    const filtered = filterAnswers(mixed, { labels: [], openState: 'open' });
+    const filtered = filterAnswers(mixed, {
+      labelIds: [],
+      openState: 'open',
+    });
 
     expect(filtered.map((answer) => answer.id)).toEqual(['open-1', 'open-2']);
   });
@@ -89,7 +95,10 @@ describe('filterAnswers', () => {
       answer('closed-1', [], 'COMPLETED'),
     ] satisfies GetFormAnswersResponse;
 
-    const filtered = filterAnswers(mixed, { labels: [], openState: 'closed' });
+    const filtered = filterAnswers(mixed, {
+      labelIds: [],
+      openState: 'closed',
+    });
 
     expect(filtered.map((answer) => answer.id)).toEqual(['closed-1']);
   });
