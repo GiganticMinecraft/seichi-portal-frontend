@@ -3,13 +3,13 @@ import { cookies } from 'next/headers';
 
 import { getDebugMode } from '@/env.server';
 
-const KEY = 'SEICHI_PORTAL__SESSION_ID';
+export const SESSION_COOKIE_NAME = '__Host-Http-SEICHI_PORTAL_SESSION_ID';
 
 export const getCachedToken = async (
   cookie?: RequestCookies
 ): Promise<string | undefined> => {
   const cookieStore = cookie ?? (await cookies());
-  const cache = cookieStore.get(KEY);
+  const cache = cookieStore.get(SESSION_COOKIE_NAME);
 
   if (process.env.NODE_ENV == 'development' && getDebugMode() && !cache) {
     return 'debug_user';
