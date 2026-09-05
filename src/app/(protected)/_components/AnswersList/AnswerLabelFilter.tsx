@@ -1,19 +1,24 @@
 import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
-import type { Dispatch, SetStateAction } from 'react';
 
 import type { GetAnswerLabelsResponse } from '@/lib/api-types';
 
 const AnswerLabelFilter = (props: {
   labelOptions: GetAnswerLabelsResponse;
-  setLabelFilter: Dispatch<SetStateAction<GetAnswerLabelsResponse>>;
+  selectedLabelIds: string[];
+  onChange: (labelIds: string[]) => void;
 }) => {
+  const selectedNames = props.labelOptions
+    .filter((label) => props.selectedLabelIds.includes(label.id))
+    .map((label) => label.name);
+
   return (
     <Autocomplete
       multiple
       id="answer-label-filter"
       options={props.labelOptions.map((label) => label.name)}
       getOptionLabel={(option) => option}
+      value={selectedNames}
       sx={{
         minWidth: { xs: 0, sm: 240 },
         width: { xs: '100%', sm: 'auto' },
@@ -40,8 +45,10 @@ const AnswerLabelFilter = (props: {
         />
       )}
       onChange={(_event, value) => {
-        props.setLabelFilter(
-          props.labelOptions.filter((label) => value.includes(label.name))
+        props.onChange(
+          props.labelOptions
+            .filter((label) => value.includes(label.name))
+            .map((label) => label.id)
         );
       }}
     />

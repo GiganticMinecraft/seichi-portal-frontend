@@ -1,13 +1,17 @@
 'use client';
 
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { useEffect, useMemo, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { useEffect, useMemo } from 'react';
 
 import { useApiQuery } from '@/app/_swr/useApiQuery';
 import { useInfiniteApiQuery } from '@/app/_swr/useInfiniteApiQuery';
 import { useDebouncedSearch } from '@/hooks/useDebouncedSearch';
+import {
+  useArrayQueryParam,
+  useStringQueryParam,
+  useUrlQuery,
+} from '@/hooks/useUrlQuery';
 import type {
-  GetAnswerLabelsResponse,
   GetFormAnswersPageResponse,
   GetFormResponse,
 } from '@/lib/api-types';
@@ -15,13 +19,12 @@ import type { AnswerOpenState } from '@/lib/forms/answerStatus';
 
 import {
   filterAnswers,
+  OPEN_STATE_QUERY_KEY,
   OPEN_STATE_TO_ANSWER_STATUSES,
   resolveAnswerOpenState,
 } from './answerListFilters';
 import { toAnswerListRows } from './answerListRows';
 import AnswersView from './AnswersView';
-
-const OPEN_STATE_QUERY_KEY = 'status';
 
 const AnswersPageContent = ({
   form,
@@ -33,11 +36,15 @@ const AnswersPageContent = ({
   answersBasePath: string;
 }) => {
   const router = useRouter();
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
+  const { pathname, searchParams, updateQuery } = useUrlQuery();
+  const [searchQuery, setSearchQuery] = useStringQueryParam('search');
   const { search, debouncedSearch, isSearching, handleSearchChange } =
-    useDebouncedSearch();
-  const [labelFilter, setLabelFilter] = useState<GetAnswerLabelsResponse>([]);
+    useDebouncedSearch(searchQuery);
+  const [labelIds, setLabelIds] = useArrayQueryParam('label');
+
+  useEffect(() => {
+    setSearchQuery(debouncedSearch);
+  }, [debouncedSearch, setSearchQuery]);
 
   const openState: AnswerOpenState = useMemo(
     () => resolveAnswerOpenState(searchParams.get(OPEN_STATE_QUERY_KEY)),
@@ -45,15 +52,8 @@ const AnswersPageContent = ({
   );
 
   const handleOpenStateChange = (newOpenState: AnswerOpenState) => {
-    const params = new URLSearchParams(searchParams.toString());
-    params.set(OPEN_STATE_QUERY_KEY, newOpenState);
-    router.replace(`${pathname}?${params.toString()}`, { scroll: false });
+    updateQuery({ [OPEN_STATE_QUERY_KEY]: newOpenState });
   };
-
-  const labelIds = useMemo(
-    () => labelFilter.map((label) => label.id),
-    [labelFilter]
-  );
 
   // 未完了/完了・ラベルでの絞り込みはバックエンドの status/label_id パラメータで
   // 行う。全件を読み込んでからクライアント側で絞り込む従来方式は、回答数が多い
@@ -95,7 +95,7 @@ const AnswersPageContent = ({
   const rows = toAnswerListRows(
     isSearching
       ? filterAnswers(searchData?.answers ?? [], {
-          labels: labelFilter,
+          labelIds,
           openState,
         })
       : answers
@@ -114,7 +114,8 @@ const AnswersPageContent = ({
       onSearchChange={handleSearchChange}
       isSearchLoading={isSearching && isSearchLoading}
       labelOptions={labelOptions}
-      onLabelFilterChange={setLabelFilter}
+      labelIds={labelIds}
+      onLabelIdsChange={setLabelIds}
       openState={openState}
       onOpenStateChange={handleOpenStateChange}
       scrollRestorationKey={`${pathname}?${searchParams.toString()}`}
