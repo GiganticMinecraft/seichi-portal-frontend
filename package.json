@@ -14,8 +14,8 @@
     "pretty": "pnpm lint:fix && pnpm fmt:fix && pnpm build",
     "type-check": "tsc --noEmit",
     "test": "pnpm test:unit && pnpm test:component && pnpm test:e2e",
-    "test:unit": "vitest run --config vitest.unit.config.ts",
-    "test:component": "vitest run --config vitest.component.config.ts",
+    "test:unit": "vitest run --config vitest.unit.config.mjs",
+    "test:component": "vitest run --config vitest.component.config.mjs",
     "test:e2e": "playwright test",
     "codegen": "tsx scripts/codegen.ts",
     "codegen:check": "tsx scripts/codegen.ts && git diff --exit-code src/generated"
