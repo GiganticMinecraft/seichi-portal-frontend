@@ -16,6 +16,8 @@ import {
 import type { ReactNode } from 'react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
+import { useResizableSidebarWidth } from '@/hooks/useResizableSidebarWidth';
+
 import ConversationEntry from './ConversationEntry';
 import type {
   ConversationActionResult,
@@ -132,6 +134,7 @@ const ConversationSurface = ({
   const [open, setOpen] = useState(false);
   const hasAutoOpenedRef = useRef(false);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const { paperRef, width, dragHandleProps } = useResizableSidebarWidth();
 
   // autoOpen は entries の再フェッチ後も true のまま残り得るため、
   // 「true になった直後の 1 回だけ開く」を hasAutoOpenedRef で保証する。
@@ -231,9 +234,42 @@ const ConversationSurface = ({
         open={open}
         onClose={handleClose}
         slotProps={{
-          paper: { sx: { width: { xs: '100%', sm: 400 } } },
+          paper: {
+            ref: paperRef,
+            sx: { width: { xs: '100%', sm: width } },
+          },
         }}
       >
+        <Box
+          {...dragHandleProps}
+          sx={{
+            display: { xs: 'none', sm: 'flex' },
+            position: 'absolute',
+            top: 0,
+            bottom: 0,
+            left: -6,
+            width: 12,
+            alignItems: 'center',
+            justifyContent: 'center',
+            cursor: 'col-resize',
+            touchAction: 'none',
+            zIndex: (theme) => theme.zIndex.drawer + 1,
+            '&:hover > span, &:active > span': {
+              bgcolor: 'primary.main',
+            },
+          }}
+        >
+          <Box
+            component="span"
+            sx={{
+              width: 4,
+              height: '100%',
+              bgcolor: 'divider',
+              borderRadius: 1,
+            }}
+          />
+        </Box>
+
         <Toolbar
           sx={{
             display: 'flex',
