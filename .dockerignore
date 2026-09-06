@@ -13,9 +13,9 @@
 # テストツール関連(ビルドに不要)
 tests
 playwright.config.ts
-vitest.config.ts
-vitest.unit.config.ts
-vitest.component.config.ts
+vitest.config.mjs
+vitest.unit.config.mjs
+vitest.component.config.mjs
 
 # codegen 関連(ビルド時には src/generated の生成済み結果を使うため不要)
 scripts
