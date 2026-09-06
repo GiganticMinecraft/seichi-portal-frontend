@@ -84,6 +84,16 @@ const AnswerDetailsPageView = ({
         sx={{ alignItems: 'flex-start', flexWrap: 'wrap' }}
       >
         <Box sx={{ flexGrow: 1, minWidth: 0 }}>
+          <Typography variant="body2" component="p" color="textSecondary">
+            フォーム
+          </Typography>
+          <Typography
+            variant="h5"
+            component="p"
+            sx={{ wordBreak: 'break-word', mb: 1 }}
+          >
+            {data.form.title}
+          </Typography>
           {data.isAdmin ? (
             <AdminAnswerTitle answer={data.answer} />
           ) : (
