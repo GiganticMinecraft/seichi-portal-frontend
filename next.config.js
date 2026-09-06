@@ -19,6 +19,15 @@ const nextConfig = {
         'http://k8s-monitoring-alloy-receiver.monitoring.svc.cluster.local:12347/collect',
     },
   ],
+  headers: async () => [
+    {
+      source: '/:path*',
+      headers: [
+        { key: 'X-Frame-Options', value: 'DENY' },
+        { key: 'X-Content-Type-Options', value: 'nosniff' },
+      ],
+    },
+  ],
 };
 
 module.exports = nextConfig;
