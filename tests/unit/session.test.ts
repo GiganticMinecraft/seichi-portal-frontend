@@ -69,6 +69,13 @@ describe('normalizeRedirectTarget', () => {
     expect(normalizeRedirectTarget('//evil.example')).toBe('/');
     expect(normalizeRedirectTarget('https://evil.example')).toBe('/');
   });
+
+  it('/api/proxy 配下は画面遷移先として拒否する', () => {
+    expect(normalizeRedirectTarget('/api/proxy')).toBe('/');
+    expect(normalizeRedirectTarget('/api/proxy/api/v1/notifications')).toBe(
+      '/'
+    );
+  });
 });
 
 describe('server session helpers', () => {

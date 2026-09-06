@@ -38,6 +38,18 @@ describe('proxy login redirect', () => {
     );
   });
 
+  it('未ログイン時に匿名許可対象外の API へアクセスすると 401 を返し、ログイン画面へはリダイレクトしない', async () => {
+    const response = await proxy(
+      new NextRequest('http://0.0.0.0:3000/api/proxy/api/v1/notifications')
+    );
+
+    expect(response.status).toBe(401);
+    expect(response.headers.get('location')).toBeNull();
+    expect(response.cookies.get('SEICHI_PORTAL__POST_LOGIN_REDIRECT')).toBe(
+      undefined
+    );
+  });
+
   it('does not forward browser-owned custom headers and uses server metadata', () => {
     getSeichiProxyHeadersMock.mockReturnValue({
       'x-seichi-proxy-secret': 'server-secret',

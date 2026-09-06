@@ -114,10 +114,12 @@ export const proxy = async (request: NextRequest) => {
 
   if (!token) {
     if (isApi) {
-      // 匿名許可エンドポイントのみトークン無しで通す。それ以外は 401 相当でログインへ。
+      // 匿名許可エンドポイントのみトークン無しで通す。それ以外は 401 を返す。
+      // API リクエストは画面遷移ではないため、ログイン画面へリダイレクトしたり
+      // このパス自体をログイン後の復帰先として保存したりしない。
       return isAnonymousAllowedApi(request)
         ? proxyToBackend(request, null)
-        : redirectToLogin(request);
+        : new NextResponse(null, { status: 401 });
     }
 
     // 公開ページは未ログインでも表示。保護ページは layout 側の requireUser に委ねる
