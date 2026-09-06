@@ -29,6 +29,9 @@ type Props = {
     body: string
   ) => Promise<ConversationActionResult>;
   onDelete?: (entryId: string) => Promise<ConversationActionResult>;
+  onDeleteAttachment?: (
+    attachmentId: string
+  ) => Promise<ConversationActionResult>;
 };
 
 /**
@@ -41,6 +44,7 @@ const ConversationEntry = ({
   highlighted = false,
   onUpdate,
   onDelete,
+  onDeleteAttachment,
 }: Props) => {
   const [anchorEl, setAnchorEl] = useState<HTMLElement>();
   const [draftBody, setDraftBody] = useState(entry.body);
@@ -141,6 +145,19 @@ const ConversationEntry = ({
     setIsEditing(false);
   };
 
+  const handleDeleteAttachment = async (attachmentId: string) => {
+    if (!onDeleteAttachment) {
+      return;
+    }
+
+    const result = await onDeleteAttachment(attachmentId);
+    if (result.forbidden) {
+      showError('添付ファイルを削除する権限がありません。');
+    } else if (!result.success) {
+      showError('添付ファイルの削除に失敗しました。もう一度お試しください。');
+    }
+  };
+
   const handleCopyLink = async (url: string) => {
     try {
       await navigator.clipboard.writeText(url);
@@ -200,7 +217,16 @@ const ConversationEntry = ({
               onSubmit={handleUpdate}
             />
           ) : (
-            <ConversationEntryBody entry={entry} />
+            <ConversationEntryBody
+              entry={entry}
+              canManageAttachments={capabilities.canManageAttachments ?? false}
+              {...(onDeleteAttachment
+                ? {
+                    onDeleteAttachment: (attachmentId: string) =>
+                      handleDeleteAttachment(attachmentId),
+                  }
+                : {})}
+            />
           )}
         </Box>
       </Box>

@@ -3,6 +3,18 @@
 export type ConversationActionResult = {
   success: boolean;
   forbidden?: boolean;
+  /** true のとき、投稿自体は成功したが添付ファイルの送信に失敗したことを表す。 */
+  attachmentsFailed?: boolean;
+};
+
+/** コメントに添付されたファイル 1 件の表示モデル。 */
+export type ConversationAttachmentViewModel = {
+  id: string;
+  fileName: string;
+  contentType: string;
+  size: number;
+  /** ダウンロード・プレビュー用の URL。 */
+  url: string;
 };
 
 /**
@@ -23,6 +35,8 @@ export type ConversationEntryViewModel = {
    * 履歴取得済みで編集なし(初回投稿のみ)を表す。
    */
   editHistory?: ConversationHistoryEntryViewModel[];
+  /** 添付ファイル。コメント以外の投稿種別では undefined。 */
+  attachments?: ConversationAttachmentViewModel[];
 };
 
 /** 投稿一覧の直リンクに使う URL クエリパラメータ名。 */
@@ -75,4 +89,6 @@ export type ConversationCapabilities = {
   deepLinkQueryParam: ConversationDeepLinkQueryParam;
   /** エラーメッセージ等で使う、投稿を指す名詞(例: 'メッセージ' / 'コメント')。 */
   entryNoun: string;
+  /** true のとき、添付ファイルの追加・削除操作を表示する(コメントの管理者のみ)。 */
+  canManageAttachments?: boolean;
 };

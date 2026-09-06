@@ -181,6 +181,24 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/forms/{form_id}/answers/{answer_id}/comments/attachments/{attachment_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** コメント添付ファイルの取得 */
+        get: operations["get_comment_attachment"];
+        put?: never;
+        post?: never;
+        /** コメント添付ファイルの削除 */
+        delete: operations["delete_comment_attachment"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/forms/{form_id}/answers/{answer_id}/comments/history": {
         parameters: {
             query?: never;
@@ -214,6 +232,23 @@ export interface paths {
         head?: never;
         /** コメントの編集 */
         patch: operations["update_form_comment"];
+        trace?: never;
+    };
+    "/api/v1/forms/{form_id}/answers/{answer_id}/comments/{comment_id}/attachments": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** コメントへのファイル添付 */
+        post: operations["post_comment_attachments"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
         trace?: never;
     };
     "/api/v1/forms/{form_id}/answers/{answer_id}/messages": {
@@ -842,6 +877,7 @@ export interface components {
             type: "ANONYMOUS";
         };
         AnswerComment: {
+            attachments: components["schemas"]["CommentAttachmentResponse"][];
             commented_by?: null | components["schemas"]["User"];
             content: string;
             /** Format: uuid */
@@ -965,6 +1001,16 @@ export interface components {
             label: string;
             /** Format: int32 */
             position: number;
+        };
+        CommentAttachmentResponse: {
+            content_type: string;
+            /** Format: date-time */
+            created_at: string;
+            file_name: string;
+            /** Format: uuid */
+            id: string;
+            /** Format: int64 */
+            size: number;
         };
         CommentHistoryPageResponse: {
             items: components["schemas"]["CommentHistoryResponseEntry"][];
@@ -2460,6 +2506,146 @@ export interface operations {
             };
         };
     };
+    get_comment_attachment: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Form ID */
+                form_id: string;
+                /** @description Answer ID */
+                answer_id: string;
+                /** @description Attachment ID */
+                attachment_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The requested file. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description The server could not understand the request due to invalid syntax. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Access is unauthorized. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Access is forbidden. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description The server cannot find the requested resource. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    delete_comment_attachment: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Form ID */
+                form_id: string;
+                /** @description Answer ID */
+                answer_id: string;
+                /** @description Attachment ID */
+                attachment_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The request has succeeded. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description The server could not understand the request due to invalid syntax. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Access is unauthorized. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Access is forbidden. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description The server cannot find the requested resource. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
     get_comment_history: {
         parameters: {
             query?: {
@@ -2667,6 +2853,99 @@ export interface operations {
             };
             /** @description The server cannot find the requested resource. */
             404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Client error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    post_comment_attachments: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Form ID */
+                form_id: string;
+                /** @description Answer ID */
+                answer_id: string;
+                /** @description Comment ID */
+                comment_id: string;
+            };
+            cookie?: never;
+        };
+        /** @description One or more file fields named file. */
+        requestBody?: {
+            content: {
+                "multipart/form-data": unknown;
+            };
+        };
+        responses: {
+            /** @description The request has succeeded. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description The server could not understand the request due to invalid syntax. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Access is unauthorized. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Access is forbidden. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description The server cannot find the requested resource. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description The request payload is too large. */
+            413: {
                 headers: {
                     [name: string]: unknown;
                 };

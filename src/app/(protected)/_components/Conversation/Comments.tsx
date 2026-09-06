@@ -5,6 +5,7 @@ import { match } from 'ts-pattern';
 
 import type { AnswerComment } from '@/lib/api-types';
 
+import { getCommentAttachmentUrl } from './commentAttachmentUrl';
 import ConversationComposer from './ConversationComposer';
 import {
   mergeConversationListItems,
@@ -59,7 +60,11 @@ const Comments = (props: {
   /** disabled が true のときに trigger ボタンのホバーで表示する理由。 */
   disabledReason?: string | undefined;
 }) => {
-  const actions = useCommentConversationActions(props.formId, props.answerId);
+  const actions = useCommentConversationActions(
+    props.formId,
+    props.answerId,
+    props.currentUserId
+  );
   const { historyByTargetId, isLoading: isHistoryLoading } = useCommentHistory(
     props.formId,
     props.answerId,
@@ -87,6 +92,17 @@ const Comments = (props: {
         canDelete: (props.showDeleteButton ?? false) || isOwnComment,
         canEdit: isOwnComment,
         ...(editHistory !== undefined ? { editHistory } : {}),
+        attachments: comment.attachments.map((attachment) => ({
+          id: attachment.id,
+          fileName: attachment.file_name,
+          contentType: attachment.content_type,
+          size: attachment.size,
+          url: getCommentAttachmentUrl(
+            props.formId,
+            props.answerId,
+            attachment.id
+          ),
+        })),
       };
     }
   );
@@ -106,6 +122,7 @@ const Comments = (props: {
     emptyMessage: 'コメントはまだありません',
     deepLinkQueryParam: 'commentId',
     entryNoun: 'コメント',
+    canManageAttachments: props.isAdmin,
   };
 
   const deepLinkState = useConversationEntryDeepLink(
@@ -150,12 +167,14 @@ const Comments = (props: {
               <ConversationComposer
                 label={capabilities.composeLabel}
                 onSend={actions.send}
+                attachmentsEnabled={props.isAdmin}
               />
             </Box>
           ))
           .otherwise(() => null)}
         onUpdate={actions.update}
         onDelete={actions.deleteEntry}
+        onDeleteAttachment={actions.deleteAttachment}
       />
     </Box>
   );

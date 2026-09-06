@@ -1,18 +1,29 @@
 'use client';
 
-import { Paper } from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
+import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
+import { Chip, Paper, Stack, Tooltip } from '@mui/material';
 import { alpha } from '@mui/material/styles';
 
 import MarkdownText from '@/app/_components/MarkdownText';
+import { formatFileSize } from '@/generic/FileSizeFormatter';
 
 import type { ConversationEntryViewModel } from './conversationTypes';
 
 type Props = {
   entry: ConversationEntryViewModel;
+  /** true のとき、添付ファイルの削除操作を表示する。 */
+  canManageAttachments?: boolean;
+  onDeleteAttachment?: (attachmentId: string) => void | Promise<void>;
 };
 
-const ConversationEntryBody = ({ entry }: Props) => {
+const ConversationEntryBody = ({
+  entry,
+  canManageAttachments = false,
+  onDeleteAttachment,
+}: Props) => {
   const isAdmin = entry.authorRole === 'ADMINISTRATOR';
+  const attachments = entry.attachments ?? [];
 
   return (
     <Paper
@@ -31,6 +42,39 @@ const ConversationEntryBody = ({ entry }: Props) => {
       })}
     >
       <MarkdownText>{entry.body}</MarkdownText>
+
+      {attachments.length > 0 && (
+        <Stack
+          direction="row"
+          spacing={1}
+          sx={{ flexWrap: 'wrap', rowGap: 1, mt: 1 }}
+        >
+          {attachments.map((attachment) => (
+            <Chip
+              key={attachment.id}
+              icon={<InsertDriveFileIcon />}
+              component="a"
+              href={attachment.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              clickable
+              label={`${attachment.fileName} (${formatFileSize(attachment.size)})`}
+              onDelete={
+                canManageAttachments && onDeleteAttachment
+                  ? () => {
+                      void onDeleteAttachment(attachment.id);
+                    }
+                  : undefined
+              }
+              deleteIcon={
+                <Tooltip title="添付ファイルを削除">
+                  <CloseIcon />
+                </Tooltip>
+              }
+            />
+          ))}
+        </Stack>
+      )}
     </Paper>
   );
 };
