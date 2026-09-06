@@ -4,6 +4,8 @@ export type ApiPaths = paths;
 export type ApiComponents = components;
 
 export type AnswerComment = components['schemas']['AnswerComment'];
+export type CommentAttachmentResponse =
+  components['schemas']['CommentAttachmentResponse'];
 export type AnswerPublication = components['schemas']['AnswerPublication'];
 export type AnswerStatus = components['schemas']['AnswerStatus'];
 export type CommentHistoryResponseEntry =

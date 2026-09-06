@@ -11,19 +11,22 @@ import type { ConversationActionResult } from './conversationTypes';
  */
 export const useCommentConversationActions = (
   formId: string,
-  answerId: string
+  answerId: string,
+  currentUserId: string | undefined
 ) => {
-  const { sendComment, deleteComment, updateComment } = useCommentActions(
-    formId,
-    answerId
-  );
+  const { sendComment, deleteComment, updateComment, deleteCommentAttachment } =
+    useCommentActions(formId, answerId, currentUserId);
 
   return {
-    send: async (body: string): Promise<ConversationActionResult> => {
-      const result = await sendComment(body);
+    send: async (
+      body: string,
+      files?: File[]
+    ): Promise<ConversationActionResult> => {
+      const result = await sendComment(body, files ?? []);
       return {
         success: result.ok,
         ...(result.forbidden ? { forbidden: true } : {}),
+        ...(result.attachmentsFailed ? { attachmentsFailed: true } : {}),
       };
     },
     update: async (
@@ -38,6 +41,15 @@ export const useCommentConversationActions = (
     },
     deleteEntry: async (entryId: string): Promise<ConversationActionResult> => {
       const result = await deleteComment(entryId);
+      return {
+        success: result.ok,
+        ...(result.forbidden ? { forbidden: true } : {}),
+      };
+    },
+    deleteAttachment: async (
+      attachmentId: string
+    ): Promise<ConversationActionResult> => {
+      const result = await deleteCommentAttachment(attachmentId);
       return {
         success: result.ok,
         ...(result.forbidden ? { forbidden: true } : {}),

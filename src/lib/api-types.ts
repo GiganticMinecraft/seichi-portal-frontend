@@ -7,6 +7,7 @@ export type {
   AnswerStatus,
   AnswerStatusHistoryResponseEntry,
   AnswerTitleHistoryResponseEntry,
+  CommentAttachmentResponse,
   CommentHistoryResponseEntry,
   CreateFormResponse,
   CreateFormSchema,

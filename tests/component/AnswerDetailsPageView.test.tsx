@@ -69,6 +69,7 @@ const otherUserComment: AnswerComment = {
   commented_by: { name: 'Alice', role: 'STANDARD_USER', uuid: 'other-user' },
   source: 'PORTAL',
   timestamp: '2024-01-01T00:00:00Z',
+  attachments: [],
 };
 
 const baseData: AnswerDetailsPageData = {

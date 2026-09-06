@@ -55,6 +55,7 @@ const comments: AnswerComment[] = [
     commented_by: { name: 'Alice', role: 'STANDARD_USER', uuid: 'user-1' },
     source: 'PORTAL',
     timestamp: '2024-01-01T00:00:00Z',
+    attachments: [],
   },
   {
     id: 'comment-uuid-2',
@@ -62,6 +63,7 @@ const comments: AnswerComment[] = [
     commented_by: { name: 'Bob', role: 'STANDARD_USER', uuid: 'user-2' },
     source: 'PORTAL',
     timestamp: '2024-01-02T00:00:00Z',
+    attachments: [],
   },
 ];
 
@@ -161,6 +163,7 @@ describe('Comments', () => {
         commented_by: { name: 'Alice', role: 'STANDARD_USER', uuid: 'user-1' },
         source: 'PORTAL',
         timestamp: '2024-01-01T00:00:00Z',
+        attachments: [],
       },
     ];
 
@@ -295,6 +298,7 @@ describe('Comments のコメント編集メニュー表示条件 (canEdit)', () 
         },
         source: 'PORTAL',
         timestamp: '2024-01-03T00:00:00Z',
+        attachments: [],
       },
     ];
 

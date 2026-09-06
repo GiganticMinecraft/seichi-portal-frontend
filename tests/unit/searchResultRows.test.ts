@@ -76,6 +76,7 @@ const createComment = (
   content: 'コメント本文',
   source: 'PORTAL',
   timestamp: '2026-06-01T10:00:00+09:00',
+  attachments: [],
   ...overrides,
 });
 

@@ -52,6 +52,8 @@ type Props = {
     | undefined;
   onDelete?:
     ((entryId: string) => Promise<ConversationActionResult>) | undefined;
+  onDeleteAttachment?:
+    ((attachmentId: string) => Promise<ConversationActionResult>) | undefined;
 };
 
 /**
@@ -64,6 +66,7 @@ const ConversationList = ({
   highlightedEntryId,
   onUpdate,
   onDelete,
+  onDeleteAttachment,
 }: {
   items: ConversationListItem[];
   capabilities: ConversationCapabilities;
@@ -73,6 +76,8 @@ const ConversationList = ({
     | undefined;
   onDelete?:
     ((entryId: string) => Promise<ConversationActionResult>) | undefined;
+  onDeleteAttachment?:
+    ((attachmentId: string) => Promise<ConversationActionResult>) | undefined;
 }) => (
   <Stack spacing={2}>
     {items.length === 0 && (
@@ -89,6 +94,7 @@ const ConversationList = ({
             highlighted={item.entry.id === highlightedEntryId}
             {...(onUpdate ? { onUpdate } : {})}
             {...(onDelete ? { onDelete } : {})}
+            {...(onDeleteAttachment ? { onDeleteAttachment } : {})}
           />
         ) : (
           <DeletedConversationEntry
@@ -121,6 +127,7 @@ const ConversationSurface = ({
   onDrawerClose,
   onUpdate,
   onDelete,
+  onDeleteAttachment,
 }: Props) => {
   const [open, setOpen] = useState(false);
   const hasAutoOpenedRef = useRef(false);
@@ -185,6 +192,7 @@ const ConversationSurface = ({
         highlightedEntryId={highlightedEntryId}
         {...(onUpdate ? { onUpdate } : {})}
         {...(onDelete ? { onDelete } : {})}
+        {...(onDeleteAttachment ? { onDeleteAttachment } : {})}
       />
     );
   }
@@ -260,6 +268,7 @@ const ConversationSurface = ({
             highlightedEntryId={highlightedEntryId}
             {...(onUpdate ? { onUpdate } : {})}
             {...(onDelete ? { onDelete } : {})}
+            {...(onDeleteAttachment ? { onDeleteAttachment } : {})}
           />
         </Box>
 
