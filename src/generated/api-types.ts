@@ -5236,12 +5236,21 @@ export interface operations {
                     "application/problem+json": components["schemas"]["ErrorResponse"];
                 };
             };
-            /** @description The server cannot find the requested resource. */
+            /** @description The Minecraft profile endpoint reported that no profile was found. */
             404: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
+                    /**
+                     * @example {
+                     *       "detail": "Minecraft profile was not found.",
+                     *       "errorCode": "MINECRAFT_PROFILE_NOT_FOUND",
+                     *       "status": 404,
+                     *       "title": "Not Found",
+                     *       "type": "about:blank"
+                     *     }
+                     */
                     "application/problem+json": components["schemas"]["ErrorResponse"];
                 };
             };
@@ -5263,7 +5272,16 @@ export interface operations {
                     "application/problem+json": components["schemas"]["ErrorResponse"];
                 };
             };
-            /** @description The server is temporarily unable to handle the request. */
+            /** @description The Minecraft profile service returned an invalid or unexpected response. */
+            502: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description The Minecraft profile service could not be reached or is temporarily unavailable. */
             503: {
                 headers: {
                     [name: string]: unknown;
