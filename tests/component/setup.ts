@@ -59,7 +59,7 @@ vi.mock('next/image', () => ({
     unoptimized,
     ...props
   }: NextImageProps) => {
-    void [
+    Object.values({
       blurDataURL,
       fill,
       loader,
@@ -67,7 +67,7 @@ vi.mock('next/image', () => ({
       priority,
       quality,
       unoptimized,
-    ];
+    });
 
     return createElement('img', props);
   },
@@ -84,7 +84,15 @@ vi.mock('next/link', () => ({
     shallow,
     ...props
   }: NextLinkProps) => {
-    void [legacyBehavior, locale, passHref, prefetch, replace, scroll, shallow];
+    Object.values({
+      legacyBehavior,
+      locale,
+      passHref,
+      prefetch,
+      replace,
+      scroll,
+      shallow,
+    });
 
     return createElement('a', props);
   },
