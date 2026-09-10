@@ -120,8 +120,8 @@ const SearchField = () => {
         </IconButton>
         <Autocomplete<SearchResultRow, false, false, true>
           freeSolo
-          fullWidth
           options={options}
+          sx={{ ml: 1, flex: 1, minWidth: 0 }}
           filterOptions={(x) => x}
           inputValue={searchValue}
           getOptionLabel={(option) =>
@@ -190,8 +190,6 @@ const SearchField = () => {
                 },
               }}
               sx={(theme) => ({
-                ml: 1,
-                flex: 1,
                 ...(isExpandedOnMobile && {
                   [theme.breakpoints.down('sm')]: {
                     '& .MuiInputBase-input': {
