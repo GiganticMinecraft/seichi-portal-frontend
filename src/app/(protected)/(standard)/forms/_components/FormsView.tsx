@@ -17,7 +17,7 @@ import {
 import NextLink from 'next/link';
 
 import InfiniteScrollSentinel from '@/app/_components/InfiniteScrollSentinel';
-import MarkdownText from '@/app/_components/MarkdownText';
+import { MarkdownPreview } from '@/app/_components/MarkdownText';
 import { useInfiniteApiQuery } from '@/app/_swr/useInfiniteApiQuery';
 import type { GetFormsPageResponse, GetFormsResponse } from '@/lib/api-types';
 import {
@@ -50,7 +50,7 @@ const EachForm = ({ form }: { form: FormItem }) => {
             sx={{ mb: 1.5 }}
           />
           {form.description && (
-            <MarkdownText
+            <MarkdownPreview
               sx={{
                 typography: 'body2',
                 color: 'text.secondary',
@@ -61,7 +61,7 @@ const EachForm = ({ form }: { form: FormItem }) => {
               }}
             >
               {form.description}
-            </MarkdownText>
+            </MarkdownPreview>
           )}
         </CardContent>
       </CardActionArea>

@@ -4,6 +4,7 @@ import { Box, Typography } from '@mui/material';
 import type { SxProps, Theme } from '@mui/material/styles';
 import { type MouseEvent, useState } from 'react';
 import Markdown from 'react-markdown';
+import type { Components } from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 
 import ConfirmDialog from './ConfirmDialog';
@@ -21,6 +22,28 @@ type Props = {
   children: string;
   sx?: SxProps<Theme>;
 };
+
+const imageComponent: Components['img'] = ({ alt }) => (
+  <>{alt ? `[image: ${alt}]` : '[image]'}</>
+);
+
+const previewComponents: Components = {
+  img: imageComponent,
+  a: ({ children }) => <span>{children}</span>,
+  input: ({ checked }) => <>{checked ? '[x]' : '[ ]'}</>,
+};
+
+const MarkdownBody = ({
+  children,
+  components,
+  sx,
+}: Props & { components: Components }) => (
+  <Box sx={sx ? [defaultSx, sx].flat() : defaultSx}>
+    <Markdown remarkPlugins={[remarkGfm]} components={components}>
+      {children}
+    </Markdown>
+  </Box>
+);
 
 const isExternalHttpLink = (href: string | undefined): href is string =>
   href !== undefined && /^https?:\/\//i.test(href);
@@ -55,11 +78,11 @@ const MarkdownText = ({ children, sx }: Props) => {
     };
 
   return (
-    <Box sx={sx ? [defaultSx, sx].flat() : defaultSx}>
-      <Markdown
-        remarkPlugins={[remarkGfm]}
+    <>
+      <MarkdownBody
+        {...(sx === undefined ? {} : { sx })}
         components={{
-          img: ({ alt }) => <>{alt ? `[image: ${alt}]` : '[image]'}</>,
+          img: imageComponent,
           a: ({ href, children: linkChildren }) => (
             <a
               href={href}
@@ -74,7 +97,7 @@ const MarkdownText = ({ children, sx }: Props) => {
         }}
       >
         {children}
-      </Markdown>
+      </MarkdownBody>
       <ConfirmDialog
         open={pendingHref !== null}
         title="外部サイトに移動します"
@@ -101,8 +124,21 @@ const MarkdownText = ({ children, sx }: Props) => {
           setPendingHref(null);
         }}
       />
-    </Box>
+    </>
   );
 };
+
+/**
+ * リンクカードなど、操作できる要素の内側に置く Markdown プレビュー。
+ * リンクとチェック項目は操作できる要素にせず、文字として描画する。
+ */
+export const MarkdownPreview = ({ children, sx }: Props) => (
+  <MarkdownBody
+    {...(sx === undefined ? {} : { sx })}
+    components={previewComponents}
+  >
+    {children}
+  </MarkdownBody>
+);
 
 export default MarkdownText;
