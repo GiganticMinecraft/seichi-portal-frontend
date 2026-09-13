@@ -99,6 +99,22 @@ const baseData: AnswerDetailsPageData = {
 
 const deepLink = { entryId: undefined, onClose: vi.fn() };
 
+describe('AnswerDetailsPageView のフォーム名表示', () => {
+  it('回答が属するフォーム名を表示する', () => {
+    renderWithProviders(
+      <AnswerDetailsPageView
+        formId="form-id"
+        answerId="answer-id"
+        data={baseData}
+        messageDeepLink={deepLink}
+        commentDeepLink={deepLink}
+      />
+    );
+
+    expect(screen.getByText('Form title')).toBeVisible();
+  });
+});
+
 describe('AnswerDetailsPageView の isAdmin 分岐(#統合)', () => {
   it('isAdmin=false の場合、管理者操作(タイトル編集・ラベル管理・コメント削除)は表示されない', async () => {
     const user = userEvent.setup();
