@@ -895,6 +895,7 @@ export interface components {
             answer: string;
             /** Format: uuid */
             question_id: string;
+            question_title: string;
         };
         AnswerContentSchema: {
             answer: string;

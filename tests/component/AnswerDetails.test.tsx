@@ -43,8 +43,16 @@ const answer: GetAnswerResponse = {
     user: { name: 'Alice', role: 'STANDARD_USER', uuid: 'user-1' },
   },
   answers: [
-    { question_id: 'text-question-id', answer: '**太字の回答**' },
-    { question_id: 'choice-question-id', answer: '**太字**' },
+    {
+      question_id: 'text-question-id',
+      question_title: '感想',
+      answer: '**太字の回答**',
+    },
+    {
+      question_id: 'choice-question-id',
+      question_title: '選択式の質問',
+      answer: '**太字**',
+    },
   ],
 };
 
@@ -66,5 +74,25 @@ describe('AnswerDetails', () => {
     // 選択式の回答値がそのまま(**が展開されずに)表示されている
     expect(screen.getByText('**太字**')).toBeVisible();
     expect(screen.queryByText('太字', { selector: 'strong' })).toBeNull();
+  });
+
+  it('現在のフォームに存在しない過去の質問でも、回答時点の質問タイトルを表示する', () => {
+    const historicalAnswer: GetAnswerResponse = {
+      ...answer,
+      answers: [
+        {
+          question_id: 'deleted-question-id',
+          question_title: '過去の質問タイトル',
+          answer: '過去の回答',
+        },
+      ],
+    };
+
+    renderWithProviders(
+      <AnswerDetails answer={historicalAnswer} questions={questions} />
+    );
+
+    expect(screen.getByText('過去の質問タイトル')).toBeVisible();
+    expect(screen.queryByText('不明なタイトル')).toBeNull();
   });
 });

@@ -14,9 +14,12 @@ const AnswerDetails = (props: {
     props.answer.answers.map((answer) => answer.question_id)
   ).map((questionId) => {
     const question = props.questions.find((item) => item.id === questionId);
+    const answer = props.answer.answers.find(
+      (item) => item.question_id === questionId
+    );
 
     return {
-      questionTitle: question?.title || '不明なタイトル',
+      questionTitle: answer?.question_title ?? '不明なタイトル',
       // 自由記述(Text型)のみ回答をMarkdownとして解釈する。選択式は選択肢ラベルの
       // プレーン表示のままでよく、question が見つからない場合も安全側でプレーン表示になる。
       // なお Text 型は入力側 (QuestionFieldRenderer) が単一フィールドとして登録するため
