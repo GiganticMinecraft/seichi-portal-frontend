@@ -12,10 +12,10 @@ import {
 } from '@mui/material';
 import dayjs from 'dayjs';
 
+import LabelChips from '@/app/_components/LabelChips';
 import type { GetArchivedFormsResponse } from '@/lib/api-types';
 
 import ArchivedFormRowMenu from './ArchivedFormRowMenu';
-import LabelChips from './LabelChips';
 
 interface Props {
   forms: GetArchivedFormsResponse;

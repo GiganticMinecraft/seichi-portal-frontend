@@ -10,6 +10,7 @@ import {
   CardContent,
   Chip,
   Grid,
+  Stack,
   Typography,
   Alert,
   AlertTitle,
@@ -17,6 +18,7 @@ import {
 import NextLink from 'next/link';
 
 import InfiniteScrollSentinel from '@/app/_components/InfiniteScrollSentinel';
+import LabelChips from '@/app/_components/LabelChips';
 import { MarkdownPreview } from '@/app/_components/MarkdownText';
 import { useInfiniteApiQuery } from '@/app/_swr/useInfiniteApiQuery';
 import type { GetFormsPageResponse, GetFormsResponse } from '@/lib/api-types';
@@ -42,6 +44,11 @@ const EachForm = ({ form }: { form: FormItem }) => {
           <Typography variant="h6" component="h2" gutterBottom>
             {form.title}
           </Typography>
+          {form.labels.length > 0 && (
+            <Stack sx={{ mb: 1 }}>
+              <LabelChips labels={form.labels} max={4} />
+            </Stack>
+          )}
           <Chip
             icon={<AccessTimeIcon />}
             label={formatResponsePeriod(responsePeriod)}

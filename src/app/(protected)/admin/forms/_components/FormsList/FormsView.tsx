@@ -11,6 +11,7 @@ import {
   Typography,
 } from '@mui/material';
 
+import LabelChips from '@/app/_components/LabelChips';
 import type { GetFormsResponse } from '@/lib/api-types';
 import {
   formatResponsePeriod,
@@ -18,7 +19,6 @@ import {
 } from '@/lib/forms/responsePeriod';
 
 import FormRowMenu from './FormRowMenu';
-import LabelChips from './LabelChips';
 
 interface Props {
   forms: GetFormsResponse;
