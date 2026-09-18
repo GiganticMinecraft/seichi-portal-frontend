@@ -13,7 +13,7 @@ import {
 } from '@mui/material';
 import { alpha } from '@mui/material/styles';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import {
   toSearchResultRows,
@@ -28,6 +28,7 @@ const SUGGESTION_LIMIT = 8;
 const SearchField = () => {
   const router = useRouter();
   const [isExpandedOnMobile, setIsExpandedOnMobile] = useState(false);
+  const searchInputRef = useRef<HTMLInputElement>(null);
   const {
     search: searchValue,
     debouncedSearch: debouncedValue,
@@ -45,6 +46,12 @@ const SearchField = () => {
     isSuggesting && data
       ? toSearchResultRows(data).slice(0, SUGGESTION_LIMIT)
       : [];
+
+  useEffect(() => {
+    if (isExpandedOnMobile) {
+      searchInputRef.current?.focus();
+    }
+  }, [isExpandedOnMobile]);
 
   const goToSearchPage = (value: string) => {
     if (value.trim() === '') {
@@ -178,6 +185,7 @@ const SearchField = () => {
           renderInput={(params) => (
             <TextField
               {...params}
+              inputRef={searchInputRef}
               variant="standard"
               placeholder="検索内容を入力"
               slotProps={{

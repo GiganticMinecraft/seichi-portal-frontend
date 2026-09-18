@@ -70,6 +70,9 @@ describe('Groups', () => {
 
     await user.click(screen.getByRole('button', { name: '編集' }));
     const nameInput = screen.getByRole('textbox', { name: 'グループ名' });
+    await waitFor(() => {
+      expect(nameInput).toHaveFocus();
+    });
     await user.clear(nameInput);
     await user.type(nameInput, 'グループA改');
     await user.click(screen.getByRole('button', { name: '保存' }));

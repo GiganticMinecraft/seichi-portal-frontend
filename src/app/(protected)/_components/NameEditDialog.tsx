@@ -10,6 +10,7 @@ import {
   Stack,
   TextField,
 } from '@mui/material';
+import { useRef } from 'react';
 import type { ComponentPropsWithoutRef, ReactNode } from 'react';
 import type { UseFormRegister } from 'react-hook-form';
 
@@ -28,36 +29,51 @@ const NameEditDialog = (props: {
   isSubmitting: boolean;
   onClose: () => void;
   onSubmit: NonNullable<ComponentPropsWithoutRef<'form'>['onSubmit']>;
-}) => (
-  <Dialog
-    open={props.open}
-    onClose={props.isSubmitting ? undefined : props.onClose}
-    fullWidth
-  >
-    <DialogTitle>{props.title}</DialogTitle>
-    <Box component="form" onSubmit={props.onSubmit}>
-      <DialogContent>
-        <input {...props.register('id')} type="hidden" />
-        <Stack spacing={0.5} sx={{ mt: 1 }}>
-          <FieldLabel label={props.nameLabel} required />
-          <TextField
-            {...props.register('name')}
-            autoFocus
-            fullWidth
-            slotProps={{ htmlInput: { 'aria-label': props.nameLabel } }}
-          />
-        </Stack>
-      </DialogContent>
-      <DialogActions>
-        <Button onClick={props.onClose} disabled={props.isSubmitting}>
-          キャンセル
-        </Button>
-        <Button type="submit" variant="contained" disabled={props.isSubmitting}>
-          保存
-        </Button>
-      </DialogActions>
-    </Box>
-  </Dialog>
-);
+}) => {
+  const nameInputRef = useRef<HTMLInputElement>(null);
+
+  return (
+    <Dialog
+      open={props.open}
+      onClose={props.isSubmitting ? undefined : props.onClose}
+      fullWidth
+      slotProps={{
+        transition: {
+          onEntered: () => {
+            nameInputRef.current?.focus();
+          },
+        },
+      }}
+    >
+      <DialogTitle>{props.title}</DialogTitle>
+      <Box component="form" onSubmit={props.onSubmit}>
+        <DialogContent>
+          <input {...props.register('id')} type="hidden" />
+          <Stack spacing={0.5} sx={{ mt: 1 }}>
+            <FieldLabel label={props.nameLabel} required />
+            <TextField
+              {...props.register('name')}
+              inputRef={nameInputRef}
+              fullWidth
+              slotProps={{ htmlInput: { 'aria-label': props.nameLabel } }}
+            />
+          </Stack>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={props.onClose} disabled={props.isSubmitting}>
+            キャンセル
+          </Button>
+          <Button
+            type="submit"
+            variant="contained"
+            disabled={props.isSubmitting}
+          >
+            保存
+          </Button>
+        </DialogActions>
+      </Box>
+    </Dialog>
+  );
+};
 
 export default NameEditDialog;

@@ -149,6 +149,10 @@ describe('AnswerDetailsPageView の isAdmin 分岐(#統合)', () => {
     expect(
       screen.getByRole('button', { name: 'タイトルを編集' })
     ).toBeVisible();
+
+    await user.click(screen.getByRole('button', { name: 'タイトルを編集' }));
+    expect(screen.getByRole('textbox', { name: '回答タイトル' })).toHaveFocus();
+
     expect(screen.getByRole('link', { name: 'ラベルの管理' })).toBeVisible();
     expect(
       screen.getByRole('button', { name: /^回答者にメッセージを送信 \(0\)$/ })

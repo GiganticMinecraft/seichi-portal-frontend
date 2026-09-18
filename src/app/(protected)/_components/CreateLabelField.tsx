@@ -10,7 +10,7 @@ import {
   Stack,
   TextField,
 } from '@mui/material';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
 import FieldLabel from '@/app/_components/FieldLabel';
@@ -23,6 +23,7 @@ type CreateLabelSchema = {
 
 const CreateLabelField = (props: { labelType: 'answers' | 'forms' }) => {
   const [dialogOpen, setDialogOpen] = useState(false);
+  const nameInputRef = useRef<HTMLInputElement>(null);
   const { snackbar, showSnackbar, closeSnackbar } = useSnackbar();
 
   const {
@@ -65,6 +66,13 @@ const CreateLabelField = (props: { labelType: 'answers' | 'forms' }) => {
         open={dialogOpen}
         onClose={isSubmitting ? undefined : handleClose}
         fullWidth
+        slotProps={{
+          transition: {
+            onEntered: () => {
+              nameInputRef.current?.focus();
+            },
+          },
+        }}
       >
         <DialogTitle>新規ラベル作成</DialogTitle>
         <form
@@ -77,7 +85,7 @@ const CreateLabelField = (props: { labelType: 'answers' | 'forms' }) => {
               <FieldLabel label="ラベル名" required />
               <TextField
                 {...register('name')}
-                autoFocus
+                inputRef={nameInputRef}
                 fullWidth
                 slotProps={{ htmlInput: { 'aria-label': 'ラベル名' } }}
               />

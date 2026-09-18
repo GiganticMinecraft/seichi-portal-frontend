@@ -25,6 +25,9 @@ describe('CreateGroupField', () => {
     renderWithProviders(<CreateGroupField />);
 
     await user.click(screen.getByRole('button', { name: '新規作成' }));
+    await waitFor(() => {
+      expect(screen.getByRole('textbox', { name: 'グループ名' })).toHaveFocus();
+    });
     await user.type(
       screen.getByRole('textbox', { name: 'グループ名' }),
       '  グループA  '

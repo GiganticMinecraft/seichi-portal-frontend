@@ -38,6 +38,7 @@ type FormSettingsProps = {
   labelOptions: GetFormLabelsResponse;
   groupOptions: GetUserGroupsResponse;
   discordWebhookEnabled: boolean;
+  autoFocusTitle?: boolean;
   webhookSectionResetKey?: number;
 };
 
@@ -54,7 +55,11 @@ const BasicFormSettings = ({
   register,
   control,
   labelOptions,
-}: Pick<FormSettingsProps, 'register' | 'control' | 'labelOptions'>) => {
+  autoFocusTitle,
+}: Pick<
+  FormSettingsProps,
+  'register' | 'control' | 'labelOptions' | 'autoFocusTitle'
+>) => {
   const { errors } = useFormState({ control });
 
   return (
@@ -63,6 +68,7 @@ const BasicFormSettings = ({
         <FieldLabel label="フォームタイトル" required />
         <TextField
           {...register('title')}
+          autoFocus={autoFocusTitle}
           fullWidth
           error={Boolean(errors.title)}
           helperText={errors.title?.message}
@@ -343,7 +349,10 @@ const NotificationSettings = ({
   );
 };
 
-const FormSettings = (props: FormSettingsProps) => {
+const FormSettings = ({
+  autoFocusTitle = false,
+  ...props
+}: FormSettingsProps) => {
   return (
     <Stack spacing={2}>
       <Typography variant="h6" component="h2" sx={{ fontWeight: 'bold' }}>
@@ -355,6 +364,7 @@ const FormSettings = (props: FormSettingsProps) => {
         register={props.register}
         control={props.control}
         labelOptions={props.labelOptions}
+        autoFocusTitle={autoFocusTitle}
       />
 
       <SectionHeading label="フォームの公開設定" />
