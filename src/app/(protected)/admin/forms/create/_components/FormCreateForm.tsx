@@ -94,6 +94,7 @@ const FormCreateForm = (props: {
               labelOptions={props.labelOptions}
               groupOptions={props.groupOptions}
               discordWebhookEnabled={false}
+              autoFocusTitle
             />
           </CardContent>
           <QuestionList

@@ -10,7 +10,7 @@ import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import NextLink from 'next/link';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
 import { useAnswerActions } from '@/hooks/useAnswerActions';
@@ -35,6 +35,7 @@ const parseAnswerStatus = (value: string): AnswerStatus =>
 export const AdminAnswerTitle = (props: { answer: GetAnswerResponse }) => {
   const { handleSubmit, register } = useForm<{ title: string }>();
   const [isEditing, setIsEditing] = useState(false);
+  const titleInputRef = useRef<HTMLInputElement>(null);
   const [title, setTitle] = useState(props.answer.title);
   const { updateTitle } = useAnswerActions(
     props.answer.form_id,
@@ -49,6 +50,12 @@ export const AdminAnswerTitle = (props: { answer: GetAnswerResponse }) => {
     }
   };
 
+  useEffect(() => {
+    if (isEditing) {
+      titleInputRef.current?.focus();
+    }
+  }, [isEditing]);
+
   return (
     <Stack
       direction="row"
@@ -62,9 +69,11 @@ export const AdminAnswerTitle = (props: { answer: GetAnswerResponse }) => {
       {isEditing ? (
         <TextField
           {...register('title')}
+          inputRef={titleInputRef}
           defaultValue={title}
           required
           sx={{ minWidth: 280, flexGrow: 1 }}
+          slotProps={{ htmlInput: { 'aria-label': '回答タイトル' } }}
         />
       ) : (
         <Typography

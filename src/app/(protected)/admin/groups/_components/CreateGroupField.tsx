@@ -10,7 +10,7 @@ import {
   Stack,
   TextField,
 } from '@mui/material';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
 import FieldLabel from '@/app/_components/FieldLabel';
@@ -23,6 +23,7 @@ type CreateGroupSchema = {
 
 const CreateGroupField = () => {
   const [dialogOpen, setDialogOpen] = useState(false);
+  const nameInputRef = useRef<HTMLInputElement>(null);
   const { snackbar, showSnackbar, closeSnackbar } = useSnackbar();
 
   const {
@@ -66,7 +67,18 @@ const CreateGroupField = () => {
         新規作成
       </Button>
 
-      <Dialog open={dialogOpen} onClose={handleClose} fullWidth>
+      <Dialog
+        open={dialogOpen}
+        onClose={handleClose}
+        fullWidth
+        slotProps={{
+          transition: {
+            onEntered: () => {
+              nameInputRef.current?.focus();
+            },
+          },
+        }}
+      >
         <DialogTitle>新規グループ作成</DialogTitle>
         <form
           onSubmit={(e) => {
@@ -78,7 +90,7 @@ const CreateGroupField = () => {
               <FieldLabel label="グループ名" required />
               <TextField
                 {...register('name')}
-                autoFocus
+                inputRef={nameInputRef}
                 fullWidth
                 slotProps={{ htmlInput: { 'aria-label': 'グループ名' } }}
               />
