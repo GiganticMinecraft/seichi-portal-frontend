@@ -27,7 +27,6 @@ Dockerfile
 .gitignore
 .prettierignore
 AGENTS.md
-CLAUDE.md
 CONTRIBUTING.md
 LICENSE
 README.md
