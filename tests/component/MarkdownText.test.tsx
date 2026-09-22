@@ -138,6 +138,7 @@ describe('MarkdownText', () => {
     it.each([
       ['相対パス', '/dashboard'],
       ['ページ内アンカー', '#section-1'],
+      ['同一オリジンの絶対 URL', `${window.location.origin}/dashboard`],
     ])(
       '同一オリジンへの内部リンク(%s)をクリックしても確認ダイアログは表示されない',
       async (_label, href) => {

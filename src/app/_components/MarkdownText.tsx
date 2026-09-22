@@ -45,8 +45,18 @@ const MarkdownBody = ({
   </Box>
 );
 
-const isExternalHttpLink = (href: string | undefined): href is string =>
-  href !== undefined && /^https?:\/\//i.test(href);
+const isExternalHttpLink = (
+  href: string | undefined,
+  currentOrigin: string
+): href is string => {
+  if (href === undefined || !/^https?:\/\//i.test(href)) return false;
+
+  try {
+    return new URL(href).origin !== currentOrigin;
+  } catch {
+    return false;
+  }
+};
 
 /**
  * Markdown 本文を描画する共通 component。
@@ -63,7 +73,7 @@ const MarkdownText = ({ children, sx }: Props) => {
 
   const handleLinkClick =
     (href: string | undefined) => (event: MouseEvent<HTMLAnchorElement>) => {
-      if (!isExternalHttpLink(href)) return;
+      if (!isExternalHttpLink(href, window.location.origin)) return;
       event.preventDefault();
       setPendingHref(href);
     };
@@ -72,7 +82,7 @@ const MarkdownText = ({ children, sx }: Props) => {
     (href: string | undefined) => (event: MouseEvent<HTMLAnchorElement>) => {
       // ホイールクリック(中クリック)以外の auxclick(右クリック等)は対象外とする
       if (event.button !== 1) return;
-      if (!isExternalHttpLink(href)) return;
+      if (!isExternalHttpLink(href, window.location.origin)) return;
       event.preventDefault();
       setPendingHref(href);
     };
