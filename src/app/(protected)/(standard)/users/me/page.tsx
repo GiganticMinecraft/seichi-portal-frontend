@@ -7,41 +7,28 @@ import {
 } from '@/lib/server/backend';
 import { requireUser } from '@/lib/server/session';
 
-import UserPageContent from './_components/UserPageContent';
+import UserView from './_components/UserView';
 
 export const metadata: Metadata = {
   title: 'ユーザー情報 | Seichi Portal',
 };
 
-const Home = async ({ params }: { params: Promise<{ userId: string }> }) => {
+const UserPage = async () => {
   const session = await requireUser();
-  const { userId } = await params;
   const [user, notificationSettings] = await Promise.all([
     requireBackendData(
-      serverApiClient.GET('/api/v1/users/{uuid}', {
+      serverApiClient.GET('/api/v1/users/me', {
         headers: authorizationHeader(session.token),
-        params: {
-          path: { uuid: userId },
-        },
       })
     ),
     requireBackendData(
-      serverApiClient.GET('/api/v1/notifications/settings/{uuid}', {
+      serverApiClient.GET('/api/v1/notifications/settings/me', {
         headers: authorizationHeader(session.token),
-        params: {
-          path: { uuid: userId },
-        },
       })
     ),
   ]);
 
-  return (
-    <UserPageContent
-      user={user}
-      userId={userId}
-      notificationSettings={notificationSettings}
-    />
-  );
+  return <UserView user={user} notificationSettings={notificationSettings} />;
 };
 
-export default Home;
+export default UserPage;

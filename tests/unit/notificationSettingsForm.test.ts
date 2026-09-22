@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest';
 import {
   fromNotificationSettingsResponseToFormValues,
   toNotificationSettingsUpdateBody,
-} from '@/app/(protected)/(standard)/users/[userId]/_components/notificationSettingsForm';
+} from '@/app/(protected)/(standard)/users/me/_components/notificationSettingsForm';
 
 describe('notification settings form mappers', () => {
   it('API response を boolean のフォーム値へ変換する', () => {

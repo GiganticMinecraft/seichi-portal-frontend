@@ -1,7 +1,7 @@
 import { Box, Card, CardContent, Divider, Stack } from '@mui/material';
 
 import type {
-  GetUserNotificationSettingsResponse,
+  GetNotificationSettingsResponse,
   GetUsersResponse,
 } from '@/lib/api-types';
 
@@ -12,12 +12,10 @@ import UserInformation from './UserInformation';
 
 const UserView = ({
   user,
-  userId,
   notificationSettings,
 }: {
   user: GetUsersResponse;
-  userId: string;
-  notificationSettings: GetUserNotificationSettingsResponse;
+  notificationSettings: GetNotificationSettingsResponse;
 }) => (
   <Box sx={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
     <Stack spacing={3} sx={{ maxWidth: 640, width: '100%' }}>
@@ -28,13 +26,10 @@ const UserView = ({
             <UnlinkDiscordButton />
           </CardContent>
           <Divider />
-          <DiscordNotificationSettings
-            userId={userId}
-            currentSettings={notificationSettings}
-          />
+          <DiscordNotificationSettings currentSettings={notificationSettings} />
         </Card>
       ) : (
-        <LinkDiscordButton userId={userId} />
+        <LinkDiscordButton />
       )}
     </Stack>
   </Box>

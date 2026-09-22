@@ -14,7 +14,7 @@ import { Controller, useForm } from 'react-hook-form';
 
 import SnackbarAlert, { useSnackbar } from '@/app/_components/SnackbarAlert';
 import { useNotificationSettings } from '@/hooks/useNotificationSettings';
-import type { GetUserNotificationSettingsResponse } from '@/lib/api-types';
+import type { GetNotificationSettingsResponse } from '@/lib/api-types';
 
 import {
   fromNotificationSettingsResponseToFormValues,
@@ -23,8 +23,7 @@ import {
 import type { NotificationSettingsFormValues } from './notificationSettingsForm';
 
 const DiscordNotificationSettings = (props: {
-  currentSettings: GetUserNotificationSettingsResponse;
-  userId: string;
+  currentSettings: GetNotificationSettingsResponse;
 }) => {
   const {
     handleSubmit,

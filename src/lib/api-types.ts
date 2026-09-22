@@ -39,7 +39,6 @@ export type {
   GetUserGroupMembersResponse,
   GetUserGroupsResponse,
   GetUserListPageResponse,
-  GetUserNotificationSettingsResponse,
   GetUserResponse,
   GetQuestionsResponse,
   GetRelatedAnswersResponse,

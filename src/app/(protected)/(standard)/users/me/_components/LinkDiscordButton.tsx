@@ -8,8 +8,8 @@ import {
   Typography,
 } from '@mui/material';
 
-const LinkDiscordButton = ({ userId }: { userId: string }) => {
-  const returnTo = encodeURIComponent(`/users/${userId}`);
+const LinkDiscordButton = () => {
+  const returnTo = encodeURIComponent('/users/me');
 
   return (
     <Card variant="outlined">

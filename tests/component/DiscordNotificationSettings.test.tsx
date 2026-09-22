@@ -1,9 +1,9 @@
 import userEvent from '@testing-library/user-event';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import DiscordNotificationSettings from '@/app/(protected)/(standard)/users/[userId]/_components/DiscordNotificationSettings';
+import DiscordNotificationSettings from '@/app/(protected)/(standard)/users/me/_components/DiscordNotificationSettings';
 import type {
-  GetUserNotificationSettingsResponse,
+  GetNotificationSettingsResponse,
   UpdateNotificationSettingsSchema,
 } from '@/lib/api-types';
 
@@ -32,7 +32,7 @@ vi.mock('@/hooks/useNotificationSettings', () => ({
 
 const currentSettings = {
   is_send_message_notification: false,
-} satisfies GetUserNotificationSettingsResponse;
+} satisfies GetNotificationSettingsResponse;
 
 describe('DiscordNotificationSettings', () => {
   beforeEach(() => {
@@ -47,10 +47,7 @@ describe('DiscordNotificationSettings', () => {
     const user = userEvent.setup();
 
     renderWithProviders(
-      <DiscordNotificationSettings
-        currentSettings={currentSettings}
-        userId="user-id"
-      />
+      <DiscordNotificationSettings currentSettings={currentSettings} />
     );
 
     await user.click(
