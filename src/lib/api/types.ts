@@ -79,8 +79,6 @@ export type GetNotificationsResponse = GetNotificationsPageResponse['items'];
 export type NotificationResponse = GetNotificationsResponse[number];
 export type GetNotificationSettingsResponse =
   ApiPaths['/api/v1/notifications/settings/me']['get']['responses'][200]['content']['application/json'];
-export type GetUserNotificationSettingsResponse =
-  ApiPaths['/api/v1/notifications/settings/{uuid}']['get']['responses'][200]['content']['application/json'];
 export type CreateFormSchema =
   ApiPaths['/api/v1/forms']['post']['requestBody']['content']['application/json'];
 export type UpdateNotificationSettingsSchema =

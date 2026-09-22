@@ -96,11 +96,11 @@ describe('Discord OAuth route', () => {
     getCachedTokenMock.mockResolvedValue('seichi-token');
 
     const response = await GET(
-      request('http://0.0.0.0:3000/api/discord?returnTo=/users/user-id')
+      request('http://0.0.0.0:3000/api/discord?returnTo=/users/me')
     );
 
     expect(response.headers.get('set-cookie')).toContain(
-      `${DISCORD_RETURN_TO_COOKIE}=%2Fusers%2Fuser-id;`
+      `${DISCORD_RETURN_TO_COOKIE}=%2Fusers%2Fme;`
     );
   });
 
@@ -203,13 +203,13 @@ describe('Discord OAuth route', () => {
         'http://0.0.0.0:3000/api/discord?code=code&state=stored-state',
         [
           `${DISCORD_OAUTH_STATE_COOKIE}=stored-state`,
-          `${DISCORD_RETURN_TO_COOKIE}=%2Fusers%2Fuser-id`,
+          `${DISCORD_RETURN_TO_COOKIE}=%2Fusers%2Fme`,
         ].join('; ')
       )
     );
 
     expect(response.headers.get('location')).toBe(
-      'https://portal.seichi.click/users/user-id'
+      'https://portal.seichi.click/users/me'
     );
     expect(response.headers.get('set-cookie')).toContain(
       `${DISCORD_RETURN_TO_COOKIE}=;`

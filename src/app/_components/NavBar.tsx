@@ -120,7 +120,7 @@ const UserMenu = ({ user, isAdminPage }: UserMenuProps) => {
         <Divider />
         <MenuItem
           component={NextLink}
-          href={`/users/${user.id}`}
+          href="/users/me"
           onClick={() => {
             setAnchorEl(null);
           }}
