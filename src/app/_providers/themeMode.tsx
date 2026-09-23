@@ -7,7 +7,6 @@ import type { ReactNode } from 'react';
 import { SWRConfig, type Revalidator, type RevalidatorOptions } from 'swr';
 
 import { MsalProvider } from '@/app/_components/MsalProvider';
-import { fetcher } from '@/app/_swr/fetcher';
 import { isHttpError } from '@/lib/httpError';
 
 import { getAuthedTheme } from './getAuthedTheme';
@@ -49,7 +48,6 @@ export const AppProviders = ({
       <CssBaseline />
       <SWRConfig
         value={{
-          fetcher,
           onErrorRetry: (error, _key, _config, revalidate, options) => {
             if (retryAfterRateLimit(error, revalidate, options)) return;
             if (options.retryCount >= 3) return;
