@@ -16,12 +16,8 @@ body {
 }
 
 code {
-  background-color: #e8eef5;
-  padding: 0.1em 0.3em;
-}
-
-[data-mui-color-scheme='dark'] code {
   background-color: #343434;
+  padding: 0.1em 0.3em;
 }
 
 div:has(> blockquote) {
