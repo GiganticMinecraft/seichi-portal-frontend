@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 
+import { pushEvent } from '@/lib/faro';
 import {
   loadTurnstile,
   type TurnstileApi,
@@ -63,6 +64,7 @@ export const useTurnstileToken = (
   const readinessRef = useRef<WidgetReadiness | null>(null);
   const pendingRef = useRef<PendingToken | null>(null);
   const pendingPromiseRef = useRef<Promise<string> | null>(null);
+  const waitingForReadinessRef = useRef(0);
   const getReadiness = useCallback(() => {
     readinessRef.current ??= createWidgetReadiness();
     return readinessRef.current;
@@ -100,11 +102,17 @@ export const useTurnstileToken = (
               'Turnstile verification failed',
               errorCode
             );
-            console.error('[Turnstile] widget error', error);
             const pending = pendingRef.current;
             pendingRef.current = null;
             pendingPromiseRef.current = null;
-            pending?.reject(error);
+            if (pending) {
+              pending.reject(error);
+            } else {
+              pushEvent('turnstile_widget_error', {
+                action,
+                error_code: error.code ?? 'unknown',
+              });
+            }
             return true;
           },
           'expired-callback': () => {
@@ -135,13 +143,19 @@ export const useTurnstileToken = (
           error instanceof Error
             ? error
             : new TurnstileError('Turnstile initialization failed');
+        if (!cancelled && waitingForReadinessRef.current === 0) {
+          pushEvent('turnstile_widget_initialization_failed', {
+            action,
+            error_name: normalizedError.name,
+            error_message: normalizedError.message,
+            error_code:
+              normalizedError instanceof TurnstileError
+                ? (normalizedError.code ?? 'unknown')
+                : 'unknown',
+          });
+        }
         readiness.reject(normalizedError);
       });
-    void readiness.promise.catch((error: unknown) => {
-      if (!cancelled) {
-        console.error('[Turnstile] widget initialization failed', error);
-      }
-    });
 
     return () => {
       cancelled = true;
@@ -164,28 +178,33 @@ export const useTurnstileToken = (
     if (!siteKey) return '';
 
     let readyWidget: ReadyWidget;
-    for (;;) {
-      const readiness = getReadiness();
-      try {
-        readyWidget = await readiness.promise;
-      } catch (error: unknown) {
-        // React の effect 再実行で widget 世代が切り替わった場合だけ、次の
-        // readiness を待つ。初期化失敗や実際のアンマウントは呼び出し元へ返す。
-        if (readinessRef.current === readiness || !containerNodeRef.current) {
-          throw error;
+    waitingForReadinessRef.current += 1;
+    try {
+      for (;;) {
+        const readiness = getReadiness();
+        try {
+          readyWidget = await readiness.promise;
+        } catch (error: unknown) {
+          // React の effect 再実行で widget 世代が切り替わった場合だけ、次の
+          // readiness を待つ。初期化失敗や実際のアンマウントは呼び出し元へ返す。
+          if (readinessRef.current === readiness || !containerNodeRef.current) {
+            throw error;
+          }
+          continue;
         }
-        continue;
-      }
 
-      if (
-        widgetIdRef.current === readyWidget.widgetId &&
-        containerNodeRef.current === readyWidget.container
-      ) {
-        break;
+        if (
+          widgetIdRef.current === readyWidget.widgetId &&
+          containerNodeRef.current === readyWidget.container
+        ) {
+          break;
+        }
+        if (!containerNodeRef.current) {
+          throw new TurnstileError('Turnstile widget was unmounted');
+        }
       }
-      if (!containerNodeRef.current) {
-        throw new TurnstileError('Turnstile widget was unmounted');
-      }
+    } finally {
+      waitingForReadinessRef.current -= 1;
     }
 
     const { container: readyContainer, turnstile, widgetId } = readyWidget;
@@ -208,7 +227,6 @@ export const useTurnstileToken = (
       pendingPromiseRef.current = null;
       const normalizedError =
         error instanceof Error ? error : new TurnstileError(fallbackMessage);
-      console.error('[Turnstile] token acquisition failed', normalizedError);
       pending?.reject(normalizedError);
     };
 

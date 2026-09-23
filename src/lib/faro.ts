@@ -12,3 +12,7 @@ export const setFaro = (faro: Faro) => {
 export const pushError = (error: Error) => {
   faroInstance?.api.pushError(error);
 };
+
+export const pushEvent = (name: string, attributes: Record<string, string>) => {
+  faroInstance?.api.pushEvent(name, attributes);
+};

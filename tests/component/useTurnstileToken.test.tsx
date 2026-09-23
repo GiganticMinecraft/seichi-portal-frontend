@@ -25,6 +25,9 @@ const turnstileMocks = vi.hoisted(() => ({
   execute: vi.fn(),
   remove: vi.fn(),
 }));
+const telemetryMocks = vi.hoisted(() => ({ pushEvent: vi.fn() }));
+
+vi.mock('@/lib/faro', () => ({ pushEvent: telemetryMocks.pushEvent }));
 
 vi.mock('@/lib/turnstile', () => ({
   loadTurnstile: turnstileMocks.loadTurnstile,
@@ -246,36 +249,81 @@ describe('useTurnstileToken', () => {
       name: 'TurnstileError',
       code: '200500',
     });
-    expect(consoleError).toHaveBeenCalledWith(
-      '[Turnstile] widget error',
-      expect.objectContaining({ code: '200500' })
-    );
+    expect(consoleError).not.toHaveBeenCalled();
+    expect(telemetryMocks.pushEvent).not.toHaveBeenCalled();
   });
 
-  it('Turnstile の初期化失敗を呼び出し元へ返し、診断ログを残せる', async () => {
-    const loadError = new Error('Failed to load Turnstile script');
-    turnstileMocks.loadTurnstile.mockRejectedValue(loadError);
-    const onReady = vi.fn<(getToken: () => Promise<string>) => void>();
+  it('送信待機のない callback エラーをコード付きイベントとして残す', async () => {
+    let errorCallback: ((errorCode: unknown) => boolean) | undefined;
+    const turnstile = {
+      render: turnstileMocks.render.mockImplementation(
+        (_container: HTMLElement, options: TurnstileRenderOptions) => {
+          const callback = Reflect.get(options, 'error-callback');
+          errorCallback = isErrorCallback(callback) ? callback : undefined;
+          return 'widget-id';
+        }
+      ),
+      reset: turnstileMocks.reset,
+      execute: turnstileMocks.execute,
+      remove: turnstileMocks.remove,
+    };
+    window.turnstile = turnstile;
+    turnstileMocks.loadTurnstile.mockResolvedValue(turnstile);
     const consoleError = vi
       .spyOn(console, 'error')
       .mockImplementation(() => undefined);
 
-    render(<TestHarness onReady={onReady} />);
+    render(<TestHarness onReady={vi.fn()} />);
+    await waitFor(() => {
+      expect(turnstileMocks.render).toHaveBeenCalled();
+    });
+    if (!errorCallback) throw new Error('error-callback が登録されていません');
+
+    expect(errorCallback('300031')).toBe(true);
+    expect(telemetryMocks.pushEvent).toHaveBeenCalledWith(
+      'turnstile_widget_error',
+      { action: 'temporary-answer', error_code: '300031' }
+    );
+    expect(consoleError).not.toHaveBeenCalled();
+  });
+
+  it('送信中の初期化失敗は呼び出し元へ返し、イベントで重複記録しない', async () => {
+    const loadError = new Error('Failed to load Turnstile script');
+    turnstileMocks.loadTurnstile.mockRejectedValue(loadError);
+    const onToken = vi.fn<(token: Promise<string>) => void>();
+
+    render(<ImmediateTokenHarness onToken={onToken} />);
 
     await waitFor(() => {
       expect(turnstileMocks.loadTurnstile).toHaveBeenCalled();
     });
 
-    const getToken = onReady.mock.lastCall?.[0];
-    if (!getToken) {
-      throw new Error('getToken が初期化されていません');
+    const tokenPromise = onToken.mock.lastCall?.[0];
+    if (!tokenPromise) {
+      throw new Error('getToken が呼ばれていません');
     }
 
-    await expect(getToken()).rejects.toBe(loadError);
-    expect(consoleError).toHaveBeenCalledWith(
-      '[Turnstile] widget initialization failed',
-      loadError
-    );
+    await expect(tokenPromise).rejects.toBe(loadError);
+    expect(telemetryMocks.pushEvent).not.toHaveBeenCalled();
+  });
+
+  it('送信待機のない初期化失敗をイベントとして残す', async () => {
+    const loadError = new Error('Failed to load Turnstile script');
+    turnstileMocks.loadTurnstile.mockRejectedValue(loadError);
+
+    render(<TestHarness onReady={vi.fn()} />);
+
+    await waitFor(() => {
+      expect(telemetryMocks.pushEvent).toHaveBeenCalledWith(
+        'turnstile_widget_initialization_failed',
+        {
+          action: 'temporary-answer',
+          error_name: 'Error',
+          error_message: 'Failed to load Turnstile script',
+          error_code: 'unknown',
+        }
+      );
+    });
   });
 
   it('コンテナが作り直されても widget を再生成し、2回目の getToken が動作する', async () => {
