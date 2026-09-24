@@ -79,6 +79,13 @@ export const getAuthedTheme = () =>
               color: '#FFFFFF',
             }),
           }),
+          code: ({ theme }: { theme: Theme }) => ({
+            backgroundColor: '#e8eef5',
+            padding: '0.1em 0.3em',
+            ...theme.applyStyles('dark', {
+              backgroundColor: '#343434',
+            }),
+          }),
         },
       },
       MuiInputLabel: {
