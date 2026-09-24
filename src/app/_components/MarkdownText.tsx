@@ -16,6 +16,8 @@ const defaultSx: SxProps<Theme> = {
   // 複数段落がある場合のみ段落間に間隔を持たせる。
   '& p': { margin: 0 },
   '& p + p': { marginTop: '0.5em' },
+  // 全体の CSS リセットで消えた余白を戻し、番号や記号が本文の左端からはみ出すのを防ぐ。
+  '& ol, & ul': { paddingInlineStart: '2em' },
 };
 
 type Props = {
