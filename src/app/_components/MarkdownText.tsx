@@ -9,7 +9,7 @@ import remarkGfm from 'remark-gfm';
 
 import ConfirmDialog from './ConfirmDialog';
 
-const defaultSx: SxProps<Theme> = {
+const defaultSx: SxProps<Theme> = (theme) => ({
   whiteSpace: 'pre-wrap',
   wordBreak: 'break-word',
   // ブラウザ既定の p マージンをリセットし、単一段落表示時の意図しない余白を防ぐ。
@@ -18,7 +18,34 @@ const defaultSx: SxProps<Theme> = {
   '& p + p': { marginTop: '0.5em' },
   // 全体の CSS リセットで消えた余白を戻し、番号や記号が本文の左端からはみ出すのを防ぐ。
   '& ol, & ul': { paddingInlineStart: '2em' },
-};
+  '& code': {
+    backgroundColor: '#e8eef5',
+    color: theme.palette.text.primary,
+    ...theme.applyStyles('dark', {
+      backgroundColor: '#343434',
+      color: '#FFFFFF',
+    }),
+  },
+  '& pre': {
+    backgroundColor: '#e8eef5',
+    color: theme.palette.text.primary,
+    borderRadius: 1,
+    padding: 1.5,
+    maxWidth: '100%',
+    overflowX: 'auto',
+    whiteSpace: 'pre',
+    wordBreak: 'normal',
+    ...theme.applyStyles('dark', {
+      backgroundColor: '#343434',
+      color: '#FFFFFF',
+    }),
+  },
+  '& pre code': {
+    backgroundColor: 'transparent',
+    color: 'inherit',
+    padding: 0,
+  },
+});
 
 type Props = {
   children: string;
