@@ -45,6 +45,16 @@ const defaultSx: SxProps<Theme> = (theme) => ({
     color: 'inherit',
     padding: 0,
   },
+  '&:has(> blockquote)': {
+    borderLeft: '0.3em solid',
+    borderColor: 'primary.main',
+    margin: '10px auto',
+    padding: '15px',
+    borderRadius: '5px',
+  },
+  '& blockquote p::before': { content: '"“"' },
+  '& blockquote p::after': { content: '"”"' },
+  '& blockquote + p': { textAlign: 'right' },
 });
 
 type Props = {
