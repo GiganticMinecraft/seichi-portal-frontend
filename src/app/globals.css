@@ -15,11 +15,6 @@ body {
     'Segoe UI', 'Hiragino Sans', 'Hiragino Kaku Gothic ProN', Meiryo, sans-serif;
 }
 
-code {
-  background-color: #343434;
-  padding: 0.1em 0.3em;
-}
-
 div:has(> blockquote) {
   border-left: 0.3em solid #343434;
   margin: 10px auto;
