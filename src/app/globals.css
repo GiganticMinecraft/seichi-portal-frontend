@@ -14,22 +14,3 @@ body {
   font-family:
     'Segoe UI', 'Hiragino Sans', 'Hiragino Kaku Gothic ProN', Meiryo, sans-serif;
 }
-
-div:has(> blockquote) {
-  border-left: 0.3em solid #343434;
-  margin: 10px auto;
-  padding: 15px;
-  border-radius: 5px;
-}
-
-blockquote p::before {
-  content: '\201C';
-}
-
-blockquote p::after {
-  content: '\201D';
-}
-
-blockquote + p {
-  text-align: right;
-}
