@@ -2,36 +2,6 @@ import type { ApiPaths } from '@/lib/api/types';
 import { HttpError } from '@/lib/httpError';
 import { proxyClient } from '@/lib/proxyClient';
 
-/** @deprecated useApiQuery を使用してください */
-export const fetcher = async (url: string) => {
-  const res = await fetch(url);
-
-  if (!res.ok) {
-    // openapi/native fetch JSON parsing intentionally returns unknown payloads;
-    // the response boundary stores it without interpreting the schema here.
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    const body = await res
-      .clone()
-      .json()
-      .catch(async () =>
-        res
-          .clone()
-          .text()
-          .catch(() => undefined)
-      );
-    throw new HttpError({
-      message: `Request failed: ${res.status}`,
-      status: res.status,
-      url,
-      body,
-      headers: res.headers,
-    });
-  }
-
-  const body: unknown = await res.json();
-  return body;
-};
-
 export type GetPaths = {
   [P in keyof ApiPaths]: ApiPaths[P] extends { get: unknown } ? P : never;
 }[keyof ApiPaths];
