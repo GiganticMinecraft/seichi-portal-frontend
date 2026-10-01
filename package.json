@@ -85,7 +85,7 @@
     "jsdom": "^30.1.0",
     "lefthook": "^2.1.14",
     "openapi-typescript": "^7.13.0",
-    "prettier": "^3.9.8",
+    "prettier": "^3.9.9",
     "tsx": "^4.23.15",
     "typescript": "6.0.3",
     "typescript-eslint": "^8.70.0",
