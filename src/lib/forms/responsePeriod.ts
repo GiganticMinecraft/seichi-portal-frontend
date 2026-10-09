@@ -1,8 +1,7 @@
+import type * as Api from '@/generated/api/types.gen';
 import { formatString } from '@/generic/DateFormatter';
-import type { ApiComponents } from '@/lib/api/types';
 
-type AnswerAcceptancePeriod =
-  ApiComponents['schemas']['AnswerAcceptancePeriodSchema'];
+type AnswerAcceptancePeriod = Api.AnswerAcceptancePeriodSchema;
 
 export type ResponsePeriod =
   | { kind: 'none' }

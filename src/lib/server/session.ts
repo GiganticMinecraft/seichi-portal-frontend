@@ -3,6 +3,7 @@ import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { cache } from 'react';
 
+import * as sdk from '@/generated/api/sdk.gen';
 import { AccessError } from '@/lib/accessError';
 import { userInfoResponseSchema } from '@/lib/api/schemas';
 import type { CurrentUser } from '@/lib/currentUser';
@@ -63,7 +64,8 @@ const getSessionInternal = async (
 
   try {
     const { data } = await requireBackendResponse(
-      serverApiClient.GET('/api/v1/users/me', {
+      sdk.getMyUserInfo({
+        client: serverApiClient,
         headers: {
           Accept: 'application/json',
           ...authorizationHeader(token),

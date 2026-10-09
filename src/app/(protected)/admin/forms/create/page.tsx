@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 
+import * as sdk from '@/generated/api/sdk.gen';
 import {
   authorizationHeader,
   requireBackendData,
@@ -17,12 +18,14 @@ const Home = async () => {
   const { session } = await getAdminAccess();
   const [labels, groups] = await Promise.all([
     requireBackendData(
-      serverApiClient.GET('/api/v1/labels/forms', {
+      sdk.getLabelsForForms({
+        client: serverApiClient,
         headers: authorizationHeader(session.token),
       })
     ),
     requireBackendData(
-      serverApiClient.GET('/api/v1/user-groups', {
+      sdk.userGroupList({
+        client: serverApiClient,
         headers: authorizationHeader(session.token),
       })
     ),

@@ -1,5 +1,3 @@
-import createClient from 'openapi-fetch';
+import { createApiClient } from '@/lib/api/createApiClient';
 
-import type { ApiPaths } from '@/lib/api/types';
-
-export const apiClient = createClient<ApiPaths>({ baseUrl: '/api/proxy' });
+export const apiClient = createApiClient({ baseUrl: '/api/proxy' });

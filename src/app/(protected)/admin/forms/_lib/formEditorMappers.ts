@@ -1,10 +1,11 @@
 import { match } from 'ts-pattern';
 
+import type * as Api from '@/generated/api/types.gen';
 import {
   fromStringToJSTDateTime,
   toApiDateTime,
 } from '@/generic/DateFormatter';
-import type { ApiComponents, ApiPaths, GetFormResponse } from '@/lib/api/types';
+import type { GetFormResponse } from '@/lib/api/types';
 
 import type {
   AcceptancePeriodSetting,
@@ -17,10 +18,8 @@ import {
   visibilitySchema,
 } from '../_schema/formEditorSchema';
 
-type CreateFormBody =
-  ApiPaths['/api/v1/forms']['post']['requestBody']['content']['application/json'];
-type FormUpdateBody =
-  ApiPaths['/api/v1/forms/{form_id}']['put']['requestBody']['content']['application/json'];
+type CreateFormBody = NonNullable<Api.CreateFormHandlerData['body']>;
+type FormUpdateBody = NonNullable<Api.UpdateFormHandlerData['body']>;
 type ApiAcceptancePeriod =
   GetFormResponse['settings']['answer_settings']['acceptance_period'];
 type ApiVisibility = GetFormResponse['settings']['visibility'];
@@ -72,8 +71,8 @@ const toEditorQuestion = (
 const toApiQuestion = (
   question: FormEditorQuestion,
   index: number
-): ApiComponents['schemas']['QuestionSchema'] => {
-  const base: ApiComponents['schemas']['QuestionDefinitionSchema'] = {
+): Api.QuestionSchema => {
+  const base: Api.QuestionDefinitionSchema = {
     title: question.title.trim(),
     description: toNullableNonEmptyString(question.description),
     is_required: question.is_required,

@@ -21,9 +21,11 @@ vi.mock('@/lib/server/backend', () => ({
   authorizationHeader: (token: string) => ({
     Authorization: `Bearer ${token}`,
   }),
-  serverApiClient: {
-    POST: linkDiscordMock,
-  },
+  serverApiClient: {},
+}));
+
+vi.mock('@/generated/api/sdk.gen', () => ({
+  linkDiscord: linkDiscordMock,
 }));
 
 import { GET } from '@/app/api/discord/route';
@@ -176,10 +178,12 @@ describe('Discord OAuth route', () => {
           redirect_uri: discordRedirectUri,
         }).toString(),
       });
-      expect(linkDiscordMock).toHaveBeenCalledWith('/api/v1/link-discord', {
-        headers: { Authorization: 'Bearer seichi-token' },
-        body: { token: 'discord-access-token' },
-      });
+      expect(linkDiscordMock).toHaveBeenCalledWith(
+        expect.objectContaining({
+          headers: { Authorization: 'Bearer seichi-token' },
+          body: { token: 'discord-access-token' },
+        })
+      );
     }
   );
 

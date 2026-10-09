@@ -2,6 +2,7 @@ import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
 
 import { getSeichiProxyHeaders, getTurnstileSiteKey } from '@/env.server';
+import * as sdk from '@/generated/api/sdk.gen';
 import type { GetFormsResponse } from '@/lib/api-types';
 import { serverApiClient } from '@/lib/server/backend';
 import { getSession } from '@/lib/server/session';
@@ -12,7 +13,8 @@ const fetchPublicForms = async (
   requestHeaders: Pick<Headers, 'get'>
 ): Promise<GetFormsResponse> => {
   try {
-    const { data, error } = await serverApiClient.GET('/api/v1/forms', {
+    const { data, error } = await sdk.formListHandler({
+      client: serverApiClient,
       headers: getSeichiProxyHeaders(requestHeaders),
     });
     if (error) {

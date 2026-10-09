@@ -37,7 +37,7 @@ export const useInfiniteApiQuery = <P extends KeysetPath>(
 ) => {
   const hasHydrated = useHasHydrated();
 
-  // eslint-disable-next-line @typescript-eslint/consistent-type-assertions, @typescript-eslint/no-unsafe-type-assertion -- KeysetPath 制約により GetResponse<P> は必ず { items, next_cursor } を持つが、TS はマップ型の分岐先まで戻って型を絞れないため境界として必要
+  // eslint-disable-next-line @typescript-eslint/consistent-type-assertions -- KeysetPath 制約により GetResponse<P> は必ず { items, next_cursor } を持つが、TS はマップ型の分岐先まで戻って型を絞れないため境界として必要
   const asPage = (value: GetResponse<P>) => value as KeysetPage;
 
   const getKey = (
@@ -57,8 +57,8 @@ export const useInfiniteApiQuery = <P extends KeysetPath>(
     Error
   >(
     getKey,
-    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions, @typescript-eslint/no-unsafe-type-assertion -- タプルキーの分割代入で P が失われ unknown に収束するため、呼び出し境界で戻す
-    ([p, params]) => typedFetcher(p, params) as Promise<GetResponse<P>>,
+    // タプルキーの分割代入で P が失われないよう、getKey の戻り値と同じ型を明示する
+    ([p, params]: readonly [P, GetParams<P>]) => typedFetcher(p, params),
     {
       fallbackData: [initialPage],
       ...(options?.refreshInterval !== undefined

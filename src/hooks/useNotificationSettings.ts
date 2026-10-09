@@ -1,21 +1,24 @@
 'use client';
 
+import * as sdk from '@/generated/api/sdk.gen';
+import type * as Api from '@/generated/api/types.gen';
 import { useSingleFlightAction } from '@/hooks/useSingleFlightAction';
-import type { ApiPaths } from '@/lib/api/types';
+import { withResponse } from '@/lib/api/createApiClient';
 import { proxyClient } from '@/lib/proxyClient';
 
-type NotificationSettingsUpdateBody =
-  ApiPaths['/api/v1/notifications/settings/me']['patch']['requestBody']['content']['application/json'];
+type NotificationSettingsUpdateBody = NonNullable<
+  Api.UpdateNotificationSettingsData['body']
+>;
 
 export const useNotificationSettings = () => {
   const updateSettings = async (
     data: NotificationSettingsUpdateBody
   ): Promise<{ ok: boolean }> => {
-    const { response } = await proxyClient.PATCH(
-      '/api/v1/notifications/settings/me',
-      {
+    const { response } = await withResponse(
+      sdk.updateNotificationSettings({
+        client: proxyClient,
         body: data,
-      }
+      })
     );
     return { ok: response.ok };
   };

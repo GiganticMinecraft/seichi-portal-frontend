@@ -9,7 +9,7 @@
 - **フレームワーク**: Next.js (App Router), React 19
 - **UI**: Material UI (MUI) v7, Emotion
 - **認証**: Microsoft MSAL (@azure/msal-browser / @azure/msal-react)
-- **API**: openapi-fetch, Zodios, SWR
+- **API**: @hey-api/openapi-ts (生成 SDK + fetch クライアント), Zodios, SWR
 - **バリデーション**: Zod v4
 - **フォーム**: React Hook Form
 - **その他**: fp-ts, ts-pattern, dayjs

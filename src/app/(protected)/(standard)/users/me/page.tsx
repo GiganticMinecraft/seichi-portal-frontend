@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 
+import * as sdk from '@/generated/api/sdk.gen';
 import {
   authorizationHeader,
   requireBackendData,
@@ -17,12 +18,14 @@ const UserPage = async () => {
   const session = await requireUser();
   const [user, notificationSettings] = await Promise.all([
     requireBackendData(
-      serverApiClient.GET('/api/v1/users/me', {
+      sdk.getMyUserInfo({
+        client: serverApiClient,
         headers: authorizationHeader(session.token),
       })
     ),
     requireBackendData(
-      serverApiClient.GET('/api/v1/notifications/settings/me', {
+      sdk.getMyNotificationSettings({
+        client: serverApiClient,
         headers: authorizationHeader(session.token),
       })
     ),

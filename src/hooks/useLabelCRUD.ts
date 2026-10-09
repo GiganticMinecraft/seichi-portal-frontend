@@ -3,7 +3,9 @@
 import { useRouter } from 'next/navigation';
 import { useSWRConfig } from 'swr';
 
+import * as sdk from '@/generated/api/sdk.gen';
 import { useSingleFlightAction } from '@/hooks/useSingleFlightAction';
+import { withResponse } from '@/lib/api/createApiClient';
 import { proxyClient } from '@/lib/proxyClient';
 
 export const useLabelCRUD = (labelType: 'answers' | 'forms') => {
@@ -16,18 +18,24 @@ export const useLabelCRUD = (labelType: 'answers' | 'forms') => {
 
   const createLabel = async (name: string): Promise<{ ok: boolean }> => {
     if (labelType === 'answers') {
-      const { response } = await proxyClient.POST('/api/v1/labels/answers', {
-        body: { name },
-      });
+      const { response } = await withResponse(
+        sdk.createLabelForAnswers({
+          client: proxyClient,
+          body: { name },
+        })
+      );
       if (response.ok) {
         await mutate(key);
         router.refresh();
       }
       return { ok: response.ok };
     } else {
-      const { response } = await proxyClient.POST('/api/v1/labels/forms', {
-        body: { name },
-      });
+      const { response } = await withResponse(
+        sdk.createLabelForForms({
+          client: proxyClient,
+          body: { name },
+        })
+      );
       if (response.ok) {
         await mutate(key);
         router.refresh();
@@ -38,9 +46,11 @@ export const useLabelCRUD = (labelType: 'answers' | 'forms') => {
 
   const deleteLabel = async (id: string | number): Promise<{ ok: boolean }> => {
     if (labelType === 'answers') {
-      const { response } = await proxyClient.DELETE(
-        '/api/v1/labels/answers/{label_id}',
-        { params: { path: { label_id: String(id) } } }
+      const { response } = await withResponse(
+        sdk.deleteLabelForAnswers({
+          client: proxyClient,
+          path: { label_id: String(id) },
+        })
       );
       if (response.ok) {
         await mutate(key);
@@ -48,11 +58,11 @@ export const useLabelCRUD = (labelType: 'answers' | 'forms') => {
       }
       return { ok: response.ok };
     } else {
-      const { response } = await proxyClient.DELETE(
-        '/api/v1/labels/forms/{label_id}',
-        {
-          params: { path: { label_id: String(id) } },
-        }
+      const { response } = await withResponse(
+        sdk.deleteLabelForForms({
+          client: proxyClient,
+          path: { label_id: String(id) },
+        })
       );
       if (response.ok) {
         await mutate(key);
@@ -67,12 +77,12 @@ export const useLabelCRUD = (labelType: 'answers' | 'forms') => {
     name: string
   ): Promise<{ ok: boolean }> => {
     if (labelType === 'answers') {
-      const { response } = await proxyClient.PATCH(
-        '/api/v1/labels/answers/{label_id}',
-        {
-          params: { path: { label_id: String(id) } },
+      const { response } = await withResponse(
+        sdk.editLabelForAnswers({
+          client: proxyClient,
+          path: { label_id: String(id) },
           body: { name },
-        }
+        })
       );
       if (response.ok) {
         await mutate(key);
@@ -80,12 +90,12 @@ export const useLabelCRUD = (labelType: 'answers' | 'forms') => {
       }
       return { ok: response.ok };
     } else {
-      const { response } = await proxyClient.PATCH(
-        '/api/v1/labels/forms/{label_id}',
-        {
-          params: { path: { label_id: String(id) } },
+      const { response } = await withResponse(
+        sdk.editLabelForForms({
+          client: proxyClient,
+          path: { label_id: String(id) },
           body: { name },
-        }
+        })
       );
       if (response.ok) {
         await mutate(key);

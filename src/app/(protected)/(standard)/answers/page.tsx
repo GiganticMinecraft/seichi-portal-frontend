@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 
+import * as sdk from '@/generated/api/sdk.gen';
 import {
   authorizationHeader,
   requireBackendData,
@@ -16,9 +17,10 @@ export const metadata: Metadata = {
 const Page = async () => {
   const session = await requireUser();
   const initialAnswers = await requireBackendData(
-    serverApiClient.GET('/api/v1/forms/answers', {
+    sdk.getAllAnswers({
+      client: serverApiClient,
       headers: authorizationHeader(session.token),
-      params: { query: { user: session.user.id } },
+      query: { user: session.user.id },
     })
   );
 

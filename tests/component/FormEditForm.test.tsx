@@ -2,13 +2,12 @@ import userEvent from '@testing-library/user-event';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import FormEditForm from '@/app/(protected)/admin/forms/edit/[id]/_components/FormEditForm';
-import type { ApiPaths } from '@/lib/api/types';
+import type * as Api from '@/generated/api/types.gen';
 import type { GetFormResponse } from '@/lib/api-types';
 
 import { renderWithProviders, screen, waitFor } from './render';
 
-type FormUpdateBody =
-  ApiPaths['/api/v1/forms/{form_id}']['put']['requestBody']['content']['application/json'];
+type FormUpdateBody = NonNullable<Api.UpdateFormHandlerData['body']>;
 
 const { updateFormMock } = vi.hoisted(() => ({
   updateFormMock: vi

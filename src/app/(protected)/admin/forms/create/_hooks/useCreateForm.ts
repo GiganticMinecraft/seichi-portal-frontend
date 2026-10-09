@@ -1,6 +1,8 @@
 import { useState } from 'react';
 
+import * as sdk from '@/generated/api/sdk.gen';
 import { useSingleFlightAction } from '@/hooks/useSingleFlightAction';
+import { withResponse } from '@/lib/api/createApiClient';
 import { proxyClient } from '@/lib/proxyClient';
 
 import {
@@ -24,11 +26,11 @@ export const useCreateForm = () => {
     setSubmitState({ kind: 'idle' });
 
     try {
-      const { data: createdForm, response } = await proxyClient.POST(
-        '/api/v1/forms',
-        {
+      const { data: createdForm, response } = await withResponse(
+        sdk.createFormHandler({
+          client: proxyClient,
           body: toCreateFormBody(data),
-        }
+        })
       );
       if (!response.ok || !createdForm) {
         setSubmitState({
@@ -39,12 +41,12 @@ export const useCreateForm = () => {
       }
       const createdFormId = createdForm.id;
 
-      const { response: setFormMetadataResponse } = await proxyClient.PUT(
-        '/api/v1/forms/{form_id}',
-        {
-          params: { path: { form_id: createdFormId } },
+      const { response: setFormMetadataResponse } = await withResponse(
+        sdk.updateFormHandler({
+          client: proxyClient,
+          path: { form_id: createdFormId },
           body: toFormUpdateBody(data, false),
-        }
+        })
       );
       if (!setFormMetadataResponse.ok) {
         setSubmitState({

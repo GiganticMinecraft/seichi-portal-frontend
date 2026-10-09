@@ -22,7 +22,7 @@ export const useApiQuery = <P extends GetPaths>(
       : undefined;
 
   const hasEmptyPathParam =
-    pathObj && Object.values(pathObj).some((v) => !v && v !== 0);
+    pathObj && Object.values<unknown>(pathObj).some((v) => !v && v !== 0);
 
   const shouldSkip = !hasHydrated || params === null || hasEmptyPathParam;
 

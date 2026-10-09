@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 
+import * as sdk from '@/generated/api/sdk.gen';
 import {
   authorizationHeader,
   requireBackendData,
@@ -16,7 +17,8 @@ export const metadata: Metadata = {
 const Home = async () => {
   const { session } = await getAdminAccess();
   const initialUsers = await requireBackendData(
-    serverApiClient.GET('/api/v1/users', {
+    sdk.userList({
+      client: serverApiClient,
       headers: authorizationHeader(session.token),
     })
   );
