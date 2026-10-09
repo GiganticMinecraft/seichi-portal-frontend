@@ -1,5 +1,10 @@
 import { SpanStatusCode, trace } from '@opentelemetry/api';
-import type { SpanProcessor } from '@opentelemetry/sdk-trace-base';
+import {
+  ParentBasedSampler,
+  type Sampler,
+  SamplingDecision,
+  type SpanProcessor,
+} from '@opentelemetry/sdk-trace-base';
 import { type Configuration, registerOTel } from '@vercel/otel';
 import type { Instrumentation } from 'next';
 
@@ -100,6 +105,36 @@ export const nodeMetricsConfiguration = async (): Promise<
   };
 };
 
+// 監視基盤 (monitoring namespace の Alloy receiver / Pyroscope) への通信
+export const TELEMETRY_BACKEND_URL_PATTERN =
+  /^https?:\/\/[^/]+\.monitoring\.svc(\.cluster\.local)?(:\d+)?\//;
+
+// ブラウザの Faro が送るテレメトリーを Alloy へ中継するパス (next.config.js の rewrites)
+const FARO_COLLECT_PATH = '/collect';
+
+// Faro の中継リクエストは利用者の操作ではなく、ページを開いている間ずっと送られて
+// トレース検索を埋めるため、ルートスパンの時点で記録しないと決める。
+// それ以外は既定 (parentbased_always_on) と同じく、親があれば親の判断に従う。
+export const telemetryRelaySampler: Sampler = new ParentBasedSampler({
+  root: {
+    shouldSample: (_context, _traceId, _spanName, _spanKind, attributes) => {
+      const target = attributes['http.target'];
+      const isRelay =
+        typeof target === 'string' &&
+        (target === FARO_COLLECT_PATH ||
+          target.startsWith(`${FARO_COLLECT_PATH}?`) ||
+          target.startsWith(`${FARO_COLLECT_PATH}/`));
+
+      return {
+        decision: isRelay
+          ? SamplingDecision.NOT_RECORD
+          : SamplingDecision.RECORD_AND_SAMPLED,
+      };
+    },
+    toString: () => 'TelemetryRelaySampler',
+  },
+});
+
 // backend への fetch に traceparent を付けるための propagateContextUrls の値。
 // @vercel/otel は fetch 先を URL オブジェクトの文字列表現と前方一致で比べるが、
 // URL は既定ポートを落とす（http://host:80/path → http://host/path）。
@@ -136,8 +171,12 @@ export const register = async () => {
         // デフォルトでは同一デプロイメント以外の URL へ traceparent が伝播
         // しないため、backend への fetch を明示する。
         propagateContextUrls: backendPropagationUrls(backendServerUrl),
+        // テレメトリー自身の送信 (Faro の /collect 中継、Pyroscope へのプロファイル送信) は
+        // 利用者の操作と無関係なルートスパンになり、トレース検索を埋めるため記録しない
+        ignoreUrls: [TELEMETRY_BACKEND_URL_PATTERN],
       },
     },
+    traceSampler: telemetryRelaySampler,
     spanProcessors: ['auto', stripUrlQuerySpanProcessor],
   });
 };

@@ -141,3 +141,48 @@ describe('backendPropagationUrls', () => {
     expect(backendPropagationUrls('not a url')).toEqual([]);
   });
 });
+
+describe('TELEMETRY_BACKEND_URL_PATTERN', () => {
+  it('監視基盤への通信だけに一致する', async () => {
+    const { TELEMETRY_BACKEND_URL_PATTERN } = await import('@/instrumentation');
+    const matches = (url: string) =>
+      TELEMETRY_BACKEND_URL_PATTERN.test(new URL(url).toString());
+
+    expect(
+      matches(
+        'http://k8s-monitoring-alloy-receiver.monitoring.svc.cluster.local:12347/collect'
+      )
+    ).toBe(true);
+    expect(
+      matches(
+        'http://pyroscope.monitoring.svc.cluster.local:4040/push.v1.PusherService/Push'
+      )
+    ).toBe(true);
+    expect(matches('http://seichi-portal-backend/api/v1/forms')).toBe(false);
+    expect(matches('https://discord.com/api/oauth2/token')).toBe(false);
+  });
+});
+
+describe('telemetryRelaySampler', () => {
+  it('Faro の中継ルートだけを記録しない', async () => {
+    const { ROOT_CONTEXT, SpanKind } = await import('@opentelemetry/api');
+    const { SamplingDecision } = await import('@opentelemetry/sdk-trace-base');
+    const { telemetryRelaySampler } = await import('@/instrumentation');
+    const decide = (target: string) =>
+      telemetryRelaySampler.shouldSample(
+        ROOT_CONTEXT,
+        '0af7651916cd43dd8448eb211c80319c',
+        'POST',
+        SpanKind.SERVER,
+        { 'http.target': target },
+        []
+      ).decision;
+
+    expect(decide('/collect')).toBe(SamplingDecision.NOT_RECORD);
+    expect(decide('/collect?session=1')).toBe(SamplingDecision.NOT_RECORD);
+    expect(decide('/collector')).toBe(SamplingDecision.RECORD_AND_SAMPLED);
+    expect(decide('/api/proxy/api/v1/forms')).toBe(
+      SamplingDecision.RECORD_AND_SAMPLED
+    );
+  });
+});
