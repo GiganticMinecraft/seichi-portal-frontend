@@ -94,3 +94,95 @@ describe('nodeMetricsConfiguration', () => {
     await expect(nodeMetricsConfiguration()).resolves.toEqual({});
   });
 });
+
+describe('backendPropagationUrls', () => {
+  // @vercel/otel と同じく、URL オブジェクトの文字列表現に対する前方一致で判定する
+  const propagates = (urls: string[], target: string) =>
+    urls.some((url) => new URL(target).toString().startsWith(url));
+
+  it('既定ポートを明示した BACKEND_SERVER_URL でも backend への fetch に一致する', async () => {
+    const { backendPropagationUrls } = await import('@/instrumentation');
+    const urls = backendPropagationUrls('http://seichi-portal-backend:80');
+
+    expect(urls).toEqual(['http://seichi-portal-backend/']);
+    expect(
+      propagates(urls, 'http://seichi-portal-backend:80/api/v1/forms')
+    ).toBe(true);
+  });
+
+  it('既定以外のポートは保持する', async () => {
+    const { backendPropagationUrls } = await import('@/instrumentation');
+    const urls = backendPropagationUrls('http://seichi-portal-backend:9000');
+
+    expect(
+      propagates(urls, 'http://seichi-portal-backend:9000/api/v1/forms')
+    ).toBe(true);
+    expect(propagates(urls, 'http://seichi-portal-backend/api/v1/forms')).toBe(
+      false
+    );
+  });
+
+  it('前方一致する別ホストや外部 URL には付けない', async () => {
+    const { backendPropagationUrls } = await import('@/instrumentation');
+    const urls = backendPropagationUrls('http://seichi-portal-backend:80');
+
+    expect(propagates(urls, 'http://seichi-portal-backend-other/api')).toBe(
+      false
+    );
+    expect(propagates(urls, 'https://discord.com/api/oauth2/token')).toBe(
+      false
+    );
+  });
+
+  it('未設定や不正な値なら伝播しない', async () => {
+    const { backendPropagationUrls } = await import('@/instrumentation');
+
+    expect(backendPropagationUrls(undefined)).toEqual([]);
+    expect(backendPropagationUrls('not a url')).toEqual([]);
+  });
+});
+
+describe('TELEMETRY_BACKEND_URL_PATTERN', () => {
+  it('監視基盤への通信だけに一致する', async () => {
+    const { TELEMETRY_BACKEND_URL_PATTERN } = await import('@/instrumentation');
+    const matches = (url: string) =>
+      TELEMETRY_BACKEND_URL_PATTERN.test(new URL(url).toString());
+
+    expect(
+      matches(
+        'http://k8s-monitoring-alloy-receiver.monitoring.svc.cluster.local:12347/collect'
+      )
+    ).toBe(true);
+    expect(
+      matches(
+        'http://pyroscope.monitoring.svc.cluster.local:4040/push.v1.PusherService/Push'
+      )
+    ).toBe(true);
+    expect(matches('http://seichi-portal-backend/api/v1/forms')).toBe(false);
+    expect(matches('https://discord.com/api/oauth2/token')).toBe(false);
+  });
+});
+
+describe('telemetryRelaySampler', () => {
+  it('Faro の中継ルートだけを記録しない', async () => {
+    const { ROOT_CONTEXT, SpanKind } = await import('@opentelemetry/api');
+    const { SamplingDecision } = await import('@opentelemetry/sdk-trace-base');
+    const { telemetryRelaySampler } = await import('@/instrumentation');
+    const decide = (target: string) =>
+      telemetryRelaySampler.shouldSample(
+        ROOT_CONTEXT,
+        '0af7651916cd43dd8448eb211c80319c',
+        'POST',
+        SpanKind.SERVER,
+        { 'http.target': target },
+        []
+      ).decision;
+
+    expect(decide('/collect')).toBe(SamplingDecision.NOT_RECORD);
+    expect(decide('/collect?session=1')).toBe(SamplingDecision.NOT_RECORD);
+    expect(decide('/collector')).toBe(SamplingDecision.RECORD_AND_SAMPLED);
+    expect(decide('/api/proxy/api/v1/forms')).toBe(
+      SamplingDecision.RECORD_AND_SAMPLED
+    );
+  });
+});
