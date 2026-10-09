@@ -878,11 +878,11 @@ export interface components {
         };
         AnswerComment: {
             attachments: components["schemas"]["CommentAttachmentResponse"][];
-            commented_by?: null | components["schemas"]["User"];
+            commented_by?: components["schemas"]["User"] | null;
             content: string;
             /** Format: uuid */
             id: string;
-            redmine_author_snapshot?: null | components["schemas"]["RedmineUserSnapshotResponse"];
+            redmine_author_snapshot?: components["schemas"]["RedmineUserSnapshotResponse"] | null;
             /** Format: int64 */
             redmine_journal_id?: number | null;
             source: components["schemas"]["AnswerCommentSource"];
@@ -913,7 +913,7 @@ export interface components {
             name: components["schemas"]["NonEmptyString"];
         };
         AnswerLabelUpdateSchema: {
-            name?: null | components["schemas"]["NonEmptyString"];
+            name?: components["schemas"]["NonEmptyString"] | null;
         };
         AnswerLabels: {
             /** Format: uuid */
@@ -1035,7 +1035,7 @@ export interface components {
             content: components["schemas"]["NonEmptyString"];
         };
         CommentUpdateSchema: {
-            content?: null | components["schemas"]["NonEmptyString"];
+            content?: components["schemas"]["NonEmptyString"] | null;
         };
         CrossSearchResult: {
             answers: components["schemas"]["FormAnswer"][];
@@ -1051,7 +1051,7 @@ export interface components {
         ErrorResponse: {
             detail: string;
             errorCode: string;
-            restriction?: null | components["schemas"]["ErrorRestriction"];
+            restriction?: components["schemas"]["ErrorRestriction"] | null;
             /** Format: int32 */
             status: number;
             title: string;
@@ -1081,7 +1081,7 @@ export interface components {
         FormCreateSchema: {
             description: string;
             questions: components["schemas"]["QuestionSchema"][];
-            settings?: null | components["schemas"]["FormSettingsSchema"];
+            settings?: components["schemas"]["FormSettingsSchema"] | null;
             title: string;
         };
         FormLabelCreateSchema: {
@@ -1092,7 +1092,7 @@ export interface components {
             name: string;
         };
         FormLabelUpdateSchema: {
-            name?: null | components["schemas"]["NonEmptyString"];
+            name?: components["schemas"]["NonEmptyString"] | null;
         };
         FormListPageResponse: {
             items: components["schemas"]["FormSchema"][];
@@ -1124,7 +1124,7 @@ export interface components {
         FormSettingsSchema: {
             allow_temporary_answers?: boolean | null;
             allowed_group_ids?: string[] | null;
-            answer_settings?: null | components["schemas"]["AnswerSettingsSchema"];
+            answer_settings?: components["schemas"]["AnswerSettingsSchema"] | null;
             /** @description Discord Webhook URL。キーを省略すると変更なし、`null` を指定すると通知を無効化する。 */
             discord_webhook_url?: string | null;
             visibility?: string | null;
@@ -1169,7 +1169,7 @@ export interface components {
              *     Omit this field to leave existing questions unchanged.
              */
             questions?: components["schemas"]["QuestionSchema"][] | null;
-            settings?: null | components["schemas"]["FormSettingsSchema"];
+            settings?: components["schemas"]["FormSettingsSchema"] | null;
             title?: string | null;
         };
         GlobalDiscordWebhookStatusSchema: {
@@ -6232,7 +6232,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": null | components["schemas"]["FormSubmissionRestrictionResponse"];
+                    "application/json": components["schemas"]["FormSubmissionRestrictionResponse"] | null;
                 };
             };
             /** @description The server could not understand the request due to invalid syntax. */
