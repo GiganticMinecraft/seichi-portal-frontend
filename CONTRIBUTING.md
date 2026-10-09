@@ -100,6 +100,25 @@ API 型定義の正の情報源は [seichi-portal-backend](https://github.com/Gi
 - 生成物が backend `main` のスキーマと一致しているかは CI の `OpenAPI codegen check` ジョブ（`pnpm codegen:check`）で自動検証されます。
 - 詳しい使い方は [README.md](./README.md) の「API 定義」を参照してください。
 
+生成は [@hey-api/openapi-ts](https://heyapi.dev/) で行います（設定は `openapi-ts.config.ts`）。
+TypeScript 7 はコンパイラ API を同梱しないため、生成ツールは TypeScript のコンパイラ API に依存しない版を使っています。
+
+- API は `src/generated/api/sdk.gen.ts` の SDK 関数で呼びます。operation ごとに関数があり、クライアントを `client` で渡します。
+
+  ```ts
+  import * as sdk from '@/generated/api/sdk.gen';
+  import { withResponse } from '@/lib/api/createApiClient';
+  import { proxyClient } from '@/lib/proxyClient';
+
+  const { data, error, response } = await withResponse(
+    sdk.getFormHandler({ client: proxyClient, path: { form_id: formId } })
+  );
+  ```
+
+- ブラウザからは `proxyClient`、サーバ（RSC / Route Handler）からは `serverApiClient`（`src/lib/server/backend.ts`）を使います。サーバ側は `requireBackendData` / `requireBackendResponse` に渡すとエラーを `BackendError` にそろえられます。
+- 型は `src/generated/api/types.gen.ts` から `import type * as Api from '@/generated/api/types.gen'` で参照します（例: `Api.FormSchema`、`Api.GetFormHandlerResponses[200]`）。
+- SWR の `useApiQuery` / `useInfiniteApiQuery` はパス文字列で GET します。対応表 `src/generated/api/get-operations.gen.ts` も `pnpm codegen` が生成します。
+
 ## 開発環境の起動
 
 環境変数の設定と seichi-portal-backend の起動が済んだら、以下を実行してください。

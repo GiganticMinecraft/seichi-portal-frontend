@@ -1,6 +1,7 @@
 import { Stack, Typography } from '@mui/material';
 import type { Metadata } from 'next';
 
+import * as sdk from '@/generated/api/sdk.gen';
 import {
   authorizationHeader,
   requireBackendData,
@@ -17,7 +18,8 @@ export const metadata: Metadata = {
 const Page = async () => {
   const { session } = await getAdminAccess();
   const status = await requireBackendData(
-    serverApiClient.GET('/api/v1/settings/global-discord-webhook', {
+    sdk.getGlobalDiscordWebhook({
+      client: serverApiClient,
       headers: authorizationHeader(session.token),
     })
   );

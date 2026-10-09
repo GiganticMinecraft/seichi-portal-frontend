@@ -1,8 +1,6 @@
-import createClient from 'openapi-fetch';
-import type { Client } from 'openapi-fetch';
-
 import { getBackendServerUrl } from '@/env.server';
-import type { ApiPaths } from '@/lib/api/types';
+import type { Client } from '@/generated/api/client';
+import { createApiClient } from '@/lib/api/createApiClient';
 import {
   getProblemDetails,
   getRateLimitResetSeconds,
@@ -47,28 +45,34 @@ export class BackendError extends Error {
   }
 }
 
+// exactOptionalPropertyTypes 下で hey-api の結果型 (`data: undefined` を含む union) を
+// 受け取れるよう、省略可能なプロパティに undefined を明示する
 type BackendFetchResult<T> = {
-  data?: T;
+  data?: T | undefined;
   error?: unknown;
-  response: Response;
+  // hey-api の型では通信エラー時のため省略可能。実際には createApiClient の
+  // error interceptor が通信エラーを例外にするため、解決した結果には必ずある
+  response?: Response | undefined;
 };
 
+type BackendSuccessResult<T> = BackendFetchResult<T> & { response: Response };
+
 export const createServerApiClient = () =>
-  createClient<ApiPaths>({
+  createApiClient({
     baseUrl: getBackendServerUrl(),
     cache: 'no-cache',
   });
 
-let cachedServerApiClient: Client<ApiPaths> | undefined;
+let cachedServerApiClient: Client | undefined;
 
-const getServerApiClient = (): Client<ApiPaths> => {
+const getServerApiClient = (): Client => {
   cachedServerApiClient ??= createServerApiClient();
   return cachedServerApiClient;
 };
 
-export const serverApiClient: Client<ApiPaths> = new Proxy(
+export const serverApiClient: Client = new Proxy(
   // eslint-disable-next-line @typescript-eslint/consistent-type-assertions, @typescript-eslint/no-unsafe-type-assertion -- モジュールインポート時の初期化を防ぐため、空オブジェクトをターゲットとして遅延初期化する
-  {} as Client<ApiPaths>,
+  {} as Client,
   {
     get(_target, property, receiver): unknown {
       return Reflect.get(getServerApiClient(), property, receiver);
@@ -126,21 +130,27 @@ export const requireAllBackendPages = async <T>(
 
 export const requireBackendResponse = async <T>(
   request: Promise<BackendFetchResult<T>>
-): Promise<BackendFetchResult<T>> => {
+): Promise<BackendSuccessResult<T>> => {
   try {
     const result = await request;
+    const { response } = result;
 
-    if (!result.response.ok) {
+    if (response === undefined) {
+      // catch 節で network_error に変換する
+      throw new Error('backend request finished without a response');
+    }
+
+    if (!response.ok) {
       throw new BackendError({
-        message: `Backend request failed with status ${result.response.status}`,
-        status: result.response.status,
+        message: `Backend request failed with status ${response.status}`,
+        status: response.status,
         code: 'http_error',
         body: result.error,
-        headers: result.response.headers,
+        headers: response.headers,
       });
     }
 
-    return result;
+    return { ...result, response };
   } catch (error) {
     if (error instanceof BackendError) {
       throw error;

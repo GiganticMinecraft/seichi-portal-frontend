@@ -1,6 +1,7 @@
 import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
 
+import * as sdk from '@/generated/api/sdk.gen';
 import { authorizationHeader, serverApiClient } from '@/lib/server/backend';
 import { SESSION_COOKIE_NAME } from '@/user-token/mcToken';
 
@@ -9,8 +10,9 @@ export const DELETE = async () => {
   const token = cookieStore.get(SESSION_COOKIE_NAME)?.value;
 
   if (token) {
-    await serverApiClient
-      .DELETE('/api/v1/session', {
+    await sdk
+      .endSession({
+        client: serverApiClient,
         headers: {
           ...authorizationHeader(token),
         },

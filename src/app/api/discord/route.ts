@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
 import { getDiscordConfig, getMsalOrigin } from '@/env.server';
+import * as sdk from '@/generated/api/sdk.gen';
+import { withResponse } from '@/lib/api/createApiClient';
 import {
   getPostLoginRedirectFromRequest,
   setPostLoginRedirectCookie,
@@ -141,16 +143,16 @@ export async function GET(req: NextRequest) {
       return response;
     }
 
-    const { response: linkDiscordResponse } = await serverApiClient.POST(
-      '/api/v1/link-discord',
-      {
+    const { response: linkDiscordResponse } = await withResponse(
+      sdk.linkDiscord({
+        client: serverApiClient,
         headers: {
           ...authorizationHeader(seichiPortalToken),
         },
         body: {
           token: token.data.access_token,
         },
-      }
+      })
     );
 
     if (!linkDiscordResponse.ok) {

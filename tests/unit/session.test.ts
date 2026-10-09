@@ -52,10 +52,11 @@ vi.mock('@/lib/server/backend', () => ({
   }),
   BackendError: MockBackendError,
   requireBackendResponse: async (request: Promise<unknown>) => request,
-  serverApiClient: {
-    // eslint-disable-next-line @typescript-eslint/naming-convention -- HTTP メソッド名は大文字が正規の表記
-    GET: (...args: unknown[]): unknown => backendGetMock(...args),
-  },
+  serverApiClient: {},
+}));
+
+vi.mock('@/generated/api/sdk.gen', () => ({
+  getMyUserInfo: (...args: unknown[]): unknown => backendGetMock(...args),
 }));
 
 const loadSessionModule = async () => import('@/lib/server/session');

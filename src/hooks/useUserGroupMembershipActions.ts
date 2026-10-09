@@ -1,8 +1,10 @@
 'use client';
 
+import * as sdk from '@/generated/api/sdk.gen';
 import { handleMutationResponse } from '@/hooks/useApiMutation';
 import type { MutationResult } from '@/hooks/useApiMutation';
 import { useSingleFlightAction } from '@/hooks/useSingleFlightAction';
+import { withResponse } from '@/lib/api/createApiClient';
 import { proxyClient } from '@/lib/proxyClient';
 
 export const useUserGroupMembershipActions = () => {
@@ -10,11 +12,11 @@ export const useUserGroupMembershipActions = () => {
     groupId: string,
     userId: string
   ): Promise<MutationResult> => {
-    const { data, error, response } = await proxyClient.PUT(
-      '/api/v1/user-groups/{group_id}/users/{user_id}',
-      {
-        params: { path: { group_id: groupId, user_id: userId } },
-      }
+    const { data, error, response } = await withResponse(
+      sdk.addUserToGroup({
+        client: proxyClient,
+        path: { group_id: groupId, user_id: userId },
+      })
     );
     return handleMutationResponse(response, data, error);
   };
@@ -23,11 +25,11 @@ export const useUserGroupMembershipActions = () => {
     groupId: string,
     userId: string
   ): Promise<MutationResult> => {
-    const { data, error, response } = await proxyClient.DELETE(
-      '/api/v1/user-groups/{group_id}/users/{user_id}',
-      {
-        params: { path: { group_id: groupId, user_id: userId } },
-      }
+    const { data, error, response } = await withResponse(
+      sdk.removeUserFromGroup({
+        client: proxyClient,
+        path: { group_id: groupId, user_id: userId },
+      })
     );
     return handleMutationResponse(response, data, error);
   };

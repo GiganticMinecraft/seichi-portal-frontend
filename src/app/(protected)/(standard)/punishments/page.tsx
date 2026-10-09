@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 
+import * as sdk from '@/generated/api/sdk.gen';
 import {
   authorizationHeader,
   requireBackendData,
@@ -16,11 +17,10 @@ export const metadata: Metadata = {
 const Home = async () => {
   const session = await requireUser();
   const punishments = await requireBackendData(
-    serverApiClient.GET('/api/v1/users/{uuid}/minecraft-punishments', {
+    sdk.getMinecraftPunishments({
+      client: serverApiClient,
       headers: authorizationHeader(session.token),
-      params: {
-        path: { uuid: session.user.id },
-      },
+      path: { uuid: session.user.id },
     })
   );
 

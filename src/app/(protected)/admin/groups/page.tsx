@@ -2,6 +2,7 @@ import { Stack, Typography } from '@mui/material';
 import type { Metadata } from 'next';
 import { Suspense } from 'react';
 
+import * as sdk from '@/generated/api/sdk.gen';
 import {
   authorizationHeader,
   requireBackendData,
@@ -19,7 +20,8 @@ export const metadata: Metadata = {
 const Home = async () => {
   const { session } = await getAdminAccess();
   const groups = await requireBackendData(
-    serverApiClient.GET('/api/v1/user-groups', {
+    sdk.userGroupList({
+      client: serverApiClient,
       headers: authorizationHeader(session.token),
     })
   );

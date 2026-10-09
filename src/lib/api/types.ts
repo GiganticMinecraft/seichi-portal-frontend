@@ -1,99 +1,76 @@
-import type { components, paths } from '@/generated/api-types';
+import type * as Api from '@/generated/api/types.gen';
 
-export type ApiPaths = paths;
-export type ApiComponents = components;
-
-export type AnswerComment = components['schemas']['AnswerComment'];
-export type CommentAttachmentResponse =
-  components['schemas']['CommentAttachmentResponse'];
-export type AnswerPublication = components['schemas']['AnswerPublication'];
-export type AnswerStatus = components['schemas']['AnswerStatus'];
-export type CommentHistoryResponseEntry =
-  components['schemas']['CommentHistoryResponseEntry'];
-export type MessageHistoryResponseEntry =
-  components['schemas']['MessageHistoryResponseEntry'];
+export type AnswerComment = Api.AnswerComment;
+export type CommentAttachmentResponse = Api.CommentAttachmentResponse;
+export type AnswerPublication = Api.AnswerPublication;
+export type AnswerStatus = Api.AnswerStatus;
+export type CommentHistoryResponseEntry = Api.CommentHistoryResponseEntry;
+export type MessageHistoryResponseEntry = Api.MessageHistoryResponseEntry;
 export type AnswerStatusHistoryResponseEntry =
-  components['schemas']['AnswerStatusHistoryResponseEntry'];
+  Api.AnswerStatusHistoryResponseEntry;
 export type AnswerTitleHistoryResponseEntry =
-  components['schemas']['AnswerTitleHistoryResponseEntry'];
+  Api.AnswerTitleHistoryResponseEntry;
 
-export type GetQuestionsResponse =
-  components['schemas']['QuestionResponseSchema'][];
-export type GetFormsPageResponse =
-  ApiPaths['/api/v1/forms']['get']['responses'][200]['content']['application/json'];
+export type GetQuestionsResponse = Api.QuestionResponseSchema[];
+export type GetFormsPageResponse = Api.FormListHandlerResponses[200];
 export type GetFormsResponse = GetFormsPageResponse['items'];
-export type GetFormResponse =
-  ApiPaths['/api/v1/forms/{form_id}']['get']['responses'][200]['content']['application/json'];
-export type CreateFormResponse =
-  ApiPaths['/api/v1/forms']['post']['responses'][201]['content']['application/json'];
+export type GetFormResponse = Api.GetFormHandlerResponses[200];
+export type CreateFormResponse = Api.CreateFormHandlerResponses[201];
 export type GetFormAnswersPageResponse =
-  ApiPaths['/api/v1/forms/{form_id}/answers']['get']['responses'][200]['content']['application/json'];
+  Api.GetAnswerByFormIdHandlerResponses[200];
 export type GetFormAnswersResponse = GetFormAnswersPageResponse['items'];
-export type GetAnswersPageResponse =
-  ApiPaths['/api/v1/forms/answers']['get']['responses'][200]['content']['application/json'];
+export type GetAnswersPageResponse = Api.GetAllAnswersResponses[200];
 export type GetAnswersResponse = GetAnswersPageResponse['items'];
-export type GetAnswerResponse =
-  ApiPaths['/api/v1/forms/{form_id}/answers/{answer_id}']['get']['responses'][200]['content']['application/json'];
-export type GetFormLabelsResponse =
-  ApiPaths['/api/v1/labels/forms']['get']['responses'][200]['content']['application/json'];
-export type GetAnswerLabelsResponse =
-  ApiPaths['/api/v1/labels/answers']['get']['responses'][200]['content']['application/json'];
-export type GetMessagesResponse =
-  ApiPaths['/api/v1/forms/{form_id}/answers/{answer_id}/messages']['get']['responses'][200]['content']['application/json'];
+export type GetAnswerResponse = Api.GetAnswerHandlerResponses[200];
+export type GetFormLabelsResponse = Api.GetLabelsForFormsResponses[200];
+export type GetAnswerLabelsResponse = Api.GetLabelsForAnswersResponses[200];
+export type GetMessagesResponse = Api.GetMessagesHandlerResponses[200];
 export type GetRelatedAnswersResponse =
-  ApiPaths['/api/v1/forms/{form_id}/answers/{answer_id}/related-answers']['get']['responses'][200]['content']['application/json'];
+  Api.GetRelatedAnswersHandlerResponses[200];
 export type RelatedAnswerResponse = GetRelatedAnswersResponse[number];
-export type GetCommentHistoryResponse =
-  ApiPaths['/api/v1/forms/{form_id}/answers/{answer_id}/comments/history']['get']['responses'][200]['content']['application/json'];
-export type GetMessageHistoryResponse =
-  ApiPaths['/api/v1/forms/{form_id}/answers/{answer_id}/messages/history']['get']['responses'][200]['content']['application/json'];
+export type GetCommentHistoryResponse = Api.GetCommentHistoryResponses[200];
+export type GetMessageHistoryResponse = Api.GetMessageHistoryResponses[200];
 export type GetAnswerStatusHistoryResponse =
-  ApiPaths['/api/v1/forms/{form_id}/answers/{answer_id}/status/history']['get']['responses'][200]['content']['application/json'];
+  Api.GetAnswerStatusHistoryHandlerResponses[200];
 export type GetAnswerTitleHistoryResponse =
-  ApiPaths['/api/v1/forms/{form_id}/answers/{answer_id}/title/history']['get']['responses'][200]['content']['application/json'];
-export type GetUsersResponse =
-  ApiPaths['/api/v1/users/me']['get']['responses'][200]['content']['application/json'];
-export type GetUserResponse =
-  ApiPaths['/api/v1/users/{uuid}']['get']['responses'][200]['content']['application/json'];
-export type GetUserListPageResponse =
-  ApiPaths['/api/v1/users']['get']['responses'][200]['content']['application/json'];
+  Api.GetAnswerTitleHistoryHandlerResponses[200];
+export type GetUsersResponse = Api.GetMyUserInfoResponses[200];
+export type GetUserResponse = Api.GetUserInfoResponses[200];
+export type GetUserListPageResponse = Api.UserListResponses[200];
 export type GetUserListResponse = GetUserListPageResponse['items'];
 export type GetFormSubmissionRestrictionResponse =
-  ApiPaths['/api/v1/users/{uuid}/form-submission-restriction']['get']['responses'][200]['content']['application/json'];
-export type PutFormSubmissionRestrictionSchema =
-  ApiPaths['/api/v1/users/{uuid}/form-submission-restriction']['put']['requestBody']['content']['application/json'];
+  Api.GetFormSubmissionRestrictionResponses[200];
+export type PutFormSubmissionRestrictionSchema = NonNullable<
+  Api.PutFormSubmissionRestrictionData['body']
+>;
 export type GetFormSubmissionRestrictionHistoryResponse =
-  ApiPaths['/api/v1/users/{uuid}/form-submission-restriction/history']['get']['responses'][200]['content']['application/json'];
+  Api.GetFormSubmissionRestrictionHistoryResponses[200];
 export type GetMinecraftPunishmentsResponse =
-  ApiPaths['/api/v1/users/{uuid}/minecraft-punishments']['get']['responses'][200]['content']['application/json'];
-export type SearchResponse =
-  ApiPaths['/api/v1/search']['get']['responses'][200]['content']['application/json'];
-export type GetUserSearchPageResponse =
-  ApiPaths['/api/v1/search/users']['get']['responses'][200]['content']['application/json'];
+  Api.GetMinecraftPunishmentsResponses[200];
+export type SearchResponse = Api.CrossSearchResponses[200];
+export type GetUserSearchPageResponse = Api.SearchUsersResponses[200];
 export type GetUserSearchResponse = GetUserSearchPageResponse['users'];
-export type AnswerSearchResponse =
-  ApiPaths['/api/v1/search/answers']['get']['responses'][200]['content']['application/json'];
-export type GetNotificationsPageResponse =
-  ApiPaths['/api/v1/notifications']['get']['responses'][200]['content']['application/json'];
+export type AnswerSearchResponse = Api.SearchAnswersResponses[200];
+export type GetNotificationsPageResponse = Api.GetNotificationsResponses[200];
 export type GetNotificationsResponse = GetNotificationsPageResponse['items'];
 export type NotificationResponse = GetNotificationsResponse[number];
 export type GetNotificationSettingsResponse =
-  ApiPaths['/api/v1/notifications/settings/me']['get']['responses'][200]['content']['application/json'];
-export type CreateFormSchema =
-  ApiPaths['/api/v1/forms']['post']['requestBody']['content']['application/json'];
-export type UpdateNotificationSettingsSchema =
-  ApiPaths['/api/v1/notifications/settings/me']['patch']['requestBody']['content']['application/json'];
+  Api.GetMyNotificationSettingsResponses[200];
+export type CreateFormSchema = NonNullable<Api.CreateFormHandlerData['body']>;
+export type UpdateNotificationSettingsSchema = NonNullable<
+  Api.UpdateNotificationSettingsData['body']
+>;
 export type GetArchivedFormsPageResponse =
-  ApiPaths['/api/v1/archived-forms']['get']['responses'][200]['content']['application/json'];
+  Api.ArchivedFormListHandlerResponses[200];
 export type GetArchivedFormsResponse = GetArchivedFormsPageResponse['items'];
-export type UserGroupSchema = ApiComponents['schemas']['UserGroupSchema'];
-export type GetUserGroupsResponse =
-  ApiPaths['/api/v1/user-groups']['get']['responses'][200]['content']['application/json'];
-export type CreateUserGroupSchema =
-  ApiPaths['/api/v1/user-groups']['post']['requestBody']['content']['application/json'];
-export type GetUserGroupMembersResponse =
-  ApiPaths['/api/v1/user-groups/{group_id}/users']['get']['responses'][200]['content']['application/json'];
+export type UserGroupSchema = Api.UserGroupSchema;
+export type GetUserGroupsResponse = Api.UserGroupListResponses[200];
+export type CreateUserGroupSchema = NonNullable<
+  Api.CreateUserGroupData['body']
+>;
+export type GetUserGroupMembersResponse = Api.UserGroupUserListResponses[200];
 export type GetGlobalDiscordWebhookResponse =
-  ApiPaths['/api/v1/settings/global-discord-webhook']['get']['responses'][200]['content']['application/json'];
-export type UpdateGlobalDiscordWebhookSchema =
-  ApiPaths['/api/v1/settings/global-discord-webhook']['put']['requestBody']['content']['application/json'];
+  Api.GetGlobalDiscordWebhookResponses[200];
+export type UpdateGlobalDiscordWebhookSchema = NonNullable<
+  Api.UpdateGlobalDiscordWebhookData['body']
+>;

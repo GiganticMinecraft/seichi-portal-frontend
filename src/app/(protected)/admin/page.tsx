@@ -4,6 +4,7 @@ import {
   OPEN_STATE_TO_ANSWER_STATUSES,
   resolveAnswerOpenState,
 } from '@/app/(protected)/_components/AnswersList/answerListFilters';
+import * as sdk from '@/generated/api/sdk.gen';
 import {
   authorizationHeader,
   requireAllBackendPages,
@@ -28,20 +29,18 @@ const Home = async ({
   const openState = resolveAnswerOpenState(status);
   const [initialAnswers, forms] = await Promise.all([
     requireBackendData(
-      serverApiClient.GET('/api/v1/forms/answers', {
+      sdk.getAllAnswers({
+        client: serverApiClient,
         headers: authorizationHeader(session.token),
-        // クライアント側の初回表示は openState をこの URL と同じ値から始めるため、
-        // 初回表示から一致するようサーバー側で絞り込んでおく。
-        params: {
-          query: { status: OPEN_STATE_TO_ANSWER_STATUSES[openState] },
-        },
+        query: { status: OPEN_STATE_TO_ANSWER_STATUSES[openState] },
       })
     ),
     // フォーム名の突き合わせに使う参照用データのため、一覧表示とは別に全件取得する
     requireAllBackendPages((cursor) =>
-      serverApiClient.GET('/api/v1/forms', {
+      sdk.formListHandler({
+        client: serverApiClient,
         headers: authorizationHeader(session.token),
-        params: { query: cursor === undefined ? {} : { cursor } },
+        query: cursor === undefined ? {} : { cursor },
       })
     ),
   ]);

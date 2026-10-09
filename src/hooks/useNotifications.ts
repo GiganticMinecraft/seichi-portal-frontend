@@ -1,7 +1,9 @@
 'use client';
 
 import { useInfiniteApiQuery } from '@/app/_swr/useInfiniteApiQuery';
+import * as sdk from '@/generated/api/sdk.gen';
 import { useSingleFlightAction } from '@/hooks/useSingleFlightAction';
+import { withResponse } from '@/lib/api/createApiClient';
 import type { GetNotificationsPageResponse } from '@/lib/api-types';
 import { proxyClient } from '@/lib/proxyClient';
 
@@ -49,9 +51,11 @@ export const useNotifications = () => {
       { revalidate: false }
     );
 
-    const { response } = await proxyClient.PATCH(
-      '/api/v1/notifications/{notification_id}/read',
-      { params: { path: { notification_id: notificationId } } }
+    const { response } = await withResponse(
+      sdk.markNotificationAsRead({
+        client: proxyClient,
+        path: { notification_id: notificationId },
+      })
     );
 
     if (!response.ok) {
@@ -71,9 +75,10 @@ export const useNotifications = () => {
       { revalidate: false }
     );
 
-    const { response } = await proxyClient.PATCH(
-      '/api/v1/notifications/read-all',
-      {}
+    const { response } = await withResponse(
+      sdk.markAllNotificationsAsRead({
+        client: proxyClient,
+      })
     );
 
     if (!response.ok) {

@@ -2,7 +2,9 @@
 
 import { useSWRConfig } from 'swr';
 
+import * as sdk from '@/generated/api/sdk.gen';
 import { useSingleFlightAction } from '@/hooks/useSingleFlightAction';
+import { withResponse } from '@/lib/api/createApiClient';
 import { proxyClient } from '@/lib/proxyClient';
 
 export const useUserGroupCRUD = () => {
@@ -10,9 +12,12 @@ export const useUserGroupCRUD = () => {
   const key = ['/api/v1/user-groups'];
 
   const createGroup = async (name: string): Promise<{ ok: boolean }> => {
-    const { response } = await proxyClient.POST('/api/v1/user-groups', {
-      body: { name },
-    });
+    const { response } = await withResponse(
+      sdk.createUserGroup({
+        client: proxyClient,
+        body: { name },
+      })
+    );
     if (response.ok) await mutate(key);
     return { ok: response.ok };
   };
@@ -21,23 +26,23 @@ export const useUserGroupCRUD = () => {
     id: string,
     name: string
   ): Promise<{ ok: boolean }> => {
-    const { response } = await proxyClient.PATCH(
-      '/api/v1/user-groups/{group_id}',
-      {
-        params: { path: { group_id: id } },
+    const { response } = await withResponse(
+      sdk.updateUserGroup({
+        client: proxyClient,
+        path: { group_id: id },
         body: { name },
-      }
+      })
     );
     if (response.ok) await mutate(key);
     return { ok: response.ok };
   };
 
   const deleteGroup = async (id: string): Promise<{ ok: boolean }> => {
-    const { response } = await proxyClient.DELETE(
-      '/api/v1/user-groups/{group_id}',
-      {
-        params: { path: { group_id: id } },
-      }
+    const { response } = await withResponse(
+      sdk.deleteUserGroup({
+        client: proxyClient,
+        path: { group_id: id },
+      })
     );
     if (response.ok) await mutate(key);
     return { ok: response.ok };

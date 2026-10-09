@@ -2,6 +2,7 @@ import { Stack, Typography } from '@mui/material';
 import type { Metadata } from 'next';
 import { Suspense } from 'react';
 
+import * as sdk from '@/generated/api/sdk.gen';
 import {
   authorizationHeader,
   requireBackendData,
@@ -19,12 +20,14 @@ const Home = async () => {
   const { session } = await getAdminAccess();
   const [formLabels, answerLabels] = await Promise.all([
     requireBackendData(
-      serverApiClient.GET('/api/v1/labels/forms', {
+      sdk.getLabelsForForms({
+        client: serverApiClient,
         headers: authorizationHeader(session.token),
       })
     ),
     requireBackendData(
-      serverApiClient.GET('/api/v1/labels/answers', {
+      sdk.getLabelsForAnswers({
+        client: serverApiClient,
         headers: authorizationHeader(session.token),
       })
     ),

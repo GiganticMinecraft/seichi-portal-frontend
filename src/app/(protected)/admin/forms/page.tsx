@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 
+import * as sdk from '@/generated/api/sdk.gen';
 import {
   authorizationHeader,
   requireAllBackendPages,
@@ -21,19 +22,22 @@ const Home = async (props: {
   // クライアントサイドのタイトル/ラベル絞り込みと組み合わせるため、無限スクロールではなく全件取得する
   const [forms, archivedForms, labels, searchParams] = await Promise.all([
     requireAllBackendPages((cursor) =>
-      serverApiClient.GET('/api/v1/forms', {
+      sdk.formListHandler({
+        client: serverApiClient,
         headers: authorizationHeader(session.token),
-        params: { query: cursor === undefined ? {} : { cursor } },
+        query: cursor === undefined ? {} : { cursor },
       })
     ),
     requireAllBackendPages((cursor) =>
-      serverApiClient.GET('/api/v1/archived-forms', {
+      sdk.archivedFormListHandler({
+        client: serverApiClient,
         headers: authorizationHeader(session.token),
-        params: { query: cursor === undefined ? {} : { cursor } },
+        query: cursor === undefined ? {} : { cursor },
       })
     ),
     requireBackendData(
-      serverApiClient.GET('/api/v1/labels/forms', {
+      sdk.getLabelsForForms({
+        client: serverApiClient,
         headers: authorizationHeader(session.token),
       })
     ),

@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { headers } from 'next/headers';
 
 import { getSeichiProxyHeaders, getTurnstileSiteKey } from '@/env.server';
+import * as sdk from '@/generated/api/sdk.gen';
 import {
   authorizationHeader,
   BackendError,
@@ -25,11 +26,10 @@ const fetchOwnRestriction = async (session: {
 }) => {
   try {
     const restriction = await requireBackendData(
-      serverApiClient.GET('/api/v1/users/{uuid}/form-submission-restriction', {
+      sdk.getFormSubmissionRestriction({
+        client: serverApiClient,
         headers: authorizationHeader(session.token),
-        params: {
-          path: { uuid: session.user.id },
-        },
+        path: { uuid: session.user.id },
       })
     );
 
@@ -52,15 +52,14 @@ const Home = async ({ params }: { params: Promise<{ formId: string }> }) => {
   // restriction はフォーム取得結果に依存しないため並列で取得する。
   const [form, restriction] = await Promise.all([
     requireBackendData(
-      serverApiClient.GET('/api/v1/forms/{form_id}', {
+      sdk.getFormHandler({
+        client: serverApiClient,
         ...(isAuthenticated
           ? { headers: authorizationHeader(session.token) }
           : {
               headers: getSeichiProxyHeaders(requestHeaders ?? new Headers()),
             }),
-        params: {
-          path: { form_id: formId },
-        },
+        path: { form_id: formId },
       })
     ),
     isAuthenticated ? fetchOwnRestriction(session) : Promise.resolve(null),

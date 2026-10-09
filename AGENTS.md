@@ -9,11 +9,13 @@
 - **フレームワーク**: Next.js (App Router), React 19
 - **UI**: Material UI (MUI) v7, Emotion
 - **認証**: Microsoft MSAL (@azure/msal-browser / @azure/msal-react)
-- **API**: openapi-fetch, Zodios, SWR
+- **API**: @hey-api/openapi-ts (生成 SDK + fetch クライアント), Zodios, SWR
 - **バリデーション**: Zod v4
 - **フォーム**: React Hook Form
 - **その他**: fp-ts, ts-pattern, dayjs
-- **言語**: TypeScript 5 (`@tsconfig/strictest` ベースの strict モード)
+- **言語**: TypeScript 7 (`@tsconfig/strictest` ベースの strict モード)
+  - `tsc` (型チェック) は `@typescript/native` (= `typescript@7`、ネイティブ実装)。
+  - `typescript` は `@typescript/typescript6` の別名。TS 7.0 は JS API を同梱しないため、API を使うツール (typescript-eslint、Next.js のビルド時型チェック) は TS 6 で動く。TS 7.1 の API と typescript-eslint の対応 (typescript-eslint#10940) が出たら一本化する。
 - **Lint/Format**: ESLint 9 (flat config), Prettier
 - **Git フック**: Lefthook
 

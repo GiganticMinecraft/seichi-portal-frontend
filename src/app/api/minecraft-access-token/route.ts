@@ -7,6 +7,7 @@ import {
   xboxLiveServiceTokenResponseSchema,
 } from '@/_schemas/loginSchema';
 import { getSeichiProxyHeaders } from '@/env.server';
+import * as sdk from '@/generated/api/sdk.gen';
 import {
   authorizationHeader,
   BackendError,
@@ -233,13 +234,12 @@ const createSession = async (
   requestHeaders?: Pick<Headers, 'get'>
 ) => {
   const { response } = await requireBackendResponse(
-    serverApiClient.POST('/api/v1/session', {
+    sdk.startSession({
+      client: serverApiClient,
       headers: {
         ...authorizationHeader(token),
         ...(requestHeaders ? getSeichiProxyHeaders(requestHeaders) : {}),
-      },
-      params: {
-        header: { 'X-Seichi-Turnstile-Token': turnstileToken },
+        'X-Seichi-Turnstile-Token': turnstileToken,
       },
       body: {
         expires_at: expiresAt,

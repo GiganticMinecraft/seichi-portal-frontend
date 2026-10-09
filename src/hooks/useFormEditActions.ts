@@ -1,21 +1,22 @@
 'use client';
 
+import * as sdk from '@/generated/api/sdk.gen';
+import type * as Api from '@/generated/api/types.gen';
 import { handleMutationResponse } from '@/hooks/useApiMutation';
 import { useSingleFlightAction } from '@/hooks/useSingleFlightAction';
-import type { ApiPaths } from '@/lib/api/types';
+import { withResponse } from '@/lib/api/createApiClient';
 import { proxyClient } from '@/lib/proxyClient';
 
-type FormUpdateBody =
-  ApiPaths['/api/v1/forms/{form_id}']['put']['requestBody']['content']['application/json'];
+type FormUpdateBody = NonNullable<Api.UpdateFormHandlerData['body']>;
 
 export const useFormEditActions = (formId: string) => {
   const updateForm = async (body: FormUpdateBody): Promise<{ ok: boolean }> => {
-    const { data, error, response } = await proxyClient.PUT(
-      '/api/v1/forms/{form_id}',
-      {
-        params: { path: { form_id: formId } },
+    const { data, error, response } = await withResponse(
+      sdk.updateFormHandler({
+        client: proxyClient,
+        path: { form_id: formId },
         body,
-      }
+      })
     );
     const result = handleMutationResponse(response, data, error);
     return { ok: result.success };

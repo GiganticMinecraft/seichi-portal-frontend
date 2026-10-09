@@ -2,9 +2,11 @@
 
 import { useState } from 'react';
 
+import * as sdk from '@/generated/api/sdk.gen';
+import type * as Api from '@/generated/api/types.gen';
 import { useSingleFlightAction } from '@/hooks/useSingleFlightAction';
 import { useTurnstileToken } from '@/hooks/useTurnstileToken';
-import type { ApiPaths } from '@/lib/api/types';
+import { withResponse } from '@/lib/api/createApiClient';
 import { proxyClient } from '@/lib/proxyClient';
 
 import { parseSubmissionError } from '../_lib/submissionErrors';
@@ -13,10 +15,10 @@ import type { SubmissionError } from '../_lib/submissionErrors';
 import { isTemporaryUserField, TEMPORARY_USER_FIELDS } from './answerFormTypes';
 import type { AnswerFormInput } from './answerFormTypes';
 
-type AnswerCreateBody =
-  ApiPaths['/api/v1/forms/{form_id}/answers']['post']['requestBody']['content']['application/json'];
-type TemporaryAnswerCreateBody =
-  ApiPaths['/api/v1/forms/{form_id}/temporary-answers']['post']['requestBody']['content']['application/json'];
+type AnswerCreateBody = NonNullable<Api.PostAnswerHandlerData['body']>;
+type TemporaryAnswerCreateBody = NonNullable<
+  Api.PostTemporaryAnswerHandlerData['body']
+>;
 type AnswerContents = AnswerCreateBody['contents'];
 
 export type SubmissionState =
@@ -90,22 +92,26 @@ export const useAnswerSubmission = (
 
   const postAnswers = (data: AnswerFormInput, turnstileToken: string) => {
     if (isTemporary) {
-      return proxyClient.POST('/api/v1/forms/{form_id}/temporary-answers', {
-        params: {
+      return withResponse(
+        sdk.postTemporaryAnswerHandler({
+          client: proxyClient,
           path: { form_id: formId },
-          header: { 'X-Seichi-Turnstile-Token': turnstileToken },
-        },
-        body: {
-          contents: toAnswerContents(data),
-          temporary_user: toTemporaryUser(data),
-        },
-      });
+          headers: { 'X-Seichi-Turnstile-Token': turnstileToken },
+          body: {
+            contents: toAnswerContents(data),
+            temporary_user: toTemporaryUser(data),
+          },
+        })
+      );
     }
 
-    return proxyClient.POST('/api/v1/forms/{form_id}/answers', {
-      params: { path: { form_id: formId } },
-      body: { contents: toAnswerContents(data) },
-    });
+    return withResponse(
+      sdk.postAnswerHandler({
+        client: proxyClient,
+        path: { form_id: formId },
+        body: { contents: toAnswerContents(data) },
+      })
+    );
   };
 
   const submitAnswersOnce = async (data: AnswerFormInput) => {

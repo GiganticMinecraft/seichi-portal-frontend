@@ -2,8 +2,10 @@
 
 import { useSWRConfig } from 'swr';
 
+import * as sdk from '@/generated/api/sdk.gen';
 import { handleMutationResponse } from '@/hooks/useApiMutation';
 import { useSingleFlightAction } from '@/hooks/useSingleFlightAction';
+import { withResponse } from '@/lib/api/createApiClient';
 import type { AnswerComment } from '@/lib/api-types';
 import { proxyClient } from '@/lib/proxyClient';
 
@@ -28,22 +30,18 @@ export const useCommentActions = (
     commentId: string,
     files: File[]
   ): Promise<CommentActionResult> => {
-    const body = new FormData();
-    for (const file of files) {
-      body.append('file', file);
-    }
-    const { data, error, response } = await proxyClient.POST(
-      '/api/v1/forms/{form_id}/answers/{answer_id}/comments/{comment_id}/attachments',
-      {
-        params: {
-          path: {
-            form_id: formId,
-            answer_id: answerId,
-            comment_id: commentId,
-          },
+    // SDK の formDataBodySerializer がオブジェクトを FormData に変換する。
+    // 配列は同じフィールド名 (file) で複数回 append される
+    const { data, error, response } = await withResponse(
+      sdk.postCommentAttachments({
+        client: proxyClient,
+        path: {
+          form_id: formId,
+          answer_id: answerId,
+          comment_id: commentId,
         },
-        body,
-      }
+        body: { file: files },
+      })
     );
     const result = handleMutationResponse(response, data, error);
     if (result.success) {
@@ -58,14 +56,12 @@ export const useCommentActions = (
     content: string,
     files: File[] = []
   ): Promise<CommentActionResult> => {
-    const { data, error, response } = await proxyClient.POST(
-      '/api/v1/forms/{form_id}/answers/{answer_id}/comments',
-      {
-        params: {
-          path: { form_id: formId, answer_id: answerId },
-        },
+    const { data, error, response } = await withResponse(
+      sdk.postFormComment({
+        client: proxyClient,
+        path: { form_id: formId, answer_id: answerId },
         body: { content },
-      }
+      })
     );
     const result = handleMutationResponse(response, data, error);
     if (!result.success) {
@@ -110,17 +106,15 @@ export const useCommentActions = (
   const deleteComment = async (
     commentId: string
   ): Promise<CommentActionResult> => {
-    const { data, error, response } = await proxyClient.DELETE(
-      '/api/v1/forms/{form_id}/answers/{answer_id}/comments/{comment_id}',
-      {
-        params: {
-          path: {
-            form_id: formId,
-            answer_id: answerId,
-            comment_id: commentId,
-          },
+    const { data, error, response } = await withResponse(
+      sdk.deleteFormCommentHandler({
+        client: proxyClient,
+        path: {
+          form_id: formId,
+          answer_id: answerId,
+          comment_id: commentId,
         },
-      }
+      })
     );
     const result = handleMutationResponse(response, data, error);
     if (result.success) {
@@ -135,18 +129,16 @@ export const useCommentActions = (
     commentId: string,
     content: string
   ): Promise<CommentActionResult> => {
-    const { data, error, response } = await proxyClient.PATCH(
-      '/api/v1/forms/{form_id}/answers/{answer_id}/comments/{comment_id}',
-      {
-        params: {
-          path: {
-            form_id: formId,
-            answer_id: answerId,
-            comment_id: commentId,
-          },
+    const { data, error, response } = await withResponse(
+      sdk.updateFormComment({
+        client: proxyClient,
+        path: {
+          form_id: formId,
+          answer_id: answerId,
+          comment_id: commentId,
         },
         body: { content },
-      }
+      })
     );
     const result = handleMutationResponse(response, data, error);
     if (result.success) {
@@ -160,17 +152,15 @@ export const useCommentActions = (
   const deleteCommentAttachment = async (
     attachmentId: string
   ): Promise<CommentActionResult> => {
-    const { data, error, response } = await proxyClient.DELETE(
-      '/api/v1/forms/{form_id}/answers/{answer_id}/comments/attachments/{attachment_id}',
-      {
-        params: {
-          path: {
-            form_id: formId,
-            answer_id: answerId,
-            attachment_id: attachmentId,
-          },
+    const { data, error, response } = await withResponse(
+      sdk.deleteCommentAttachment({
+        client: proxyClient,
+        path: {
+          form_id: formId,
+          answer_id: answerId,
+          attachment_id: attachmentId,
         },
-      }
+      })
     );
     const result = handleMutationResponse(response, data, error);
     if (result.success) {
