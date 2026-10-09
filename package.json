@@ -76,6 +76,7 @@
     "@types/node": "24.13.3",
     "@types/react": "19.2.18",
     "@types/react-dom": "19.2.7",
+    "@typescript/native": "npm:typescript@^7.0.2",
     "eslint": "9.39.5",
     "eslint-config-next": "^16.3.8",
     "eslint-config-prettier": "^10.1.8",
@@ -88,7 +89,7 @@
     "lefthook": "^2.1.15",
     "prettier": "^3.9.9",
     "tsx": "^4.23.15",
-    "typescript": "6.0.3",
+    "typescript": "npm:@typescript/typescript6@^6.0.2",
     "typescript-eslint": "^8.70.1",
     "vitest": "^4.1.11"
   }
