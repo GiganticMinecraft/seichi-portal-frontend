@@ -1,6 +1,6 @@
 import { SpanStatusCode, trace } from '@opentelemetry/api';
 import type { SpanProcessor } from '@opentelemetry/sdk-trace-base';
-import { registerOTel } from '@vercel/otel';
+import { type Configuration, registerOTel } from '@vercel/otel';
 import type { Instrumentation } from 'next';
 
 import {
@@ -64,6 +64,42 @@ export const startPyroscope = async () => {
   }
 };
 
+// メトリクスの送信間隔。Prometheus 側の scrape 間隔 (30s) に揃える。
+const METRIC_EXPORT_INTERVAL_MILLIS = 30_000;
+
+// サーバー側のメトリクス設定。
+// HTTP の RED メトリクスは Tempo の span-metrics から作るため (seichi_infra #5604)、
+// ここではトレースから導けない Node.js ランタイムの飽和度 (イベントループ遅延・
+// ヒープ・GC) だけを OTLP で送る。exporter と計装は Node.js API に依存するため、
+// Node.js ランタイムでのみ動的 import する（edge バンドルへ含めない）。
+export const nodeMetricsConfiguration = async (): Promise<
+  Pick<Configuration, 'instrumentations' | 'metricReaders'>
+> => {
+  if (process.env['NEXT_RUNTIME'] !== 'nodejs') return {};
+
+  const [
+    { OTLPMetricExporter },
+    { PeriodicExportingMetricReader },
+    { RuntimeNodeInstrumentation },
+  ] = await Promise.all([
+    import('@opentelemetry/exporter-metrics-otlp-proto'),
+    import('@opentelemetry/sdk-metrics'),
+    import('@opentelemetry/instrumentation-runtime-node'),
+  ]);
+
+  return {
+    // 'auto' は既定の fetch 計装 (instrumentationConfig.fetch の設定込み)
+    instrumentations: ['auto', new RuntimeNodeInstrumentation()],
+    metricReaders: [
+      new PeriodicExportingMetricReader({
+        // endpoint などは OTEL_EXPORTER_OTLP_* 環境変数から読む
+        exporter: new OTLPMetricExporter(),
+        exportIntervalMillis: METRIC_EXPORT_INTERVAL_MILLIS,
+      }),
+    ],
+  };
+};
+
 export const register = async () => {
   await startPyroscope();
 
@@ -75,6 +111,7 @@ export const register = async () => {
   const backendServerUrl = process.env['BACKEND_SERVER_URL'];
 
   registerOTel({
+    ...(await nodeMetricsConfiguration()),
     serviceName: 'seichi-portal-frontend',
     instrumentationConfig: {
       fetch: {
