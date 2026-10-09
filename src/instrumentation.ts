@@ -100,6 +100,24 @@ export const nodeMetricsConfiguration = async (): Promise<
   };
 };
 
+// backend への fetch に traceparent を付けるための propagateContextUrls の値。
+// @vercel/otel は fetch 先を URL オブジェクトの文字列表現と前方一致で比べるが、
+// URL は既定ポートを落とす（http://host:80/path → http://host/path）。
+// BACKEND_SERVER_URL をそのまま渡すと本番の http://seichi-portal-backend:80 に一致せず、
+// SSR から backend への呼び出しでトレースが途切れていたため、origin に正規化する。
+// 末尾に / を付け、同じ前方一致を持つ別ホスト（seichi-portal-backend-foo など）を除外する。
+export const backendPropagationUrls = (
+  backendServerUrl: string | undefined
+): string[] => {
+  if (backendServerUrl === undefined) return [];
+
+  try {
+    return [`${new URL(backendServerUrl).origin}/`];
+  } catch {
+    return [];
+  }
+};
+
 export const register = async () => {
   await startPyroscope();
 
@@ -117,8 +135,7 @@ export const register = async () => {
       fetch: {
         // デフォルトでは同一デプロイメント以外の URL へ traceparent が伝播
         // しないため、backend への fetch を明示する。
-        propagateContextUrls:
-          backendServerUrl === undefined ? [] : [backendServerUrl],
+        propagateContextUrls: backendPropagationUrls(backendServerUrl),
       },
     },
     spanProcessors: ['auto', stripUrlQuerySpanProcessor],

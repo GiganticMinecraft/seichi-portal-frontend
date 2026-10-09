@@ -94,3 +94,50 @@ describe('nodeMetricsConfiguration', () => {
     await expect(nodeMetricsConfiguration()).resolves.toEqual({});
   });
 });
+
+describe('backendPropagationUrls', () => {
+  // @vercel/otel と同じく、URL オブジェクトの文字列表現に対する前方一致で判定する
+  const propagates = (urls: string[], target: string) =>
+    urls.some((url) => new URL(target).toString().startsWith(url));
+
+  it('既定ポートを明示した BACKEND_SERVER_URL でも backend への fetch に一致する', async () => {
+    const { backendPropagationUrls } = await import('@/instrumentation');
+    const urls = backendPropagationUrls('http://seichi-portal-backend:80');
+
+    expect(urls).toEqual(['http://seichi-portal-backend/']);
+    expect(
+      propagates(urls, 'http://seichi-portal-backend:80/api/v1/forms')
+    ).toBe(true);
+  });
+
+  it('既定以外のポートは保持する', async () => {
+    const { backendPropagationUrls } = await import('@/instrumentation');
+    const urls = backendPropagationUrls('http://seichi-portal-backend:9000');
+
+    expect(
+      propagates(urls, 'http://seichi-portal-backend:9000/api/v1/forms')
+    ).toBe(true);
+    expect(propagates(urls, 'http://seichi-portal-backend/api/v1/forms')).toBe(
+      false
+    );
+  });
+
+  it('前方一致する別ホストや外部 URL には付けない', async () => {
+    const { backendPropagationUrls } = await import('@/instrumentation');
+    const urls = backendPropagationUrls('http://seichi-portal-backend:80');
+
+    expect(propagates(urls, 'http://seichi-portal-backend-other/api')).toBe(
+      false
+    );
+    expect(propagates(urls, 'https://discord.com/api/oauth2/token')).toBe(
+      false
+    );
+  });
+
+  it('未設定や不正な値なら伝播しない', async () => {
+    const { backendPropagationUrls } = await import('@/instrumentation');
+
+    expect(backendPropagationUrls(undefined)).toEqual([]);
+    expect(backendPropagationUrls('not a url')).toEqual([]);
+  });
+});
