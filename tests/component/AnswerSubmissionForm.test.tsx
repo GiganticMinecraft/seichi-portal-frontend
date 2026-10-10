@@ -6,6 +6,7 @@ import {
   type AnswerFormInput,
 } from '@/app/(public)/forms/[formId]/_components/answerFormTypes';
 import AnswerSubmissionForm from '@/app/(public)/forms/[formId]/_components/AnswerSubmissionForm';
+import { toAnswerContents } from '@/app/(public)/forms/[formId]/_components/useAnswerSubmission';
 import type { GetQuestionsResponse } from '@/lib/api-types';
 
 import { renderWithProviders, screen, waitFor } from './render';
@@ -59,6 +60,51 @@ const requiredSingleChoiceQuestions: GetQuestionsResponse = [
 ];
 
 describe('AnswerSubmissionForm', () => {
+  it.each(['初期状態', '選択後に解除'])(
+    '選択肢が1つだけの複数選択で何も選択されていない場合（%s）、回答を送信しない',
+    async (operation) => {
+      const user = userEvent.setup();
+      const onSubmitAnswers = vi
+        .fn<(data: AnswerFormInput) => Promise<{ ok: boolean }>>()
+        .mockResolvedValue({ ok: true });
+
+      renderWithProviders(
+        <AnswerSubmissionForm
+          questions={[
+            {
+              id: 'direct-message-consent',
+              template_key: 'direct_message_consent',
+              title: '個人チャットの内容を含む場合のみチェックしてください',
+              description: '',
+              is_required: false,
+              position: 1,
+              question_type: 'MultipleChoice',
+              choices: [{ id: 1, label: '同意する', position: 1 }],
+            },
+          ]}
+          title="通報フォーム"
+          description=""
+          isTemporary={false}
+          onSubmitAnswers={onSubmitAnswers}
+        />
+      );
+
+      if (operation === '選択後に解除') {
+        const checkbox = screen.getByRole('checkbox', { name: '同意する' });
+        await user.click(checkbox);
+        await user.click(checkbox);
+      }
+      await user.click(screen.getByRole('button', { name: '送信' }));
+
+      await waitFor(() => {
+        expect(onSubmitAnswers).toHaveBeenCalledTimes(1);
+      });
+      const submittedData = onSubmitAnswers.mock.calls[0]?.[0];
+      expect(submittedData).toEqual({ 'direct-message-consent': false });
+      expect(toAnswerContents(submittedData ?? {})).toEqual([]);
+    }
+  );
+
   it('一時回答者の入力値と質問の回答を submitter に渡す', async () => {
     const user = userEvent.setup();
     const onSubmitAnswers = vi
