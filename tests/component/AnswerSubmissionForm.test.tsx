@@ -6,6 +6,7 @@ import {
   type AnswerFormInput,
 } from '@/app/(public)/forms/[formId]/_components/answerFormTypes';
 import AnswerSubmissionForm from '@/app/(public)/forms/[formId]/_components/AnswerSubmissionForm';
+import { toAnswerContents } from '@/app/(public)/forms/[formId]/_components/useAnswerSubmission';
 import type { GetQuestionsResponse } from '@/lib/api-types';
 
 import { renderWithProviders, screen, waitFor } from './render';
@@ -55,6 +56,19 @@ const requiredSingleChoiceQuestions: GetQuestionsResponse = [
       { id: 1, label: '申請について', position: 1 },
       { id: 2, label: 'その他', position: 2 },
     ],
+  },
+];
+
+const singleCheckboxQuestions: GetQuestionsResponse = [
+  {
+    id: '5b0d7f3e-1c2a-4f6b-9d8e-3a4b5c6d7e8f',
+    template_key: 'direct_message_consent',
+    title: 'DMの内容を含む場合のみチェックしてください',
+    description: '',
+    is_required: false,
+    position: 1,
+    question_type: 'MultipleChoice',
+    choices: [{ id: 1, label: 'DMの内容を含む', position: 1 }],
   },
 ];
 
@@ -258,4 +272,44 @@ describe('AnswerSubmissionForm', () => {
     expect(await screen.findByText('選択してください。')).toBeVisible();
     expect(onSubmitAnswers).not.toHaveBeenCalled();
   });
+
+  it.each([
+    { name: '触らずに', clicks: 0 },
+    { name: 'チェックして外してから', clicks: 2 },
+  ])(
+    '任意で選択肢1つの複数選択を$name送信すると、回答に含めない',
+    async ({ clicks }) => {
+      const user = userEvent.setup();
+      const onSubmitAnswers = vi
+        .fn<(data: AnswerFormInput) => Promise<{ ok: boolean }>>()
+        .mockResolvedValue({ ok: true });
+
+      renderWithProviders(
+        <AnswerSubmissionForm
+          questions={singleCheckboxQuestions}
+          title="通報"
+          description=""
+          isTemporary={false}
+          onSubmitAnswers={onSubmitAnswers}
+        />
+      );
+
+      const checkbox = screen.getByRole('checkbox', {
+        name: 'DMの内容を含む',
+      });
+      for (let i = 0; i < clicks; i++) {
+        await user.click(checkbox);
+      }
+      await user.click(screen.getByRole('button', { name: '送信' }));
+
+      await waitFor(() => {
+        expect(onSubmitAnswers).toHaveBeenCalledTimes(1);
+      });
+      const [data] = onSubmitAnswers.mock.calls[0] ?? [];
+      if (!data) {
+        throw new Error('送信データが渡されませんでした。');
+      }
+      expect(toAnswerContents(data)).toEqual([]);
+    }
+  );
 });

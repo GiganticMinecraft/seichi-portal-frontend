@@ -44,12 +44,7 @@ export const toAnswerContents = (data: AnswerFormInput): AnswerContents =>
       }
 
       if (typeof values === 'boolean') {
-        return [
-          {
-            question_id: key,
-            answer: '',
-          },
-        ];
+        return [];
       }
 
       if (Array.isArray(values)) {

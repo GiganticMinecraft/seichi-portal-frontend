@@ -101,4 +101,18 @@ describe('toAnswerContents', () => {
       },
     ]);
   });
+
+  it('未チェックの選択肢1つの複数選択回答を contents から除外する', () => {
+    expect(
+      toAnswerContents({
+        '0c2a6f9a-28c2-4116-835b-fdd7289a16f1': false,
+        '8f98a37f-9070-4624-b161-f288769160d5': '申請について',
+      })
+    ).toEqual([
+      {
+        question_id: '8f98a37f-9070-4624-b161-f288769160d5',
+        answer: '申請について',
+      },
+    ]);
+  });
 });
