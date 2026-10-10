@@ -5,94 +5,94 @@ import { client } from './client.gen';
 import type { AddRelatedAnswerHandlerData, AddRelatedAnswerHandlerErrors, AddRelatedAnswerHandlerResponses, AddUserToGroupData, AddUserToGroupErrors, AddUserToGroupResponses, ArchivedFormListHandlerData, ArchivedFormListHandlerErrors, ArchivedFormListHandlerResponses, ArchiveFormHandlerData, ArchiveFormHandlerErrors, ArchiveFormHandlerResponses, CreateFormHandlerData, CreateFormHandlerErrors, CreateFormHandlerResponses, CreateLabelForAnswersData, CreateLabelForAnswersErrors, CreateLabelForAnswersResponses, CreateLabelForFormsData, CreateLabelForFormsErrors, CreateLabelForFormsResponses, CreateUserGroupData, CreateUserGroupErrors, CreateUserGroupResponses, CrossSearchData, CrossSearchErrors, CrossSearchResponses, DeleteCommentAttachmentData, DeleteCommentAttachmentErrors, DeleteCommentAttachmentResponses, DeleteFormCommentHandlerData, DeleteFormCommentHandlerErrors, DeleteFormCommentHandlerResponses, DeleteFormSubmissionRestrictionData, DeleteFormSubmissionRestrictionErrors, DeleteFormSubmissionRestrictionResponses, DeleteLabelForAnswersData, DeleteLabelForAnswersErrors, DeleteLabelForAnswersResponses, DeleteLabelForFormsData, DeleteLabelForFormsErrors, DeleteLabelForFormsResponses, DeleteMessageHandlerData, DeleteMessageHandlerErrors, DeleteMessageHandlerResponses, DeleteUserGroupData, DeleteUserGroupErrors, DeleteUserGroupResponses, EditLabelForAnswersData, EditLabelForAnswersErrors, EditLabelForAnswersResponses, EditLabelForFormsData, EditLabelForFormsErrors, EditLabelForFormsResponses, EndSessionData, EndSessionErrors, EndSessionResponses, FormListHandlerData, FormListHandlerErrors, FormListHandlerResponses, GetAllAnswersData, GetAllAnswersErrors, GetAllAnswersResponses, GetAnswerByFormIdHandlerData, GetAnswerByFormIdHandlerErrors, GetAnswerByFormIdHandlerResponses, GetAnswerHandlerData, GetAnswerHandlerErrors, GetAnswerHandlerResponses, GetAnswerStatusHistoryHandlerData, GetAnswerStatusHistoryHandlerErrors, GetAnswerStatusHistoryHandlerResponses, GetAnswerTitleHistoryHandlerData, GetAnswerTitleHistoryHandlerErrors, GetAnswerTitleHistoryHandlerResponses, GetArchivedFormHandlerData, GetArchivedFormHandlerErrors, GetArchivedFormHandlerResponses, GetCommentAttachmentData, GetCommentAttachmentErrors, GetCommentAttachmentResponses, GetCommentHistoryData, GetCommentHistoryErrors, GetCommentHistoryResponses, GetFormCommentData, GetFormCommentErrors, GetFormCommentResponses, GetFormHandlerData, GetFormHandlerErrors, GetFormHandlerResponses, GetFormSubmissionRestrictionData, GetFormSubmissionRestrictionErrors, GetFormSubmissionRestrictionHistoryData, GetFormSubmissionRestrictionHistoryErrors, GetFormSubmissionRestrictionHistoryResponses, GetFormSubmissionRestrictionResponses, GetGlobalDiscordWebhookData, GetGlobalDiscordWebhookErrors, GetGlobalDiscordWebhookResponses, GetLabelsForAnswersData, GetLabelsForAnswersErrors, GetLabelsForAnswersResponses, GetLabelsForFormsData, GetLabelsForFormsErrors, GetLabelsForFormsResponses, GetMessageHistoryData, GetMessageHistoryErrors, GetMessageHistoryResponses, GetMessagesHandlerData, GetMessagesHandlerErrors, GetMessagesHandlerResponses, GetMinecraftPunishmentsData, GetMinecraftPunishmentsErrors, GetMinecraftPunishmentsResponses, GetMyNotificationSettingsData, GetMyNotificationSettingsErrors, GetMyNotificationSettingsResponses, GetMyUserInfoData, GetMyUserInfoErrors, GetMyUserInfoResponses, GetNotificationsData, GetNotificationsErrors, GetNotificationSettingsData, GetNotificationSettingsErrors, GetNotificationSettingsResponses, GetNotificationsResponses, GetRelatedAnswersHandlerData, GetRelatedAnswersHandlerErrors, GetRelatedAnswersHandlerResponses, GetUserInfoData, GetUserInfoErrors, GetUserInfoResponses, LinkDiscordData, LinkDiscordErrors, LinkDiscordResponses, MarkAllNotificationsAsReadData, MarkAllNotificationsAsReadErrors, MarkAllNotificationsAsReadResponses, MarkNotificationAsReadData, MarkNotificationAsReadErrors, MarkNotificationAsReadResponses, PatchUserRoleData, PatchUserRoleErrors, PatchUserRoleResponses, PostAnswerHandlerData, PostAnswerHandlerErrors, PostAnswerHandlerResponses, PostCommentAttachmentsData, PostCommentAttachmentsErrors, PostCommentAttachmentsResponses, PostFormCommentData, PostFormCommentErrors, PostFormCommentResponses, PostMessageHandlerData, PostMessageHandlerErrors, PostMessageHandlerResponses, PostTemporaryAnswerHandlerData, PostTemporaryAnswerHandlerErrors, PostTemporaryAnswerHandlerResponses, PutFormSubmissionRestrictionData, PutFormSubmissionRestrictionErrors, PutFormSubmissionRestrictionResponses, RemoveRelatedAnswerHandlerData, RemoveRelatedAnswerHandlerErrors, RemoveRelatedAnswerHandlerResponses, RemoveUserFromGroupData, RemoveUserFromGroupErrors, RemoveUserFromGroupResponses, ReplaceAnswerLabelsData, ReplaceAnswerLabelsErrors, ReplaceAnswerLabelsResponses, RestoreArchivedFormHandlerData, RestoreArchivedFormHandlerErrors, RestoreArchivedFormHandlerResponses, SearchAnswersData, SearchAnswersErrors, SearchAnswersResponses, SearchUsersData, SearchUsersErrors, SearchUsersResponses, StartSessionData, StartSessionErrors, StartSessionResponses, UnlinkDiscordData, UnlinkDiscordErrors, UnlinkDiscordResponses, UpdateAnswerHandlerData, UpdateAnswerHandlerErrors, UpdateAnswerHandlerResponses, UpdateFormCommentData, UpdateFormCommentErrors, UpdateFormCommentResponses, UpdateFormHandlerData, UpdateFormHandlerErrors, UpdateFormHandlerResponses, UpdateGlobalDiscordWebhookData, UpdateGlobalDiscordWebhookErrors, UpdateGlobalDiscordWebhookResponses, UpdateMessageHandlerData, UpdateMessageHandlerErrors, UpdateMessageHandlerResponses, UpdateNotificationSettingsData, UpdateNotificationSettingsErrors, UpdateNotificationSettingsResponses, UpdateUserGroupData, UpdateUserGroupErrors, UpdateUserGroupResponses, UserGroupListData, UserGroupListErrors, UserGroupListResponses, UserGroupUserListData, UserGroupUserListErrors, UserGroupUserListResponses, UserListData, UserListErrors, UserListResponses } from './types.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean, TResponse = unknown> = Options2<TData, ThrowOnError, TResponse> & {
-  /**
-   * You can provide a client instance returned by `createClient()` instead of
-   * individual options. This might be also useful if you want to implement a
-   * custom client.
-   */
-  client?: Client;
-  /**
-   * You can pass arbitrary values through the `meta` object. This can be
-   * used to access values that aren't defined as part of the SDK function.
-   */
-  meta?: keyof ClientMeta extends never ? Record<string, unknown> : ClientMeta;
+    /**
+     * You can provide a client instance returned by `createClient()` instead of
+     * individual options. This might be also useful if you want to implement a
+     * custom client.
+     */
+    client?: Client;
+    /**
+     * You can pass arbitrary values through the `meta` object. This can be
+     * used to access values that aren't defined as part of the SDK function.
+     */
+    meta?: keyof ClientMeta extends never ? Record<string, unknown> : ClientMeta;
 };
 
 /**
  * アーカイブ済みフォームの一覧取得
  */
 export const archivedFormListHandler = <ThrowOnError extends boolean = false>(options?: Options<ArchivedFormListHandlerData, ThrowOnError>): RequestResult<ArchivedFormListHandlerResponses, ArchivedFormListHandlerErrors, ThrowOnError> => (options?.client ?? client).get<ArchivedFormListHandlerResponses, ArchivedFormListHandlerErrors, ThrowOnError>({
-  security: [{ scheme: 'bearer', type: 'http' }],
-  url: '/api/v1/archived-forms',
-  ...options
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/archived-forms',
+    ...options
 });
 
 /**
  * アーカイブ済みフォームの取得
  */
 export const getArchivedFormHandler = <ThrowOnError extends boolean = false>(options: Options<GetArchivedFormHandlerData, ThrowOnError>): RequestResult<GetArchivedFormHandlerResponses, GetArchivedFormHandlerErrors, ThrowOnError> => (options.client ?? client).get<GetArchivedFormHandlerResponses, GetArchivedFormHandlerErrors, ThrowOnError>({
-  security: [{ scheme: 'bearer', type: 'http' }],
-  url: '/api/v1/archived-forms/{form_id}',
-  ...options
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/archived-forms/{form_id}',
+    ...options
 });
 
 /**
  * アーカイブ済みフォームの復元
  */
 export const restoreArchivedFormHandler = <ThrowOnError extends boolean = false>(options: Options<RestoreArchivedFormHandlerData, ThrowOnError>): RequestResult<RestoreArchivedFormHandlerResponses, RestoreArchivedFormHandlerErrors, ThrowOnError> => (options.client ?? client).post<RestoreArchivedFormHandlerResponses, RestoreArchivedFormHandlerErrors, ThrowOnError>({
-  security: [{ scheme: 'bearer', type: 'http' }],
-  url: '/api/v1/archived-forms/{form_id}/restore',
-  ...options
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/archived-forms/{form_id}/restore',
+    ...options
 });
 
 /**
  * フォームの一覧取得
  */
 export const formListHandler = <ThrowOnError extends boolean = false>(options?: Options<FormListHandlerData, ThrowOnError>): RequestResult<FormListHandlerResponses, FormListHandlerErrors, ThrowOnError> => (options?.client ?? client).get<FormListHandlerResponses, FormListHandlerErrors, ThrowOnError>({
-  security: [{ scheme: 'bearer', type: 'http' }],
-  url: '/api/v1/forms',
-  ...options
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/forms',
+    ...options
 });
 
 /**
  * フォームの作成
  */
 export const createFormHandler = <ThrowOnError extends boolean = false>(options: Options<CreateFormHandlerData, ThrowOnError>): RequestResult<CreateFormHandlerResponses, CreateFormHandlerErrors, ThrowOnError> => (options.client ?? client).post<CreateFormHandlerResponses, CreateFormHandlerErrors, ThrowOnError>({
-  security: [{ scheme: 'bearer', type: 'http' }],
-  url: '/api/v1/forms',
-  ...options,
-  headers: {
-    'Content-Type': 'application/json',
-    ...options.headers
-  }
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/forms',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
 });
 
 /**
  * すべての回答をフォームを横断して取得
  */
 export const getAllAnswers = <ThrowOnError extends boolean = false>(options?: Options<GetAllAnswersData, ThrowOnError>): RequestResult<GetAllAnswersResponses, GetAllAnswersErrors, ThrowOnError> => (options?.client ?? client).get<GetAllAnswersResponses, GetAllAnswersErrors, ThrowOnError>({
-  security: [{ scheme: 'bearer', type: 'http' }],
-  url: '/api/v1/forms/answers',
-  ...options
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/forms/answers',
+    ...options
 });
 
 export const replaceAnswerLabels = <ThrowOnError extends boolean = false>(options: Options<ReplaceAnswerLabelsData, ThrowOnError>): RequestResult<ReplaceAnswerLabelsResponses, ReplaceAnswerLabelsErrors, ThrowOnError> => (options.client ?? client).put<ReplaceAnswerLabelsResponses, ReplaceAnswerLabelsErrors, ThrowOnError>({
-  security: [{ scheme: 'bearer', type: 'http' }],
-  url: '/api/v1/forms/answers/{answer_id}/labels',
-  ...options,
-  headers: {
-    'Content-Type': 'application/json',
-    ...options.headers
-  }
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/forms/answers/{answer_id}/labels',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
 });
 
 /**
  * フォームの取得
  */
 export const getFormHandler = <ThrowOnError extends boolean = false>(options: Options<GetFormHandlerData, ThrowOnError>): RequestResult<GetFormHandlerResponses, GetFormHandlerErrors, ThrowOnError> => (options.client ?? client).get<GetFormHandlerResponses, GetFormHandlerErrors, ThrowOnError>({
-  security: [{ scheme: 'bearer', type: 'http' }],
-  url: '/api/v1/forms/{form_id}',
-  ...options
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/forms/{form_id}',
+    ...options
 });
 
 /**
@@ -101,662 +101,662 @@ export const getFormHandler = <ThrowOnError extends boolean = false>(options: Op
  * questions または labels を含めた場合、その form 配下の値全体を指定内容で置換します。省略した場合は既存値を保持します。
  */
 export const updateFormHandler = <ThrowOnError extends boolean = false>(options: Options<UpdateFormHandlerData, ThrowOnError>): RequestResult<UpdateFormHandlerResponses, UpdateFormHandlerErrors, ThrowOnError> => (options.client ?? client).put<UpdateFormHandlerResponses, UpdateFormHandlerErrors, ThrowOnError>({
-  security: [{ scheme: 'bearer', type: 'http' }],
-  url: '/api/v1/forms/{form_id}',
-  ...options,
-  headers: {
-    'Content-Type': 'application/json',
-    ...options.headers
-  }
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/forms/{form_id}',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
 });
 
 /**
  * 回答の一覧取得
  */
 export const getAnswerByFormIdHandler = <ThrowOnError extends boolean = false>(options: Options<GetAnswerByFormIdHandlerData, ThrowOnError>): RequestResult<GetAnswerByFormIdHandlerResponses, GetAnswerByFormIdHandlerErrors, ThrowOnError> => (options.client ?? client).get<GetAnswerByFormIdHandlerResponses, GetAnswerByFormIdHandlerErrors, ThrowOnError>({
-  security: [{ scheme: 'bearer', type: 'http' }],
-  url: '/api/v1/forms/{form_id}/answers',
-  ...options
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/forms/{form_id}/answers',
+    ...options
 });
 
 /**
  * 回答の作成
  */
 export const postAnswerHandler = <ThrowOnError extends boolean = false>(options: Options<PostAnswerHandlerData, ThrowOnError>): RequestResult<PostAnswerHandlerResponses, PostAnswerHandlerErrors, ThrowOnError> => (options.client ?? client).post<PostAnswerHandlerResponses, PostAnswerHandlerErrors, ThrowOnError>({
-  security: [{ scheme: 'bearer', type: 'http' }],
-  url: '/api/v1/forms/{form_id}/answers',
-  ...options,
-  headers: {
-    'Content-Type': 'application/json',
-    ...options.headers
-  }
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/forms/{form_id}/answers',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
 });
 
 /**
  * 回答の取得
  */
 export const getAnswerHandler = <ThrowOnError extends boolean = false>(options: Options<GetAnswerHandlerData, ThrowOnError>): RequestResult<GetAnswerHandlerResponses, GetAnswerHandlerErrors, ThrowOnError> => (options.client ?? client).get<GetAnswerHandlerResponses, GetAnswerHandlerErrors, ThrowOnError>({
-  security: [{ scheme: 'bearer', type: 'http' }],
-  url: '/api/v1/forms/{form_id}/answers/{answer_id}',
-  ...options
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/forms/{form_id}/answers/{answer_id}',
+    ...options
 });
 
 /**
  * 回答の更新
  */
 export const updateAnswerHandler = <ThrowOnError extends boolean = false>(options: Options<UpdateAnswerHandlerData, ThrowOnError>): RequestResult<UpdateAnswerHandlerResponses, UpdateAnswerHandlerErrors, ThrowOnError> => (options.client ?? client).patch<UpdateAnswerHandlerResponses, UpdateAnswerHandlerErrors, ThrowOnError>({
-  security: [{ scheme: 'bearer', type: 'http' }],
-  url: '/api/v1/forms/{form_id}/answers/{answer_id}',
-  ...options,
-  headers: {
-    'Content-Type': 'application/json',
-    ...options.headers
-  }
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/forms/{form_id}/answers/{answer_id}',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
 });
 
 /**
  * コメントの取得
  */
 export const getFormComment = <ThrowOnError extends boolean = false>(options: Options<GetFormCommentData, ThrowOnError>): RequestResult<GetFormCommentResponses, GetFormCommentErrors, ThrowOnError> => (options.client ?? client).get<GetFormCommentResponses, GetFormCommentErrors, ThrowOnError>({
-  security: [{ scheme: 'bearer', type: 'http' }],
-  url: '/api/v1/forms/{form_id}/answers/{answer_id}/comments',
-  ...options
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/forms/{form_id}/answers/{answer_id}/comments',
+    ...options
 });
 
 /**
  * コメントの作成
  */
 export const postFormComment = <ThrowOnError extends boolean = false>(options: Options<PostFormCommentData, ThrowOnError>): RequestResult<PostFormCommentResponses, PostFormCommentErrors, ThrowOnError> => (options.client ?? client).post<PostFormCommentResponses, PostFormCommentErrors, ThrowOnError>({
-  security: [{ scheme: 'bearer', type: 'http' }],
-  url: '/api/v1/forms/{form_id}/answers/{answer_id}/comments',
-  ...options,
-  headers: {
-    'Content-Type': 'application/json',
-    ...options.headers
-  }
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/forms/{form_id}/answers/{answer_id}/comments',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
 });
 
 /**
  * コメント添付ファイルの削除
  */
 export const deleteCommentAttachment = <ThrowOnError extends boolean = false>(options: Options<DeleteCommentAttachmentData, ThrowOnError>): RequestResult<DeleteCommentAttachmentResponses, DeleteCommentAttachmentErrors, ThrowOnError> => (options.client ?? client).delete<DeleteCommentAttachmentResponses, DeleteCommentAttachmentErrors, ThrowOnError>({
-  security: [{ scheme: 'bearer', type: 'http' }],
-  url: '/api/v1/forms/{form_id}/answers/{answer_id}/comments/attachments/{attachment_id}',
-  ...options
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/forms/{form_id}/answers/{answer_id}/comments/attachments/{attachment_id}',
+    ...options
 });
 
 /**
  * コメント添付ファイルの取得
  */
 export const getCommentAttachment = <ThrowOnError extends boolean = false>(options: Options<GetCommentAttachmentData, ThrowOnError>): RequestResult<GetCommentAttachmentResponses, GetCommentAttachmentErrors, ThrowOnError> => (options.client ?? client).get<GetCommentAttachmentResponses, GetCommentAttachmentErrors, ThrowOnError>({
-  security: [{ scheme: 'bearer', type: 'http' }],
-  url: '/api/v1/forms/{form_id}/answers/{answer_id}/comments/attachments/{attachment_id}',
-  ...options
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/forms/{form_id}/answers/{answer_id}/comments/attachments/{attachment_id}',
+    ...options
 });
 
 /**
  * コメントの変更履歴を取得
  */
 export const getCommentHistory = <ThrowOnError extends boolean = false>(options: Options<GetCommentHistoryData, ThrowOnError>): RequestResult<GetCommentHistoryResponses, GetCommentHistoryErrors, ThrowOnError> => (options.client ?? client).get<GetCommentHistoryResponses, GetCommentHistoryErrors, ThrowOnError>({
-  security: [{ scheme: 'bearer', type: 'http' }],
-  url: '/api/v1/forms/{form_id}/answers/{answer_id}/comments/history',
-  ...options
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/forms/{form_id}/answers/{answer_id}/comments/history',
+    ...options
 });
 
 /**
  * コメントの削除
  */
 export const deleteFormCommentHandler = <ThrowOnError extends boolean = false>(options: Options<DeleteFormCommentHandlerData, ThrowOnError>): RequestResult<DeleteFormCommentHandlerResponses, DeleteFormCommentHandlerErrors, ThrowOnError> => (options.client ?? client).delete<DeleteFormCommentHandlerResponses, DeleteFormCommentHandlerErrors, ThrowOnError>({
-  security: [{ scheme: 'bearer', type: 'http' }],
-  url: '/api/v1/forms/{form_id}/answers/{answer_id}/comments/{comment_id}',
-  ...options
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/forms/{form_id}/answers/{answer_id}/comments/{comment_id}',
+    ...options
 });
 
 /**
  * コメントの編集
  */
 export const updateFormComment = <ThrowOnError extends boolean = false>(options: Options<UpdateFormCommentData, ThrowOnError>): RequestResult<UpdateFormCommentResponses, UpdateFormCommentErrors, ThrowOnError> => (options.client ?? client).patch<UpdateFormCommentResponses, UpdateFormCommentErrors, ThrowOnError>({
-  security: [{ scheme: 'bearer', type: 'http' }],
-  url: '/api/v1/forms/{form_id}/answers/{answer_id}/comments/{comment_id}',
-  ...options,
-  headers: {
-    'Content-Type': 'application/json',
-    ...options.headers
-  }
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/forms/{form_id}/answers/{answer_id}/comments/{comment_id}',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
 });
 
 /**
  * コメントへのファイル添付
  */
 export const postCommentAttachments = <ThrowOnError extends boolean = false>(options: Options<PostCommentAttachmentsData, ThrowOnError>): RequestResult<PostCommentAttachmentsResponses, PostCommentAttachmentsErrors, ThrowOnError> => (options.client ?? client).post<PostCommentAttachmentsResponses, PostCommentAttachmentsErrors, ThrowOnError>({
-  ...formDataBodySerializer,
-  security: [{ scheme: 'bearer', type: 'http' }],
-  url: '/api/v1/forms/{form_id}/answers/{answer_id}/comments/{comment_id}/attachments',
-  ...options,
-  headers: {
-    'Content-Type': null,
-    ...options.headers
-  }
+    ...formDataBodySerializer,
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/forms/{form_id}/answers/{answer_id}/comments/{comment_id}/attachments',
+    ...options,
+    headers: {
+        'Content-Type': null,
+        ...options.headers
+    }
 });
 
 /**
  * メッセージの取得
  */
 export const getMessagesHandler = <ThrowOnError extends boolean = false>(options: Options<GetMessagesHandlerData, ThrowOnError>): RequestResult<GetMessagesHandlerResponses, GetMessagesHandlerErrors, ThrowOnError> => (options.client ?? client).get<GetMessagesHandlerResponses, GetMessagesHandlerErrors, ThrowOnError>({
-  security: [{ scheme: 'bearer', type: 'http' }],
-  url: '/api/v1/forms/{form_id}/answers/{answer_id}/messages',
-  ...options
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/forms/{form_id}/answers/{answer_id}/messages',
+    ...options
 });
 
 /**
  * メッセージの作成
  */
 export const postMessageHandler = <ThrowOnError extends boolean = false>(options: Options<PostMessageHandlerData, ThrowOnError>): RequestResult<PostMessageHandlerResponses, PostMessageHandlerErrors, ThrowOnError> => (options.client ?? client).post<PostMessageHandlerResponses, PostMessageHandlerErrors, ThrowOnError>({
-  security: [{ scheme: 'bearer', type: 'http' }],
-  url: '/api/v1/forms/{form_id}/answers/{answer_id}/messages',
-  ...options,
-  headers: {
-    'Content-Type': 'application/json',
-    ...options.headers
-  }
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/forms/{form_id}/answers/{answer_id}/messages',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
 });
 
 /**
  * メッセージの変更履歴を取得
  */
 export const getMessageHistory = <ThrowOnError extends boolean = false>(options: Options<GetMessageHistoryData, ThrowOnError>): RequestResult<GetMessageHistoryResponses, GetMessageHistoryErrors, ThrowOnError> => (options.client ?? client).get<GetMessageHistoryResponses, GetMessageHistoryErrors, ThrowOnError>({
-  security: [{ scheme: 'bearer', type: 'http' }],
-  url: '/api/v1/forms/{form_id}/answers/{answer_id}/messages/history',
-  ...options
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/forms/{form_id}/answers/{answer_id}/messages/history',
+    ...options
 });
 
 /**
  * メッセージの削除
  */
 export const deleteMessageHandler = <ThrowOnError extends boolean = false>(options: Options<DeleteMessageHandlerData, ThrowOnError>): RequestResult<DeleteMessageHandlerResponses, DeleteMessageHandlerErrors, ThrowOnError> => (options.client ?? client).delete<DeleteMessageHandlerResponses, DeleteMessageHandlerErrors, ThrowOnError>({
-  security: [{ scheme: 'bearer', type: 'http' }],
-  url: '/api/v1/forms/{form_id}/answers/{answer_id}/messages/{message_id}',
-  ...options
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/forms/{form_id}/answers/{answer_id}/messages/{message_id}',
+    ...options
 });
 
 /**
  * メッセージの編集
  */
 export const updateMessageHandler = <ThrowOnError extends boolean = false>(options: Options<UpdateMessageHandlerData, ThrowOnError>): RequestResult<UpdateMessageHandlerResponses, UpdateMessageHandlerErrors, ThrowOnError> => (options.client ?? client).patch<UpdateMessageHandlerResponses, UpdateMessageHandlerErrors, ThrowOnError>({
-  security: [{ scheme: 'bearer', type: 'http' }],
-  url: '/api/v1/forms/{form_id}/answers/{answer_id}/messages/{message_id}',
-  ...options,
-  headers: {
-    'Content-Type': 'application/json',
-    ...options.headers
-  }
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/forms/{form_id}/answers/{answer_id}/messages/{message_id}',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
 });
 
 /**
  * 回答に直接関連する回答を取得する
  */
 export const getRelatedAnswersHandler = <ThrowOnError extends boolean = false>(options: Options<GetRelatedAnswersHandlerData, ThrowOnError>): RequestResult<GetRelatedAnswersHandlerResponses, GetRelatedAnswersHandlerErrors, ThrowOnError> => (options.client ?? client).get<GetRelatedAnswersHandlerResponses, GetRelatedAnswersHandlerErrors, ThrowOnError>({
-  security: [{ scheme: 'bearer', type: 'http' }],
-  url: '/api/v1/forms/{form_id}/answers/{answer_id}/related-answers',
-  ...options
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/forms/{form_id}/answers/{answer_id}/related-answers',
+    ...options
 });
 
 /**
  * 回答に別の回答を関連付ける
  */
 export const addRelatedAnswerHandler = <ThrowOnError extends boolean = false>(options: Options<AddRelatedAnswerHandlerData, ThrowOnError>): RequestResult<AddRelatedAnswerHandlerResponses, AddRelatedAnswerHandlerErrors, ThrowOnError> => (options.client ?? client).post<AddRelatedAnswerHandlerResponses, AddRelatedAnswerHandlerErrors, ThrowOnError>({
-  security: [{ scheme: 'bearer', type: 'http' }],
-  url: '/api/v1/forms/{form_id}/answers/{answer_id}/related-answers',
-  ...options,
-  headers: {
-    'Content-Type': 'application/json',
-    ...options.headers
-  }
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/forms/{form_id}/answers/{answer_id}/related-answers',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
 });
 
 /**
  * 回答間の関連付けを解除する
  */
 export const removeRelatedAnswerHandler = <ThrowOnError extends boolean = false>(options: Options<RemoveRelatedAnswerHandlerData, ThrowOnError>): RequestResult<RemoveRelatedAnswerHandlerResponses, RemoveRelatedAnswerHandlerErrors, ThrowOnError> => (options.client ?? client).delete<RemoveRelatedAnswerHandlerResponses, RemoveRelatedAnswerHandlerErrors, ThrowOnError>({
-  security: [{ scheme: 'bearer', type: 'http' }],
-  url: '/api/v1/forms/{form_id}/answers/{answer_id}/related-answers/{related_answer_id}',
-  ...options
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/forms/{form_id}/answers/{answer_id}/related-answers/{related_answer_id}',
+    ...options
 });
 
 /**
  * 回答の状態変更履歴を取得
  */
 export const getAnswerStatusHistoryHandler = <ThrowOnError extends boolean = false>(options: Options<GetAnswerStatusHistoryHandlerData, ThrowOnError>): RequestResult<GetAnswerStatusHistoryHandlerResponses, GetAnswerStatusHistoryHandlerErrors, ThrowOnError> => (options.client ?? client).get<GetAnswerStatusHistoryHandlerResponses, GetAnswerStatusHistoryHandlerErrors, ThrowOnError>({
-  security: [{ scheme: 'bearer', type: 'http' }],
-  url: '/api/v1/forms/{form_id}/answers/{answer_id}/status/history',
-  ...options
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/forms/{form_id}/answers/{answer_id}/status/history',
+    ...options
 });
 
 /**
  * 回答タイトルの変更履歴を取得
  */
 export const getAnswerTitleHistoryHandler = <ThrowOnError extends boolean = false>(options: Options<GetAnswerTitleHistoryHandlerData, ThrowOnError>): RequestResult<GetAnswerTitleHistoryHandlerResponses, GetAnswerTitleHistoryHandlerErrors, ThrowOnError> => (options.client ?? client).get<GetAnswerTitleHistoryHandlerResponses, GetAnswerTitleHistoryHandlerErrors, ThrowOnError>({
-  security: [{ scheme: 'bearer', type: 'http' }],
-  url: '/api/v1/forms/{form_id}/answers/{answer_id}/title/history',
-  ...options
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/forms/{form_id}/answers/{answer_id}/title/history',
+    ...options
 });
 
 /**
  * フォームのアーカイブ
  */
 export const archiveFormHandler = <ThrowOnError extends boolean = false>(options: Options<ArchiveFormHandlerData, ThrowOnError>): RequestResult<ArchiveFormHandlerResponses, ArchiveFormHandlerErrors, ThrowOnError> => (options.client ?? client).post<ArchiveFormHandlerResponses, ArchiveFormHandlerErrors, ThrowOnError>({
-  security: [{ scheme: 'bearer', type: 'http' }],
-  url: '/api/v1/forms/{form_id}/archive',
-  ...options
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/forms/{form_id}/archive',
+    ...options
 });
 
 /**
  * 未ログイン回答の作成
  */
 export const postTemporaryAnswerHandler = <ThrowOnError extends boolean = false>(options: Options<PostTemporaryAnswerHandlerData, ThrowOnError>): RequestResult<PostTemporaryAnswerHandlerResponses, PostTemporaryAnswerHandlerErrors, ThrowOnError> => (options.client ?? client).post<PostTemporaryAnswerHandlerResponses, PostTemporaryAnswerHandlerErrors, ThrowOnError>({
-  url: '/api/v1/forms/{form_id}/temporary-answers',
-  ...options,
-  headers: {
-    'Content-Type': 'application/json',
-    ...options.headers
-  }
+    url: '/api/v1/forms/{form_id}/temporary-answers',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
 });
 
 /**
  * 回答用ラベルの一覧を取得する
  */
 export const getLabelsForAnswers = <ThrowOnError extends boolean = false>(options?: Options<GetLabelsForAnswersData, ThrowOnError>): RequestResult<GetLabelsForAnswersResponses, GetLabelsForAnswersErrors, ThrowOnError> => (options?.client ?? client).get<GetLabelsForAnswersResponses, GetLabelsForAnswersErrors, ThrowOnError>({
-  security: [{ scheme: 'bearer', type: 'http' }],
-  url: '/api/v1/labels/answers',
-  ...options
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/labels/answers',
+    ...options
 });
 
 /**
  * 回答用ラベルを作成する
  */
 export const createLabelForAnswers = <ThrowOnError extends boolean = false>(options: Options<CreateLabelForAnswersData, ThrowOnError>): RequestResult<CreateLabelForAnswersResponses, CreateLabelForAnswersErrors, ThrowOnError> => (options.client ?? client).post<CreateLabelForAnswersResponses, CreateLabelForAnswersErrors, ThrowOnError>({
-  security: [{ scheme: 'bearer', type: 'http' }],
-  url: '/api/v1/labels/answers',
-  ...options,
-  headers: {
-    'Content-Type': 'application/json',
-    ...options.headers
-  }
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/labels/answers',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
 });
 
 /**
  * 回答用ラベルを削除する
  */
 export const deleteLabelForAnswers = <ThrowOnError extends boolean = false>(options: Options<DeleteLabelForAnswersData, ThrowOnError>): RequestResult<DeleteLabelForAnswersResponses, DeleteLabelForAnswersErrors, ThrowOnError> => (options.client ?? client).delete<DeleteLabelForAnswersResponses, DeleteLabelForAnswersErrors, ThrowOnError>({
-  security: [{ scheme: 'bearer', type: 'http' }],
-  url: '/api/v1/labels/answers/{label_id}',
-  ...options
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/labels/answers/{label_id}',
+    ...options
 });
 
 /**
  * 回答用ラベルを更新する
  */
 export const editLabelForAnswers = <ThrowOnError extends boolean = false>(options: Options<EditLabelForAnswersData, ThrowOnError>): RequestResult<EditLabelForAnswersResponses, EditLabelForAnswersErrors, ThrowOnError> => (options.client ?? client).patch<EditLabelForAnswersResponses, EditLabelForAnswersErrors, ThrowOnError>({
-  security: [{ scheme: 'bearer', type: 'http' }],
-  url: '/api/v1/labels/answers/{label_id}',
-  ...options,
-  headers: {
-    'Content-Type': 'application/json',
-    ...options.headers
-  }
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/labels/answers/{label_id}',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
 });
 
 /**
  * フォーム用ラベルの一覧を取得する
  */
 export const getLabelsForForms = <ThrowOnError extends boolean = false>(options?: Options<GetLabelsForFormsData, ThrowOnError>): RequestResult<GetLabelsForFormsResponses, GetLabelsForFormsErrors, ThrowOnError> => (options?.client ?? client).get<GetLabelsForFormsResponses, GetLabelsForFormsErrors, ThrowOnError>({
-  security: [{ scheme: 'bearer', type: 'http' }],
-  url: '/api/v1/labels/forms',
-  ...options
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/labels/forms',
+    ...options
 });
 
 /**
  * フォーム用ラベルを作成する
  */
 export const createLabelForForms = <ThrowOnError extends boolean = false>(options: Options<CreateLabelForFormsData, ThrowOnError>): RequestResult<CreateLabelForFormsResponses, CreateLabelForFormsErrors, ThrowOnError> => (options.client ?? client).post<CreateLabelForFormsResponses, CreateLabelForFormsErrors, ThrowOnError>({
-  security: [{ scheme: 'bearer', type: 'http' }],
-  url: '/api/v1/labels/forms',
-  ...options,
-  headers: {
-    'Content-Type': 'application/json',
-    ...options.headers
-  }
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/labels/forms',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
 });
 
 /**
  * フォーム用ラベルを削除する
  */
 export const deleteLabelForForms = <ThrowOnError extends boolean = false>(options: Options<DeleteLabelForFormsData, ThrowOnError>): RequestResult<DeleteLabelForFormsResponses, DeleteLabelForFormsErrors, ThrowOnError> => (options.client ?? client).delete<DeleteLabelForFormsResponses, DeleteLabelForFormsErrors, ThrowOnError>({
-  security: [{ scheme: 'bearer', type: 'http' }],
-  url: '/api/v1/labels/forms/{label_id}',
-  ...options
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/labels/forms/{label_id}',
+    ...options
 });
 
 /**
  * フォーム用ラベルを更新する
  */
 export const editLabelForForms = <ThrowOnError extends boolean = false>(options: Options<EditLabelForFormsData, ThrowOnError>): RequestResult<EditLabelForFormsResponses, EditLabelForFormsErrors, ThrowOnError> => (options.client ?? client).patch<EditLabelForFormsResponses, EditLabelForFormsErrors, ThrowOnError>({
-  security: [{ scheme: 'bearer', type: 'http' }],
-  url: '/api/v1/labels/forms/{label_id}',
-  ...options,
-  headers: {
-    'Content-Type': 'application/json',
-    ...options.headers
-  }
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/labels/forms/{label_id}',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
 });
 
 /**
  * Discord アカウントとのリンクを解除する
  */
 export const unlinkDiscord = <ThrowOnError extends boolean = false>(options?: Options<UnlinkDiscordData, ThrowOnError>): RequestResult<UnlinkDiscordResponses, UnlinkDiscordErrors, ThrowOnError> => (options?.client ?? client).delete<UnlinkDiscordResponses, UnlinkDiscordErrors, ThrowOnError>({
-  security: [{ scheme: 'bearer', type: 'http' }],
-  url: '/api/v1/link-discord',
-  ...options
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/link-discord',
+    ...options
 });
 
 /**
  * Discord アカウントとリンクする
  */
 export const linkDiscord = <ThrowOnError extends boolean = false>(options: Options<LinkDiscordData, ThrowOnError>): RequestResult<LinkDiscordResponses, LinkDiscordErrors, ThrowOnError> => (options.client ?? client).post<LinkDiscordResponses, LinkDiscordErrors, ThrowOnError>({
-  security: [{ scheme: 'bearer', type: 'http' }],
-  url: '/api/v1/link-discord',
-  ...options,
-  headers: {
-    'Content-Type': 'application/json',
-    ...options.headers
-  }
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/link-discord',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
 });
 
 /**
  * 自身の通知一覧を取得する
  */
 export const getNotifications = <ThrowOnError extends boolean = false>(options?: Options<GetNotificationsData, ThrowOnError>): RequestResult<GetNotificationsResponses, GetNotificationsErrors, ThrowOnError> => (options?.client ?? client).get<GetNotificationsResponses, GetNotificationsErrors, ThrowOnError>({
-  security: [{ scheme: 'bearer', type: 'http' }],
-  url: '/api/v1/notifications',
-  ...options
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/notifications',
+    ...options
 });
 
 /**
  * すべての通知を既読にする
  */
 export const markAllNotificationsAsRead = <ThrowOnError extends boolean = false>(options?: Options<MarkAllNotificationsAsReadData, ThrowOnError>): RequestResult<MarkAllNotificationsAsReadResponses, MarkAllNotificationsAsReadErrors, ThrowOnError> => (options?.client ?? client).patch<MarkAllNotificationsAsReadResponses, MarkAllNotificationsAsReadErrors, ThrowOnError>({
-  security: [{ scheme: 'bearer', type: 'http' }],
-  url: '/api/v1/notifications/read-all',
-  ...options
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/notifications/read-all',
+    ...options
 });
 
 /**
  * 自身の通知設定の取得
  */
 export const getMyNotificationSettings = <ThrowOnError extends boolean = false>(options?: Options<GetMyNotificationSettingsData, ThrowOnError>): RequestResult<GetMyNotificationSettingsResponses, GetMyNotificationSettingsErrors, ThrowOnError> => (options?.client ?? client).get<GetMyNotificationSettingsResponses, GetMyNotificationSettingsErrors, ThrowOnError>({
-  security: [{ scheme: 'bearer', type: 'http' }],
-  url: '/api/v1/notifications/settings/me',
-  ...options
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/notifications/settings/me',
+    ...options
 });
 
 /**
  * 通知設定の更新
  */
 export const updateNotificationSettings = <ThrowOnError extends boolean = false>(options: Options<UpdateNotificationSettingsData, ThrowOnError>): RequestResult<UpdateNotificationSettingsResponses, UpdateNotificationSettingsErrors, ThrowOnError> => (options.client ?? client).patch<UpdateNotificationSettingsResponses, UpdateNotificationSettingsErrors, ThrowOnError>({
-  security: [{ scheme: 'bearer', type: 'http' }],
-  url: '/api/v1/notifications/settings/me',
-  ...options,
-  headers: {
-    'Content-Type': 'application/json',
-    ...options.headers
-  }
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/notifications/settings/me',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
 });
 
 /**
  * 通知の設定を取得する
  */
 export const getNotificationSettings = <ThrowOnError extends boolean = false>(options: Options<GetNotificationSettingsData, ThrowOnError>): RequestResult<GetNotificationSettingsResponses, GetNotificationSettingsErrors, ThrowOnError> => (options.client ?? client).get<GetNotificationSettingsResponses, GetNotificationSettingsErrors, ThrowOnError>({
-  security: [{ scheme: 'bearer', type: 'http' }],
-  url: '/api/v1/notifications/settings/{uuid}',
-  ...options
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/notifications/settings/{uuid}',
+    ...options
 });
 
 /**
  * 通知を既読にする
  */
 export const markNotificationAsRead = <ThrowOnError extends boolean = false>(options: Options<MarkNotificationAsReadData, ThrowOnError>): RequestResult<MarkNotificationAsReadResponses, MarkNotificationAsReadErrors, ThrowOnError> => (options.client ?? client).patch<MarkNotificationAsReadResponses, MarkNotificationAsReadErrors, ThrowOnError>({
-  security: [{ scheme: 'bearer', type: 'http' }],
-  url: '/api/v1/notifications/{notification_id}/read',
-  ...options
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/notifications/{notification_id}/read',
+    ...options
 });
 
 /**
  * 横断検索を行う
  */
 export const crossSearch = <ThrowOnError extends boolean = false>(options: Options<CrossSearchData, ThrowOnError>): RequestResult<CrossSearchResponses, CrossSearchErrors, ThrowOnError> => (options.client ?? client).get<CrossSearchResponses, CrossSearchErrors, ThrowOnError>({
-  security: [{ scheme: 'bearer', type: 'http' }],
-  url: '/api/v1/search',
-  ...options
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/search',
+    ...options
 });
 
 /**
  * 回答検索を行う
  */
 export const searchAnswers = <ThrowOnError extends boolean = false>(options: Options<SearchAnswersData, ThrowOnError>): RequestResult<SearchAnswersResponses, SearchAnswersErrors, ThrowOnError> => (options.client ?? client).get<SearchAnswersResponses, SearchAnswersErrors, ThrowOnError>({
-  security: [{ scheme: 'bearer', type: 'http' }],
-  url: '/api/v1/search/answers',
-  ...options
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/search/answers',
+    ...options
 });
 
 /**
  * ユーザー検索を行う
  */
 export const searchUsers = <ThrowOnError extends boolean = false>(options: Options<SearchUsersData, ThrowOnError>): RequestResult<SearchUsersResponses, SearchUsersErrors, ThrowOnError> => (options.client ?? client).get<SearchUsersResponses, SearchUsersErrors, ThrowOnError>({
-  security: [{ scheme: 'bearer', type: 'http' }],
-  url: '/api/v1/search/users',
-  ...options
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/search/users',
+    ...options
 });
 
 /**
  * セッションを削除する
  */
 export const endSession = <ThrowOnError extends boolean = false>(options?: Options<EndSessionData, ThrowOnError>): RequestResult<EndSessionResponses, EndSessionErrors, ThrowOnError> => (options?.client ?? client).delete<EndSessionResponses, EndSessionErrors, ThrowOnError>({
-  security: [{ scheme: 'bearer', type: 'http' }],
-  url: '/api/v1/session',
-  ...options
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/session',
+    ...options
 });
 
 /**
  * セッションを作成する
  */
 export const startSession = <ThrowOnError extends boolean = false>(options: Options<StartSessionData, ThrowOnError>): RequestResult<StartSessionResponses, StartSessionErrors, ThrowOnError> => (options.client ?? client).post<StartSessionResponses, StartSessionErrors, ThrowOnError>({
-  security: [{ scheme: 'bearer', type: 'http' }],
-  url: '/api/v1/session',
-  ...options,
-  headers: {
-    'Content-Type': 'application/json',
-    ...options.headers
-  }
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/session',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
 });
 
 /**
  * グローバル Discord Webhook 設定の取得
  */
 export const getGlobalDiscordWebhook = <ThrowOnError extends boolean = false>(options?: Options<GetGlobalDiscordWebhookData, ThrowOnError>): RequestResult<GetGlobalDiscordWebhookResponses, GetGlobalDiscordWebhookErrors, ThrowOnError> => (options?.client ?? client).get<GetGlobalDiscordWebhookResponses, GetGlobalDiscordWebhookErrors, ThrowOnError>({
-  security: [{ scheme: 'bearer', type: 'http' }],
-  url: '/api/v1/settings/global-discord-webhook',
-  ...options
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/settings/global-discord-webhook',
+    ...options
 });
 
 /**
  * グローバル Discord Webhook 設定の更新
  */
 export const updateGlobalDiscordWebhook = <ThrowOnError extends boolean = false>(options: Options<UpdateGlobalDiscordWebhookData, ThrowOnError>): RequestResult<UpdateGlobalDiscordWebhookResponses, UpdateGlobalDiscordWebhookErrors, ThrowOnError> => (options.client ?? client).put<UpdateGlobalDiscordWebhookResponses, UpdateGlobalDiscordWebhookErrors, ThrowOnError>({
-  security: [{ scheme: 'bearer', type: 'http' }],
-  url: '/api/v1/settings/global-discord-webhook',
-  ...options,
-  headers: {
-    'Content-Type': 'application/json',
-    ...options.headers
-  }
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/settings/global-discord-webhook',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
 });
 
 /**
  * ユーザーグループの一覧取得
  */
 export const userGroupList = <ThrowOnError extends boolean = false>(options?: Options<UserGroupListData, ThrowOnError>): RequestResult<UserGroupListResponses, UserGroupListErrors, ThrowOnError> => (options?.client ?? client).get<UserGroupListResponses, UserGroupListErrors, ThrowOnError>({
-  security: [{ scheme: 'bearer', type: 'http' }],
-  url: '/api/v1/user-groups',
-  ...options
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/user-groups',
+    ...options
 });
 
 /**
  * ユーザーグループの作成
  */
 export const createUserGroup = <ThrowOnError extends boolean = false>(options: Options<CreateUserGroupData, ThrowOnError>): RequestResult<CreateUserGroupResponses, CreateUserGroupErrors, ThrowOnError> => (options.client ?? client).post<CreateUserGroupResponses, CreateUserGroupErrors, ThrowOnError>({
-  security: [{ scheme: 'bearer', type: 'http' }],
-  url: '/api/v1/user-groups',
-  ...options,
-  headers: {
-    'Content-Type': 'application/json',
-    ...options.headers
-  }
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/user-groups',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
 });
 
 /**
  * ユーザーグループの削除
  */
 export const deleteUserGroup = <ThrowOnError extends boolean = false>(options: Options<DeleteUserGroupData, ThrowOnError>): RequestResult<DeleteUserGroupResponses, DeleteUserGroupErrors, ThrowOnError> => (options.client ?? client).delete<DeleteUserGroupResponses, DeleteUserGroupErrors, ThrowOnError>({
-  security: [{ scheme: 'bearer', type: 'http' }],
-  url: '/api/v1/user-groups/{group_id}',
-  ...options
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/user-groups/{group_id}',
+    ...options
 });
 
 /**
  * ユーザーグループの更新
  */
 export const updateUserGroup = <ThrowOnError extends boolean = false>(options: Options<UpdateUserGroupData, ThrowOnError>): RequestResult<UpdateUserGroupResponses, UpdateUserGroupErrors, ThrowOnError> => (options.client ?? client).patch<UpdateUserGroupResponses, UpdateUserGroupErrors, ThrowOnError>({
-  security: [{ scheme: 'bearer', type: 'http' }],
-  url: '/api/v1/user-groups/{group_id}',
-  ...options,
-  headers: {
-    'Content-Type': 'application/json',
-    ...options.headers
-  }
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/user-groups/{group_id}',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
 });
 
 /**
  * ユーザーグループに所属するユーザーの一覧取得
  */
 export const userGroupUserList = <ThrowOnError extends boolean = false>(options: Options<UserGroupUserListData, ThrowOnError>): RequestResult<UserGroupUserListResponses, UserGroupUserListErrors, ThrowOnError> => (options.client ?? client).get<UserGroupUserListResponses, UserGroupUserListErrors, ThrowOnError>({
-  security: [{ scheme: 'bearer', type: 'http' }],
-  url: '/api/v1/user-groups/{group_id}/users',
-  ...options
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/user-groups/{group_id}/users',
+    ...options
 });
 
 /**
  * ユーザーをグループから削除
  */
 export const removeUserFromGroup = <ThrowOnError extends boolean = false>(options: Options<RemoveUserFromGroupData, ThrowOnError>): RequestResult<RemoveUserFromGroupResponses, RemoveUserFromGroupErrors, ThrowOnError> => (options.client ?? client).delete<RemoveUserFromGroupResponses, RemoveUserFromGroupErrors, ThrowOnError>({
-  security: [{ scheme: 'bearer', type: 'http' }],
-  url: '/api/v1/user-groups/{group_id}/users/{user_id}',
-  ...options
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/user-groups/{group_id}/users/{user_id}',
+    ...options
 });
 
 /**
  * ユーザーをグループに追加
  */
 export const addUserToGroup = <ThrowOnError extends boolean = false>(options: Options<AddUserToGroupData, ThrowOnError>): RequestResult<AddUserToGroupResponses, AddUserToGroupErrors, ThrowOnError> => (options.client ?? client).put<AddUserToGroupResponses, AddUserToGroupErrors, ThrowOnError>({
-  security: [{ scheme: 'bearer', type: 'http' }],
-  url: '/api/v1/user-groups/{group_id}/users/{user_id}',
-  ...options
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/user-groups/{group_id}/users/{user_id}',
+    ...options
 });
 
 /**
  * ユーザーの一覧取得
  */
 export const userList = <ThrowOnError extends boolean = false>(options?: Options<UserListData, ThrowOnError>): RequestResult<UserListResponses, UserListErrors, ThrowOnError> => (options?.client ?? client).get<UserListResponses, UserListErrors, ThrowOnError>({
-  security: [{ scheme: 'bearer', type: 'http' }],
-  url: '/api/v1/users',
-  ...options
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/users',
+    ...options
 });
 
 /**
  * 自分のユーザー情報の取得
  */
 export const getMyUserInfo = <ThrowOnError extends boolean = false>(options?: Options<GetMyUserInfoData, ThrowOnError>): RequestResult<GetMyUserInfoResponses, GetMyUserInfoErrors, ThrowOnError> => (options?.client ?? client).get<GetMyUserInfoResponses, GetMyUserInfoErrors, ThrowOnError>({
-  security: [{ scheme: 'bearer', type: 'http' }],
-  url: '/api/v1/users/me',
-  ...options
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/users/me',
+    ...options
 });
 
 /**
  * ユーザーの取得
  */
 export const getUserInfo = <ThrowOnError extends boolean = false>(options: Options<GetUserInfoData, ThrowOnError>): RequestResult<GetUserInfoResponses, GetUserInfoErrors, ThrowOnError> => (options.client ?? client).get<GetUserInfoResponses, GetUserInfoErrors, ThrowOnError>({
-  security: [{ scheme: 'bearer', type: 'http' }],
-  url: '/api/v1/users/{uuid}',
-  ...options
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/users/{uuid}',
+    ...options
 });
 
 /**
  * ユーザーの更新
  */
 export const patchUserRole = <ThrowOnError extends boolean = false>(options: Options<PatchUserRoleData, ThrowOnError>): RequestResult<PatchUserRoleResponses, PatchUserRoleErrors, ThrowOnError> => (options.client ?? client).patch<PatchUserRoleResponses, PatchUserRoleErrors, ThrowOnError>({
-  security: [{ scheme: 'bearer', type: 'http' }],
-  url: '/api/v1/users/{uuid}',
-  ...options,
-  headers: {
-    'Content-Type': 'application/json',
-    ...options.headers
-  }
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/users/{uuid}',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
 });
 
 /**
  * ユーザーのフォーム送信制限を解除する
  */
 export const deleteFormSubmissionRestriction = <ThrowOnError extends boolean = false>(options: Options<DeleteFormSubmissionRestrictionData, ThrowOnError>): RequestResult<DeleteFormSubmissionRestrictionResponses, DeleteFormSubmissionRestrictionErrors, ThrowOnError> => (options.client ?? client).delete<DeleteFormSubmissionRestrictionResponses, DeleteFormSubmissionRestrictionErrors, ThrowOnError>({
-  security: [{ scheme: 'bearer', type: 'http' }],
-  url: '/api/v1/users/{uuid}/form-submission-restriction',
-  ...options
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/users/{uuid}/form-submission-restriction',
+    ...options
 });
 
 /**
  * ユーザーの有効なフォーム送信制限の取得
  */
 export const getFormSubmissionRestriction = <ThrowOnError extends boolean = false>(options: Options<GetFormSubmissionRestrictionData, ThrowOnError>): RequestResult<GetFormSubmissionRestrictionResponses, GetFormSubmissionRestrictionErrors, ThrowOnError> => (options.client ?? client).get<GetFormSubmissionRestrictionResponses, GetFormSubmissionRestrictionErrors, ThrowOnError>({
-  security: [{ scheme: 'bearer', type: 'http' }],
-  url: '/api/v1/users/{uuid}/form-submission-restriction',
-  ...options
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/users/{uuid}/form-submission-restriction',
+    ...options
 });
 
 /**
  * ユーザーのフォーム送信を制限する
  */
 export const putFormSubmissionRestriction = <ThrowOnError extends boolean = false>(options: Options<PutFormSubmissionRestrictionData, ThrowOnError>): RequestResult<PutFormSubmissionRestrictionResponses, PutFormSubmissionRestrictionErrors, ThrowOnError> => (options.client ?? client).put<PutFormSubmissionRestrictionResponses, PutFormSubmissionRestrictionErrors, ThrowOnError>({
-  security: [{ scheme: 'bearer', type: 'http' }],
-  url: '/api/v1/users/{uuid}/form-submission-restriction',
-  ...options,
-  headers: {
-    'Content-Type': 'application/json',
-    ...options.headers
-  }
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/users/{uuid}/form-submission-restriction',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
 });
 
 /**
  * ユーザーのフォーム送信制限履歴の取得
  */
 export const getFormSubmissionRestrictionHistory = <ThrowOnError extends boolean = false>(options: Options<GetFormSubmissionRestrictionHistoryData, ThrowOnError>): RequestResult<GetFormSubmissionRestrictionHistoryResponses, GetFormSubmissionRestrictionHistoryErrors, ThrowOnError> => (options.client ?? client).get<GetFormSubmissionRestrictionHistoryResponses, GetFormSubmissionRestrictionHistoryErrors, ThrowOnError>({
-  security: [{ scheme: 'bearer', type: 'http' }],
-  url: '/api/v1/users/{uuid}/form-submission-restriction/history',
-  ...options
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/users/{uuid}/form-submission-restriction/history',
+    ...options
 });
 
 /**
  * MinecraftのBAN履歴の取得
  */
 export const getMinecraftPunishments = <ThrowOnError extends boolean = false>(options: Options<GetMinecraftPunishmentsData, ThrowOnError>): RequestResult<GetMinecraftPunishmentsResponses, GetMinecraftPunishmentsErrors, ThrowOnError> => (options.client ?? client).get<GetMinecraftPunishmentsResponses, GetMinecraftPunishmentsErrors, ThrowOnError>({
-  security: [{ scheme: 'bearer', type: 'http' }],
-  url: '/api/v1/users/{uuid}/minecraft-punishments',
-  ...options
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/users/{uuid}/minecraft-punishments',
+    ...options
 });
