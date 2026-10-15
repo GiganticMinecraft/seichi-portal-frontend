@@ -8,7 +8,7 @@ import AnswersPageContent from '@/app/(protected)/_components/AnswersList/Answer
 import * as sdk from '@/generated/api/sdk.gen';
 import {
   authorizationHeader,
-  requireBackendData,
+  requireBackendDataOrNotFound,
   serverApiClient,
 } from '@/lib/server/backend';
 import { getAdminAccess } from '@/lib/server/session';
@@ -28,7 +28,7 @@ const Home = async ({
   const [{ formId }, { status }] = await Promise.all([params, searchParams]);
   const openState = resolveAnswerOpenState(status);
   const [initialAnswers, form] = await Promise.all([
-    requireBackendData(
+    requireBackendDataOrNotFound(
       sdk.getAnswerByFormIdHandler({
         client: serverApiClient,
         headers: authorizationHeader(session.token),
@@ -36,7 +36,7 @@ const Home = async ({
         query: { status: OPEN_STATE_TO_ANSWER_STATUSES[openState] },
       })
     ),
-    requireBackendData(
+    requireBackendDataOrNotFound(
       sdk.getFormHandler({
         client: serverApiClient,
         headers: authorizationHeader(session.token),

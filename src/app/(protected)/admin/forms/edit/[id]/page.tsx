@@ -4,6 +4,7 @@ import * as sdk from '@/generated/api/sdk.gen';
 import {
   authorizationHeader,
   requireBackendData,
+  requireBackendDataOrNotFound,
   serverApiClient,
 } from '@/lib/server/backend';
 import { getAdminAccess } from '@/lib/server/session';
@@ -18,7 +19,7 @@ const Home = async ({ params }: { params: Promise<{ id: number }> }) => {
   const { session } = await getAdminAccess();
   const { id } = await params;
   const [form, labels, groups] = await Promise.all([
-    requireBackendData(
+    requireBackendDataOrNotFound(
       sdk.getFormHandler({
         client: serverApiClient,
         headers: authorizationHeader(session.token),
