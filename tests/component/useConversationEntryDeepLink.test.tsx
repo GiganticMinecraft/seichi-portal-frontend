@@ -57,7 +57,7 @@ describe('useConversationEntryDeepLink', () => {
     );
   });
 
-  // refreshInterval: 1000 により entries は毎回新しい参照になる。
+  // refreshInterval による再取得のたびに entries は新しい参照になる。
   // 一度解決した後は、entries の中身が変わっても再解決してはならない
   // (でなければ、ユーザーが閉じた drawer が再フェッチのたびに開き直ってしまう)。
   it('一度解決した後は、entries が変化しても再解決しない(見つからない→見つかる)', () => {

@@ -108,9 +108,10 @@ const toMessageHistoryViewModel = (
   originalTimestamp: item.original_timestamp,
 });
 
-/** コメント・メッセージの一覧と同じ間隔でポーリングし、編集/削除の反映に
- * 画面の再読み込みを不要にする。 */
-const HISTORY_REFRESH_INTERVAL_MS = 1000;
+/** コメント・メッセージの一覧 (AnswerDetailsPageContent の
+ * ANSWER_DETAIL_REFRESH_INTERVAL_MS) と同じ間隔でポーリングし、編集/削除の
+ * 反映に画面の再読み込みを不要にする。 */
+const HISTORY_REFRESH_INTERVAL_MS = 5000;
 
 /**
  * コメントの変更履歴を全ページ取得し、comment_id ごとにグルーピングする。

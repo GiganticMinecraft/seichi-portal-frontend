@@ -18,6 +18,15 @@ import { isHttpError } from '@/lib/httpError';
 import AnswerDetailsPageView from './AnswerDetailsPageView';
 import type { AnswerDetailsPageData } from './AnswerDetailsPageView';
 
+/**
+ * 回答詳細を構成する各クエリのポーリング間隔。1 秒間隔ではタブ 1 枚あたり
+ * backend へ毎秒 5〜7 リクエスト (本体・フォーム・メッセージ・コメント・
+ * 関連回答と、Conversation 側の変更履歴) が飛び、7 日間の backend リクエストの
+ * 大半をこのページのポーリングが占めていた。他者の編集が数秒遅れて見える程度は
+ * 許容できるので 5 秒にする。SWR の既定でタブが非表示の間は停止する。
+ */
+export const ANSWER_DETAIL_REFRESH_INTERVAL_MS = 5000;
+
 const AnswerDetailsPageContent = ({
   formId,
   answerId,
@@ -35,7 +44,7 @@ const AnswerDetailsPageContent = ({
     {
       path: { form_id: formId, answer_id: answerId },
     },
-    { refreshInterval: 1000 }
+    { refreshInterval: ANSWER_DETAIL_REFRESH_INTERVAL_MS }
   );
 
   const { data: answer } = answerQuery;
@@ -45,7 +54,7 @@ const AnswerDetailsPageContent = ({
     {
       path: { form_id: answer?.form_id ?? '' },
     },
-    { refreshInterval: 1000 }
+    { refreshInterval: ANSWER_DETAIL_REFRESH_INTERVAL_MS }
   );
 
   const isAuthor =
@@ -61,7 +70,7 @@ const AnswerDetailsPageContent = ({
     canAccessMessages
       ? { path: { form_id: formId, answer_id: answerId } }
       : null,
-    { refreshInterval: 1000 }
+    { refreshInterval: ANSWER_DETAIL_REFRESH_INTERVAL_MS }
   );
 
   const commentsQuery = useApiQuery(
@@ -69,7 +78,7 @@ const AnswerDetailsPageContent = ({
     {
       path: { form_id: formId, answer_id: answerId },
     },
-    { refreshInterval: 1000 }
+    { refreshInterval: ANSWER_DETAIL_REFRESH_INTERVAL_MS }
   );
 
   const relatedAnswersQuery = useApiQuery(
@@ -77,7 +86,7 @@ const AnswerDetailsPageContent = ({
     {
       path: { form_id: formId, answer_id: answerId },
     },
-    { refreshInterval: 1000 }
+    { refreshInterval: ANSWER_DETAIL_REFRESH_INTERVAL_MS }
   );
 
   // 回答が非公開になっている場合、管理者以外はコメントの閲覧権限を持たない
