@@ -27,7 +27,14 @@ const initFaro = async () => {
       ...(APP_VERSION === undefined ? {} : { version: APP_VERSION }),
     },
     instrumentations: [
-      ...getWebInstrumentations(),
+      // CSP 違反の計装は無効にする。Cloudflare Page Shield がサンプリングした
+      // ページ応答に Report-Only CSP (connect-src 'none') を付けるため、/collect
+      // への送信自体が securitypolicyviolation になり、その違反イベントをまた
+      // /collect へ送る無限ループになる (Firefox では dedupe が効かず毎秒 1 件、
+      // 1 日 8 万件超がブラウザ telemetry の 99% を占めていた)。
+      ...getWebInstrumentations({
+        enableContentSecurityPolicyInstrumentation: false,
+      }),
       // same-origin への fetch には traceparent が自動付与されるため
       // propagateTraceHeaderCorsUrls の設定は不要。
       new TracingInstrumentation(),
