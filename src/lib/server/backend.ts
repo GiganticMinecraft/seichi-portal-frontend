@@ -1,3 +1,5 @@
+import { notFound } from 'next/navigation';
+
 import { getBackendServerUrl } from '@/env.server';
 import type { Client } from '@/generated/api/client';
 import { createApiClient } from '@/lib/api/createApiClient';
@@ -98,6 +100,25 @@ export const requireBackendData = async <T>(
   }
 
   return data;
+};
+
+/**
+ * requireBackendData と同じだが、backend が 404 を返したときは Next.js の
+ * not-found ページ (HTTP 404) を表示する。URL に含まれる ID のリソースが
+ * 存在しないのは利用者側の入力の問題であり、BackendError をそのまま throw して
+ * 500 + error ページにすべきではない。
+ */
+export const requireBackendDataOrNotFound = async <T>(
+  request: Promise<BackendFetchResult<T>>
+): Promise<T> => {
+  try {
+    return await requireBackendData(request);
+  } catch (error) {
+    if (error instanceof BackendError && error.status === 404) {
+      notFound();
+    }
+    throw error;
+  }
 };
 
 type KeysetPage<T> = {

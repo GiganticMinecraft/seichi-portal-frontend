@@ -7,6 +7,7 @@ import {
   authorizationHeader,
   BackendError,
   requireBackendData,
+  requireBackendDataOrNotFound,
   serverApiClient,
 } from '@/lib/server/backend';
 import { getSession } from '@/lib/server/session';
@@ -51,7 +52,7 @@ const Home = async ({ params }: { params: Promise<{ formId: string }> }) => {
   // ログイン時は認証ヘッダ付き、未ログイン時は匿名でフォームを取得する。
   // restriction はフォーム取得結果に依存しないため並列で取得する。
   const [form, restriction] = await Promise.all([
-    requireBackendData(
+    requireBackendDataOrNotFound(
       sdk.getFormHandler({
         client: serverApiClient,
         ...(isAuthenticated
