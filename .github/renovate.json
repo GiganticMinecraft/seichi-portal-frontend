@@ -4,6 +4,13 @@
     "github>GiganticMinecraft/renovate-config"
   ],
   "rangeStrategy": "bump",
+  "osvVulnerabilityAlerts": true,
+  "vulnerabilityAlerts": {
+    "minimumReleaseAge": null,
+    "dependencyDashboardApproval": false,
+    "prCreation": "immediate",
+    "schedule": ["at any time"]
+  },
   "lockFileMaintenance": {
     "enabled": true,
     "automerge": true
