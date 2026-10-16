@@ -43,15 +43,6 @@ export const toAnswerContents = (data: AnswerFormInput): AnswerContents =>
         };
       }
 
-      if (typeof values === 'boolean') {
-        return [
-          {
-            question_id: key,
-            answer: '',
-          },
-        ];
-      }
-
       if (Array.isArray(values)) {
         return values.map((value) => ({
           question_id: key,
@@ -59,6 +50,7 @@ export const toAnswerContents = (data: AnswerFormInput): AnswerContents =>
         }));
       }
 
+      // 選択肢が1つだけの複数選択質問で何も選択されていない場合（false）は、回答に含めない。
       // 未回答の任意質問など、想定外の値（undefined / null）は contents から除外する。
       return [];
     });
