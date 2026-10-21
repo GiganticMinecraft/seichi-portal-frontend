@@ -142,6 +142,30 @@ describe('backendPropagationUrls', () => {
   });
 });
 
+describe('serviceResourceConfiguration', () => {
+  it('OTEL_SERVICE_NAME とリリースバージョンを resource に載せる', async () => {
+    const { serviceResourceConfiguration } = await import('@/instrumentation');
+
+    expect(
+      serviceResourceConfiguration('seichi-portal-frontend-stg', '1.3.6')
+    ).toEqual({
+      serviceName: 'seichi-portal-frontend-stg',
+      attributes: { 'service.version': '1.3.6' },
+    });
+  });
+
+  it('未設定なら既定のサービス名にし、service.version は付けない', async () => {
+    const { serviceResourceConfiguration } = await import('@/instrumentation');
+
+    expect(serviceResourceConfiguration(undefined, undefined)).toEqual({
+      serviceName: 'seichi-portal-frontend',
+    });
+    expect(serviceResourceConfiguration('', undefined)).toEqual({
+      serviceName: 'seichi-portal-frontend',
+    });
+  });
+});
+
 describe('TELEMETRY_BACKEND_URL_PATTERN', () => {
   it('監視基盤への通信だけに一致する', async () => {
     const { TELEMETRY_BACKEND_URL_PATTERN } = await import('@/instrumentation');

@@ -22,7 +22,7 @@ const initFaro = async () => {
     // OAuth callback の認可コードなどを Loki/Tempo へ送信しない。
     beforeSend: sanitizeTelemetryItem,
     app: {
-      // サーバ側の service.name (seichi-portal-frontend) と区別する。
+      // サーバ側の service.name (OTEL_SERVICE_NAME、既定 seichi-portal-frontend) と区別する。
       name: 'seichi-portal-browser',
       ...(APP_VERSION === undefined ? {} : { version: APP_VERSION }),
     },
