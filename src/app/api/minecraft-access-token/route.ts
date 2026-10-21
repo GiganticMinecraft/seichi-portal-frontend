@@ -14,6 +14,11 @@ import {
   requireBackendResponse,
   serverApiClient,
 } from '@/lib/server/backend';
+import {
+  EXTERNAL_FETCH_TIMEOUT_MS,
+  isTimeoutError,
+  logUpstreamTimeout,
+} from '@/lib/server/fetchTimeout';
 
 const microsoftAccountTokenSchema = z.object({
   token: z.string().min(1),
@@ -27,6 +32,57 @@ class UpstreamServiceError extends Error {
     this.name = 'UpstreamServiceError';
   }
 }
+
+/** Xbox Live / Minecraft Services のどこでタイムアウトしたかを保持する */
+class UpstreamTimeoutError extends Error {
+  upstream: string;
+
+  constructor(upstream: string, cause: unknown) {
+    super(`${upstream} timed out after ${EXTERNAL_FETCH_TIMEOUT_MS}ms`, {
+      cause,
+    });
+    this.name = 'UpstreamTimeoutError';
+    this.upstream = upstream;
+  }
+}
+
+/**
+ * 外部の認証サービスへ EXTERNAL_FETCH_TIMEOUT_MS の上限付きで POST し、JSON を読む。
+ * 上限はレスポンスボディの読み取りまで含む。タイムアウトは UpstreamTimeoutError に
+ * 変換し、どのサービスかを呼び出し元へ伝える。JSON として読めないボディは null。
+ */
+const postToUpstream = async (
+  upstream: string,
+  url: string,
+  requestBody: unknown
+): Promise<{ ok: boolean; status: number; body: unknown }> => {
+  try {
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(requestBody),
+      signal: AbortSignal.timeout(EXTERNAL_FETCH_TIMEOUT_MS),
+    });
+    if (!response.ok) {
+      return { ok: false, status: response.status, body: null };
+    }
+
+    const body: unknown = await response.json().catch((error: unknown) => {
+      // ボディ読み取り中のタイムアウトは JSON 不正と区別して外側で扱う
+      if (isTimeoutError(error)) throw error;
+      return null;
+    });
+    return { ok: true, status: response.status, body };
+  } catch (error) {
+    if (isTimeoutError(error)) {
+      throw new UpstreamTimeoutError(upstream, error);
+    }
+    throw error;
+  }
+};
 
 export async function POST(req: NextRequest) {
   try {
@@ -76,6 +132,23 @@ export async function POST(req: NextRequest) {
     nextResponse.headers.set('Set-Cookie', setCookieHeader);
     return nextResponse;
   } catch (error) {
+    if (error instanceof UpstreamTimeoutError) {
+      logUpstreamTimeout({
+        upstream: error.upstream,
+        timeoutMs: EXTERNAL_FETCH_TIMEOUT_MS,
+        route: '/api/minecraft-access-token',
+      });
+      // 利用者のアカウントの問題ではないため invalid_account にせず、
+      // 再試行を促す backend_unreachable の文言を出させる
+      return NextResponse.json(
+        {
+          error: 'Upstream authentication service timed out',
+          code: 'backend_unreachable',
+        },
+        { status: 504 }
+      );
+    }
+
     console.error('Minecraft login flow failed:', error);
 
     if (error instanceof BackendError) {
@@ -132,21 +205,14 @@ export async function POST(req: NextRequest) {
 const acquireXboxLiveTokenWithUserHash = async (token: string) => {
   const URL = 'https://user.auth.xboxlive.com/user/authenticate';
 
-  const response = await fetch(URL, {
-    method: 'POST',
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
+  const response = await postToUpstream('xbox_user_auth', URL, {
+    Properties: {
+      AuthMethod: 'RPS',
+      SiteName: 'user.auth.xboxlive.com',
+      RpsTicket: `d=${token}`,
     },
-    body: JSON.stringify({
-      Properties: {
-        AuthMethod: 'RPS',
-        SiteName: 'user.auth.xboxlive.com',
-        RpsTicket: `d=${token}`,
-      },
-      RelyingParty: 'http://auth.xboxlive.com',
-      TokenType: 'JWT',
-    }),
+    RelyingParty: 'http://auth.xboxlive.com',
+    TokenType: 'JWT',
   });
 
   if (!response.ok) {
@@ -155,8 +221,7 @@ const acquireXboxLiveTokenWithUserHash = async (token: string) => {
     );
   }
 
-  const body: unknown = await response.json().catch(() => null);
-  const result = xboxLiveServiceTokenResponseSchema.parse(body);
+  const result = xboxLiveServiceTokenResponseSchema.parse(response.body);
 
   return { token: result.Token, userHash: result.DisplayClaims.xui[0].uhs };
 };
@@ -166,20 +231,13 @@ const acquireXboxServiceSecurityTokenWithUserHash = async ({
 }: Awaited<ReturnType<typeof acquireXboxLiveTokenWithUserHash>>) => {
   const URL = 'https://xsts.auth.xboxlive.com/xsts/authorize';
 
-  const response = await fetch(URL, {
-    method: 'POST',
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
+  const response = await postToUpstream('xbox_xsts', URL, {
+    Properties: {
+      SandboxId: 'RETAIL',
+      UserTokens: [token],
     },
-    body: JSON.stringify({
-      Properties: {
-        SandboxId: 'RETAIL',
-        UserTokens: [token],
-      },
-      RelyingParty: 'rp://api.minecraftservices.com/',
-      TokenType: 'JWT',
-    }),
+    RelyingParty: 'rp://api.minecraftservices.com/',
+    TokenType: 'JWT',
   });
 
   if (!response.ok) {
@@ -188,8 +246,7 @@ const acquireXboxServiceSecurityTokenWithUserHash = async ({
     );
   }
 
-  const body: unknown = await response.json().catch(() => null);
-  const result = xboxLiveServiceTokenResponseSchema.parse(body);
+  const result = xboxLiveServiceTokenResponseSchema.parse(response.body);
 
   return { token: result.Token, userHash: result.DisplayClaims.xui[0].uhs };
 };
@@ -202,15 +259,8 @@ const acquireMinecraftAccessToken = async ({
   const URL =
     'https://api.minecraftservices.com/authentication/login_with_xbox';
 
-  const response = await fetch(URL, {
-    method: 'POST',
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      identityToken: `XBL3.0 x=${userHash};${token}`,
-    }),
+  const response = await postToUpstream('minecraft_login', URL, {
+    identityToken: `XBL3.0 x=${userHash};${token}`,
   });
 
   if (!response.ok) {
@@ -219,8 +269,7 @@ const acquireMinecraftAccessToken = async ({
     );
   }
 
-  const body: unknown = await response.json().catch(() => null);
-  const result = minecraftAccessTokenResponseSchema.parse(body);
+  const result = minecraftAccessTokenResponseSchema.parse(response.body);
 
   return {
     token: result.access_token,

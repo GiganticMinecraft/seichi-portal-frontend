@@ -3,6 +3,7 @@ import { describe, expect, it, vi } from 'vitest';
 import {
   BackendError,
   requireBackendDataOrNotFound,
+  requireBackendResponse,
 } from '@/lib/server/backend';
 
 const { notFoundMock } = vi.hoisted(() => ({
@@ -50,5 +51,22 @@ describe('requireBackendDataOrNotFound', () => {
       )
     ).rejects.toBeInstanceOf(BackendError);
     expect(notFoundMock).not.toHaveBeenCalled();
+  });
+});
+
+describe('requireBackendResponse', () => {
+  it('backend への fetch がタイムアウトしたら network_error (503) の BackendError にする', async () => {
+    const timeout = new DOMException('timed out', 'TimeoutError');
+    const error: unknown = await requireBackendResponse(
+      Promise.reject(timeout)
+    ).catch((e: unknown) => e);
+
+    expect(error).toBeInstanceOf(BackendError);
+    expect(error).toMatchObject({
+      status: 503,
+      code: 'network_error',
+      cause: timeout,
+    });
+    expect(error instanceof Error ? error.message : '').toContain('timed out');
   });
 });

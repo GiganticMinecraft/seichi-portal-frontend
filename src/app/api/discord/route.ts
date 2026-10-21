@@ -10,6 +10,12 @@ import {
 } from '@/lib/postLoginRedirect';
 import { normalizeRedirectTarget } from '@/lib/redirect';
 import { authorizationHeader, serverApiClient } from '@/lib/server/backend';
+import {
+  BACKEND_FETCH_TIMEOUT_MS,
+  EXTERNAL_FETCH_TIMEOUT_MS,
+  isTimeoutError,
+  logUpstreamTimeout,
+} from '@/lib/server/fetchTimeout';
 import { getCachedToken } from '@/user-token/mcToken';
 
 import { discordTokenSchema } from '../_schemas/External';
@@ -110,6 +116,9 @@ export async function GET(req: NextRequest) {
     redirect_uri: redirectUri,
   }).toString();
 
+  // タイムアウト時にどちらの通信で詰まったかをログに残すため、現在の段階を記録する
+  let stage: 'discord' | 'backend' = 'discord';
+
   try {
     const tokenResponse = await fetch(DISCORD_TOKEN_URL, {
       headers: {
@@ -118,6 +127,7 @@ export async function GET(req: NextRequest) {
       method: 'POST',
       body,
       cache: 'no-cache',
+      signal: AbortSignal.timeout(EXTERNAL_FETCH_TIMEOUT_MS),
     });
 
     if (!tokenResponse.ok) {
@@ -130,7 +140,14 @@ export async function GET(req: NextRequest) {
       return response;
     }
 
-    const tokenBody: unknown = await tokenResponse.json().catch(() => null);
+    // signal の上限はボディ読み取りにも掛かる。読み取り中のタイムアウトは
+    // JSON 不正 (502) と区別して catch 節で 504 にする
+    const tokenBody: unknown = await tokenResponse
+      .json()
+      .catch((error: unknown) => {
+        if (isTimeoutError(error)) throw error;
+        return null;
+      });
     const token = discordTokenSchema.safeParse(tokenBody);
 
     if (!token.success) {
@@ -143,6 +160,7 @@ export async function GET(req: NextRequest) {
       return response;
     }
 
+    stage = 'backend';
     const { response: linkDiscordResponse } = await withResponse(
       sdk.linkDiscord({
         client: serverApiClient,
@@ -173,6 +191,24 @@ export async function GET(req: NextRequest) {
     clearDiscordReturnToCookie(response);
     return response;
   } catch (error) {
+    if (isTimeoutError(error)) {
+      logUpstreamTimeout({
+        upstream: stage,
+        timeoutMs:
+          stage === 'discord'
+            ? EXTERNAL_FETCH_TIMEOUT_MS
+            : BACKEND_FETCH_TIMEOUT_MS,
+        route: '/api/discord',
+      });
+      const response = NextResponse.json(
+        { error: 'Timed out during Discord link flow' },
+        { status: 504 }
+      );
+      clearDiscordOauthStateCookie(response);
+      clearDiscordReturnToCookie(response);
+      return response;
+    }
+
     console.error('Discord link flow failed:', error);
     const response = NextResponse.json(
       { error: 'Unexpected error during Discord link flow' },
