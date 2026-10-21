@@ -93,6 +93,18 @@ export const getOtelSdkDisabled = () =>
   otelSdkDisabledSchema.parse(process.env['OTEL_SDK_DISABLED'] || undefined) ===
   'true';
 
+// リリースバージョン。リリース CI が build-arg で渡し、ビルド時にサーバーバンドルにも
+// 埋め込まれる (ブラウザ側 Faro の app.version と同じ値)。サーバーの起動を止めないよう
+// 不正値は未設定扱いにする。
+const appVersionSchema = z.string().min(1).optional();
+
+export const getAppVersion = () => {
+  const result = appVersionSchema.safeParse(
+    process.env['NEXT_PUBLIC_APP_VERSION'] || undefined
+  );
+  return result.success ? result.data : undefined;
+};
+
 const pyroscopeServerAddressSchema = z.url().optional();
 
 export const getPyroscopeServerAddress = () =>

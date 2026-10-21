@@ -8,8 +8,8 @@ import {
 import { type Configuration, registerOTel } from '@vercel/otel';
 import type { Instrumentation } from 'next';
 
-import { APP_VERSION } from '@/env.client';
 import {
+  getAppVersion,
   getOtelExporterOtlpEndpoint,
   getOtelSdkDisabled,
   getPyroscopeServerAddress,
@@ -57,8 +57,11 @@ export const startPyroscope = async () => {
     const { init, start } = await import('@pyroscope/nodejs');
     init({
       serverAddress,
+      // トレースと同じサービス名に揃える (traces-to-profiles の紐付けのため)
       appName:
-        process.env['PYROSCOPE_APPLICATION_NAME'] ?? DEFAULT_SERVICE_NAME,
+        process.env['PYROSCOPE_APPLICATION_NAME'] ||
+        process.env['OTEL_SERVICE_NAME'] ||
+        DEFAULT_SERVICE_NAME,
       // CPU プロファイルの取得に必要
       wall: { collectCpuTime: true },
     });
@@ -188,7 +191,7 @@ export const register = async () => {
     ...(await nodeMetricsConfiguration()),
     ...serviceResourceConfiguration(
       process.env['OTEL_SERVICE_NAME'],
-      APP_VERSION
+      getAppVersion()
     ),
     instrumentationConfig: {
       fetch: {
