@@ -8,6 +8,7 @@ import {
 import { type Configuration, registerOTel } from '@vercel/otel';
 import type { Instrumentation } from 'next';
 
+import { APP_VERSION } from '@/env.client';
 import {
   getOtelExporterOtlpEndpoint,
   getOtelSdkDisabled,
@@ -34,6 +35,9 @@ const stripUrlQuerySpanProcessor: SpanProcessor = {
   shutdown: () => Promise.resolve(),
 };
 
+// OTEL_SERVICE_NAME / PYROSCOPE_APPLICATION_NAME 未設定時のサービス名
+const DEFAULT_SERVICE_NAME = 'seichi-portal-frontend';
+
 // Grafana Pyroscope への継続プロファイリング (push)。
 // PYROSCOPE_SERVER_ADDRESS 未設定（ローカル dev など）では無効。
 // @pyroscope/nodejs は native モジュール (@datadog/pprof) に依存するため、
@@ -54,7 +58,7 @@ export const startPyroscope = async () => {
     init({
       serverAddress,
       appName:
-        process.env['PYROSCOPE_APPLICATION_NAME'] ?? 'seichi-portal-frontend',
+        process.env['PYROSCOPE_APPLICATION_NAME'] ?? DEFAULT_SERVICE_NAME,
       // CPU プロファイルの取得に必要
       wall: { collectCpuTime: true },
     });
@@ -154,6 +158,22 @@ export const backendPropagationUrls = (
   }
 };
 
+// サーバー側 OTel の resource (service.name / service.version)。
+// service.name はマニフェストの OTEL_SERVICE_NAME を正とし (@vercel/otel 自身も
+// 同じ優先順位で読む)、未設定時だけ既定名にする。
+// service.version はブラウザ側 Faro の app.version と同じリリースバージョン
+// (リリース CI が build-arg で渡し、ビルド時に埋め込まれる NEXT_PUBLIC_APP_VERSION)。
+// 未設定のビルドでは付けない。
+export const serviceResourceConfiguration = (
+  serviceName: string | undefined,
+  appVersion: string | undefined
+): Pick<Configuration, 'serviceName' | 'attributes'> => ({
+  serviceName: serviceName || DEFAULT_SERVICE_NAME,
+  ...(appVersion === undefined
+    ? {}
+    : { attributes: { 'service.version': appVersion } }),
+});
+
 export const register = async () => {
   await startPyroscope();
 
@@ -166,7 +186,10 @@ export const register = async () => {
 
   registerOTel({
     ...(await nodeMetricsConfiguration()),
-    serviceName: 'seichi-portal-frontend',
+    ...serviceResourceConfiguration(
+      process.env['OTEL_SERVICE_NAME'],
+      APP_VERSION
+    ),
     instrumentationConfig: {
       fetch: {
         // デフォルトでは同一デプロイメント以外の URL へ traceparent が伝播
