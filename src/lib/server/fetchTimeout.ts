@@ -7,6 +7,14 @@ export const EXTERNAL_FETCH_TIMEOUT_MS = 10_000;
 export const BACKEND_FETCH_TIMEOUT_MS = 5_000;
 
 /**
+ * backend 側でさらに外部サービスを呼ぶ非冪等な操作 (startSession は Cloudflare
+ * Turnstile、linkDiscord は Discord API) の上限時間。backend が外部呼び出しを
+ * 終えてコミットした後に frontend だけが諦めると、Turnstile token や OAuth code は
+ * 使い捨てのため再試行もできなくなる。外部サービス向けの上限より長く取る。
+ */
+export const BACKEND_MUTATION_FETCH_TIMEOUT_MS = 15_000;
+
+/**
  * 呼び出しごとに新しい AbortSignal.timeout を付けて globalThis.fetch を呼ぶ fetch を返す。
  *
  * - signal をクライアント作成時に 1 つだけ作って共有すると、最初のタイムアウト以降の
@@ -54,6 +62,11 @@ export const createFetchWithTimeout =
     });
   };
 
+/** SDK 呼び出しの `fetch` に渡す、BACKEND_MUTATION_FETCH_TIMEOUT_MS 版の fetch */
+export const backendMutationFetch = createFetchWithTimeout(
+  BACKEND_MUTATION_FETCH_TIMEOUT_MS
+);
+
 /**
  * AbortSignal.timeout による中断かを判定する。fetch は signal の reason
  * (name が TimeoutError の DOMException) をそのまま reject するが、
@@ -88,4 +101,52 @@ export const logUpstreamTimeout = ({
       traceparent: getActiveTraceparent(),
     })
   );
+};
+
+/** 外部サービスへの fetch がタイムアウトしたことを、どのサービスかと共に表す */
+export class UpstreamTimeoutError extends Error {
+  upstream: string;
+
+  constructor(upstream: string, cause: unknown) {
+    super(`${upstream} timed out after ${EXTERNAL_FETCH_TIMEOUT_MS}ms`, {
+      cause,
+    });
+    this.name = 'UpstreamTimeoutError';
+    this.upstream = upstream;
+  }
+}
+
+/**
+ * 外部サービスへ EXTERNAL_FETCH_TIMEOUT_MS の上限付きで fetch し、成功時は JSON を読む。
+ * 上限はレスポンスボディの読み取りまで含み、タイムアウトは UpstreamTimeoutError に
+ * 変換する。JSON として読めないボディは null。失敗レスポンスのボディは読まずに
+ * 破棄し、keep-alive の接続を解放する。
+ */
+export const fetchUpstreamJson = async (
+  upstream: string,
+  url: string,
+  init: Omit<RequestInit, 'signal'>
+): Promise<{ ok: boolean; status: number; body: unknown }> => {
+  try {
+    const response = await fetch(url, {
+      ...init,
+      signal: AbortSignal.timeout(EXTERNAL_FETCH_TIMEOUT_MS),
+    });
+    if (!response.ok) {
+      await response.body?.cancel().catch(() => undefined);
+      return { ok: false, status: response.status, body: null };
+    }
+
+    const body: unknown = await response.json().catch((error: unknown) => {
+      // ボディ読み取り中のタイムアウトは JSON 不正と区別して下の catch で扱う
+      if (isTimeoutError(error)) throw error;
+      return null;
+    });
+    return { ok: true, status: response.status, body };
+  } catch (error) {
+    if (isTimeoutError(error)) {
+      throw new UpstreamTimeoutError(upstream, error);
+    }
+    throw error;
+  }
 };

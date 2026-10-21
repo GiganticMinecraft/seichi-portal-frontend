@@ -10,7 +10,7 @@ import {
 } from 'vitest';
 
 const { startSessionMock } = vi.hoisted(() => ({
-  startSessionMock: vi.fn(),
+  startSessionMock: vi.fn<(options: object) => Promise<unknown>>(),
 }));
 
 vi.mock('@/generated/api/sdk.gen', () => ({
@@ -98,6 +98,51 @@ describe('Minecraft access token route', () => {
     const response = await POST(loginRequest());
 
     expect(response.status).toBe(504);
+  });
+
+  it('backend の startSession がタイムアウトしたら 503 / backend_unreachable を返し、backend のタイムアウトとして構造化ログに出す', async () => {
+    vi.stubGlobal(
+      'fetch',
+      vi
+        .fn<typeof fetch>()
+        .mockResolvedValueOnce(xboxTokenResponse())
+        .mockResolvedValueOnce(xboxTokenResponse())
+        .mockResolvedValueOnce(
+          new Response(
+            JSON.stringify({ access_token: 'mc-token', expires_in: 3600 }),
+            { status: 200, headers: { 'Content-Type': 'application/json' } }
+          )
+        )
+    );
+    startSessionMock.mockRejectedValue(
+      new DOMException('timed out', 'TimeoutError')
+    );
+
+    const response = await POST(loginRequest());
+
+    expect(response.status).toBe(503);
+    await expect(response.json()).resolves.toMatchObject({
+      code: 'backend_unreachable',
+    });
+    // 読み取り系より長い上限の fetch を SDK 呼び出しごとに渡している
+    const [startSessionOptions] = startSessionMock.mock.calls[0] ?? [];
+    expect(startSessionOptions).toHaveProperty('fetch');
+    const log: unknown = JSON.parse(String(consoleError.mock.calls[0]?.[0]));
+    expect(log).toMatchObject({
+      msg: 'upstream request timed out',
+      upstream: 'backend',
+      route: '/api/minecraft-access-token',
+    });
+  });
+
+  it('外部認証が失敗レスポンスを返したらボディを破棄して 502 / invalid_account', async () => {
+    const failed = new Response('unauthorized', { status: 401 });
+    vi.stubGlobal('fetch', vi.fn<typeof fetch>().mockResolvedValue(failed));
+
+    const response = await POST(loginRequest());
+
+    expect(response.status).toBe(502);
+    expect(failed.bodyUsed).toBe(true);
   });
 
   it('外部認証が不正な JSON を返した場合は従来どおり 502 / invalid_account', async () => {

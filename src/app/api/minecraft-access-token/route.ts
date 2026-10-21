@@ -15,9 +15,13 @@ import {
   serverApiClient,
 } from '@/lib/server/backend';
 import {
+  BACKEND_MUTATION_FETCH_TIMEOUT_MS,
+  backendMutationFetch,
   EXTERNAL_FETCH_TIMEOUT_MS,
+  fetchUpstreamJson,
   isTimeoutError,
   logUpstreamTimeout,
+  UpstreamTimeoutError,
 } from '@/lib/server/fetchTimeout';
 
 const microsoftAccountTokenSchema = z.object({
@@ -33,56 +37,15 @@ class UpstreamServiceError extends Error {
   }
 }
 
-/** Xbox Live / Minecraft Services のどこでタイムアウトしたかを保持する */
-class UpstreamTimeoutError extends Error {
-  upstream: string;
-
-  constructor(upstream: string, cause: unknown) {
-    super(`${upstream} timed out after ${EXTERNAL_FETCH_TIMEOUT_MS}ms`, {
-      cause,
-    });
-    this.name = 'UpstreamTimeoutError';
-    this.upstream = upstream;
-  }
-}
-
-/**
- * 外部の認証サービスへ EXTERNAL_FETCH_TIMEOUT_MS の上限付きで POST し、JSON を読む。
- * 上限はレスポンスボディの読み取りまで含む。タイムアウトは UpstreamTimeoutError に
- * 変換し、どのサービスかを呼び出し元へ伝える。JSON として読めないボディは null。
- */
-const postToUpstream = async (
-  upstream: string,
-  url: string,
-  requestBody: unknown
-): Promise<{ ok: boolean; status: number; body: unknown }> => {
-  try {
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(requestBody),
-      signal: AbortSignal.timeout(EXTERNAL_FETCH_TIMEOUT_MS),
-    });
-    if (!response.ok) {
-      return { ok: false, status: response.status, body: null };
-    }
-
-    const body: unknown = await response.json().catch((error: unknown) => {
-      // ボディ読み取り中のタイムアウトは JSON 不正と区別して外側で扱う
-      if (isTimeoutError(error)) throw error;
-      return null;
-    });
-    return { ok: true, status: response.status, body };
-  } catch (error) {
-    if (isTimeoutError(error)) {
-      throw new UpstreamTimeoutError(upstream, error);
-    }
-    throw error;
-  }
-};
+const postToUpstream = (upstream: string, url: string, body: unknown) =>
+  fetchUpstreamJson(upstream, url, {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(body),
+  });
 
 export async function POST(req: NextRequest) {
   try {
@@ -149,7 +112,15 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    console.error('Minecraft login flow failed:', error);
+    if (error instanceof BackendError && isTimeoutError(error)) {
+      logUpstreamTimeout({
+        upstream: 'backend',
+        timeoutMs: BACKEND_MUTATION_FETCH_TIMEOUT_MS,
+        route: '/api/minecraft-access-token',
+      });
+    } else {
+      console.error('Minecraft login flow failed:', error);
+    }
 
     if (error instanceof BackendError) {
       if (error.status === 429) {
@@ -285,6 +256,8 @@ const createSession = async (
   const { response } = await requireBackendResponse(
     sdk.startSession({
       client: serverApiClient,
+      // backend が Turnstile 検証で Cloudflare を呼ぶため、読み取り系より長い上限にする
+      fetch: backendMutationFetch,
       headers: {
         ...authorizationHeader(token),
         ...(requestHeaders ? getSeichiProxyHeaders(requestHeaders) : {}),

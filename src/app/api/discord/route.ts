@@ -11,10 +11,13 @@ import {
 import { normalizeRedirectTarget } from '@/lib/redirect';
 import { authorizationHeader, serverApiClient } from '@/lib/server/backend';
 import {
-  BACKEND_FETCH_TIMEOUT_MS,
+  BACKEND_MUTATION_FETCH_TIMEOUT_MS,
+  backendMutationFetch,
   EXTERNAL_FETCH_TIMEOUT_MS,
+  fetchUpstreamJson,
   isTimeoutError,
   logUpstreamTimeout,
+  UpstreamTimeoutError,
 } from '@/lib/server/fetchTimeout';
 import { getCachedToken } from '@/user-token/mcToken';
 
@@ -116,19 +119,19 @@ export async function GET(req: NextRequest) {
     redirect_uri: redirectUri,
   }).toString();
 
-  // タイムアウト時にどちらの通信で詰まったかをログに残すため、現在の段階を記録する
-  let stage: 'discord' | 'backend' = 'discord';
-
   try {
-    const tokenResponse = await fetch(DISCORD_TOKEN_URL, {
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      method: 'POST',
-      body,
-      cache: 'no-cache',
-      signal: AbortSignal.timeout(EXTERNAL_FETCH_TIMEOUT_MS),
-    });
+    const tokenResponse = await fetchUpstreamJson(
+      'discord',
+      DISCORD_TOKEN_URL,
+      {
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        method: 'POST',
+        body,
+        cache: 'no-cache',
+      }
+    );
 
     if (!tokenResponse.ok) {
       const response = NextResponse.json(
@@ -140,15 +143,7 @@ export async function GET(req: NextRequest) {
       return response;
     }
 
-    // signal の上限はボディ読み取りにも掛かる。読み取り中のタイムアウトは
-    // JSON 不正 (502) と区別して catch 節で 504 にする
-    const tokenBody: unknown = await tokenResponse
-      .json()
-      .catch((error: unknown) => {
-        if (isTimeoutError(error)) throw error;
-        return null;
-      });
-    const token = discordTokenSchema.safeParse(tokenBody);
+    const token = discordTokenSchema.safeParse(tokenResponse.body);
 
     if (!token.success) {
       const response = NextResponse.json(
@@ -160,10 +155,11 @@ export async function GET(req: NextRequest) {
       return response;
     }
 
-    stage = 'backend';
     const { response: linkDiscordResponse } = await withResponse(
       sdk.linkDiscord({
         client: serverApiClient,
+        // backend が Discord API を呼ぶため、読み取り系より長い上限にする
+        fetch: backendMutationFetch,
         headers: {
           ...authorizationHeader(seichiPortalToken),
         },
@@ -192,12 +188,12 @@ export async function GET(req: NextRequest) {
     return response;
   } catch (error) {
     if (isTimeoutError(error)) {
+      const isDiscord = error instanceof UpstreamTimeoutError;
       logUpstreamTimeout({
-        upstream: stage,
-        timeoutMs:
-          stage === 'discord'
-            ? EXTERNAL_FETCH_TIMEOUT_MS
-            : BACKEND_FETCH_TIMEOUT_MS,
+        upstream: isDiscord ? error.upstream : 'backend',
+        timeoutMs: isDiscord
+          ? EXTERNAL_FETCH_TIMEOUT_MS
+          : BACKEND_MUTATION_FETCH_TIMEOUT_MS,
         route: '/api/discord',
       });
       const response = NextResponse.json(
