@@ -14,6 +14,15 @@ import {
   requireBackendResponse,
   serverApiClient,
 } from '@/lib/server/backend';
+import {
+  BACKEND_MUTATION_FETCH_TIMEOUT_MS,
+  backendMutationFetch,
+  EXTERNAL_FETCH_TIMEOUT_MS,
+  fetchUpstreamJson,
+  isTimeoutError,
+  logUpstreamTimeout,
+  UpstreamTimeoutError,
+} from '@/lib/server/fetchTimeout';
 
 const microsoftAccountTokenSchema = z.object({
   token: z.string().min(1),
@@ -27,6 +36,16 @@ class UpstreamServiceError extends Error {
     this.name = 'UpstreamServiceError';
   }
 }
+
+const postToUpstream = (upstream: string, url: string, body: unknown) =>
+  fetchUpstreamJson(upstream, url, {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(body),
+  });
 
 export async function POST(req: NextRequest) {
   try {
@@ -76,7 +95,32 @@ export async function POST(req: NextRequest) {
     nextResponse.headers.set('Set-Cookie', setCookieHeader);
     return nextResponse;
   } catch (error) {
-    console.error('Minecraft login flow failed:', error);
+    if (error instanceof UpstreamTimeoutError) {
+      logUpstreamTimeout({
+        upstream: error.upstream,
+        timeoutMs: EXTERNAL_FETCH_TIMEOUT_MS,
+        route: '/api/minecraft-access-token',
+      });
+      // 利用者のアカウントの問題ではないため invalid_account にせず、
+      // 再試行を促す backend_unreachable の文言を出させる
+      return NextResponse.json(
+        {
+          error: 'Upstream authentication service timed out',
+          code: 'backend_unreachable',
+        },
+        { status: 504 }
+      );
+    }
+
+    if (error instanceof BackendError && isTimeoutError(error)) {
+      logUpstreamTimeout({
+        upstream: 'backend',
+        timeoutMs: BACKEND_MUTATION_FETCH_TIMEOUT_MS,
+        route: '/api/minecraft-access-token',
+      });
+    } else {
+      console.error('Minecraft login flow failed:', error);
+    }
 
     if (error instanceof BackendError) {
       if (error.status === 429) {
@@ -132,21 +176,14 @@ export async function POST(req: NextRequest) {
 const acquireXboxLiveTokenWithUserHash = async (token: string) => {
   const URL = 'https://user.auth.xboxlive.com/user/authenticate';
 
-  const response = await fetch(URL, {
-    method: 'POST',
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
+  const response = await postToUpstream('xbox_user_auth', URL, {
+    Properties: {
+      AuthMethod: 'RPS',
+      SiteName: 'user.auth.xboxlive.com',
+      RpsTicket: `d=${token}`,
     },
-    body: JSON.stringify({
-      Properties: {
-        AuthMethod: 'RPS',
-        SiteName: 'user.auth.xboxlive.com',
-        RpsTicket: `d=${token}`,
-      },
-      RelyingParty: 'http://auth.xboxlive.com',
-      TokenType: 'JWT',
-    }),
+    RelyingParty: 'http://auth.xboxlive.com',
+    TokenType: 'JWT',
   });
 
   if (!response.ok) {
@@ -155,8 +192,7 @@ const acquireXboxLiveTokenWithUserHash = async (token: string) => {
     );
   }
 
-  const body: unknown = await response.json().catch(() => null);
-  const result = xboxLiveServiceTokenResponseSchema.parse(body);
+  const result = xboxLiveServiceTokenResponseSchema.parse(response.body);
 
   return { token: result.Token, userHash: result.DisplayClaims.xui[0].uhs };
 };
@@ -166,20 +202,13 @@ const acquireXboxServiceSecurityTokenWithUserHash = async ({
 }: Awaited<ReturnType<typeof acquireXboxLiveTokenWithUserHash>>) => {
   const URL = 'https://xsts.auth.xboxlive.com/xsts/authorize';
 
-  const response = await fetch(URL, {
-    method: 'POST',
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
+  const response = await postToUpstream('xbox_xsts', URL, {
+    Properties: {
+      SandboxId: 'RETAIL',
+      UserTokens: [token],
     },
-    body: JSON.stringify({
-      Properties: {
-        SandboxId: 'RETAIL',
-        UserTokens: [token],
-      },
-      RelyingParty: 'rp://api.minecraftservices.com/',
-      TokenType: 'JWT',
-    }),
+    RelyingParty: 'rp://api.minecraftservices.com/',
+    TokenType: 'JWT',
   });
 
   if (!response.ok) {
@@ -188,8 +217,7 @@ const acquireXboxServiceSecurityTokenWithUserHash = async ({
     );
   }
 
-  const body: unknown = await response.json().catch(() => null);
-  const result = xboxLiveServiceTokenResponseSchema.parse(body);
+  const result = xboxLiveServiceTokenResponseSchema.parse(response.body);
 
   return { token: result.Token, userHash: result.DisplayClaims.xui[0].uhs };
 };
@@ -202,15 +230,8 @@ const acquireMinecraftAccessToken = async ({
   const URL =
     'https://api.minecraftservices.com/authentication/login_with_xbox';
 
-  const response = await fetch(URL, {
-    method: 'POST',
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      identityToken: `XBL3.0 x=${userHash};${token}`,
-    }),
+  const response = await postToUpstream('minecraft_login', URL, {
+    identityToken: `XBL3.0 x=${userHash};${token}`,
   });
 
   if (!response.ok) {
@@ -219,8 +240,7 @@ const acquireMinecraftAccessToken = async ({
     );
   }
 
-  const body: unknown = await response.json().catch(() => null);
-  const result = minecraftAccessTokenResponseSchema.parse(body);
+  const result = minecraftAccessTokenResponseSchema.parse(response.body);
 
   return {
     token: result.access_token,
@@ -236,6 +256,8 @@ const createSession = async (
   const { response } = await requireBackendResponse(
     sdk.startSession({
       client: serverApiClient,
+      // backend が Turnstile 検証で Cloudflare を呼ぶため、読み取り系より長い上限にする
+      fetch: backendMutationFetch,
       headers: {
         ...authorizationHeader(token),
         ...(requestHeaders ? getSeichiProxyHeaders(requestHeaders) : {}),

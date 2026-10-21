@@ -219,4 +219,57 @@ describe('Discord OAuth route', () => {
       `${DISCORD_RETURN_TO_COOKIE}=;`
     );
   });
+
+  it.each([
+    ['Discord token endpoint', 'fetch'],
+    ['backend の linkDiscord', 'linkDiscord'],
+  ])(
+    '%s がタイムアウトしたら 504 を返し、構造化ログを出して cookie を削除する',
+    async (_label, target) => {
+      getCachedTokenMock.mockResolvedValue('seichi-token');
+      const timeout = new DOMException('timed out', 'TimeoutError');
+      const consoleError = vi
+        .spyOn(console, 'error')
+        .mockImplementation(() => undefined);
+
+      if (target === 'fetch') {
+        vi.stubGlobal('fetch', vi.fn().mockRejectedValue(timeout));
+      } else {
+        vi.stubGlobal(
+          'fetch',
+          vi
+            .fn()
+            .mockResolvedValue(
+              new Response(
+                JSON.stringify({ access_token: 'discord-access-token' }),
+                { status: 200, headers: { 'Content-Type': 'application/json' } }
+              )
+            )
+        );
+        linkDiscordMock.mockRejectedValue(timeout);
+      }
+
+      const response = await GET(
+        request(
+          'http://0.0.0.0:3000/api/discord?code=code&state=stored-state',
+          `${DISCORD_OAUTH_STATE_COOKIE}=stored-state`
+        )
+      );
+
+      expect(response.status).toBe(504);
+      expect(response.headers.get('set-cookie')).toContain(
+        `${DISCORD_OAUTH_STATE_COOKIE}=;`
+      );
+      const [, fetchInit] = vi.mocked(fetch).mock.calls[0] ?? [];
+      expect(fetchInit?.signal).toBeInstanceOf(AbortSignal);
+
+      const log: unknown = JSON.parse(String(consoleError.mock.calls[0]?.[0]));
+      expect(log).toMatchObject({
+        msg: 'upstream request timed out',
+        upstream: target === 'fetch' ? 'discord' : 'backend',
+        route: '/api/discord',
+      });
+      consoleError.mockRestore();
+    }
+  );
 });

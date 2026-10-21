@@ -1,8 +1,10 @@
 import { describe, expect, it, vi } from 'vitest';
 
+import { createApiClient } from '@/lib/api/createApiClient';
 import {
   BackendError,
   requireBackendDataOrNotFound,
+  requireBackendResponse,
 } from '@/lib/server/backend';
 
 const { notFoundMock } = vi.hoisted(() => ({
@@ -50,5 +52,67 @@ describe('requireBackendDataOrNotFound', () => {
       )
     ).rejects.toBeInstanceOf(BackendError);
     expect(notFoundMock).not.toHaveBeenCalled();
+  });
+});
+
+describe('requireBackendResponse', () => {
+  it('backend への fetch がタイムアウトしたら network_error (503) の BackendError にする', async () => {
+    const timeout = new DOMException('timed out', 'TimeoutError');
+    const error: unknown = await requireBackendResponse(
+      Promise.reject(timeout)
+    ).catch((e: unknown) => e);
+
+    expect(error).toBeInstanceOf(BackendError);
+    expect(error).toMatchObject({
+      status: 503,
+      code: 'network_error',
+      cause: timeout,
+    });
+    expect(error instanceof Error ? error.message : '').toContain('timed out');
+  });
+});
+
+describe('createApiClient', () => {
+  it('2xx のボディ読み取り中に中断されたら成功扱いにせず reject し、network_error (503) になる', async () => {
+    const timeout = new DOMException('timed out', 'TimeoutError');
+    const client = createApiClient({
+      baseUrl: 'http://backend.invalid',
+      fetch: () =>
+        Promise.resolve(
+          new Response(
+            new ReadableStream({
+              start(controller) {
+                controller.error(timeout);
+              },
+            }),
+            { status: 200, headers: { 'Content-Type': 'application/json' } }
+          )
+        ),
+    });
+
+    const error: unknown = await requireBackendResponse(
+      client.get({ url: '/api/v1/forms' })
+    ).catch((e: unknown) => e);
+
+    expect(error).toBeInstanceOf(BackendError);
+    expect(error).toMatchObject({ status: 503, code: 'network_error' });
+  });
+
+  it('HTTP エラーは従来どおり reject せず error に入れて返す', async () => {
+    const client = createApiClient({
+      baseUrl: 'http://backend.invalid',
+      fetch: () =>
+        Promise.resolve(
+          new Response(JSON.stringify({ title: 'Not Found' }), {
+            status: 404,
+            headers: { 'Content-Type': 'application/json' },
+          })
+        ),
+    });
+
+    const result = await client.get({ url: '/api/v1/forms/x' });
+
+    expect(result.response?.status).toBe(404);
+    expect(result.error).toEqual({ title: 'Not Found' });
   });
 });

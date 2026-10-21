@@ -10,6 +10,15 @@ import {
 } from '@/lib/postLoginRedirect';
 import { normalizeRedirectTarget } from '@/lib/redirect';
 import { authorizationHeader, serverApiClient } from '@/lib/server/backend';
+import {
+  BACKEND_MUTATION_FETCH_TIMEOUT_MS,
+  backendMutationFetch,
+  EXTERNAL_FETCH_TIMEOUT_MS,
+  fetchUpstreamJson,
+  isTimeoutError,
+  logUpstreamTimeout,
+  UpstreamTimeoutError,
+} from '@/lib/server/fetchTimeout';
 import { getCachedToken } from '@/user-token/mcToken';
 
 import { discordTokenSchema } from '../_schemas/External';
@@ -111,14 +120,18 @@ export async function GET(req: NextRequest) {
   }).toString();
 
   try {
-    const tokenResponse = await fetch(DISCORD_TOKEN_URL, {
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      method: 'POST',
-      body,
-      cache: 'no-cache',
-    });
+    const tokenResponse = await fetchUpstreamJson(
+      'discord',
+      DISCORD_TOKEN_URL,
+      {
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        method: 'POST',
+        body,
+        cache: 'no-cache',
+      }
+    );
 
     if (!tokenResponse.ok) {
       const response = NextResponse.json(
@@ -130,8 +143,7 @@ export async function GET(req: NextRequest) {
       return response;
     }
 
-    const tokenBody: unknown = await tokenResponse.json().catch(() => null);
-    const token = discordTokenSchema.safeParse(tokenBody);
+    const token = discordTokenSchema.safeParse(tokenResponse.body);
 
     if (!token.success) {
       const response = NextResponse.json(
@@ -146,6 +158,8 @@ export async function GET(req: NextRequest) {
     const { response: linkDiscordResponse } = await withResponse(
       sdk.linkDiscord({
         client: serverApiClient,
+        // backend が Discord API を呼ぶため、読み取り系より長い上限にする
+        fetch: backendMutationFetch,
         headers: {
           ...authorizationHeader(seichiPortalToken),
         },
@@ -173,6 +187,24 @@ export async function GET(req: NextRequest) {
     clearDiscordReturnToCookie(response);
     return response;
   } catch (error) {
+    if (isTimeoutError(error)) {
+      const isDiscord = error instanceof UpstreamTimeoutError;
+      logUpstreamTimeout({
+        upstream: isDiscord ? error.upstream : 'backend',
+        timeoutMs: isDiscord
+          ? EXTERNAL_FETCH_TIMEOUT_MS
+          : BACKEND_MUTATION_FETCH_TIMEOUT_MS,
+        route: '/api/discord',
+      });
+      const response = NextResponse.json(
+        { error: 'Timed out during Discord link flow' },
+        { status: 504 }
+      );
+      clearDiscordOauthStateCookie(response);
+      clearDiscordReturnToCookie(response);
+      return response;
+    }
+
     console.error('Discord link flow failed:', error);
     const response = NextResponse.json(
       { error: 'Unexpected error during Discord link flow' },

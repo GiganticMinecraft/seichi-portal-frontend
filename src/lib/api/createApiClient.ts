@@ -9,12 +9,20 @@ import type { Client, Config } from '@/generated/api/client';
  * 書かれている (requireBackendResponse はネットワークエラーを例外で受け取る)。
  * そのため response が無いエラーだけは例外として投げ直し、従来 (openapi-fetch) と同じく
  * Promise を reject させる。HTTP エラー (4xx / 5xx) は従来どおり `error` に入れて返す。
+ *
+ * signal による中断 (タイムアウト含む) はヘッダ受信後のボディ読み取り中にも起こり、
+ * そのときは response (2xx のこともある) が付いたまま error に入る。成功扱いに
+ * ならないよう、中断も通信エラーとして投げ直す。
  */
+const isAbortError = (error: unknown): boolean =>
+  error instanceof DOMException &&
+  (error.name === 'AbortError' || error.name === 'TimeoutError');
+
 export const createApiClient = (config: Config): Client => {
   const client = createClient(createConfig(config));
 
   client.interceptors.error.use((error, response) => {
-    if (response === undefined) {
+    if (response === undefined || isAbortError(error)) {
       throw error;
     }
 

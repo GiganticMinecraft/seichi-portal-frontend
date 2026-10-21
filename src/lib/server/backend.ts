@@ -9,6 +9,12 @@ import {
   getRetryAfterSeconds,
 } from '@/lib/httpError';
 
+import {
+  BACKEND_FETCH_TIMEOUT_MS,
+  createFetchWithTimeout,
+  isTimeoutError,
+} from './fetchTimeout';
+
 export class BackendError extends Error {
   status: number;
   code: 'http_error' | 'network_error';
@@ -25,14 +31,16 @@ export class BackendError extends Error {
     code,
     body,
     headers,
+    cause,
   }: {
     message: string;
     status: number;
     code: 'http_error' | 'network_error';
     body?: unknown;
     headers?: Headers;
+    cause?: unknown;
   }) {
-    super(message);
+    super(message, cause === undefined ? undefined : { cause });
     this.name = 'BackendError';
     this.status = status;
     this.code = code;
@@ -59,10 +67,14 @@ type BackendFetchResult<T> = {
 
 type BackendSuccessResult<T> = BackendFetchResult<T> & { response: Response };
 
+// backend が TCP は受けるが応答しない状態でも SSR がハングしないよう、
+// リクエストごとに BACKEND_FETCH_TIMEOUT_MS のタイムアウトを付ける。
+// タイムアウトは通信エラーとして requireBackendResponse で network_error (503) になる。
 export const createServerApiClient = () =>
   createApiClient({
     baseUrl: getBackendServerUrl(),
     cache: 'no-cache',
+    fetch: createFetchWithTimeout(BACKEND_FETCH_TIMEOUT_MS),
   });
 
 let cachedServerApiClient: Client | undefined;
@@ -178,9 +190,12 @@ export const requireBackendResponse = async <T>(
     }
 
     throw new BackendError({
-      message: 'Backend request failed due to a network error',
+      message: isTimeoutError(error)
+        ? `Backend request timed out after ${BACKEND_FETCH_TIMEOUT_MS}ms`
+        : 'Backend request failed due to a network error',
       status: 503,
       code: 'network_error',
+      cause: error,
     });
   }
 };

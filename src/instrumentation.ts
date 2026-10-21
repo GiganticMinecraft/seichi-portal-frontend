@@ -13,6 +13,7 @@ import {
   getOtelSdkDisabled,
   getPyroscopeServerAddress,
 } from '@/env.server';
+import { getActiveTraceparent } from '@/lib/server/traceparent';
 
 // Next.js は http.target にクエリ付きの生 URL を入れるため、クエリパラメータが
 // トレース基盤へ漏れないよう落とす。
@@ -198,7 +199,6 @@ export const onRequestError: Instrumentation.onRequestError = (
   span?.recordException(exception);
   span?.setStatus({ code: SpanStatusCode.ERROR, message: exception.message });
 
-  const spanContext = span?.spanContext();
   const digest =
     error instanceof Error &&
     'digest' in error &&
@@ -216,12 +216,7 @@ export const onRequestError: Instrumentation.onRequestError = (
       routerKind: errorContext.routerKind,
       routePath: errorContext.routePath,
       routeType: errorContext.routeType,
-      traceparent:
-        spanContext === undefined
-          ? undefined
-          : `00-${spanContext.traceId}-${spanContext.spanId}-${spanContext.traceFlags
-              .toString(16)
-              .padStart(2, '0')}`,
+      traceparent: getActiveTraceparent(),
     })
   );
 };
