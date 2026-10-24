@@ -78,3 +78,43 @@ jobs:
 
       - name: Build
         run: pnpm run build
+
+  container:
+    name: Container runtime
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: jdx/mise-action@v5
+
+      - name: Build production image
+        run: docker build --pull -t seichi-portal-frontend:ci .
+
+      - name: Check Node.js version and startup
+        shell: bash
+        run: |
+          expected_version=$(node --version)
+          actual_version=$(docker run --rm seichi-portal-frontend:ci --version)
+          echo "Development: $expected_version, production: $actual_version"
+          test "$actual_version" = "$expected_version"
+
+          container_id=$(docker run --rm -d --network none \
+            -e MS_APP_CLIENT_ID=00000000-0000-0000-0000-000000000000 \
+            -e MS_APP_REDIRECT_URL=http://localhost:3000 \
+            seichi-portal-frontend:ci)
+          trap 'docker logs "$container_id"; docker stop "$container_id" >/dev/null' EXIT
+          docker exec "$container_id" /nodejs/bin/node -e '
+            async function check() {
+              for (let attempt = 0; attempt < 30; attempt++) {
+                try {
+                  const response = await fetch("http://127.0.0.1:3000/badrequest");
+                  if (response.status !== 200) throw new Error(`HTTP ${response.status}`);
+                  console.log(`GET /badrequest: ${response.status}`);
+                  return;
+                } catch (error) {
+                  if (attempt === 29) throw error;
+                  await new Promise(resolve => setTimeout(resolve, 1000));
+                }
+              }
+            }
+            check().catch(error => { console.error(error); process.exitCode = 1; });
+          '

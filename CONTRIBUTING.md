@@ -2,13 +2,18 @@
 
 ## 必要なツール
 
-[Nix](https://nixos.org/) が使える場合は、リポジトリ直下の `flake.nix` が Node.js・pnpm を含む開発シェルを提供しているので、以下だけで環境が揃います。
+[Nix](https://nixos.org/) が使える場合は、リポジトリ直下の `flake.nix` から mise を起動し、`mise.toml` で指定した Node.js と pnpm をインストールします。
 
 ```bash
 nix develop
 ```
 
-[direnv](https://direnv.net/) を使っている場合は、`.envrc` に `use flake` と書いておけばディレクトリに入るだけで自動的にこのシェルが有効になります。
+[direnv](https://direnv.net/) を使っている場合は、`.envrc` に次の内容を書いて `direnv allow` で許可すると、ディレクトリに入るだけでこのシェルが有効になります。`mise.toml` の変更時も読み直します。
+
+```bash
+watch_file mise.toml
+use flake
+```
 
 Nix を使わない場合は、Node.js と pnpm のバージョンを `mise.toml` で管理しています。プロジェクトのルートで以下を実行すると、正しいバージョンが揃います。
 
@@ -17,6 +22,25 @@ mise install
 ```
 
 mise も使えない場合は、`mise.toml` に書かれたバージョンに合わせて個別にインストールしてください。
+
+### Node.js のセキュリティ更新
+
+Renovate は `mise.toml` の Node.js、`Dockerfile` の公式 Node.js イメージ、`@types/node` を同じ PR で更新します。Nix の開発環境と CI も `mise.toml` に従います。`@types/node` のバージョンはランタイムと独立しているため、数値そのものは一致しません。
+
+`Dockerfile` の `ARG NODE_VERSION` はカスタムマネージャーで検出し、mise と同じ `node-version` データソースを使います。Docker の通常の更新検出は Node.js に限って無効にし、リリース日の違いで待機期間の判定がずれることを防ぎます。
+
+Docker では Debian 13 の公式 Node.js イメージでビルドし、同じ Node.js バイナリを本番用の distroless `cc-debian13` にコピーします。distroless の Node.js 配布時期に依存せず、ビルドと本番のバージョンを揃えるためです。distroless の OS 更新は digest の変更として Renovate が別に管理します。
+
+CI の `Container runtime` ジョブで本番イメージをビルドし、Node.js のバージョンが `mise.toml` と一致することと、公開ページが HTTP 200 を返すことを確認します。ローカルでも次のコマンドで本番イメージの Node.js を確認できます。
+
+```bash
+docker build --pull -t seichi-portal-frontend:local .
+docker run --rm seichi-portal-frontend:local --version
+```
+
+リリース時は `pull: true` でベースイメージを取得し直します。Debian の世代変更時は Node.js のコピー元と distroless の両方を確認してください（[distroless のサポート対象](https://github.com/GoogleContainerTools/distroless#what-images-are-available)）。
+
+通常更新には共有 Renovate 設定の 7 日待機が適用されます。Dependabot alerts は `mise.toml` や Docker イメージ内の Node.js 本体を検査しないため、セキュリティ修正版でも待機が自動で解除されるとは限りません。通知がない場合も [Node.js のセキュリティ情報](https://nodejs.org/en/blog/vulnerability)を確認してください。
 
 ## 環境変数
 

@@ -4,6 +4,30 @@
     "github>GiganticMinecraft/renovate-config"
   ],
   "rangeStrategy": "bump",
+  "customManagers": [
+    {
+      "customType": "regex",
+      "managerFilePatterns": ["/^Dockerfile$/"],
+      "matchStrings": ["ARG NODE_VERSION=(?<currentValue>\\d+\\.\\d+\\.\\d+)"],
+      "depNameTemplate": "node",
+      "datasourceTemplate": "node-version",
+      "versioningTemplate": "node"
+    }
+  ],
+  "packageRules": [
+    {
+      "description": "Use the official Node.js release dates for the Docker version as well as mise",
+      "matchManagers": ["dockerfile"],
+      "matchPackageNames": ["node"],
+      "enabled": false
+    },
+    {
+      "description": "Keep development, build and production Node.js updates in one PR",
+      "matchPackageNames": ["node", "@types/node"],
+      "groupName": "Node.js",
+      "groupSlug": "nodejs"
+    }
+  ],
   "osvVulnerabilityAlerts": true,
   "vulnerabilityAlerts": {
     "minimumReleaseAge": null,

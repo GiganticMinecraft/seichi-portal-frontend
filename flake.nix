@@ -16,9 +16,14 @@
       {
         devShells.default = pkgs.mkShell {
           buildInputs = [
-            pkgs.nodejs_24
-            pkgs.pnpm
+            pkgs.mise
           ];
+          shellHook = ''
+            mise install || exit 1
+            seichi_mise_env=$(mise env --shell bash) || exit 1
+            eval "$seichi_mise_env"
+            unset seichi_mise_env
+          '';
         };
       }
     );
