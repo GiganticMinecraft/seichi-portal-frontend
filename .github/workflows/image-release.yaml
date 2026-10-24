@@ -103,6 +103,7 @@ jobs:
         id: build-and-push
         with:
           context: .
+          pull: true
           platforms: ${{ matrix.platform }}
           build-args: |
             NEXT_PUBLIC_DEBUG_MODE=false
