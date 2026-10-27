@@ -13,13 +13,15 @@ const describeReason = (
     return `フォーム「${archivedFormTitle}」はアーカイブされています。復元すると回答を表示できます。`;
   }
   if (reason === 'answer-not-found') {
-    return 'この回答は削除されました。';
+    return 'この回答は見つかりません。削除されたか、URL が正しくない可能性があります。';
   }
 
   return 'この回答のフォームはアーカイブまたは削除されました。';
 };
 
 const backLinkFor = (
+  reason: AnswerUnavailableReason,
+  formId: string,
   isAdmin: boolean,
   hasArchivedForm: boolean
 ): { href: string; label: string } => {
@@ -30,6 +32,13 @@ const backLinkFor = (
     return {
       href: '/admin/forms?tab=archived',
       label: 'アーカイブ済みフォーム一覧へ',
+    };
+  }
+  // 回答だけが見つからないときはフォーム自体は残っているので、そのフォームの回答一覧へ戻す
+  if (reason === 'answer-not-found') {
+    return {
+      href: `/admin/forms/${formId}/answers`,
+      label: 'フォームの回答一覧へ',
     };
   }
 
@@ -45,10 +54,12 @@ const backLinkFor = (
  */
 const AnswerUnavailable = ({
   reason,
+  formId,
   isAdmin,
   archivedFormTitle,
 }: {
   reason: AnswerUnavailableReason;
+  formId: string;
   isAdmin: boolean;
   archivedFormTitle?: string | undefined;
 }) => {
@@ -57,7 +68,12 @@ const AnswerUnavailable = ({
       ? '回答が見つかりません'
       : 'フォームが見つかりません';
   const message = describeReason(reason, archivedFormTitle);
-  const backLink = backLinkFor(isAdmin, archivedFormTitle !== undefined);
+  const backLink = backLinkFor(
+    reason,
+    formId,
+    isAdmin,
+    archivedFormTitle !== undefined
+  );
 
   return (
     <Paper variant="outlined" sx={{ p: 4, maxWidth: 640, mx: 'auto', my: 4 }}>

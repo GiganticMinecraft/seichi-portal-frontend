@@ -9,6 +9,7 @@ describe('AnswerUnavailable', () => {
     renderWithProviders(
       <AnswerUnavailable
         reason="form-not-found"
+        formId="form-1"
         isAdmin={true}
         archivedFormTitle="不具合報告フォーム"
       />
@@ -32,7 +33,11 @@ describe('AnswerUnavailable', () => {
 
   it('管理者でもアーカイブ済みフォームが取れなければ、フォーム一覧への導線になる', () => {
     renderWithProviders(
-      <AnswerUnavailable reason="form-not-found" isAdmin={true} />
+      <AnswerUnavailable
+        reason="form-not-found"
+        formId="form-1"
+        isAdmin={true}
+      />
     );
 
     expect(
@@ -45,15 +50,37 @@ describe('AnswerUnavailable', () => {
 
   it('一般ユーザーには自分の回答一覧への導線を出す', () => {
     renderWithProviders(
-      <AnswerUnavailable reason="answer-not-found" isAdmin={false} />
+      <AnswerUnavailable
+        reason="answer-not-found"
+        formId="form-1"
+        isAdmin={false}
+      />
     );
 
     expect(
       screen.getByRole('heading', { level: 1, name: '回答が見つかりません' })
     ).toBeInTheDocument();
-    expect(screen.getByText('この回答は削除されました。')).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        'この回答は見つかりません。削除されたか、URL が正しくない可能性があります。'
+      )
+    ).toBeInTheDocument();
     expect(
       screen.getByRole('link', { name: '自分の回答一覧へ' })
     ).toHaveAttribute('href', '/answers');
+  });
+
+  it('管理者で回答だけが見つからないときは、そのフォームの回答一覧への導線を出す', () => {
+    renderWithProviders(
+      <AnswerUnavailable
+        reason="answer-not-found"
+        formId="form-1"
+        isAdmin={true}
+      />
+    );
+
+    expect(
+      screen.getByRole('link', { name: 'フォームの回答一覧へ' })
+    ).toHaveAttribute('href', '/admin/forms/form-1/answers');
   });
 });

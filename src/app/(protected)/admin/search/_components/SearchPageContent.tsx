@@ -17,7 +17,7 @@ import {
   Typography,
 } from '@mui/material';
 import NextLink from 'next/link';
-import { useSearchParams } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useState } from 'react';
 
 import {
@@ -65,13 +65,26 @@ const SearchResultsTable = ({
   rows: SearchResultRow[];
   isLoading: boolean;
 }) => {
-  const [category, setCategory] = useState<SearchResultCategory | null>(null);
-  const [page, setPage] = useState(0);
+  const router = useRouter();
+  const [selectedCategory, setCategory] = useState<SearchResultCategory | null>(
+    null
+  );
+  const [requestedPage, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(DEFAULT_ROWS_PER_PAGE);
 
   const counts = countSearchResultRowsByCategory(rows);
+  // 再取得で結果が減ることがあるので、選択中の種別とページは結果に合わせて丸める
+  const category =
+    selectedCategory !== null && counts[selectedCategory] > 0
+      ? selectedCategory
+      : null;
   const filteredRows =
     category === null ? rows : rows.filter((row) => row.category === category);
+  const lastPage = Math.max(
+    0,
+    Math.ceil(filteredRows.length / rowsPerPage) - 1
+  );
+  const page = Math.min(requestedPage, lastPage);
   const pageRows = filteredRows.slice(
     page * rowsPerPage,
     (page + 1) * rowsPerPage
@@ -142,7 +155,17 @@ const SearchResultsTable = ({
               <TableRow
                 key={row.id}
                 hover
-                sx={{ '&:last-child td': { border: 0 } }}
+                onClick={(event) => {
+                  // タイトルのリンクをクリックしたときはリンク側の遷移に任せる
+                  if (
+                    event.target instanceof Element &&
+                    event.target.closest('a')
+                  ) {
+                    return;
+                  }
+                  router.push(row.url);
+                }}
+                sx={{ cursor: 'pointer', '&:last-child td': { border: 0 } }}
               >
                 <TableCell>
                   <Chip

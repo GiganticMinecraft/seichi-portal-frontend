@@ -11,6 +11,7 @@ import {
   getRequiredQueryGroupError,
   isQueryGroupReady,
 } from '@/app/_swr/queryState';
+import { retryUnlessNotFound } from '@/app/_swr/retry';
 import { useApiQuery } from '@/app/_swr/useApiQuery';
 import { isAnswerAuthoredByCurrentUser } from '@/lib/forms/answerAuthor';
 import { resolveAnswerUnavailableReason } from '@/lib/forms/answerUnavailable';
@@ -46,7 +47,10 @@ const AnswerDetailsPageContent = ({
     {
       path: { form_id: formId, answer_id: answerId },
     },
-    { refreshInterval: ANSWER_DETAIL_REFRESH_INTERVAL_MS }
+    {
+      refreshInterval: ANSWER_DETAIL_REFRESH_INTERVAL_MS,
+      onErrorRetry: retryUnlessNotFound,
+    }
   );
 
   const { data: answer } = answerQuery;
@@ -56,7 +60,10 @@ const AnswerDetailsPageContent = ({
     {
       path: { form_id: answer?.form_id ?? '' },
     },
-    { refreshInterval: ANSWER_DETAIL_REFRESH_INTERVAL_MS }
+    {
+      refreshInterval: ANSWER_DETAIL_REFRESH_INTERVAL_MS,
+      onErrorRetry: retryUnlessNotFound,
+    }
   );
 
   const isAuthor =
@@ -72,7 +79,10 @@ const AnswerDetailsPageContent = ({
     canAccessMessages
       ? { path: { form_id: formId, answer_id: answerId } }
       : null,
-    { refreshInterval: ANSWER_DETAIL_REFRESH_INTERVAL_MS }
+    {
+      refreshInterval: ANSWER_DETAIL_REFRESH_INTERVAL_MS,
+      onErrorRetry: retryUnlessNotFound,
+    }
   );
 
   const commentsQuery = useApiQuery(
@@ -80,7 +90,10 @@ const AnswerDetailsPageContent = ({
     {
       path: { form_id: formId, answer_id: answerId },
     },
-    { refreshInterval: ANSWER_DETAIL_REFRESH_INTERVAL_MS }
+    {
+      refreshInterval: ANSWER_DETAIL_REFRESH_INTERVAL_MS,
+      onErrorRetry: retryUnlessNotFound,
+    }
   );
 
   const relatedAnswersQuery = useApiQuery(
@@ -88,7 +101,10 @@ const AnswerDetailsPageContent = ({
     {
       path: { form_id: formId, answer_id: answerId },
     },
-    { refreshInterval: ANSWER_DETAIL_REFRESH_INTERVAL_MS }
+    {
+      refreshInterval: ANSWER_DETAIL_REFRESH_INTERVAL_MS,
+      onErrorRetry: retryUnlessNotFound,
+    }
   );
 
   // 回答が非公開になっている場合、管理者以外はコメントの閲覧権限を持たない
@@ -127,6 +143,7 @@ const AnswerDetailsPageContent = ({
     return (
       <AnswerUnavailable
         reason={unavailableReason}
+        formId={formId}
         isAdmin={isAdmin}
         archivedFormTitle={archivedFormQuery.data?.title}
       />

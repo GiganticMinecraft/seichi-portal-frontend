@@ -41,7 +41,10 @@ const response: SearchResponse = {
   comments: Array.from({ length: 3 }, (_, index) => createComment(index)),
 };
 
+const { pushMock } = vi.hoisted(() => ({ pushMock: vi.fn() }));
+
 vi.mock('next/navigation', () => ({
+  useRouter: () => ({ push: pushMock }),
   useSearchParams: () => new URLSearchParams('q=保護'),
 }));
 
@@ -102,5 +105,24 @@ describe('SearchPageContent', () => {
       'href',
       '/admin/forms/form-id/answers/answer-0?commentId=comment-0'
     );
+  });
+
+  it('行のリンク以外をクリックしても遷移し、リンクのクリックでは二重に遷移しない', async () => {
+    const user = userEvent.setup();
+
+    renderWithProviders(<SearchPageContent />);
+
+    const [firstRow] = bodyRows();
+    if (firstRow === undefined) {
+      throw new Error('rows are missing');
+    }
+    await user.click(within(firstRow).getByText('回答', { selector: 'span' }));
+    expect(pushMock).toHaveBeenCalledTimes(1);
+    expect(pushMock).toHaveBeenCalledWith(
+      '/admin/forms/form-id/answers/answer-0'
+    );
+
+    await user.click(within(firstRow).getByRole('link', { name: '回答 0' }));
+    expect(pushMock).toHaveBeenCalledTimes(1);
   });
 });

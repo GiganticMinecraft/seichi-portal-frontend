@@ -16,7 +16,7 @@ export const metadata: Metadata = {
 };
 
 const Home = async (props: {
-  searchParams: Promise<{ createdFormId?: string; tab?: string }>;
+  searchParams: Promise<{ createdFormId?: string }>;
 }) => {
   const { session } = await getAdminAccess();
   // クライアントサイドのタイトル/ラベル絞り込みと組み合わせるため、無限スクロールではなく全件取得する
@@ -50,7 +50,6 @@ const Home = async (props: {
       archivedForms={archivedForms}
       labels={labels}
       createdFormId={searchParams.createdFormId}
-      initialTab={searchParams.tab === 'archived' ? 'archived' : 'active'}
     />
   );
 };
