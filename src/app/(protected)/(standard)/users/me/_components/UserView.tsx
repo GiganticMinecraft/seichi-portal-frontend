@@ -1,3 +1,5 @@
+'use client';
+
 import { Box, Card, CardContent, Divider, Stack } from '@mui/material';
 
 import type {

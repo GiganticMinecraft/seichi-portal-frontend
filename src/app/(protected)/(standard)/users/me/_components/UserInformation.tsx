@@ -1,3 +1,5 @@
+'use client';
+
 import { Card, CardContent, Divider, Stack, Typography } from '@mui/material';
 
 import type { GetUsersResponse } from '@/lib/api-types';
