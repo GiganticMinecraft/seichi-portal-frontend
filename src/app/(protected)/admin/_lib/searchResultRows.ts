@@ -3,15 +3,21 @@ import type { ChipProps } from '@mui/material';
 import type { SearchResponse } from '@/lib/api-types';
 import { resolveAnswerTitle } from '@/lib/forms/answerTitle';
 
+/** 横断検索の結果の種別。表示順もこの順にする */
+export const SEARCH_RESULT_CATEGORIES = [
+  'フォーム',
+  '回答',
+  'ユーザー',
+  'フォーム用ラベル',
+  '回答用ラベル',
+  'コメント',
+] as const;
+
+export type SearchResultCategory = (typeof SEARCH_RESULT_CATEGORIES)[number];
+
 export interface SearchResultRow {
   id: number;
-  category:
-    | 'フォーム'
-    | '回答'
-    | 'ユーザー'
-    | 'フォーム用ラベル'
-    | '回答用ラベル'
-    | 'コメント';
+  category: SearchResultCategory;
   title: string;
   url: string;
 }
@@ -65,3 +71,23 @@ export const toSearchResultRows = (data: SearchResponse): SearchResultRow[] =>
   ]
     .flat()
     .map((row, index) => ({ ...row, id: index }));
+
+/** 種別ごとの件数。結果に無い種別も 0 として含める */
+export const countSearchResultRowsByCategory = (
+  rows: readonly SearchResultRow[]
+): Record<SearchResultCategory, number> => {
+  const counts: Record<SearchResultCategory, number> = {
+    フォーム: 0,
+    回答: 0,
+    ユーザー: 0,
+    フォーム用ラベル: 0,
+    回答用ラベル: 0,
+    コメント: 0,
+  };
+
+  for (const row of rows) {
+    counts[row.category] += 1;
+  }
+
+  return counts;
+};

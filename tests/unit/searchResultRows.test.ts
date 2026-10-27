@@ -1,6 +1,9 @@
 import { describe, expect, it } from 'vitest';
 
-import { toSearchResultRows } from '@/app/(protected)/admin/_lib/searchResultRows';
+import {
+  countSearchResultRowsByCategory,
+  toSearchResultRows,
+} from '@/app/(protected)/admin/_lib/searchResultRows';
 import type { SearchResponse } from '@/lib/api-types';
 
 const createForm = (
@@ -152,5 +155,27 @@ describe('toSearchResultRows', () => {
     };
 
     expect(toSearchResultRows(response)[0]?.title).toBe('(タイトル未設定)');
+  });
+});
+
+describe('countSearchResultRowsByCategory', () => {
+  it('種別ごとの件数を数え、結果に無い種別は 0 にする', () => {
+    const rows = toSearchResultRows({
+      forms: [createForm({ id: 'form-1' }), createForm({ id: 'form-2' })],
+      answers: [createAnswer({ id: 'answer-1' })],
+      users: [],
+      label_for_forms: [],
+      label_for_answers: [createLabel({ id: 'answer-label-1' })],
+      comments: [],
+    });
+
+    expect(countSearchResultRowsByCategory(rows)).toEqual({
+      フォーム: 2,
+      回答: 1,
+      ユーザー: 0,
+      フォーム用ラベル: 0,
+      回答用ラベル: 1,
+      コメント: 0,
+    });
   });
 });
