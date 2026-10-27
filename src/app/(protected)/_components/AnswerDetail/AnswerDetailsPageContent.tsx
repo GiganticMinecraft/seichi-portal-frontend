@@ -13,10 +13,12 @@ import {
 } from '@/app/_swr/queryState';
 import { useApiQuery } from '@/app/_swr/useApiQuery';
 import { isAnswerAuthoredByCurrentUser } from '@/lib/forms/answerAuthor';
+import { resolveAnswerUnavailableReason } from '@/lib/forms/answerUnavailable';
 import { isHttpError } from '@/lib/httpError';
 
 import AnswerDetailsPageView from './AnswerDetailsPageView';
 import type { AnswerDetailsPageData } from './AnswerDetailsPageView';
+import AnswerUnavailable from './AnswerUnavailable';
 
 /**
  * 回答詳細を構成する各クエリのポーリング間隔。1 秒間隔ではタブ 1 枚あたり
@@ -101,6 +103,35 @@ const AnswerDetailsPageContent = ({
     '/api/v1/labels/answers',
     isAdmin ? undefined : null
   );
+
+  // 通知や検索結果のリンク先がアーカイブ済み・削除済みのとき、回答本体・関連回答・
+  // コメントのどれが先に 404 を返すかは分からないので、まとめて判定する
+  // (フォームのクエリは回答が取れるまで始まらないため含めない)。
+  const unavailableReason = resolveAnswerUnavailableReason([
+    answerQuery.error,
+    relatedAnswersQuery.error,
+    commentsQuery.error,
+  ]);
+
+  // 管理者には復元の導線を示したいので、フォームが見つからないときだけ
+  // アーカイブ済みフォームを引く。削除済みなら 404 になるが、それは表示に使わない。
+  const archivedFormQuery = useApiQuery(
+    '/api/v1/archived-forms/{form_id}',
+    isAdmin && unavailableReason === 'form-not-found'
+      ? { path: { form_id: formId } }
+      : null,
+    { shouldRetryOnError: false }
+  );
+
+  if (unavailableReason !== undefined) {
+    return (
+      <AnswerUnavailable
+        reason={unavailableReason}
+        isAdmin={isAdmin}
+        archivedFormTitle={archivedFormQuery.data?.title}
+      />
+    );
+  }
 
   const requiredQueries = {
     answer: answerQuery,

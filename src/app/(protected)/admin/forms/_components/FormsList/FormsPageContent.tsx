@@ -23,11 +23,14 @@ const FormsPageContent = ({
   archivedForms,
   labels,
   createdFormId,
+  initialTab = 'active',
 }: {
   forms: GetFormsResponse;
   archivedForms: GetArchivedFormsResponse;
   labels: GetFormLabelsResponse;
   createdFormId?: string | undefined;
+  /** 最初に開くタブ。回答詳細からアーカイブ済み一覧へ直接戻るために `?tab=archived` で指定する */
+  initialTab?: 'active' | 'archived' | undefined;
 }) => {
   const router = useRouter();
   const [initialCreatedFormId] = useState(createdFormId);
@@ -35,7 +38,7 @@ const FormsPageContent = ({
     createdFormId != null
   );
   const { snackbar, showSnackbar, closeSnackbar } = useSnackbar();
-  const [activeTab, setActiveTab] = useState(0);
+  const [activeTab, setActiveTab] = useState(initialTab === 'archived' ? 1 : 0);
   const { titleSearch, setTitleSearch, setLabelFilter, filteredForms } =
     useFormListFilters(forms);
 

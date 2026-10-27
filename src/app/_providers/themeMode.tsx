@@ -50,6 +50,8 @@ export const AppProviders = ({
         value={{
           onErrorRetry: (error, _key, _config, revalidate, options) => {
             if (retryAfterRateLimit(error, revalidate, options)) return;
+            // 404 は時間を置いても変わらない (アーカイブ・削除済み) ので再試行しない
+            if (isHttpError(error) && error.status === 404) return;
             if (options.retryCount >= 3) return;
             setTimeout(() => {
               void revalidate({
