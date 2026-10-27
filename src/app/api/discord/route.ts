@@ -5,6 +5,11 @@ import { getDiscordConfig, getMsalOrigin } from '@/env.server';
 import * as sdk from '@/generated/api/sdk.gen';
 import { withResponse } from '@/lib/api/createApiClient';
 import {
+  DISCORD_LINK_ERROR_ALREADY_LINKED,
+  DISCORD_LINK_ERROR_QUERY,
+} from '@/lib/discordLinkError';
+import { getProblemDetails } from '@/lib/httpError';
+import {
   getPostLoginRedirectFromRequest,
   setPostLoginRedirectCookie,
 } from '@/lib/postLoginRedirect';
@@ -155,21 +160,38 @@ export async function GET(req: NextRequest) {
       return response;
     }
 
-    const { response: linkDiscordResponse } = await withResponse(
-      sdk.linkDiscord({
-        client: serverApiClient,
-        // backend が Discord API を呼ぶため、読み取り系より長い上限にする
-        fetch: backendMutationFetch,
-        headers: {
-          ...authorizationHeader(seichiPortalToken),
-        },
-        body: {
-          token: token.data.access_token,
-        },
-      })
-    );
+    const { response: linkDiscordResponse, error: linkDiscordError } =
+      await withResponse(
+        sdk.linkDiscord({
+          client: serverApiClient,
+          // backend が Discord API を呼ぶため、読み取り系より長い上限にする
+          fetch: backendMutationFetch,
+          headers: {
+            ...authorizationHeader(seichiPortalToken),
+          },
+          body: {
+            token: token.data.access_token,
+          },
+        })
+      );
 
     if (!linkDiscordResponse.ok) {
+      // 同じ Discord アカウントが別の利用者に連携済み。利用者が別のアカウントで
+      // やり直せる失敗なので、JSON を返すのではなく連携画面へ戻して文言で伝える。
+      // 戻り先は返り値の URL を組み立てず固定にする (returnTo を URL に混ぜない)
+      if (
+        linkDiscordResponse.status === 409 &&
+        getProblemDetails(linkDiscordError).errorCode ===
+          'DISCORD_ACCOUNT_ALREADY_LINKED'
+      ) {
+        const response = NextResponse.redirect(
+          `${msalOrigin}/users/me?${DISCORD_LINK_ERROR_QUERY}=${DISCORD_LINK_ERROR_ALREADY_LINKED}`
+        );
+        clearDiscordOauthStateCookie(response);
+        clearDiscordReturnToCookie(response);
+        return response;
+      }
+
       const response = NextResponse.json(
         { error: 'Failed to link discord account' },
         { status: 502 }

@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 
 import * as sdk from '@/generated/api/sdk.gen';
+import { resolveDiscordLinkErrorMessage } from '@/lib/discordLinkError';
 import {
   authorizationHeader,
   requireBackendData,
@@ -14,9 +15,11 @@ export const metadata: Metadata = {
   title: 'ユーザー情報 | Seichi Portal',
 };
 
-const UserPage = async () => {
+const UserPage = async (props: {
+  searchParams: Promise<{ discordLinkError?: string | string[] }>;
+}) => {
   const session = await requireUser();
-  const [user, notificationSettings] = await Promise.all([
+  const [user, notificationSettings, searchParams] = await Promise.all([
     requireBackendData(
       sdk.getMyUserInfo({
         client: serverApiClient,
@@ -29,9 +32,18 @@ const UserPage = async () => {
         headers: authorizationHeader(session.token),
       })
     ),
+    props.searchParams,
   ]);
 
-  return <UserView user={user} notificationSettings={notificationSettings} />;
+  return (
+    <UserView
+      user={user}
+      notificationSettings={notificationSettings}
+      discordLinkErrorMessage={resolveDiscordLinkErrorMessage(
+        searchParams.discordLinkError
+      )}
+    />
+  );
 };
 
 export default UserPage;

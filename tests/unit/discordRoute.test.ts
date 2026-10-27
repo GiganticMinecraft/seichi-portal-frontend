@@ -187,6 +187,73 @@ describe('Discord OAuth route', () => {
     }
   );
 
+  it('別のユーザーに連携済み (409) のときは JSON ではなく /users/me へ戻し、理由をクエリで伝える', async () => {
+    getCachedTokenMock.mockResolvedValue('seichi-token');
+    linkDiscordMock.mockResolvedValue({
+      response: new Response(null, { status: 409 }),
+      error: {
+        errorCode: 'DISCORD_ACCOUNT_ALREADY_LINKED',
+        detail: 'Discord account is already linked to another user.',
+      },
+    });
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockResolvedValue(
+        new Response(JSON.stringify({ access_token: 'discord-access-token' }), {
+          status: 200,
+          headers: { 'Content-Type': 'application/json' },
+        })
+      )
+    );
+
+    const response = await GET(
+      request(
+        'http://0.0.0.0:3000/api/discord?code=code&state=stored-state',
+        [
+          `${DISCORD_OAUTH_STATE_COOKIE}=stored-state`,
+          `${DISCORD_RETURN_TO_COOKIE}=%2Fusers%2Fme`,
+        ].join('; ')
+      )
+    );
+
+    expect(response.status).toBe(307);
+    expect(response.headers.get('location')).toBe(
+      'https://portal.seichi.click/users/me?discordLinkError=already-linked'
+    );
+    const setCookie = response.headers.get('set-cookie') ?? '';
+    expect(setCookie).toContain(`${DISCORD_OAUTH_STATE_COOKIE}=;`);
+    expect(setCookie).toContain(`${DISCORD_RETURN_TO_COOKIE}=;`);
+  });
+
+  it('409 でも errorCode が別のものなら従来どおり失敗の JSON を返す', async () => {
+    getCachedTokenMock.mockResolvedValue('seichi-token');
+    linkDiscordMock.mockResolvedValue({
+      response: new Response(null, { status: 409 }),
+      error: { errorCode: 'SOMETHING_ELSE' },
+    });
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockResolvedValue(
+        new Response(JSON.stringify({ access_token: 'discord-access-token' }), {
+          status: 200,
+          headers: { 'Content-Type': 'application/json' },
+        })
+      )
+    );
+
+    const response = await GET(
+      request(
+        'http://0.0.0.0:3000/api/discord?code=code&state=stored-state',
+        `${DISCORD_OAUTH_STATE_COOKIE}=stored-state`
+      )
+    );
+
+    expect(response.status).toBe(502);
+    expect(await response.json()).toEqual({
+      error: 'Failed to link discord account',
+    });
+  });
+
   it('復帰先 cookie がある場合は連携成功後にその画面へ遷移し、cookie を削除する', async () => {
     getCachedTokenMock.mockResolvedValue('seichi-token');
     linkDiscordMock.mockResolvedValue({
