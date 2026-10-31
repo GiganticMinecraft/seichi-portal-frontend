@@ -4,36 +4,14 @@ import { CssBaseline } from '@mui/material';
 import { ThemeProvider } from '@mui/material/styles';
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v16-appRouter';
 import type { ReactNode } from 'react';
-import { SWRConfig, type Revalidator, type RevalidatorOptions } from 'swr';
+import { SWRConfig } from 'swr';
 
 import { MsalProvider } from '@/app/_components/MsalProvider';
-import { isHttpError } from '@/lib/httpError';
+import { retryOnError } from '@/app/_swr/retry';
 
 import { getAuthedTheme } from './getAuthedTheme';
 
 const theme = getAuthedTheme();
-const MAX_TIMEOUT_MS = 2_147_483_647;
-
-const retryAfterRateLimit = (
-  error: unknown,
-  revalidate: Revalidator,
-  options: Required<RevalidatorOptions>
-) => {
-  if (!isHttpError(error) || error.status !== 429) return false;
-
-  const retryAfter = error.retryAfter;
-  if (retryAfter === undefined) return true;
-
-  const retryDelayMs = Math.min(retryAfter * 1000, MAX_TIMEOUT_MS);
-  setTimeout(
-    () => {
-      void revalidate({ ...options, retryCount: options.retryCount + 1 });
-    },
-    Math.max(retryDelayMs, 1)
-  );
-  return true;
-};
-
 export const AppProviders = ({
   children,
   msalClientId,
@@ -46,20 +24,7 @@ export const AppProviders = ({
   <AppRouterCacheProvider>
     <ThemeProvider theme={theme} defaultMode="system">
       <CssBaseline />
-      <SWRConfig
-        value={{
-          onErrorRetry: (error, _key, _config, revalidate, options) => {
-            if (retryAfterRateLimit(error, revalidate, options)) return;
-            if (options.retryCount >= 3) return;
-            setTimeout(() => {
-              void revalidate({
-                ...options,
-                retryCount: options.retryCount + 1,
-              });
-            }, 5000);
-          },
-        }}
-      >
+      <SWRConfig value={{ onErrorRetry: retryOnError }}>
         <MsalProvider clientId={msalClientId} redirectUri={msalRedirectUri}>
           {children}
         </MsalProvider>

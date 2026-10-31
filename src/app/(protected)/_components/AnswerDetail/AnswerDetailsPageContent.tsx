@@ -11,12 +11,15 @@ import {
   getRequiredQueryGroupError,
   isQueryGroupReady,
 } from '@/app/_swr/queryState';
+import { retryUnlessNotFound } from '@/app/_swr/retry';
 import { useApiQuery } from '@/app/_swr/useApiQuery';
 import { isAnswerAuthoredByCurrentUser } from '@/lib/forms/answerAuthor';
+import { resolveAnswerUnavailableReason } from '@/lib/forms/answerUnavailable';
 import { isHttpError } from '@/lib/httpError';
 
 import AnswerDetailsPageView from './AnswerDetailsPageView';
 import type { AnswerDetailsPageData } from './AnswerDetailsPageView';
+import AnswerUnavailable from './AnswerUnavailable';
 
 /**
  * 回答詳細を構成する各クエリのポーリング間隔。1 秒間隔ではタブ 1 枚あたり
@@ -44,7 +47,10 @@ const AnswerDetailsPageContent = ({
     {
       path: { form_id: formId, answer_id: answerId },
     },
-    { refreshInterval: ANSWER_DETAIL_REFRESH_INTERVAL_MS }
+    {
+      refreshInterval: ANSWER_DETAIL_REFRESH_INTERVAL_MS,
+      onErrorRetry: retryUnlessNotFound,
+    }
   );
 
   const { data: answer } = answerQuery;
@@ -54,7 +60,10 @@ const AnswerDetailsPageContent = ({
     {
       path: { form_id: answer?.form_id ?? '' },
     },
-    { refreshInterval: ANSWER_DETAIL_REFRESH_INTERVAL_MS }
+    {
+      refreshInterval: ANSWER_DETAIL_REFRESH_INTERVAL_MS,
+      onErrorRetry: retryUnlessNotFound,
+    }
   );
 
   const isAuthor =
@@ -70,7 +79,10 @@ const AnswerDetailsPageContent = ({
     canAccessMessages
       ? { path: { form_id: formId, answer_id: answerId } }
       : null,
-    { refreshInterval: ANSWER_DETAIL_REFRESH_INTERVAL_MS }
+    {
+      refreshInterval: ANSWER_DETAIL_REFRESH_INTERVAL_MS,
+      onErrorRetry: retryUnlessNotFound,
+    }
   );
 
   const commentsQuery = useApiQuery(
@@ -78,7 +90,10 @@ const AnswerDetailsPageContent = ({
     {
       path: { form_id: formId, answer_id: answerId },
     },
-    { refreshInterval: ANSWER_DETAIL_REFRESH_INTERVAL_MS }
+    {
+      refreshInterval: ANSWER_DETAIL_REFRESH_INTERVAL_MS,
+      onErrorRetry: retryUnlessNotFound,
+    }
   );
 
   const relatedAnswersQuery = useApiQuery(
@@ -86,7 +101,10 @@ const AnswerDetailsPageContent = ({
     {
       path: { form_id: formId, answer_id: answerId },
     },
-    { refreshInterval: ANSWER_DETAIL_REFRESH_INTERVAL_MS }
+    {
+      refreshInterval: ANSWER_DETAIL_REFRESH_INTERVAL_MS,
+      onErrorRetry: retryUnlessNotFound,
+    }
   );
 
   // 回答が非公開になっている場合、管理者以外はコメントの閲覧権限を持たない
@@ -101,6 +119,36 @@ const AnswerDetailsPageContent = ({
     '/api/v1/labels/answers',
     isAdmin ? undefined : null
   );
+
+  // 通知や検索結果のリンク先がアーカイブ済み・削除済みのとき、回答本体・関連回答・
+  // コメントのどれが先に 404 を返すかは分からないので、まとめて判定する
+  // (フォームのクエリは回答が取れるまで始まらないため含めない)。
+  const unavailableReason = resolveAnswerUnavailableReason([
+    answerQuery.error,
+    relatedAnswersQuery.error,
+    commentsQuery.error,
+  ]);
+
+  // 管理者には復元の導線を示したいので、フォームが見つからないときだけ
+  // アーカイブ済みフォームを引く。削除済みなら 404 になるが、それは表示に使わない。
+  const archivedFormQuery = useApiQuery(
+    '/api/v1/archived-forms/{form_id}',
+    isAdmin && unavailableReason === 'form-not-found'
+      ? { path: { form_id: formId } }
+      : null,
+    { shouldRetryOnError: false }
+  );
+
+  if (unavailableReason !== undefined) {
+    return (
+      <AnswerUnavailable
+        reason={unavailableReason}
+        formId={formId}
+        isAdmin={isAdmin}
+        archivedFormTitle={archivedFormQuery.data?.title}
+      />
+    );
+  }
 
   const requiredQueries = {
     answer: answerQuery,
