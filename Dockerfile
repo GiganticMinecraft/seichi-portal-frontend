@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1
 
-ARG NODE_VERSION=24.22.2
+ARG NODE_VERSION=26.13.0
 FROM node:${NODE_VERSION}-trixie-slim AS base
 WORKDIR /app
 RUN corepack enable
@@ -21,7 +21,7 @@ ENV NEXT_TELEMETRY_DISABLED=1
 
 RUN pnpm run build
 
-FROM gcr.io/distroless/cc-debian13:nonroot@sha256:08476c244888bfb425bae1ae4dd7c17f093e972aab8426883d97f3c6f280f7c1 AS runner
+FROM gcr.io/distroless/cc-debian13:nonroot@sha256:3ee00291cf386ec52a552e6a858d555debd74776eb4bfa53fa3df2cd6677515e AS runner
 WORKDIR /app
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
