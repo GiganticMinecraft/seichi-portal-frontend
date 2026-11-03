@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1
 
-ARG NODE_VERSION=24.22.1
+ARG NODE_VERSION=24.22.2
 FROM node:${NODE_VERSION}-trixie-slim AS base
 WORKDIR /app
 RUN corepack enable
