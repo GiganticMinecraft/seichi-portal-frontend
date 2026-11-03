@@ -23,7 +23,6 @@ const initMsalInstance = (config: {
     },
     cache: {
       cacheLocation: 'sessionStorage',
-      storeAuthStateInCookie: false,
     },
   };
   msalInstance = new PublicClientApplication(msalConfig);
