@@ -120,11 +120,15 @@ const AnswerDetailsPageContent = ({
     isAdmin ? undefined : null
   );
 
-  // 通知や検索結果のリンク先がアーカイブ済み・削除済みのとき、回答本体・関連回答・
-  // コメントのどれが先に 404 を返すかは分からないので、まとめて判定する
-  // (フォームのクエリは回答が取れるまで始まらないため含めない)。
+  // 通知や検索結果のリンク先がアーカイブ済み・削除済みのとき、どのクエリが先に
+  // 404 を返すかは分からないので、まとめて判定する。フォームのクエリは回答が取れて
+  // から始まるが、回答を取得済み (SWR キャッシュを含む) の状態でフォームが
+  // アーカイブされるとフォームだけが先に 404 を返す。管理者ではメッセージも回答本体と
+  // 同時に始まるので、こちらが先に 404 を返すこともある。
   const unavailableReason = resolveAnswerUnavailableReason([
     answerQuery.error,
+    formQuery.error,
+    messagesQuery.error,
     relatedAnswersQuery.error,
     commentsQuery.error,
   ]);
