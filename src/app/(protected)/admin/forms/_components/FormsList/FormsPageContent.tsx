@@ -2,7 +2,7 @@
 
 import { Alert, Button, Snackbar, Stack, Tab, Tabs } from '@mui/material';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 import SnackbarAlert, { useSnackbar } from '@/app/_components/SnackbarAlert';
@@ -30,12 +30,28 @@ const FormsPageContent = ({
   createdFormId?: string | undefined;
 }) => {
   const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
   const [initialCreatedFormId] = useState(createdFormId);
   const [createdSnackbarOpen, setCreatedSnackbarOpen] = useState(
     createdFormId != null
   );
   const { snackbar, showSnackbar, closeSnackbar } = useSnackbar();
-  const [activeTab, setActiveTab] = useState(0);
+  // タブは URL (`?tab=archived`) から決める。回答詳細からアーカイブ済み一覧へ直接戻れるようにし、
+  // クライアント側の遷移で URL とタブがずれないようにする (ラベル画面の LabelsTabs と同じ方式)
+  const activeTab = searchParams.get('tab') === 'archived' ? 1 : 0;
+  const setActiveTab = (tab: number) => {
+    const params = new URLSearchParams(searchParams.toString());
+    if (tab === 1) {
+      params.set('tab', 'archived');
+    } else {
+      params.delete('tab');
+    }
+    const query = params.toString();
+    router.replace(query ? `${pathname}?${query}` : pathname, {
+      scroll: false,
+    });
+  };
   const { titleSearch, setTitleSearch, setLabelFilter, filteredForms } =
     useFormListFilters(forms);
 
