@@ -90,8 +90,8 @@ const AnswersPageContent = ({
   );
 
   // 検索 API は status/label_id による絞り込みに未対応のため、検索結果に対して
-  // だけクライアント側でも絞り込む。検索結果自体は既に絞られた小さな集合であり、
-  // 全件ロードの問題は発生しない。
+  // だけクライアント側でも絞り込む。検索結果は backend 側で最大 100 件に
+  // 制限されるため、全件ロードの問題は発生しない。
   const rows = toAnswerListRows(
     isSearching
       ? filterAnswers(searchData?.answers ?? [], {
