@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1
 
-ARG NODE_VERSION=26.13.0
+ARG NODE_VERSION=26.13.1
 FROM node:${NODE_VERSION}-trixie-slim AS base
 WORKDIR /app
 # Node.js 25 以降の公式イメージには corepack が同梱されないため、pnpm を npm で入れる。
