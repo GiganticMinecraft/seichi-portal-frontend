@@ -87,6 +87,21 @@ describe('parseSubmissionError', () => {
 });
 
 describe('toAnswerContents', () => {
+  it('複数選択で何も選択していない質問は contents に含めない', () => {
+    expect(
+      toAnswerContents({
+        direct_message_consent: false,
+        optional_choices: [],
+        contact_reason: 'いいえ',
+        selected_choices: ['選択肢1', '選択肢2'],
+      })
+    ).toEqual([
+      { question_id: 'contact_reason', answer: 'いいえ' },
+      { question_id: 'selected_choices', answer: '選択肢1' },
+      { question_id: 'selected_choices', answer: '選択肢2' },
+    ]);
+  });
+
   it('未選択の単一選択回答を contents から除外する', () => {
     expect(
       toAnswerContents({
