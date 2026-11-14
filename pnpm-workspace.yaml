@@ -6,7 +6,7 @@ minimumReleaseAgeExcludePrune: true
 # ERR_PNPM_NO_MATURE_MATCHING_VERSION で失敗するのを防ぐ (#926)。
 minimumReleaseAgeStrict: false
 overrides:
-  minimatch: ^10.2.6
+  minimatch: ^11.0.8
   # GHSA-5p4m-2wfm-xmqj: @redocly/openapi-core が js-yaml を 4.3.0 に固定して
   # おり、Dependabot 側では解消できないため override で 4.3.1 以上に上げる。
   # 上流が追従したら削除する。
@@ -21,3 +21,6 @@ allowBuilds:
   lefthook: true
   sharp: true
   unrs-resolver: true
+minimumReleaseAgeExclude:
+  # Renovate security update: minimatch@11.0.8
+  - minimatch@11.0.8
